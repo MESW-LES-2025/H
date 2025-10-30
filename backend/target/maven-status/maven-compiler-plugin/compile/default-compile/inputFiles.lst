@@ -1,0 +1,7 @@
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/dto/LoginRequest.java
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/model/User.java
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/service/AuthService.java
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/LoginBackendApplication.java
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/dto/LoginResponse.java
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/controller/AuthController.java
+/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/repository/UserRepository.java
