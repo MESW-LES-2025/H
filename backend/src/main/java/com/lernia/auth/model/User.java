@@ -1,13 +1,25 @@
-public class LoginRequest {
+package com.lernia.auth.model;
+
+public class User {
+    private Long id;
     private String username;
     private String password;
 
-    public LoginRequest() {
+    public User() {
     }
 
-    public LoginRequest(String username, String password) {
+    public User(Long id, String username, String password) {
+        this.id = id;
         this.username = username;
         this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {

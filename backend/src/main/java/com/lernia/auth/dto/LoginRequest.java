@@ -1,23 +1,15 @@
-public class User {
-    private Long id;
+package com.lernia.auth.dto;
+
+public class LoginRequest {
     private String username;
     private String password;
 
-    public User() {
+    public LoginRequest() {
     }
 
-    public User(Long id, String username, String password) {
-        this.id = id;
+    public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {

@@ -2,41 +2,6 @@
 
 This project is a backend implementation of a login system using Spring Boot. It is designed to handle user authentication and manage user data.
 
-## Project Structure
-
-```
-login-backend
-├── pom.xml
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── example
-│   │   │           └── login
-│   │   │               ├── LoginBackendApplication.java
-│   │   │               ├── controller
-│   │   │               │   └── AuthController.java
-│   │   │               ├── dto
-│   │   │               │   ├── LoginRequest.java
-│   │   │               │   └── LoginResponse.java
-│   │   │               ├── model
-│   │   │               │   └── User.java
-│   │   │               ├── repository
-│   │   │               │   └── UserRepository.java
-│   │   │               └── service
-│   │   │                   └── AuthService.java
-│   │   └── resources
-│   │       ├── application.properties
-│   │       └── data.sql
-│   └── test
-│       └── java
-│           └── com
-│               └── example
-│                   └── login
-│                       └── AuthServiceTests.java
-└── README.md
-```
-
 ## Setup Instructions
 
 1. **Clone the Repository**

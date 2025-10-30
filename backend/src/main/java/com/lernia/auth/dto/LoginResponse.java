@@ -1,3 +1,5 @@
+package com.lernia.auth.dto;
+
 public class LoginResponse {
     private String message;
     private String username;
