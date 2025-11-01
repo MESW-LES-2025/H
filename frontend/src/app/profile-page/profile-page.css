@@ -1,0 +1,44 @@
+.profile-card {
+  background: linear-gradient(135deg, #6ba598 0%, #7ab5a5 100%);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.btn-light:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s;
+}
+
+/* Decorative circles */
+.circle-decoration {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.circle-1 {
+  width: 200px;
+  height: 200px;
+  top: -100px;
+  left: -50px;
+}
+
+.circle-2 {
+  width: 150px;
+  height: 150px;
+  bottom: -75px;
+  right: 10%;
+}
+
+.circle-3 {
+  width: 100px;
+  height: 100px;
+  top: 20%;
+  right: -30px;
+}

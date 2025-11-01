@@ -1,0 +1,35 @@
+@if (user) {
+  <div class="container my-4">
+    <div class="card profile-card border-0 shadow position-relative">
+      <!-- Decorative circles -->
+      <div class="circle-decoration circle-1"></div>
+      <div class="circle-decoration circle-2"></div>
+      <div class="circle-decoration circle-3"></div>
+
+      <div class="card-body p-4 p-md-5 position-relative">
+        <div class="row align-items-center g-4">
+          <div class="col-auto">
+            <img [src]="user.profileImage"
+                 alt="User Profile Picture"
+                 class="rounded-circle border border-5 border-white profile-image">
+          </div>
+
+          <div class="col">
+            <h2 class="h1 fw-bold text-white mb-2">{{ user.name }}</h2>
+            <p class="text-white mb-1 fs-5">{{ user.location }}</p>
+            <p class="text-white mb-0 fs-5">{{ user.jobTitle }}</p>
+          </div>
+
+          <div class="col-auto d-flex flex-column gap-3">
+            <button class="btn btn-light rounded px-4 py-2 fw-semibold">
+              Add Friend
+            </button>
+            <button class="btn btn-light rounded px-4 py-2 fw-semibold">
+              Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
