@@ -27,7 +27,8 @@ export class ProfilePageService{
           university: {
             id: 1,
             name: "Universidade de Lisboa",
-            location: "Lisboa, Portugal"
+            location: "Lisboa, Portugal",
+            logo: "images/uni-feup.png",
           }
         }
       },
@@ -42,13 +43,13 @@ export class ProfilePageService{
           university: {
             id: 1,
             name: "Universidade de Lisboa",
-            location: "Lisboa, Portugal"
+            location: "Lisboa, Portugal",
+            logo: "images/uni-isep.png",
           }
         }
       }
     ]
   };
-
 
   public getUserProfile(id: number): Observable<UserViewmodel> {
     return of(this.user);
