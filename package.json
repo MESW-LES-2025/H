@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@angular/animations": "^20.3.9"
+  }
+}
