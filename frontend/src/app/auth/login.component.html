@@ -1,10 +1,7 @@
 <div class="stage">
     <div class="frame">
-
-        <!-- FOTO -->
         <img class="hero" src="/hero.png" alt="Graduation hats" />
 
-        <!-- PAINEL -->
         <svg class="beige" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
             <path d="M540,0 L1000,0 L1000,700 L540,700
                C610,610 620,500 560,430
@@ -12,11 +9,13 @@
                C625,160 610,70 540,0 Z" />
         </svg>
 
-        <!-- CONTEÚDO -->
         <div class="panel">
             <h1 class="welcome vt-title">
-                <span>Welcome</span><br />
-                <span>to Lernia</span>
+                <span class="kicker">Welcome Back</span>
+                <span class="brandline">
+          to
+          <img class="brand-img" src="/lernia.png" alt="LERNIA wordmark" />
+        </span>
             </h1>
 
             <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">

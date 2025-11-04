@@ -1,22 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-:root{
-  --beige:#e8dab1;
-  --beige-ink:#1d2a26;
-  --mint:#6aa796;
-  --mint-ink:#0c3b33;
-  --line:#d8c9a0;
-  --bg:#0b1520;
-  --google-border:#d7c7a4;
+:root {
+  --beige: #f6f1e3;
+  --beige-ink: #4b2e24;
+  --mint: #6aa796;
+  --mint-dark: #5a9485;
+  --google-border: #4b2e24;
+  --line: #d8c9a0;
 }
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
-body{
-  margin:0;
-  font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  color:var(--beige-ink);
-  background:#0a0a0a;
+
+body {
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--beige-ink);
+  background: var(--beige);
 }
 
 a{ color:inherit; }
