@@ -37,6 +37,3 @@ At this stage, the backend is not connected to any frontend and is not fully fun
 - Connect the backend to a frontend application.
 - Add unit tests for all components.
 
-## License
-
-This project is licensed under the MIT License.
