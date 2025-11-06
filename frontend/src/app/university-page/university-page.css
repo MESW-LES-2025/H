@@ -1,0 +1,185 @@
+.university-card {
+  border-radius: 20px;
+  overflow: visible;
+  color: #5d4037;
+}
+
+.university-card .card-body {
+  padding-top: 80px !important;
+}
+
+.btn-save-college {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  z-index: 20;
+  min-width: 280px;
+}
+
+.btn-save-college:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-save-college i {
+  font-size: 18px;
+}
+
+.container-university {
+  max-width: 1600px;
+}
+
+.university-banner-container {
+  width: 100%;
+  height: 250px;
+  overflow: visible;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+.university-banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.university-logo-overlay {
+  position: absolute;
+  bottom: -60px;
+  left: 10%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.university-logo-large {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.course-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+}
+
+.course-icon-inner {
+  font-size: 24px;
+  color: #5d4037;
+}
+
+.btn-light:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s;
+}
+
+.course-item:hover {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding-left: 12px;
+}
+
+.course-item:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.courses-list {
+  margin-bottom: 1rem;
+}
+
+.stat-box {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  color: #5d4037;
+  font-size: 1.5rem;
+}
+
+.nav-tabs .nav-link {
+  color: #5d4037;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #4e342e;
+  border-bottom-color: #d7ccc8;
+}
+
+.nav-tabs .nav-link.active {
+  color: #5d4037;
+  border-bottom-color: #5d4037;
+  background-color: transparent;
+}
+
+.info-group {
+  padding-bottom: 1rem;
+}
+
+.info-group label {
+  color: #999;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-group p {
+  color: #5d4037;
+  margin: 0.5rem 0 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .university-banner-container {
+    height: 200px;
+  }
+
+  .col-2,
+  .col-10 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  .d-flex.gap-2.w-50 {
+    width: 100% !important;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .row > [class*='col-md-'] {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}

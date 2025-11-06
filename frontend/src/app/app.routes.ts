@@ -15,5 +15,13 @@ export const routes: Routes = [
     {
         path: 'profile/:id',
         loadComponent: () => import('./profile-page/profile-page').then(m => m.ProfilePage)
+    },
+    {
+        path: 'university/:id',
+        loadComponent: () => import('./university-page/university-page').then(m => m.UniversityPage)
+    },
+    {
+        path: 'course/:id',
+        loadComponent: () => import('./course-page/course-page').then(m => m.CoursePage)
     }
 ];

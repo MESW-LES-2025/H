@@ -1,0 +1,162 @@
+@if (university) {
+<div class="container container-university">
+  <!-- University Header Card -->
+  <div class="card university-card border-0 shadow position-relative my-4 d-flex flex-column">
+    <!-- Banner Image -->
+    <div class="university-banner-container">
+      <img [src]="university.bannerImage" alt="University Banner" class="university-banner"
+        onerror="this.src='images/placeholder-banner.jpg'">
+      <!-- University Logo Overlay -->
+      <div class="university-logo-overlay">
+        <img [src]="university.logo" alt="University Logo" class="university-logo-large rounded">
+      </div>
+    </div>
+
+    <div class="card-body p-4 position-relative flex-grow-1">
+      <!-- Save College Button -->
+      <button class="btn btn-save-college">
+        <i class="bi bi-heart-fill"></i>
+        Save College
+      </button>
+
+      <div class="row align-items-start g-3">
+        <!-- University Info -->
+        <div class="col-12">
+          <div class="row">
+            <div class="col-6">
+              <h2 class="h1 fw-bold mb-1">{{ university.name }}</h2>
+              <p class="h4 mb-0">{{ university.location }}</p>
+            </div>
+            <div class="col-6">
+              <div class="mt-3">
+                <p class="small mb-1">
+                  <strong>Founded: {{ university.foundedYear }}</strong>
+                </p>
+                <p class="small mb-0">Students: {{ university.studentCount | number }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="card border-0 shadow mb-4">
+    <div class="card-body p-4 border-bottom">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-content"
+            type="button" role="tab" aria-controls="overview-content" aria-selected="true">
+            Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-content" type="button"
+            role="tab" aria-controls="courses-content" aria-selected="false">
+            Courses
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-content" type="button"
+            role="tab" aria-controls="info-content" aria-selected="false">
+            Information
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div class="tab-pane fade show active" id="overview-content" role="tabpanel" aria-labelledby="overview-tab">
+        <div class="card-body p-4">
+          <h3 class="h5 fw-bold mb-3">About {{ university.name }}</h3>
+          <p class="text-muted">{{ university.description }}</p>
+
+          <div class="row mt-4">
+            <div class="col-md-4">
+              <div class="stat-box">
+                <p class="stat-label text-muted mb-1">Founded</p>
+                <p class="stat-value fw-bold h5">{{ university.foundedYear }}</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="stat-box">
+                <p class="stat-label text-muted mb-1">Students</p>
+                <p class="stat-value fw-bold h5">{{ university.studentCount | number }}</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="stat-box">
+                <p class="stat-label text-muted mb-1">Location</p>
+                <p class="stat-value fw-bold h5">{{ university.location }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses Tab -->
+      <div class="tab-pane fade" id="courses-content" role="tabpanel" aria-labelledby="courses-tab">
+        <div class="card-body p-4">
+          <h3 class="h5 fw-bold mb-3">Featured Courses</h3>
+
+          @if (university.courses && university.courses.length > 0) {
+          <div class="courses-list">
+            @for (course of university.courses; track course.id) {
+            <div class="course-item d-flex gap-3 pb-3 mb-3 border-bottom">
+              <div class="flex-shrink-0">
+                <div class="course-icon bg-light rounded d-flex align-items-center justify-content-center">
+                  <i class="bi bi-book-fill course-icon-inner"></i>
+                </div>
+              </div>
+
+              <div class="flex-grow-1">
+                <h5 class="fw-bold mb-0 fs-6">{{ course.name }}</h5>
+                <p class="mb-0 fw-semibold text-muted small">{{ course.area }}</p>
+              </div>
+            </div>
+            }
+          </div>
+          } @else {
+          <p class="text-muted">No courses available</p>
+          }
+        </div>
+      </div>
+
+      <!-- Information Tab -->
+      <div class="tab-pane fade" id="info-content" role="tabpanel" aria-labelledby="info-tab">
+        <div class="card-body p-4">
+          <h3 class="h5 fw-bold mb-3">Key Information</h3>
+
+          <div class="info-group mb-4">
+            <label class="text-muted small fw-semibold d-block mb-2">UNIVERSITY NAME</label>
+            <p class="fw-bold mb-0">{{ university.name }}</p>
+          </div>
+
+          <div class="info-group mb-4">
+            <label class="text-muted small fw-semibold d-block mb-2">LOCATION</label>
+            <p class="fw-bold mb-0">{{ university.location }}</p>
+          </div>
+
+          <div class="info-group mb-4">
+            <label class="text-muted small fw-semibold d-block mb-2">FOUNDED</label>
+            <p class="fw-bold mb-0">{{ university.foundedYear }}</p>
+          </div>
+
+          <div class="info-group mb-4">
+            <label class="text-muted small fw-semibold d-block mb-2">TOTAL STUDENTS</label>
+            <p class="fw-bold mb-0">{{ university.studentCount | number }}</p>
+          </div>
+
+          <div class="info-group">
+            <label class="text-muted small fw-semibold d-block mb-2">AVAILABLE COURSES</label>
+            <p class="fw-bold mb-0">{{ university.courses?.length || 0 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
