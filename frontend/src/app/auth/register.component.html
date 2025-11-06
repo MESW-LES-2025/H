@@ -1,0 +1,73 @@
+<div class="stage">
+    <div class="frame">
+        <img class="hero" src="/hero.png" alt="Graduation hats" />
+
+        <svg class="beige" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M540,0 L1000,0 L1000,700 L540,700
+               C610,610 620,500 560,430
+               C500,360 495,300 560,230
+               C625,160 610,70 540,0 Z" />
+        </svg>
+
+        <div class="panel">
+            <!-- TÍTULO IGUAL AO MOCKUP -->
+            <h1 class="welcome vt-title">
+                <span class="kicker">Welcome</span>
+                <span class="brandline">
+          to
+          <img class="brand-img" src="/lernia.png" alt="LERNIA wordmark" />
+        </span>
+            </h1>
+
+            <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">
+                <label>Email</label>
+                <div class="field">
+                    <input formControlName="email" type="email" placeholder="Enter your email" />
+                </div>
+
+                <label>Password</label>
+                <div class="field has-icon">
+                    <input [type]="show1 ? 'text' : 'password'" formControlName="password" placeholder="Enter your password" />
+                    <button class="icon" type="button" (click)="show1 = !show1" aria-label="Toggle password">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <label>Confirm Password</label>
+                <div class="field has-icon">
+                    <input [type]="show2 ? 'text' : 'password'" formControlName="confirm" placeholder="Enter your password" />
+                    <button class="icon" type="button" (click)="show2 = !show2" aria-label="Toggle password">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <button class="primary ripple" type="submit">Create account</button>
+
+                <div class="or">Or</div>
+
+                <button class="google ripple" type="button">
+                    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+                        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 31.7 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.8 0 19.7-7.8 21-18v-6.5z"/>
+                        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.9C14.6 16.4 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 5.1 29.6 3 24 3c-7.7 0-14.4 4.3-17.7 10.7z"/>
+                        <path fill="#4CAF50" d="M24 45c5.2 0 9.9-2 13.5-5.3l-6.2-5.2C29.3 35 26.8 36 24 36c-5.2 0-9.6-3.3-11.2-7.9l-6.6 5.1C8.5 40.6 15.7 45 24 45z"/>
+                        <path fill="#1976D2" d="M45 24c0-1.4-.1-2.4-.4-3.5H24v8h11.3c-.6 3.1-2.5 5.7-5.1 7.5l6.2 5.2C40.9 38.8 45 31.8 45 24z"/>
+                    </svg>
+                    <span>Create account with Google</span>
+                </button>
+            </form>
+
+            <p class="switch">
+                Already have an account?
+                <a href (click)="goTo('login', $event)" class="switch-link">Log in</a>
+            </p>
+
+            <a routerLink="/login" class="guest">Continue as guest <span class="arrow">→</span></a>
+        </div>
+    </div>
+</div>
