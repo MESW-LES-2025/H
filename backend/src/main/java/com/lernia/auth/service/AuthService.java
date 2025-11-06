@@ -39,7 +39,11 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest req) {
-        Optional<User> userOpt = userRepository.findByUsername(req.getUsername());
+        String text = req.getText();
+        Optional<User> userOpt = userRepository.findByUsername(text);
+        if (userOpt.isEmpty()) {
+            userOpt = userRepository.findByEmail(text);
+        }
         if (userOpt.isEmpty()) {
             return new LoginResponse("Invalid credentials", "error");
         }
