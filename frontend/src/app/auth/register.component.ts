@@ -27,6 +27,7 @@ export class RegisterComponent {
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group(
         {
+          username: ['', [Validators.required, Validators.minLength(3)]],
           email: ['', [Validators.required, Validators.email]],
           password: ['', [Validators.required, Validators.minLength(6)]],
           confirm: ['', [Validators.required]],
@@ -44,7 +45,6 @@ export class RegisterComponent {
     ev.preventDefault();
     const nav = () => this.router.navigate([`/${path}`]);
     const doc: any = document;
-    if (doc.startViewTransition) doc.startViewTransition(() => nav());
-    else nav();
+    doc.startViewTransition ? doc.startViewTransition(() => nav()) : nav();
   }
 }

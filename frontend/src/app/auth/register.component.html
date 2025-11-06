@@ -10,7 +10,6 @@
         </svg>
 
         <div class="panel">
-            <!-- TÍTULO IGUAL AO MOCKUP -->
             <h1 class="welcome vt-title">
                 <span class="kicker">Welcome</span>
                 <span class="brandline">
@@ -20,6 +19,11 @@
             </h1>
 
             <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">
+                <label>Username</label>
+                <div class="field">
+                    <input formControlName="username" type="text" placeholder="Choose a username" />
+                </div>
+
                 <label>Email</label>
                 <div class="field">
                     <input formControlName="email" type="email" placeholder="Enter your email" />
