@@ -16,7 +16,7 @@ export class LoginComponent {
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      text: ['', Validators.required],
       password: ['', Validators.required],
       remember: [false],
     });
@@ -26,14 +26,14 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.form.invalid) return;
-    console.log('Login', this.form.value);
+    const { text: identifier, password, remember } = this.form.value;
+    console.log('Login', { identifier, password, remember });
   }
 
   goTo(path: 'register' | 'login', ev: Event) {
     ev.preventDefault();
     const nav = () => this.router.navigate([`/${path}`]);
     const doc: any = document;
-    if (doc.startViewTransition) doc.startViewTransition(() => nav());
-    else nav();
+    doc.startViewTransition ? doc.startViewTransition(() => nav()) : nav();
   }
 }
