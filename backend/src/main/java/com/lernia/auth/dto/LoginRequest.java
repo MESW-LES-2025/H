@@ -1,23 +1,23 @@
 package com.lernia.auth.dto;
 
 public class LoginRequest {
-    private String username;
+    private String text;
     private String password;
 
     public LoginRequest() {
     }
 
-    public LoginRequest(String username, String password) {
-        this.username = username;
+    public LoginRequest(String text, String password) {
+        this.text = text;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getText() {
+        return text;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getPassword() {

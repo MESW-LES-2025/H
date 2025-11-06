@@ -12,8 +12,11 @@ public class LoginResponse {
     public String getMessage() {
         return message;
     }
+    public void setMessage(String message) { this.message = message; }
+
 
     public String getUsername() {
         return username;
     }
+
 }
