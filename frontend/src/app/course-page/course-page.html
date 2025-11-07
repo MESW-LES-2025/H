@@ -47,119 +47,109 @@
 
   <!-- Navigation Tabs -->
   <div class="card border-0 shadow mb-4">
-    <div class="card-body p-4 border-bottom">
-      <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-content"
-            type="button" role="tab" aria-controls="overview-content" aria-selected="true">
-            Overview
-          </button>
+    <div class="card-body p-4">
+      <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <!-- Overview Tab -->
+        <li [ngbNavItem]="1">
+          <button ngbNavLink>Overview</button>
+          <ng-template ngbNavContent>
+            <div class="p-4">
+              <h3 class="h5 fw-bold mb-3">About {{ course.name }}</h3>
+              <p class="text-muted">{{ course.description }}</p>
+
+              <div class="row mt-4">
+                <div class="col-md-3">
+                  <div class="stat-box">
+                    <p class="stat-label text-muted mb-1">Duration</p>
+                    <p class="stat-value fw-bold h5">{{ course.duration }}</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stat-box">
+                    <p class="stat-label text-muted mb-1">Level</p>
+                    <p class="stat-value fw-bold h5">{{ course.level }}</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stat-box">
+                    <p class="stat-label text-muted mb-1">Language</p>
+                    <p class="stat-value fw-bold h5">{{ course.language }}</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stat-box">
+                    <p class="stat-label text-muted mb-1">Credits</p>
+                    <p class="stat-value fw-bold h5">{{ course.credits }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
         </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="topics-tab" data-bs-toggle="tab" data-bs-target="#topics-content" type="button"
-            role="tab" aria-controls="topics-content" aria-selected="false">
-            Topics
-          </button>
+
+        <!-- Topics Tab -->
+        <li [ngbNavItem]="2">
+          <button ngbNavLink>Topics</button>
+          <ng-template ngbNavContent>
+            <div class="p-4">
+              <h3 class="h5 fw-bold mb-3">Course Topics</h3>
+
+              @if (course.topics && course.topics.length > 0) {
+                <div class="topics-list">
+                  @for (topic of course.topics; track topic) {
+                    <div class="topic-item d-flex gap-3 pb-3 mb-3 border-bottom">
+                      <div class="flex-shrink-0">
+                        <div class="topic-icon bg-light rounded d-flex align-items-center justify-content-center">
+                          <i class="bi bi-check-circle-fill topic-icon-inner"></i>
+                        </div>
+                      </div>
+
+                      <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-0 fs-6">{{ topic }}</h5>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="text-muted">No topics available</p>
+              }
+            </div>
+          </ng-template>
         </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="requirements-tab" data-bs-toggle="tab" data-bs-target="#requirements-content"
-            type="button" role="tab" aria-controls="requirements-content" aria-selected="false">
-            Requirements
-          </button>
+
+        <!-- Requirements Tab -->
+        <li [ngbNavItem]="3">
+          <button ngbNavLink>Requirements</button>
+          <ng-template ngbNavContent>
+            <div class="p-4">
+              <h3 class="h5 fw-bold mb-3">Entry Requirements</h3>
+
+              @if (course.requirements && course.requirements.length > 0) {
+                <div class="requirements-list">
+                  @for (requirement of course.requirements; track requirement) {
+                    <div class="requirement-item d-flex gap-3 pb-3 mb-3 border-bottom">
+                      <div class="flex-shrink-0">
+                        <div class="requirement-icon bg-light rounded d-flex align-items-center justify-content-center">
+                          <i class="bi bi-clipboard-check requirement-icon-inner"></i>
+                        </div>
+                      </div>
+
+                      <div class="flex-grow-1">
+                        <p class="mb-0">{{ requirement }}</p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="text-muted">No specific requirements</p>
+              }
+            </div>
+          </ng-template>
         </li>
       </ul>
-    </div>
 
-    <!-- Tab Content -->
-    <div class="tab-content">
-      <!-- Overview Tab -->
-      <div class="tab-pane fade show active" id="overview-content" role="tabpanel" aria-labelledby="overview-tab">
-        <div class="card-body p-4">
-          <h3 class="h5 fw-bold mb-3">About {{ course.name }}</h3>
-          <p class="text-muted">{{ course.description }}</p>
-
-          <div class="row mt-4">
-            <div class="col-md-3">
-              <div class="stat-box">
-                <p class="stat-label text-muted mb-1">Duration</p>
-                <p class="stat-value fw-bold h5">{{ course.duration }}</p>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="stat-box">
-                <p class="stat-label text-muted mb-1">Level</p>
-                <p class="stat-value fw-bold h5">{{ course.level }}</p>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="stat-box">
-                <p class="stat-label text-muted mb-1">Language</p>
-                <p class="stat-value fw-bold h5">{{ course.language }}</p>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="stat-box">
-                <p class="stat-label text-muted mb-1">Credits</p>
-                <p class="stat-value fw-bold h5">{{ course.credits }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Topics Tab -->
-      <div class="tab-pane fade" id="topics-content" role="tabpanel" aria-labelledby="topics-tab">
-        <div class="card-body p-4">
-          <h3 class="h5 fw-bold mb-3">Course Topics</h3>
-
-          @if (course.topics && course.topics.length > 0) {
-          <div class="topics-list">
-            @for (topic of course.topics; track topic) {
-            <div class="topic-item d-flex gap-3 pb-3 mb-3 border-bottom">
-              <div class="flex-shrink-0">
-                <div class="topic-icon bg-light rounded d-flex align-items-center justify-content-center">
-                  <i class="bi bi-check-circle-fill topic-icon-inner"></i>
-                </div>
-              </div>
-
-              <div class="flex-grow-1">
-                <h5 class="fw-bold mb-0 fs-6">{{ topic }}</h5>
-              </div>
-            </div>
-            }
-          </div>
-          } @else {
-          <p class="text-muted">No topics available</p>
-          }
-        </div>
-      </div>
-
-      <!-- Requirements Tab -->
-      <div class="tab-pane fade" id="requirements-content" role="tabpanel" aria-labelledby="requirements-tab">
-        <div class="card-body p-4">
-          <h3 class="h5 fw-bold mb-3">Entry Requirements</h3>
-
-          @if (course.requirements && course.requirements.length > 0) {
-          <div class="requirements-list">
-            @for (requirement of course.requirements; track requirement) {
-            <div class="requirement-item d-flex gap-3 pb-3 mb-3 border-bottom">
-              <div class="flex-shrink-0">
-                <div class="requirement-icon bg-light rounded d-flex align-items-center justify-content-center">
-                  <i class="bi bi-clipboard-check requirement-icon-inner"></i>
-                </div>
-              </div>
-
-              <div class="flex-grow-1">
-                <p class="mb-0">{{ requirement }}</p>
-              </div>
-            </div>
-            }
-          </div>
-          } @else {
-          <p class="text-muted">No specific requirements</p>
-          }
-        </div>
-      </div>
+      <!-- Tab Content Outlet -->
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
     </div>
   </div>
 </div>

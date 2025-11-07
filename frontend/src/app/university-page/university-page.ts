@@ -3,11 +3,12 @@ import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-university-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgbNavModule],
   templateUrl: './university-page.html',
   styleUrl: './university-page.css',
 })
@@ -15,6 +16,7 @@ export class UniversityPage implements OnInit {
   private universityPageService: UniversityPageService = inject(UniversityPageService);
   private route: ActivatedRoute = inject(ActivatedRoute);
   protected university: UniversityViewmodel | null = null;
+  active: number = 1;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
