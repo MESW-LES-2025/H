@@ -11,9 +11,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "curricular_unit", schema = "lernia")
+@Table(name = "admission_requirement", schema = "lernia")
 @Data
-public class CurricularUnitEntity {
+public class AdmissionRequirementEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,5 @@ public class CurricularUnitEntity {
     @JoinColumn(name = "course_id")
     private CourseEntity course;
     private String name;
-    private Integer credits;
-    private Integer semester;
-    private Integer year;
-    private Integer hours;
-    @ManyToOne
-    @JoinColumn(name = "professor_id")
-    private ProfessorEntity professor;
+    private String description;
 }

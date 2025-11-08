@@ -1,13 +1,17 @@
 package com.lernia.auth.entity;
 
 import com.lernia.auth.entity.enums.CourseType;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "course", schema = "lernia")
@@ -20,20 +24,8 @@ public class CourseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "area_of_study_id")
-    private AreaOfStudyEntity areaOfStudy;
+    private String areaOfStudy;
+    private String topic;
     @Enumerated(EnumType.STRING)
     private CourseType courseType;
-    private Boolean isRemote;
-    private Integer minAdmissionGrade;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university_id", nullable = false)
-    private UniversityEntity university;
-
-    @OneToMany(mappedBy = "course")
-    private List<CurricularUnitEntity> curricularUnits = new ArrayList<>();
-
 }
