@@ -20,11 +20,12 @@ public class UserCourseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private CourseEntity course;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Boolean isFinished;
 }

@@ -1,13 +1,9 @@
 package com.lernia.auth.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,8 +20,9 @@ public class UniversityEntity {
     private String description;
     private String contactInfo;
     private String website;
-    private String location;
+    private String address;
     private String logo;
-    @OneToMany(mappedBy = "university")
-    private List<CampusEntity> campuses;
+
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CampusEntity> campuses = new ArrayList<>();
 }

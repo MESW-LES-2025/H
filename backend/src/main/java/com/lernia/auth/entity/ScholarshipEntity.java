@@ -22,9 +22,11 @@ public class ScholarshipEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "university_id")
+    @JoinColumn(name = "university_id", nullable = false)
     private UniversityEntity university;
     private String name;
+    private String description;
+    private Integer amount;
     @Enumerated(EnumType.STRING)
     private CourseType courseType;
 }

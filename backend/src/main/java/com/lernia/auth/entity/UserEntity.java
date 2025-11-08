@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user", schema = "lernia")
@@ -24,6 +26,7 @@ public class UserEntity {
     private String email;
     private String password;
     private Integer age;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
     private String location;
@@ -33,4 +36,16 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.REGULAR;
     private LocalDate premiumStartDate;
+
+    @ManyToMany
+    @JoinTable(name = "user_bookmarked_courses",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private List<CourseEntity> bookmarkedCourses = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "user_bookmarked_universities",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "university_id"))
+    private List<UniversityEntity> bookmarkedUniversities = new ArrayList<>();
 }

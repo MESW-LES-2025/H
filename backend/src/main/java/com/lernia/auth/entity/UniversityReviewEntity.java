@@ -3,29 +3,17 @@ package com.lernia.auth.entity;
 import lombok.Data;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "university_review", schema = "lernia")
 @Data
-public class UniversityReviewEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @OneToOne
-    @JoinColumn(name = "review_id")
-    private ReviewEntity review;
+@EqualsAndHashCode(callSuper = true)
+public class UniversityReviewEntity extends ReviewEntity {
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-    @ManyToOne
-    @JoinColumn(name = "university_id")
+    @JoinColumn(name = "university_id", nullable = false)
     private UniversityEntity university;
 }

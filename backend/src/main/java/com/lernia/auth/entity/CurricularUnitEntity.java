@@ -19,14 +19,12 @@ public class CurricularUnitEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private CourseEntity course;
     private String name;
+    private String description;
     private Integer credits;
-    private Integer semester;
     private Integer year;
+    private Integer semester;
     private Integer hours;
-    @ManyToOne
-    @JoinColumn(name = "professor_id")
-    private ProfessorEntity professor;
 }
