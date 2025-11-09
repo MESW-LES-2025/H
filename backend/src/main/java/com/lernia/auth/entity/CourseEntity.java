@@ -21,9 +21,6 @@ public class CourseEntity {
     private Long id;
     private String name;
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "area_of_study_id")
-    private AreaOfStudyEntity areaOfStudy;
     @Enumerated(EnumType.STRING)
     private CourseType courseType;
     private Boolean isRemote;
@@ -35,5 +32,11 @@ public class CourseEntity {
 
     @OneToMany(mappedBy = "course")
     private List<CurricularUnitEntity> curricularUnits = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "course_area_of_study",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "area_of_study_id"))
+    private List<AreaOfStudyEntity> areaOfStudies = new ArrayList<>();
 
 }

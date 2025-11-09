@@ -55,10 +55,15 @@ CREATE TABLE lernia.course (
     university_id BIGINT NOT NULL REFERENCES lernia.university(id),
     name VARCHAR(60) NOT NULL,
     description TEXT,
-    area_of_study_id BIGINT REFERENCES lernia.area_of_study(id),
     course_type lernia.course_type,
     is_remote BOOLEAN,
     min_admission_grade INT
+);
+
+CREATE TABLE lernia.course_area_of_study (
+    course_id BIGINT NOT NULL REFERENCES lernia.course(id) ON DELETE CASCADE,
+    area_of_study_id BIGINT NOT NULL REFERENCES lernia.area_of_study(id) ON DELETE CASCADE,
+    PRIMARY KEY (course_id, area_of_study_id)
 );
 
 CREATE TABLE lernia.curricular_unit (

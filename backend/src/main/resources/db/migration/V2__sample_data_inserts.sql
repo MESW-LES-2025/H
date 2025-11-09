@@ -26,16 +26,28 @@ INSERT INTO lernia.area_of_study (name) VALUES
     ('Physics');
 
 -- 9 Courses
-INSERT INTO lernia.course (university_id, name, description, area_of_study_id, course_type, is_remote, min_admission_grade) VALUES
-    (1, 'CS BSc', 'Bachelor in Computer Science', 1, 'BACHELOR', false, 75),
-    (1, 'AI MSc', 'Master in Artificial Intelligence', 1, 'MASTER', true, 80),
-    (2, 'BA BSc', 'Bachelor in Business Administration', 2, 'BACHELOR', false, 70),
-    (2, 'MBA', 'Master in Business Administration', 2, 'MASTER', true, 85),
-    (3, 'Physics BSc', 'Bachelor in Physics', 3, 'BACHELOR', false, 78),
-    (3, 'Astrophysics MSc', 'Master in Astrophysics', 3, 'MASTER', false, 82),
-    (1, 'Software Engineering MSc', 'Master in Software Engineering', 1, 'MASTER', true, 79),
-    (2, 'Marketing BSc', 'Bachelor in Marketing', 2, 'BACHELOR', false, 72),
-    (3, 'Quantum Physics PhD', 'Doctorate in Quantum Physics', 3, 'DOCTORATE', false, 90);
+INSERT INTO lernia.course (university_id, name, description, course_type, is_remote, min_admission_grade) VALUES
+    (1, 'CS BSc', 'Bachelor in Computer Science','BACHELOR', false, 75),
+    (1, 'AI MSc', 'Master in Artificial Intelligence','MASTER', true, 80),
+    (2, 'BA BSc', 'Bachelor in Business Administration','BACHELOR', false, 70),
+    (2, 'MBA', 'Master in Business Administration','MASTER', true, 85),
+    (3, 'Physics BSc', 'Bachelor in Physics','BACHELOR', false, 78),
+    (3, 'Astrophysics MSc', 'Master in Astrophysics','MASTER', false, 82),
+    (1, 'Software Engineering MSc', 'Master in Software Engineering','MASTER', true, 79),
+    (2, 'Marketing BSc', 'Bachelor in Marketing','BACHELOR', false, 72),
+    (3, 'Quantum Physics PhD', 'Doctorate in Quantum Physics','DOCTORATE', false, 90);
+
+-- 9 Course-Area of Study associations
+INSERT INTO lernia.course_area_of_study (course_id, area_of_study_id) VALUES
+    (1, 1),
+    (2, 1),
+    (3, 2),
+    (4, 2),
+    (5, 3),
+    (6, 3),
+    (7, 1),
+    (8, 2),
+    (9, 3);
 
 
 -- 20 Curricular Units (spread across courses)
