@@ -1,7 +1,0 @@
-com/lernia/auth/LoginBackendApplication.class
-com/lernia/auth/dto/LoginResponse.class
-AuthService.class
-com/lernia/auth/model/User.class
-com/lernia/auth/repository/UserRepository.class
-com/lernia/auth/dto/LoginRequest.class
-com/lernia/auth/controller/AuthController.class
