@@ -6,10 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 @Table(name = "user", schema = "lernia")
@@ -27,13 +31,16 @@ public class UserEntity {
     private String password;
     private Integer age;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)              
+    @Column(nullable = false, columnDefinition = "gender")
     private Gender gender;
     private String location;
     private String profilePicture;
     private String jobTitle;
     private LocalDate creationDate;
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false, columnDefinition = "user_role")
     private UserRole userRole = UserRole.REGULAR;
     private LocalDate premiumStartDate;
 

@@ -23,5 +23,6 @@ export const routes: Routes = [
     {
         path: 'course/:id',
         loadComponent: () => import('./course-page/course-page').then(m => m.CoursePage)
-    }
+    },
+    { path: '', pathMatch: 'full', redirectTo: 'login' },
 ];
