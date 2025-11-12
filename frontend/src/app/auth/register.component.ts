@@ -39,14 +39,20 @@ export class RegisterComponent {
   }
 
   onSubmit() {
+    console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
+    this.form.markAllAsTouched();
     if (this.form.invalid) return;
     const { username, email, password } = this.form.value;
     this.auth.register({ username, email, password }).subscribe({
       next: (res) => {
         console.log('Register OK', res);
         if (res.status === 'success') this.router.navigate(['/login']);
+        else alert(res.message || 'Registration failed');
       },
-      error: (err) => console.error('Register erro', err)
+      error: (err) => {
+        console.error('Register error', err);
+        alert('Registration error');
+      }
     });
   }
 
