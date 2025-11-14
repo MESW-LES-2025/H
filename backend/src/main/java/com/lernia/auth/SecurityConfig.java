@@ -6,6 +6,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -14,11 +16,21 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
       .csrf(csrf -> csrf.disable())
+      .cors(cors -> cors
+        .configurationSource(request -> {
+          CorsConfiguration configuration = new CorsConfiguration();
+          configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+          configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+          configuration.setAllowedHeaders(List.of("*"));
+          configuration.setAllowCredentials(true);
+          return configuration;
+        })
+      )
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers(org.springframework.http.HttpMethod.POST, "/register", "/login").permitAll()
+        .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
         .anyRequest().permitAll()
       )
-      .httpBasic(org.springframework.security.config.Customizer.withDefaults());
+      .httpBasic(Customizer.withDefaults());
     return http.build();
   }
 }
