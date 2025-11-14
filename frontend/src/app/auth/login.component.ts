@@ -31,7 +31,7 @@ export class LoginComponent {
     this.auth.login({ text, password }).subscribe({
       next: (res) => {
         console.log('Login OK', res);
-        if (res.status === 'success') this.router.navigate(['/profile', 1]);
+        if (res.status === 'success') this.router.navigate(['/profile', res.userId]);
       },
       error: (err) => console.error('Login erro', err)
     });

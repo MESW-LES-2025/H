@@ -1,5 +1,4 @@
 com/lernia/auth/dto/RegisterRequest.class
-com/lernia/auth/model/User.class
 com/lernia/auth/repository/UserRepository.class
 com/lernia/auth/entity/CurricularUnitEntity.class
 com/lernia/auth/entity/UniversityEntity.class

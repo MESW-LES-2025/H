@@ -19,6 +19,5 @@
 /home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/entity/enums/CourseType.java
 /home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/entity/enums/Gender.java
 /home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/entity/enums/UserRole.java
-/home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/model/User.java
 /home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/repository/UserRepository.java
 /home/mariajvieira/Desktop/MESW/LES/H/backend/src/main/java/com/lernia/auth/service/AuthService.java

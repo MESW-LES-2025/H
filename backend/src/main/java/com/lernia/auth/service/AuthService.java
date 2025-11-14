@@ -67,6 +67,8 @@ public class AuthService {
         } else if (!passwordEncoder.matches(req.getPassword(), stored)) {
             return new LoginResponse("Invalid credentials", "error");
         }
-        return new LoginResponse("Login successful", "success");
+        LoginResponse res = new LoginResponse("Login successful", "success");
+        res.setUserId(user.getId());          
+        return res;    
     }
 }
