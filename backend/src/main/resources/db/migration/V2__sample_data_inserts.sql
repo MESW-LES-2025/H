@@ -44,28 +44,29 @@ INSERT INTO lernia.area_of_study (name) VALUES
     ('Arts & Humanities'),
     ('Natural Sciences');
 
-INSERT INTO lernia.course (university_id, name, description, course_type, is_remote, min_admission_grade) VALUES
-    (1, 'BSc Computing', 'Bachelor in Computer Science', 'BACHELOR', false, 85),
-    (1, 'MEng Aeronautical Engineering', 'Master in Aeronautical Engineering', 'MASTER', false, 88),
-    (1, 'PhD Bioengineering', 'Doctorate in Bioengineering', 'DOCTORATE', false, 90),
-    (2, 'BSc Computer Engineering', 'Bachelor in Computer Engineering', 'BACHELOR', false, 75),
-    (2, 'MSc Electrical Engineering', 'Master in Electrical Engineering', 'MASTER', true, 80),
-    (2, 'PhD Mechanical Engineering', 'Doctorate in Mechanical Engineering', 'DOCTORATE', false, 85),
-    (3, 'BA Business Administration', 'Bachelor in Business Administration', 'BACHELOR', false, 70),
-    (3, 'MSc Economics', 'Master in Economics', 'MASTER', true, 75),
-    (3, 'PhD Biology', 'Doctorate in Biology', 'DOCTORATE', false, 82),
-    (4, 'BSc Psychology', 'Bachelor in Psychology', 'BACHELOR', false, 78),
-    (4, 'MSc Artificial Intelligence', 'Master in Artificial Intelligence', 'MASTER', true, 83),
-    (4, 'LLM International Law', 'Master of Laws in International Law', 'MASTER', false, 80),
-    (5, 'Licence Mathematics', 'Bachelor in Mathematics', 'BACHELOR', false, 80),
-    (5, 'Master Lettres Modernes', 'Master in Modern Literature', 'MASTER', false, 75),
-    (5, 'Doctorat Physics', 'Doctorate in Physics', 'DOCTORATE', false, 88),
-    (6, 'BA Philosophy', 'Bachelor in Philosophy', 'BACHELOR', false, 72),
-    (6, 'MSc Data Science', 'Master in Data Science', 'MASTER', true, 78),
-    (6, 'PhD History', 'Doctorate in History', 'DOCTORATE', false, 80),
-    (7, 'BSc Medicine', 'Bachelor in Medicine', 'BACHELOR', false, 90),
-    (7, 'MSc Architecture', 'Master in Architecture', 'MASTER', false, 82),
-    (7, 'PhD Chemistry', 'Doctorate in Chemistry', 'DOCTORATE', false, 85);
+INSERT INTO lernia.course (university_id, name, description, course_type, is_remote, min_admission_grade, cost) VALUES
+    (1, 'BSc Computing', 'Bachelor in Computer Science', 'BACHELOR', false, 85, 9250.00),
+    (1, 'MEng Aeronautical Engineering', 'Master in Aeronautical Engineering', 'MASTER', false, 88, 12500.00),
+    (1, 'PhD Bioengineering', 'Doctorate in Bioengineering', 'DOCTORATE', false, 90, 4500.00),
+    (2, 'BSc Computer Engineering', 'Bachelor in Computer Engineering', 'BACHELOR', false, 75, 8500.00),
+    (2, 'MSc Electrical Engineering', 'Master in Electrical Engineering', 'MASTER', true, 80, 10000.00),
+    (2, 'PhD Mechanical Engineering', 'Doctorate in Mechanical Engineering', 'DOCTORATE', false, 85, 4000.00),
+    (3, 'BA Business Administration', 'Bachelor in Business Administration', 'BACHELOR', false, 70, 7500.00),
+    (3, 'MSc Economics', 'Master in Economics', 'MASTER', true, 75, 11000.00),
+    (3, 'PhD Biology', 'Doctorate in Biology', 'DOCTORATE', false, 82, 3800.00),
+    (4, 'BSc Psychology', 'Bachelor in Psychology', 'BACHELOR', false, 78, 8000.00),
+    (4, 'MSc Artificial Intelligence', 'Master in Artificial Intelligence', 'MASTER', true, 83, 13500.00),
+    (4, 'LLM International Law', 'Master of Laws in International Law', 'MASTER', false, 80, 12000.00),
+    (5, 'Licence Mathematics', 'Bachelor in Mathematics', 'BACHELOR', false, 80, 200.00),
+    (5, 'Master Lettres Modernes', 'Master in Modern Literature', 'MASTER', false, 75, 250.00),
+    (5, 'Doctorat Physics', 'Doctorate in Physics', 'DOCTORATE', false, 88, 380.00),
+    (6, 'BA Philosophy', 'Bachelor in Philosophy', 'BACHELOR', false, 72, 7000.00),
+    (6, 'MSc Data Science', 'Master in Data Science', 'MASTER', true, 78, 14000.00),
+    (6, 'PhD History', 'Doctorate in History', 'DOCTORATE', false, 80, 4200.00),
+    (7, 'BSc Medicine', 'Bachelor in Medicine', 'BACHELOR', false, 90, 15000.00),
+    (7, 'MSc Architecture', 'Master in Architecture', 'MASTER', false, 82, 11500.00),
+    (7, 'PhD Chemistry', 'Doctorate in Chemistry', 'DOCTORATE', false, 85, 4100.00);
+
 
 -- 9 Course-Area of Study associations
 INSERT INTO lernia.course_area_of_study (course_id, area_of_study_id) VALUES

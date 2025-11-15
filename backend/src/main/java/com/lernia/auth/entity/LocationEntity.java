@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "location", schema = "lernia")
-@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class LocationEntity {
+public class LocationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +19,6 @@ public abstract class LocationEntity {
     private String country;
     private Integer costOfLiving;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 }

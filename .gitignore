@@ -46,5 +46,17 @@ testem.log
 .DS_Store
 Thumbs.db
 
-./backend/target/
+backend/target/
+backend/*.jar
+backend/*.war
+backend/*.ear
+backend/*.class
+backend/.idea/
+backend/*.iml
+backend/*.ipr
+backend/*.iws
+backend/out/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
 *.log
