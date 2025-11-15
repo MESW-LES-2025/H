@@ -34,7 +34,7 @@ CREATE TABLE lernia.university (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    location_id INT,
+    location_id BIGINT REFERENCES lernia.location(id),
     contact_info VARCHAR(20),
     website VARCHAR(255),
     address VARCHAR(255),
