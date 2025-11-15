@@ -45,30 +45,28 @@ INSERT INTO lernia.area_of_study (name) VALUES
     ('Natural Sciences');
 
 INSERT INTO lernia.course (university_id, name, description, course_type, is_remote, min_admission_grade, cost) VALUES
-    (1, 'BSc Computing', 'Bachelor in Computer Science', 'BACHELOR', false, 85, 9250.00),
-    (1, 'MEng Aeronautical Engineering', 'Master in Aeronautical Engineering', 'MASTER', false, 88, 12500.00),
-    (1, 'PhD Bioengineering', 'Doctorate in Bioengineering', 'DOCTORATE', false, 90, 4500.00),
-    (2, 'BSc Computer Engineering', 'Bachelor in Computer Engineering', 'BACHELOR', false, 75, 8500.00),
-    (2, 'MSc Electrical Engineering', 'Master in Electrical Engineering', 'MASTER', true, 80, 10000.00),
-    (2, 'PhD Mechanical Engineering', 'Doctorate in Mechanical Engineering', 'DOCTORATE', false, 85, 4000.00),
-    (3, 'BA Business Administration', 'Bachelor in Business Administration', 'BACHELOR', false, 70, 7500.00),
-    (3, 'MSc Economics', 'Master in Economics', 'MASTER', true, 75, 11000.00),
-    (3, 'PhD Biology', 'Doctorate in Biology', 'DOCTORATE', false, 82, 3800.00),
-    (4, 'BSc Psychology', 'Bachelor in Psychology', 'BACHELOR', false, 78, 8000.00),
-    (4, 'MSc Artificial Intelligence', 'Master in Artificial Intelligence', 'MASTER', true, 83, 13500.00),
-    (4, 'LLM International Law', 'Master of Laws in International Law', 'MASTER', false, 80, 12000.00),
-    (5, 'Licence Mathematics', 'Bachelor in Mathematics', 'BACHELOR', false, 80, 200.00),
-    (5, 'Master Lettres Modernes', 'Master in Modern Literature', 'MASTER', false, 75, 250.00),
-    (5, 'Doctorat Physics', 'Doctorate in Physics', 'DOCTORATE', false, 88, 380.00),
-    (6, 'BA Philosophy', 'Bachelor in Philosophy', 'BACHELOR', false, 72, 7000.00),
-    (6, 'MSc Data Science', 'Master in Data Science', 'MASTER', true, 78, 14000.00),
-    (6, 'PhD History', 'Doctorate in History', 'DOCTORATE', false, 80, 4200.00),
-    (7, 'BSc Medicine', 'Bachelor in Medicine', 'BACHELOR', false, 90, 15000.00),
-    (7, 'MSc Architecture', 'Master in Architecture', 'MASTER', false, 82, 11500.00),
-    (7, 'PhD Chemistry', 'Doctorate in Chemistry', 'DOCTORATE', false, 85, 4100.00);
+    (1, 'BSc Computing', 'Bachelor in Computer Science', 'BACHELOR', false, 85, 9250),
+    (1, 'MEng Aeronautical Engineering', 'Master in Aeronautical Engineering', 'MASTER', false, 88, 12500),
+    (1, 'PhD Bioengineering', 'Doctorate in Bioengineering', 'DOCTORATE', false, 90, 4500),
+    (2, 'BSc Computer Engineering', 'Bachelor in Computer Engineering', 'BACHELOR', false, 75, 8500),
+    (2, 'MSc Electrical Engineering', 'Master in Electrical Engineering', 'MASTER', true, 80, 10000),
+    (2, 'PhD Mechanical Engineering', 'Doctorate in Mechanical Engineering', 'DOCTORATE', false, 85, 4000),
+    (3, 'BA Business Administration', 'Bachelor in Business Administration', 'BACHELOR', false, 70, 7500),
+    (3, 'MSc Economics', 'Master in Economics', 'MASTER', true, 75, 11000),
+    (3, 'PhD Biology', 'Doctorate in Biology', 'DOCTORATE', false, 82, 3800),
+    (4, 'BSc Psychology', 'Bachelor in Psychology', 'BACHELOR', false, 78, 8000),
+    (4, 'MSc Artificial Intelligence', 'Master in Artificial Intelligence', 'MASTER', true, 83, 13500),
+    (4, 'LLM International Law', 'Master of Laws in International Law', 'MASTER', false, 80, 12000),
+    (5, 'Licence Mathematics', 'Bachelor in Mathematics', 'BACHELOR', false, 80, 200),
+    (5, 'Master Lettres Modernes', 'Master in Modern Literature', 'MASTER', false, 75, 250),
+    (5, 'Doctorat Physics', 'Doctorate in Physics', 'DOCTORATE', false, 88, 380),
+    (6, 'BA Philosophy', 'Bachelor in Philosophy', 'BACHELOR', false, 72, 7000),
+    (6, 'MSc Data Science', 'Master in Data Science', 'MASTER', true, 78, 14000),
+    (6, 'PhD History', 'Doctorate in History', 'DOCTORATE', false, 80, 4200),
+    (7, 'BSc Medicine', 'Bachelor in Medicine', 'BACHELOR', false, 90, 15000),
+    (7, 'MSc Architecture', 'Master in Architecture', 'MASTER', false, 82, 11500),
+    (7, 'PhD Chemistry', 'Doctorate in Chemistry', 'DOCTORATE', false, 85, 4100);
 
-
--- 9 Course-Area of Study associations
 INSERT INTO lernia.course_area_of_study (course_id, area_of_study_id) VALUES
     (1, 1),
     (2, 2),
@@ -183,13 +181,10 @@ INSERT INTO lernia.scholarship (university_id, name, description, amount, course
     (2, 'Business Grant', 'Support for business students', 2000, 'MASTER'),
     (3, 'Science Fellowship', 'For promising researchers', 3000, 'DOCTORATE');
 
--- 3 User Bookmarked Courses
 INSERT INTO lernia.user_bookmarked_courses (user_id, course_id) VALUES (1, 1), (2, 2), (3, 3);
 
--- 2 User Bookmarked Universities
 INSERT INTO lernia.user_bookmarked_universities (user_id, university_id) VALUES (1, 1), (2, 2);
 
--- 7 User Courses
 INSERT INTO lernia.user_course (user_id, course_id, start_date, end_date, is_finished) VALUES
     (1, 1, '2023-09-01', NULL, false),
     (1, 2, '2024-02-01', NULL, false),
@@ -199,7 +194,6 @@ INSERT INTO lernia.user_course (user_id, course_id, start_date, end_date, is_fin
     (5, 2, '2024-03-01', NULL, false),
     (5, 3, '2024-01-01', NULL, false);
 
--- 6 Course Reviews
 INSERT INTO lernia.review (id, rating, title, description, review_date, user_id, dtype) VALUES
     (1, 4.5, 'Great course', 'Very informative.', CURRENT_DATE, 1, 'CourseReviewEntity'),
     (2, 3.9, 'Good course', 'Challenging but rewarding.', CURRENT_DATE, 2, 'CourseReviewEntity'),
@@ -208,14 +202,11 @@ INSERT INTO lernia.review (id, rating, title, description, review_date, user_id,
     (5, 3.5, 'Needs improvement', 'Could include more practice.', CURRENT_DATE, 5, 'CourseReviewEntity'),
     (6, 4.8, 'Loved it', 'Engaging and helpful.', CURRENT_DATE, 1, 'CourseReviewEntity');
 
--- Course Review associations
 INSERT INTO lernia.course_review (id, course_id) VALUES
     (1, 1), (2, 2), (3, 3), (4, 1), (5, 2), (6, 3);
 
--- 2 University Reviews
 INSERT INTO lernia.review (id, rating, title, description, review_date, user_id, dtype) VALUES
     (7, 4.7, 'Excellent university', 'Great environment.', CURRENT_DATE, 5, 'UniversityReviewEntity'),
     (8, 3.9, 'Good university', 'Solid programs.', CURRENT_DATE, 4, 'UniversityReviewEntity');
 
--- University Review associations
 INSERT INTO lernia.university_review (id, university_id) VALUES (7, 1), (8, 2);
