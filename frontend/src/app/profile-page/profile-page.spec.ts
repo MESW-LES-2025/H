@@ -13,7 +13,6 @@ describe('ProfilePage', () => {
       imports: [ProfilePage],
       providers: [
         provideHttpClient(),
-        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
