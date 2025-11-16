@@ -12,8 +12,10 @@ export class ProfilePageService {
 
   constructor(private http: HttpClient) {}
 
+
 public getUserProfile(id: number): Observable<UserViewmodel> {
-  return this.http.get<UserViewmodel>(`${this.apiUrl}/api/profile/${id}`);
+  return this.http.get<UserViewmodel>(`${this.apiUrl}/api/profile/${id}`, { withCredentials: true });
 }
+
 
 }

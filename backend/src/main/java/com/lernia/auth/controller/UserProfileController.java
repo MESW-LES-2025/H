@@ -8,7 +8,7 @@ import com.lernia.auth.dto.UserProfileRequest;
 import com.lernia.auth.dto.UserProfileResponse;
 import com.lernia.auth.service.UserProfileService;
 
-@CrossOrigin(origins = "http://localhost:4200")
+
 @RestController
 @RequestMapping("/api/profile")
 public class UserProfileController {

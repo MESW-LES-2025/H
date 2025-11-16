@@ -12,7 +12,6 @@ import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.service.AuthService;
 
 @RestController
-@CrossOrigin(origins="http://localhost:4200")
 public class AuthController {
 
     private final AuthService authService;

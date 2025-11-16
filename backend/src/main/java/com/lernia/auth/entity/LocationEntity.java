@@ -18,7 +18,4 @@ public class LocationEntity {
     private String city;
     private String country;
     private Integer cost_of_living;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
 }
