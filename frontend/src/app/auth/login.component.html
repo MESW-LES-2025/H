@@ -43,6 +43,7 @@
                     <a class="link" href="#">Forgot Password</a>
                 </div>
 
+                <div class="alert error" *ngIf="errorMessage">{{ errorMessage }}</div>
                 <button class="primary ripple" type="submit">Sign in</button>
 
                 <div class="or">Or</div>

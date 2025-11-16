@@ -14,6 +14,8 @@ import { AuthService } from './auth.service';
 export class LoginComponent {
   form!: FormGroup;
   show = false;
+  loding=false;
+  errorMessage: string | null=null;
 
   constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
     this.form = this.fb.group({
@@ -27,13 +29,24 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.form.invalid) return;
+    this.errorMessage = null;
+    this.loading = true;
     const { text, password } = this.form.value;
     this.auth.login({ text, password }).subscribe({
       next: (res) => {
+        this.loading = false;
         console.log('Login OK', res);
-        if (res.status === 'success') this.router.navigate(['/profile', res.userId]);
+        if (res.status === 'success' && res.userId) {
+          this.router.navigate(['/profile', res.userId]);
+        } else {
+          this.errorMessage = res.message || 'Login failed';
+        }
       },
-      error: (err) => console.error('Login erro', err)
+      error: (err) => {
+        this.loading = false;
+        console.error('Login error', err);
+        this.errorMessage = 'Login error';
+      }
     });
   }
 

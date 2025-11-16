@@ -9,17 +9,17 @@ public class UserProfileResponse {
     private String username;
     private String email;
     private Integer age;
-    private String gender;      // Usamos String, pois na entidade é enum
+    private String gender;     
     private String location;
     private String profilePicture;
     private String jobTitle;
-    private LocalDate creationDate;  // Adicionado para refletir a entidade
-    private String userRole;     // Usamos String, pois na entidade é enum
+    private LocalDate creationDate;  
+    private String userRole;  
     private LocalDate premiumStartDate;
 
     public UserProfileResponse() {}
 
-    // Getters e Setters
+    // Getters Setters
 
     public Long getId() {
         return id;
