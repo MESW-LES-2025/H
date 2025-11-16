@@ -25,6 +25,7 @@ public class CourseEntity {
     private CourseType courseType;
     private Boolean isRemote;
     private Integer minAdmissionGrade;
+    private Integer cost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", nullable = false)
