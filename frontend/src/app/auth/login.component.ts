@@ -14,7 +14,7 @@ import { AuthService } from './auth.service';
 export class LoginComponent {
   form!: FormGroup;
   show = false;
-  loding=false;
+  loading=false;
   errorMessage: string | null=null;
 
   constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
