@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfilePage } from './profile-page';
 import { ActivatedRoute } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
@@ -10,6 +12,8 @@ describe('ProfilePage', () => {
     await TestBed.configureTestingModule({
       imports: [ProfilePage],
       providers: [
+        provideHttpClient(),
+        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
