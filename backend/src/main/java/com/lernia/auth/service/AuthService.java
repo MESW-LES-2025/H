@@ -51,22 +51,16 @@ public class AuthService {
         String text = req.getText();
         Optional<UserEntity> userOpt = userRepository.findByUsername(text);
         if (userOpt.isEmpty()) userOpt = userRepository.findByEmail(text);
-        if (userOpt.isEmpty()) return new LoginResponse("Invalid credentials", "error");
-
-        UserEntity user = userOpt.get();
-        String stored = user.getPassword();
-        boolean isBcrypt = stored != null && stored.matches("^\\$2[aby]\\$\\d{2}\\$.*");
-
-        if (!isBcrypt) {
-            if (stored != null && stored.equals(req.getPassword())) {
-                user.setPassword(passwordEncoder.encode(req.getPassword())); 
-                userRepository.save(user);
-            } else {
-                return new LoginResponse("Invalid credentials", "error");
-            }
-        } else if (!passwordEncoder.matches(req.getPassword(), stored)) {
+        if (userOpt.isEmpty()) {
             return new LoginResponse("Invalid credentials", "error");
         }
+
+        UserEntity user = userOpt.get();
+        
+        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+            return new LoginResponse("Invalid credentials", "error");
+        }
+        
         LoginResponse res = new LoginResponse("Login successful", "success");
         res.setUserId(user.getId());          
         return res;    

@@ -35,18 +35,16 @@ public class UserProfileService {
     public UserProfileResponse updateProfile(Long id, UserProfileRequest req) {
         UserEntity user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (req.getName() != null) user.setName(req.getName());
-        if (req.getLocation() != null) user.setLocation(req.getLocation());
-        if (req.getJobTitle() != null) user.setJobTitle(req.getJobTitle());
-        if (req.getProfilePicture() != null) user.setProfilePicture(req.getProfilePicture());
-        if (req.getGender() != null) user.setGender(req.getGender());
-        userRepository.save(user);
-        return map(user);
+        return updateUserProfile(user, req);
     }
 
     public UserProfileResponse updateProfileByUsername(String username, UserProfileRequest req) {
         UserEntity user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return updateUserProfile(user, req);
+    }
+
+    private UserProfileResponse updateUserProfile(UserEntity user, UserProfileRequest req) {
         if (req.getName() != null) user.setName(req.getName());
         if (req.getLocation() != null) user.setLocation(req.getLocation());
         if (req.getJobTitle() != null) user.setJobTitle(req.getJobTitle());
