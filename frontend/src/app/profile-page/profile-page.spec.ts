@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProfilePage } from './profile-page';
+import { provideRouter } from '@angular/router';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
@@ -8,9 +8,10 @@ describe('ProfilePage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfilePage]
+      imports: [ProfilePage],
+      providers: [provideRouter([])]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;
@@ -21,3 +22,4 @@ describe('ProfilePage', () => {
     expect(component).toBeTruthy();
   });
 });
+

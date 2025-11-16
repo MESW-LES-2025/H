@@ -33,6 +33,7 @@ frontend/package-lock.json
 
 # Miscellaneous
 frontend/.angular
+frontend/dist
 /.angular/cache
 .sass-cache/
 /connect.lock
