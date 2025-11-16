@@ -1,5 +1,4 @@
-<app-navbar></app-navbar>
-
-<main class="page-shell">
+<div class="app-shell">
+  <app-navbar *ngIf="showNavbar"></app-navbar>
   <router-outlet></router-outlet>
-</main>
+</div>
