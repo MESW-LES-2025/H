@@ -23,12 +23,18 @@ CREATE TABLE lernia.user (
     premium_start_date DATE
 );
 
+CREATE TABLE lernia.location (
+    id BIGSERIAL PRIMARY KEY,
+    city VARCHAR(255),
+    country VARCHAR(255),
+    cost_of_living INT
+);
+
 CREATE TABLE lernia.university (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    city VARCHAR(50),
-    country VARCHAR(50),
     description TEXT,
+    location_id BIGINT REFERENCES lernia.location(id),
     contact_info VARCHAR(20),
     website VARCHAR(255),
     address VARCHAR(255),
@@ -57,7 +63,8 @@ CREATE TABLE lernia.course (
     description TEXT,
     course_type lernia.course_type,
     is_remote BOOLEAN,
-    min_admission_grade INT
+    min_admission_grade INT,
+    cost INT
 );
 
 CREATE TABLE lernia.course_area_of_study (
