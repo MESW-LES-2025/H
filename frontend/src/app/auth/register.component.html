@@ -18,7 +18,7 @@
         </span>
             </h1>
 
-            <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">
+            <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()" novalidate>
                 <label>Username</label>
                 <div class="field">
                     <input formControlName="username" type="text" placeholder="Choose a username" />
@@ -52,6 +52,7 @@
                 </div>
 
                 <button class="primary ripple" type="submit">Create account</button>
+
 
                 <div class="or">Or</div>
 
