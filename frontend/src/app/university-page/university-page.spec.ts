@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UniversityPage } from './university-page';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 describe('UniversityPage', () => {
   let component: UniversityPage;
@@ -9,7 +9,18 @@ describe('UniversityPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UniversityPage],
-      providers: [provideRouter([])]
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => '1'
+              }
+            }
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(UniversityPage);

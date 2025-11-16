@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfilePage } from './profile-page';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
@@ -9,7 +9,18 @@ describe('ProfilePage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProfilePage],
-      providers: [provideRouter([])]
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => '1'
+              }
+            }
+          }
+        }
+      ]
     })
       .compileComponents();
 
