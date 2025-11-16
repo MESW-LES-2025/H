@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,8 +14,10 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 export class LoginComponent {
   form!: FormGroup;
   show = false;
+  loading = false;
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
     this.form = this.fb.group({
       text: ['', Validators.required],
       password: ['', Validators.required],
@@ -26,8 +29,25 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.form.invalid) return;
-    const { text: identifier, password, remember } = this.form.value;
-    console.log('Login', { identifier, password, remember });
+    this.errorMessage = null;
+    this.loading = true;
+    const { text, password } = this.form.value;
+    this.auth.login({ text, password }).subscribe({
+      next: (res) => {
+        this.loading = false;
+        console.log('Login OK', res);
+        if (res.status === 'success' && res.userId) {
+          this.router.navigate(['/profile', res.userId]);
+        } else {
+          this.errorMessage = res.message || 'Login failed';
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Login error', err);
+        this.errorMessage = 'Login error';
+      }
+    });
   }
 
   goTo(path: 'register' | 'login', ev: Event) {

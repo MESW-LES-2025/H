@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from './auth.service';
+
 import {
   FormBuilder, FormGroup, Validators,
   AbstractControl, ValidationErrors, ReactiveFormsModule
@@ -24,7 +26,7 @@ export class RegisterComponent {
   show1 = false;
   show2 = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
     this.form = this.fb.group(
         {
           username: ['', [Validators.required, Validators.minLength(3)]],
@@ -37,8 +39,21 @@ export class RegisterComponent {
   }
 
   onSubmit() {
+    console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
+    this.form.markAllAsTouched();
     if (this.form.invalid) return;
-    console.log('Register', this.form.value);
+    const { username, email, password } = this.form.value;
+    this.auth.register({ username, email, password }).subscribe({
+      next: (res) => {
+        console.log('Register OK', res);
+        if (res.status === 'success') this.router.navigate(['/login']);
+        else alert(res.message || 'Registration failed');
+      },
+      error: (err) => {
+        console.error('Register error', err);
+        alert('Registration error');
+      }
+    });
   }
 
   goTo(path: 'register' | 'login', ev: Event) {
