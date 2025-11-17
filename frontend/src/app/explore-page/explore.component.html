@@ -1,0 +1,94 @@
+<main class="page">
+  <!-- HERO -->
+  <section class="hero">
+
+    <div class="hero-copy">
+      <img class="hero-arrow" src="/images/arrow.png" alt="arrow" />
+
+      <h1>
+        Find the Right Path<br />
+        for Your Future
+      </h1>
+
+      <p class="hero-subtitle">
+        Explore courses and universities that align with your ambitions.
+        From local institutions to international opportunities, uncover the
+        options that truly match who you are and where you want to go.
+      </p>
+    </div>
+
+    <div class="hero-photo">
+
+      <div class="searchbar hero-searchbar">
+        <div class="icon">
+          <img src="/images/lupa.png" alt="Search icon" />
+        </div>
+
+        <input
+          class="hero-input"
+          type="search"
+          placeholder="Search for a course, university, or area of study..."
+          [value]="q()"
+          (input)="q.set($any($event.target).value)"
+        />
+
+
+        <button class="search-btn" (click)="search()">Search</button>
+      </div>
+
+      <img class="hero-image" src="/images/studentss.jpg" alt="Students" />
+
+    </div>
+
+  </section>
+
+  <!-- GRID: placeholder dos filtros -->
+  <section class="content">
+    <aside class="filters-card">
+      <div class="filters-head">
+        <h3>Filters</h3>
+        <span class="muted">Coming soon</span>
+      </div>
+
+      <div class="skeleton">
+        <div class="line w-70"></div>
+        <div class="block"></div>
+        <div class="line w-50"></div>
+        <div class="block"></div>
+        <div class="line w-60"></div>
+        <div class="block sm"></div>
+        <div class="block sm"></div>
+        <div class="block"></div>
+      </div>
+    </aside>
+
+    <!-- RESULTADOS -->
+    <section class="results">
+      <div class="results-head">
+        <div>
+          <h2>Explore Colleges</h2>
+          <p>Use the search to find schools that are a good fit for you.</p>
+        </div>
+        <div class="views">
+          <button class="view active">Grid View</button>
+          <button class="view" disabled>Map View</button>
+        </div>
+      </div>
+
+      <article class="college-card" *ngFor="let c of results()">
+        <div class="left" [style.backgroundColor]="c.color">
+          <h3>{{ c.title }}</h3>
+          <p>{{ c.blurb }}</p>
+        </div>
+        <div class="right">
+          <img [src]="c.photo" [alt]="c.title" />
+          <button class="fav" aria-label="Save">♡</button>
+        </div>
+      </article>
+
+      <div class="load-more">
+        <button class="more">Show more Colleges</button>
+      </div>
+    </section>
+  </section>
+</main>

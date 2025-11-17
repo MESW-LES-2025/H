@@ -36,4 +36,3 @@ describe('ProfilePage', () => {
     expect(component).toBeTruthy();
   });
 });
-
