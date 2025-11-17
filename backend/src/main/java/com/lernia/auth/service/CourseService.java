@@ -32,21 +32,7 @@ public class CourseService {
     }
 
     private CourseDTO convertToDTO(CourseEntity course) {
-        UniversityEntity university = course.getUniversity();
-        LocationEntity location = university.getLocation();
-
-        LocationDTO locationDTO = new LocationDTO(
-                location.getId(),
-                location.getCity(),
-                location.getCountry()
-        );
-
-        UniversityDTOLight universityDTOLight = new UniversityDTOLight(
-                university.getId(),
-                university.getName(),
-                university.getDescription(),
-                locationDTO
-        );
+        UniversityDTOLight universityDTOLight = getUniversityDTOLight(course);
 
         List<String> areasOfStudy = course.getAreaOfStudies().stream()
                 .map(AreaOfStudyEntity::getName)
@@ -62,6 +48,24 @@ public class CourseService {
                 course.getCost(),
                 universityDTOLight,
                 areasOfStudy
+        );
+    }
+
+    private static UniversityDTOLight getUniversityDTOLight(CourseEntity course) {
+        UniversityEntity university = course.getUniversity();
+        LocationEntity location = university.getLocation();
+
+        LocationDTO locationDTO = new LocationDTO(
+                location.getId(),
+                location.getCity(),
+                location.getCountry()
+        );
+
+        return new UniversityDTOLight(
+                university.getId(),
+                university.getName(),
+                university.getDescription(),
+                locationDTO
         );
     }
 }
