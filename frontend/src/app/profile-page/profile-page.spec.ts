@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
 import { ProfilePage } from './profile-page';
-import { ActivatedRoute } from '@angular/router';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
@@ -10,19 +12,10 @@ describe('ProfilePage', () => {
     await TestBed.configureTestingModule({
       imports: [ProfilePage],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => '1'
-              }
-            }
-          }
-        }
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;
@@ -33,4 +26,3 @@ describe('ProfilePage', () => {
     expect(component).toBeTruthy();
   });
 });
-
