@@ -15,6 +15,7 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
             "university.location",
             "areaOfStudies"
     })
+    @Override
     @NonNull
     Optional<CourseEntity> findById(@NonNull Long id);
 
