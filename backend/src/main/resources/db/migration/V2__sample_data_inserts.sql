@@ -1,12 +1,12 @@
 -- 5 Users
-INSERT INTO lernia.user (name, username, email, password, age, gender, location, profile_picture, job_title, creation_date, user_role, premium_start_date) VALUES
+INSERT INTO lernia.users (name, username, email, password, age, gender, location, profile_picture, job_title, creation_date, user_role, premium_start_date) VALUES
     ('Alice Smith', 'asmith', 'alice@example.com', 'pass1', 21, 'FEMALE', 'Lisbon', 'asmith.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
     ('Bob Johnson', 'bjohnson', 'bob@example.com', 'pass2', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
     ('Claire Lee', 'clee', 'claire@example.com', 'pass3', 30, 'FEMALE', 'Berlin', 'clee.png', 'Researcher', CURRENT_DATE, 'STUDENT', NULL),
     ('David Wilson', 'dwilson', 'david@example.com', 'pass4', 22, 'MALE', 'Lisbon', 'dwilson.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
     ('Eva Brown', 'ebrown', 'eva@example.com', 'pass5', 27, 'FEMALE', 'Madrid', 'ebrown.png', 'Manager', CURRENT_DATE, 'ADMIN', NULL);
 
-INSERT INTO lernia.location(city, country, cost_of_living) VALUES
+INSERT INTO lernia.locations(city, country, cost_of_living) VALUES
     ('London', 'United Kingdom', 1500),
     ('Berlin', 'Germany', 900),
     ('Barcelona', 'Spain', 1000),
@@ -16,7 +16,7 @@ INSERT INTO lernia.location(city, country, cost_of_living) VALUES
     ('Porto', 'Portugal', 750);
 
 
-INSERT INTO lernia.university (name, description, location_id, contact_info, website, address, logo) VALUES
+INSERT INTO lernia.universities (name, description, location_id, contact_info, website, address, logo) VALUES
     ('Imperial College London', 'Leading science and technology university', 1, '+44-20-7589-5111', 'https://www.imperial.ac.uk', 'South Kensington Campus, London SW7 2AZ', 'imperial_logo.png'),
     ('Technical University of Berlin', 'Top technical university in Germany', 2, '+49-30-314-0', 'https://www.tu-berlin.de', 'Straße des 17. Juni 135, 10623 Berlin', 'tu_berlin_logo.png'),
     ('Universitat de Barcelona', 'Historic comprehensive university', 3, '+34-93-403-5474', 'https://www.ub.edu', 'Gran Via de les Corts Catalanes, 585, Barcelona', 'ub_logo.png'),
@@ -26,7 +26,7 @@ INSERT INTO lernia.university (name, description, location_id, contact_info, web
     ('University of Porto', 'Leading Portuguese research university', 7, '+351-22-040-8000', 'https://www.up.pt', 'Praça Gomes Teixeira, 4099-002 Porto', 'up_logo.png');
 
 
-INSERT INTO lernia.campus (university_id, name, description, country, city, capacity) VALUES
+INSERT INTO lernia.campuses (university_id, name, description, country, city, capacity) VALUES
     (1, 'South Kensington Campus', 'Main campus in central London', 'United Kingdom', 'London', 17000),
     (2, 'Charlottenburg Campus', 'Historic main campus', 'Germany', 'Berlin', 35000),
     (3, 'Historic Building Campus', 'Central Barcelona campus', 'Spain', 'Barcelona', 63000),
@@ -35,7 +35,7 @@ INSERT INTO lernia.campus (university_id, name, description, country, city, capa
     (6, 'Main Campus', 'Central Vienna campus', 'Austria', 'Vienna', 90000),
     (7, 'Polo I Campus', 'Main university campus', 'Portugal', 'Porto', 31000);
 
-INSERT INTO lernia.area_of_study (name) VALUES
+INSERT INTO lernia.areas_of_study (name) VALUES
     ('Computer Science'),
     ('Engineering'),
     ('Business Administration'),
@@ -44,7 +44,7 @@ INSERT INTO lernia.area_of_study (name) VALUES
     ('Arts & Humanities'),
     ('Natural Sciences');
 
-INSERT INTO lernia.course (
+INSERT INTO lernia.courses (
     university_id, name, description, course_type,
     is_remote, min_admission_grade, cost,
     duration, credits, language,
@@ -117,7 +117,7 @@ INSERT INTO lernia.course_area_of_study (course_id, area_of_study_id) VALUES
     (20, 6),
     (21, 7);
 
-INSERT INTO lernia.curricular_unit (course_id, name, description, credits, year, semester, hours) VALUES
+INSERT INTO lernia.curricular_units (course_id, name, description, credits, year, semester, hours) VALUES
     (1, 'Introduction to Programming', 'Fundamentals of programming', 6, 1, 1, 45),
     (1, 'Data Structures & Algorithms', 'Core CS concepts', 6, 2, 1, 45),
     (1, 'Software Engineering', 'Software development practices', 6, 3, 1, 45),
@@ -203,7 +203,7 @@ INSERT INTO lernia.curricular_unit (course_id, name, description, credits, year,
     (21, 'Chemistry Dissertation', 'Chemical research', 20, 3, 1, 100);
 
 
-INSERT INTO lernia.scholarship (university_id, name, description, amount, course_type) VALUES
+INSERT INTO lernia.scholarships (university_id, name, description, amount, course_type) VALUES
     (1, 'Tech Merit', 'Academic excellence scholarship', 1500, 'BACHELOR'),
     (2, 'Business Grant', 'Support for business students', 2000, 'MASTER'),
     (3, 'Science Fellowship', 'For promising researchers', 3000, 'DOCTORATE');
@@ -212,7 +212,7 @@ INSERT INTO lernia.user_bookmarked_courses (user_id, course_id) VALUES (1, 1), (
 
 INSERT INTO lernia.user_bookmarked_universities (user_id, university_id) VALUES (1, 1), (2, 2);
 
-INSERT INTO lernia.user_course (user_id, course_id, start_date, end_date, is_finished) VALUES
+INSERT INTO lernia.user_courses (user_id, course_id, start_date, end_date, is_finished) VALUES
     (1, 1, '2023-09-01', NULL, false),
     (1, 2, '2024-02-01', NULL, false),
     (2, 2, '2023-10-01', '2024-03-01', true),
@@ -221,7 +221,7 @@ INSERT INTO lernia.user_course (user_id, course_id, start_date, end_date, is_fin
     (5, 2, '2024-03-01', NULL, false),
     (5, 3, '2024-01-01', NULL, false);
 
-INSERT INTO lernia.review (id, rating, title, description, review_date, user_id, dtype) VALUES
+INSERT INTO lernia.reviews (id, rating, title, description, review_date, user_id, dtype) VALUES
     (1, 4.5, 'Great course', 'Very informative.', CURRENT_DATE, 1, 'CourseReviewEntity'),
     (2, 3.9, 'Good course', 'Challenging but rewarding.', CURRENT_DATE, 2, 'CourseReviewEntity'),
     (3, 5.0, 'Excellent!', 'Highly recommended.', CURRENT_DATE, 3, 'CourseReviewEntity'),
@@ -229,11 +229,11 @@ INSERT INTO lernia.review (id, rating, title, description, review_date, user_id,
     (5, 3.5, 'Needs improvement', 'Could include more practice.', CURRENT_DATE, 5, 'CourseReviewEntity'),
     (6, 4.8, 'Loved it', 'Engaging and helpful.', CURRENT_DATE, 1, 'CourseReviewEntity');
 
-INSERT INTO lernia.course_review (id, course_id) VALUES
+INSERT INTO lernia.course_reviews (id, course_id) VALUES
     (1, 1), (2, 2), (3, 3), (4, 1), (5, 2), (6, 3);
 
-INSERT INTO lernia.review (id, rating, title, description, review_date, user_id, dtype) VALUES
+INSERT INTO lernia.reviews (id, rating, title, description, review_date, user_id, dtype) VALUES
     (7, 4.7, 'Excellent university', 'Great environment.', CURRENT_DATE, 5, 'UniversityReviewEntity'),
     (8, 3.9, 'Good university', 'Solid programs.', CURRENT_DATE, 4, 'UniversityReviewEntity');
 
-INSERT INTO lernia.university_review (id, university_id) VALUES (7, 1), (8, 2);
+INSERT INTO lernia.university_reviews (id, university_id) VALUES (7, 1), (8, 2);
