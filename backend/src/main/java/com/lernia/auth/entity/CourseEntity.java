@@ -31,7 +31,7 @@ public class CourseEntity {
     private Integer minAdmissionGrade;
     private Integer cost;
 
-    private String duration;
+    private Integer duration;
     private Integer credits;
     private String language;
 

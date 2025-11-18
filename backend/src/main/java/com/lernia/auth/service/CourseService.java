@@ -21,10 +21,8 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    public List<CourseDTO> getAllCourses() {
-        return courseRepository.findAllByOrderByNameAsc().stream()
-                .map(this::convertToDTO)
-                .toList();
+    public List<String> getAllLanguages() {
+            return courseRepository.findDistinctLanguages();
     }
 
     public Optional<CourseDTO> getCourseById(Long id) {
@@ -59,29 +57,47 @@ public class CourseService {
 
     }
 
-    public Page<CourseDTO> getCoursesByFilter(CourseFilter filter, Pageable pageable) {
-        String areaOfStudyParam = null;
-        if (filter.getAreaOfStudy() != null && !filter.getAreaOfStudy().isEmpty()) {
-            areaOfStudyParam = filter.getAreaOfStudy().stream()
+    public Page<CourseDTO> getCourses(CourseFilter filter, Pageable pageable) {
+
+        String courseTypesParam = null;
+        if (filter.getCourseTypes() != null && !filter.getCourseTypes().isEmpty()) {
+            courseTypesParam = filter.getCourseTypes().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(","));
+        }
+
+        String languagesParam = null;
+        if (filter.getLanguages() != null && !filter.getLanguages().isEmpty()) {
+            languagesParam = String.join(",", filter.getLanguages());
+        }
+
+        String countriesParam = null;
+        if (filter.getCountries() != null && !filter.getCountries().isEmpty()) {
+            countriesParam = String.join(",", filter.getCountries());
+        }
+
+        String areasOfStudyParam = null;
+        if (filter.getAreasOfStudy() != null && !filter.getAreasOfStudy().isEmpty()) {
+            areasOfStudyParam = filter.getAreasOfStudy().stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining(","));
         }
 
-        Page<CourseEntity> page = courseRepository.findCoursesByFilters(
+        Page<CourseEntity> page = courseRepository.findCourses(
                 filter.getName(),
-                filter.getCourseType() != null ? filter.getCourseType().name() : null,
-                filter.getIsRemote(),
+                courseTypesParam,
+                filter.getOnlyRemote(),
                 filter.getCostMax(),
                 filter.getDuration(),
-                filter.getLanguage(),
-                filter.getCountry(),
-                filter.getCostOfLivingMax(),
-                areaOfStudyParam,
+                languagesParam,
+                countriesParam,
+                areasOfStudyParam,
                 pageable
         );
 
         return page.map(this::convertToDTO);
     }
+
 
 
     private static UniversityDTOLight getUniversityDTOLight(CourseEntity course) {

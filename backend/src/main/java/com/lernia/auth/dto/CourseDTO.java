@@ -18,7 +18,7 @@ public class CourseDTO {
     private Boolean isRemote;
     private Integer minAdmissionGrade;
     private Integer cost;
-    private String duration;
+    private Integer duration;
     private Integer credits;
     private String language;
     private LocalDate startDate;

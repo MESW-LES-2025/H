@@ -65,7 +65,7 @@ CREATE TABLE lernia.courses (
     is_remote BOOLEAN,
     min_admission_grade INT,
     cost INT,
-    duration VARCHAR(50),
+    duration INT,
     credits INT,
     language VARCHAR(50),
     start_date DATE,
