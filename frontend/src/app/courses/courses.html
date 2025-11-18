@@ -7,7 +7,7 @@
   </div>
 
   <div class="list-group">
-    @for(course of courses; track course.id) {
+    @for (course of courses; track course.id) {
       <div class="list-group-item p-3 mb-3 rounded shadow-sm hover-shadow cursor-pointer"
            tabindex="0"
            role="button">
@@ -47,8 +47,8 @@
             <div class="row text-muted small">
               <div class="col-6 mb-2">
                 <div><i class="bi bi-clock me-1"></i> Duration: {{ course.duration }}</div>
-                <div><i class="bi bi-calendar-event me-1"></i> Start: {{ course.startDate }}</div>
-                <div><i class="bi bi-clock-history me-1"></i> Apply By: {{ course.applicationDeadline }}</div>
+                <div><i class="bi bi-calendar-event me-1"></i> Start: {{ course.startDate | date:'MMM d, yyyy' }}</div>
+                <div><i class="bi bi-clock-history me-1"></i> Apply By: {{ course.applicationDeadline | date:'MMM d, yyyy' }}</div>
               </div>
               <div class="col-6 mb-2">
                 <div><i class="bi bi-translate me-1"></i> Language: {{ course.language }}</div>

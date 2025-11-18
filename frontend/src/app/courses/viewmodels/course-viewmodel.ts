@@ -7,7 +7,7 @@ export interface CourseViewmodel {
   description: string;
   courseType: string;
   isRemote: boolean;
-  minAdmissionGrade: string;
+  minAdmissionGrade: number;
   cost: number;
   duration: string;
   credits: number;

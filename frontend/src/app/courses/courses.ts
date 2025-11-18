@@ -2,10 +2,13 @@ import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
 import { CoursesService } from './service/courses-service';
 import {Subject, takeUntil} from 'rxjs';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-courses',
-  imports: [],
+  imports: [
+    DatePipe
+  ],
   templateUrl: './courses.html',
   styleUrl: './courses.css',
 })
