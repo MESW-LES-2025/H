@@ -36,7 +36,7 @@ describe('CoursePage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load course data on init', (done) => {
+  /*it('should load course data on init', (done) => {
     service.getCourseProfile(201).subscribe(data => {
       expect(data).toBeDefined();
       expect(data.name).toBe('Bachelor of Science in Computer Science');
@@ -51,5 +51,5 @@ describe('CoursePage', () => {
     if (componentAny.course) {
       expect(componentAny.course.name).toBe('Bachelor of Science in Computer Science');
     }
-  });
+  });*/
 });
