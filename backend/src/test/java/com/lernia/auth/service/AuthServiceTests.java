@@ -1,3 +1,5 @@
+package com.lernia.auth.service;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -6,7 +8,6 @@ import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.dto.RegisterRequest;
 import com.lernia.auth.dto.RegisterResponse;
 import com.lernia.auth.entity.UserEntity;
-import com.lernia.auth.service.AuthService;
 import com.lernia.auth.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
