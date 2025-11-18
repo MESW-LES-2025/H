@@ -1,0 +1,78 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <h2 class="fw-bold mb-2">Available Courses</h2>
+      <p class="text-muted">Browse and select from our comprehensive course catalog</p>
+    </div>
+  </div>
+
+  <div class="list-group">
+    @for (course of courses; track course.id) {
+      <div class="list-group-item p-3 mb-3 rounded shadow-sm hover-shadow cursor-pointer"
+           tabindex="0"
+           role="button">
+        <div class="row g-3 align-items-center">
+          <div class="col-auto d-none d-md-block">
+            <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-journal-bookmark-fill text-primary fs-3"></i>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-column align-items-start gap-1 mb-2">
+              <span class="badge bg-primary">{{ course.courseType }}</span>
+              <h5 class="fw-semibold mb-1 text-primary">{{ course.name }}</h5>
+            </div>
+
+            <p class="text-muted mb-1">
+              <i class="bi bi-building me-2"></i>{{ course.university.name }}
+            </p>
+
+            <p class="mb-3 text-secondary" style="line-height: 1.4;">
+              {{ course.description }}
+            </p>
+
+            <div class="d-flex flex-column flex-sm-row gap-2">
+              <a href="mailto:{{ course.contactEmail }}" class="btn btn-outline-primary btn-sm w-100 w-sm-auto">
+                <i class="bi bi-envelope me-1"></i> Contact
+              </a>
+
+              <a href="{{ course.website }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 w-sm-auto">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Website
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-5">
+            <div class="row text-muted small">
+              <div class="col-6 mb-2">
+                <div><i class="bi bi-clock me-1"></i> Duration: {{ course.duration }}</div>
+                <div><i class="bi bi-calendar-event me-1"></i> Start: {{ course.startDate | date:'MMM d, yyyy' }}</div>
+                <div><i class="bi bi-clock-history me-1"></i> Apply By: {{ course.applicationDeadline | date:'MMM d, yyyy' }}</div>
+              </div>
+              <div class="col-6 mb-2">
+                <div><i class="bi bi-translate me-1"></i> Language: {{ course.language }}</div>
+                <div><i class="bi bi-award me-1"></i> Credits: {{ course.credits }}</div>
+                <div>
+                  <i class="bi bi-cash-coin me-1"></i>
+                  <span class="text-success fw-semibold">€{{ course.cost }} / year</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-auto d-flex justify-content-center">
+            <button class="btn btn-outline-primary w-100 w-md-auto mt-2 mt-md-0">
+              View Details
+              <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="list-group-item text-center text-muted py-5">
+        No courses available at the moment.
+      </div>
+    }
+  </div>
+</div>

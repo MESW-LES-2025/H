@@ -1,4 +1,4 @@
-import { University } from '../../shared/viewmodels/university';
+import { UniversityLight } from '../../universities/viewmodels/university-light';
 
 export interface CourseViewmodel {
   id: number;
@@ -10,7 +10,7 @@ export interface CourseViewmodel {
   language: string;
   credits: number;
   bannerImage: string;
-  university: University;
+  university: UniversityLight;
   topics: string[];
   requirements: string[];
 }

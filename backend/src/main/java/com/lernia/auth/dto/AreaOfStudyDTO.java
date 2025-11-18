@@ -5,9 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UniversityDTOLight {
+public class AreaOfStudyDTO {
     private Long id;
     private String name;
-    private String description;
-    private LocationDTO location;
 }
