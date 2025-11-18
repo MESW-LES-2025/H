@@ -5,6 +5,8 @@ import com.lernia.auth.dto.CourseFilter;
 import com.lernia.auth.entity.enums.CourseType;
 import com.lernia.auth.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +32,7 @@ public class CoursesController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<CourseDTO>> getCoursesByFilter(
+    public ResponseEntity<Page<CourseDTO>> getCoursesByFilter(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) CourseType courseType,
             @RequestParam(required = false) Boolean isRemote,
@@ -39,7 +41,8 @@ public class CoursesController {
             @RequestParam(required = false) String language,
             @RequestParam(required = false) String country,
             @RequestParam(required = false) List<Long> areasOfStudy,
-            @RequestParam(required = false) Integer costOfLivingMax
+            @RequestParam(required = false) Integer costOfLivingMax,
+            Pageable pageable
     ) {
         CourseFilter filter = new CourseFilter();
         filter.setName(name);
@@ -49,11 +52,13 @@ public class CoursesController {
         filter.setDuration(duration);
         filter.setLanguage(language);
         filter.setCountry(country);
-        filter.setAreaOfStudy(areasOfStudy);
         filter.setCostOfLivingMax(costOfLivingMax);
+        filter.setAreaOfStudy(areasOfStudy);
 
-        List<CourseDTO> result = courseService.getCoursesByFilter(filter);
-        return ResponseEntity.ok(result);
+        Page<CourseDTO> resultPage = courseService.getCoursesByFilter(filter, pageable);
+
+        return ResponseEntity.ok(resultPage);
     }
+
 
 }

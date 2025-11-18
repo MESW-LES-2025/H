@@ -7,6 +7,8 @@ import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,14 +59,15 @@ public class CourseService {
 
     }
 
-    public List<CourseDTO> getCoursesByFilter(CourseFilter filter) {
+    public Page<CourseDTO> getCoursesByFilter(CourseFilter filter, Pageable pageable) {
         String areaOfStudyParam = null;
         if (filter.getAreaOfStudy() != null && !filter.getAreaOfStudy().isEmpty()) {
             areaOfStudyParam = filter.getAreaOfStudy().stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining(","));
         }
-        List<CourseEntity> entities = courseRepository.findCoursesByFilters(
+
+        Page<CourseEntity> page = courseRepository.findCoursesByFilters(
                 filter.getName(),
                 filter.getCourseType() != null ? filter.getCourseType().name() : null,
                 filter.getIsRemote(),
@@ -73,13 +76,13 @@ public class CourseService {
                 filter.getLanguage(),
                 filter.getCountry(),
                 filter.getCostOfLivingMax(),
-                areaOfStudyParam
+                areaOfStudyParam,
+                pageable
         );
 
-        return entities.stream()
-                .map(this::convertToDTO)
-                .toList();
+        return page.map(this::convertToDTO);
     }
+
 
     private static UniversityDTOLight getUniversityDTOLight(CourseEntity course) {
         UniversityEntity university = course.getUniversity();
