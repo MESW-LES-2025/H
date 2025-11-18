@@ -10,8 +10,11 @@ export class CoursesService {
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Retrieves all available courses from the backend.
+   * @returns Observable that emits an array of CourseViewmodel objects
+   */
   public getAllCourses(): Observable<CourseViewmodel[]> {
     return this.http.get<CourseViewmodel[]>(`${this.baseUrl}/api/courses`);
   }
-
 }

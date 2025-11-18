@@ -2,9 +2,13 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ lernia-dev ]
+    branches:
+      - lernia-dev
+      - 'iteration*'
   pull_request:
-    branches: [ lernia-dev ]
+    branches:
+      - lernia-dev
+      - 'iteration*'
 
 jobs:
   backend:

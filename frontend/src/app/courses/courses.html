@@ -8,7 +8,9 @@
 
   <div class="list-group">
     @for(course of courses; track course.id) {
-      <div class="list-group-item p-3 mb-3 rounded shadow-sm hover-shadow cursor-pointer">
+      <div class="list-group-item p-3 mb-3 rounded shadow-sm hover-shadow cursor-pointer"
+           tabindex="0"
+           role="button">
         <div class="row g-3 align-items-center">
           <div class="col-auto d-none d-md-block">
             <div class="bg-primary bg-opacity-10 rounded-3 p-3">
@@ -35,7 +37,7 @@
                 <i class="bi bi-envelope me-1"></i> Contact
               </a>
 
-              <a href="{{ course.website }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm w-100 w-sm-auto">
+              <a href="{{ course.website }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 w-sm-auto">
                 <i class="bi bi-box-arrow-up-right me-1"></i> Website
               </a>
             </div>
