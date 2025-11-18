@@ -88,7 +88,7 @@ class CourseServiceTests {
         assertEquals("TestCity", ldto.getCity());
         assertEquals("TestCountry", ldto.getCountry());
 
-        List<String> areaNames = dto.getAreaOfStudies();
+        List<String> areaNames = dto.getAreasOfStudy();
         assertNotNull(areaNames);
         assertTrue(areaNames.contains("Math"));
         assertTrue(areaNames.contains("Physics"));

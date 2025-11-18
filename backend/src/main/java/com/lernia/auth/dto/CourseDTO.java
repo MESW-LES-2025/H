@@ -12,7 +12,7 @@ public class CourseDTO {
     private Integer minAdmissionGrade;
     private Integer cost;
     private UniversityDTOLight university;
-    private List<String> areaOfStudies;
+    private List<String> areasOfStudy;
 
     public CourseDTO() {}
 
@@ -33,7 +33,7 @@ public class CourseDTO {
         this.minAdmissionGrade = minAdmissionGrade;
         this.cost = cost;
         this.university = university;
-        this.areaOfStudies = areaOfStudies;
+        this.areasOfStudy = areaOfStudies;
     }
 
     public Long getId() {
@@ -68,8 +68,8 @@ public class CourseDTO {
         return university;
     }
 
-    public List<String> getAreaOfStudies() {
-        return areaOfStudies;
+    public List<String> getAreasOfStudy() {
+        return areasOfStudy;
     }
 
     public void setId(Long id) {
@@ -104,7 +104,7 @@ public class CourseDTO {
         this.university = university;
     }
 
-    public void setAreaOfStudies(List<String> areaOfStudies) {
-        this.areaOfStudies = areaOfStudies;
+    public void setAreasOfStudy(List<String> areasOfStudy) {
+        this.areasOfStudy = areasOfStudy;
     }
 }
