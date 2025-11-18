@@ -11,7 +11,7 @@ CREATE TABLE lernia.user (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255),
     username VARCHAR(255),
-    email VARCHAR(255),
+    email VARCHAR(254),
     password VARCHAR(255),
     age INT,
     gender lernia.gender NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE lernia.course (
     language VARCHAR(50),
     start_date DATE,
     application_deadline DATE,
-    contact_email VARCHAR(255),
+    contact_email VARCHAR(254),
     website TEXT
 );
 
