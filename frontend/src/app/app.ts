@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
+
 
 import { NavbarComponent } from './shared/navbar/navbar.component';
 
@@ -19,7 +21,7 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 export class App {
   showNavbar = true;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private titleService: Title) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -27,6 +29,16 @@ export class App {
 
         const hideOn = ['/login', '/register'];
         this.showNavbar = !hideOn.includes(url);
+
+        // Map routes to page titles
+        const titles: { [key: string]: string } = {
+          '/login': 'Login',
+          '/register': 'Register',
+        };
+
+        const pageTitle = titles[url] || 'Default Title';
+        this.titleService.setTitle(pageTitle);
       });
   }
+
 }
