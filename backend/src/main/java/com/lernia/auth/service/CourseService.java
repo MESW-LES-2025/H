@@ -46,9 +46,17 @@ public class CourseService {
                 course.getIsRemote(),
                 course.getMinAdmissionGrade(),
                 course.getCost(),
+                course.getDuration(),
+                course.getCredits(),
+                course.getLanguage(),
+                course.getStartDate(),
+                course.getApplicationDeadline(),
+                course.getWebsite(),
+                course.getContactEmail(),
                 universityDTOLight,
                 areasOfStudy
         );
+
     }
 
     private static UniversityDTOLight getUniversityDTOLight(CourseEntity course) {

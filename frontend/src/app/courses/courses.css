@@ -1,0 +1,31 @@
+.hover-bg {
+  transition: all 0.2s ease;
+}
+
+.hover-bg:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.list-group-item {
+  border-radius: 0;
+}
+
+.list-group-item:first-child {
+  border-top: 1px solid #dee2e6;
+}
+
+.bg-primary-subtle {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.hover-shadow {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+.cursor-pointer {
+  cursor: pointer;
+}

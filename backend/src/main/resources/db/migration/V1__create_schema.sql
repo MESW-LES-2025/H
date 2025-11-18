@@ -64,8 +64,16 @@ CREATE TABLE lernia.course (
     course_type lernia.course_type,
     is_remote BOOLEAN,
     min_admission_grade INT,
-    cost INT
+    cost INT,
+    duration VARCHAR(50),
+    credits INT,
+    language VARCHAR(50),
+    start_date DATE,
+    application_deadline DATE,
+    contact_email VARCHAR(255),
+    website TEXT
 );
+
 
 CREATE TABLE lernia.course_area_of_study (
     course_id BIGINT NOT NULL REFERENCES lernia.course(id) ON DELETE CASCADE,
