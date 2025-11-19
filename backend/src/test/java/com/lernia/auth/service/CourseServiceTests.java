@@ -3,6 +3,7 @@ package com.lernia.auth.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
@@ -88,10 +89,14 @@ class CourseServiceTests {
         assertEquals("TestCity", ldto.getCity());
         assertEquals("TestCountry", ldto.getCountry());
 
-        List<String> areaNames = dto.getAreasOfStudy();
+        List<AreaOfStudyDTO> areaNames = dto.getAreasOfStudy();
         assertNotNull(areaNames);
-        assertTrue(areaNames.contains("Math"));
-        assertTrue(areaNames.contains("Physics"));
+        List<String> names = areaNames.stream()
+                .map(AreaOfStudyDTO::getName)
+                .toList();
+
+        assertTrue(names.contains("Math"));
+        assertTrue(names.contains("Physics"));
     }
 
     @Test

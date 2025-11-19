@@ -1,5 +1,6 @@
 package com.lernia.auth.service;
 
+import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
@@ -34,9 +35,8 @@ public class CourseService {
     private CourseDTO convertToDTO(CourseEntity course) {
         UniversityDTOLight universityDTOLight = getUniversityDTOLight(course);
 
-        List<String> areasOfStudy = course.getAreaOfStudies().stream()
-                .map(AreaOfStudyEntity::getName)
-                .toList();
+        List<AreaOfStudyDTO> areasOfStudy = course.getAreaOfStudies().stream()
+                .map(this::getAreaOfStudyDTO).toList();
 
         return new CourseDTO(
                 course.getId(),
@@ -46,9 +46,17 @@ public class CourseService {
                 course.getIsRemote(),
                 course.getMinAdmissionGrade(),
                 course.getCost(),
+                course.getDuration(),
+                course.getCredits(),
+                course.getLanguage(),
+                course.getStartDate(),
+                course.getApplicationDeadline(),
+                course.getWebsite(),
+                course.getContactEmail(),
                 universityDTOLight,
                 areasOfStudy
         );
+
     }
 
     private static UniversityDTOLight getUniversityDTOLight(CourseEntity course) {
@@ -66,6 +74,14 @@ public class CourseService {
                 university.getName(),
                 university.getDescription(),
                 locationDTO
+        );
+    }
+
+    private AreaOfStudyDTO getAreaOfStudyDTO(AreaOfStudyEntity areaOfStudy) {
+
+        return new AreaOfStudyDTO(
+                areaOfStudy.getId(),
+                areaOfStudy.getName()
         );
     }
 }
