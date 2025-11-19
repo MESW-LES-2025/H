@@ -93,10 +93,19 @@ jobs:
     name: Run Acceptance Tests
     runs-on: ubuntu-latest
     needs: [backend-build, frontend]
-
+    env:
+      HEADLESS: "true"
+      APP_BASE_URL: "http://localhost:4200"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -115,8 +124,14 @@ jobs:
           npx wait-on --timeout 30000 http://localhost:4200
         working-directory: ./frontend
 
-      - name: Run backend acceptance tests
-        run: mvn failsafe:integration-test failsafe:verify -DfailIfNoTests=false
+      - name: Install geckodriver (for Firefox)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y firefox-geckodriver firefox
+          echo "GECKODRIVER_PATH=$(which geckodriver)" >> $GITHUB_ENV
+
+      - name: Run backend acceptance tests (compile tests + run Failsafe)
+        run: mvn -B -DskipTests=true -DfailIfNoTests=false verify
         working-directory: ./backend
 
       - name: Stop frontend server
