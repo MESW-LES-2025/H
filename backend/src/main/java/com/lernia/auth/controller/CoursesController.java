@@ -33,6 +33,41 @@ public class CoursesController {
             @RequestParam(required = false) List<String> areasOfStudy,
             @PageableDefault(size = 20, page = 0) Pageable pageable
     ) {
+        // Validate numeric parameters are positive
+        if (maxCost != null && maxCost < 0) {
+            throw new IllegalArgumentException("maxCost must be a positive value");
+        }
+        if (duration != null && duration < 0) {
+            throw new IllegalArgumentException("duration must be a positive value");
+        }
+        
+        // Validate string parameter lengths
+        final int MAX_STRING_LENGTH = 255;
+        if (name != null && name.length() > MAX_STRING_LENGTH) {
+            throw new IllegalArgumentException("name exceeds maximum length of " + MAX_STRING_LENGTH);
+        }
+        if (languages != null) {
+            for (String language : languages) {
+                if (language != null && language.length() > MAX_STRING_LENGTH) {
+                    throw new IllegalArgumentException("language value exceeds maximum length of " + MAX_STRING_LENGTH);
+                }
+            }
+        }
+        if (countries != null) {
+            for (String country : countries) {
+                if (country != null && country.length() > MAX_STRING_LENGTH) {
+                    throw new IllegalArgumentException("country value exceeds maximum length of " + MAX_STRING_LENGTH);
+                }
+            }
+        }
+        if (areasOfStudy != null) {
+            for (String area : areasOfStudy) {
+                if (area != null && area.length() > MAX_STRING_LENGTH) {
+                    throw new IllegalArgumentException("areasOfStudy value exceeds maximum length of " + MAX_STRING_LENGTH);
+                }
+            }
+        }
+        
         CourseFilter filter = new CourseFilter();
         filter.setName(name);
         filter.setCourseTypes(courseTypes != null ? courseTypes : Collections.emptyList());
