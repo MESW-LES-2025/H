@@ -136,7 +136,7 @@ jobs:
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> $GITHUB_ENV
 
       - name: Run backend acceptance tests (compile tests + run Failsafe)
-        run: mvn -B -DskipTests=true -DfailIfNoTests=false verify
+        run: mvn failsafe:integration-test failsafe:verify -DfailIfNoTests=false
         working-directory: ./backend
 
       - name: Stop frontend server
