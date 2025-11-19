@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
@@ -40,7 +41,7 @@ public class RegisterAcceptanceIT {
         options.addArguments("--disable-dev-shm-usage");
 
         driver = new FirefoxDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
     }
 
 
@@ -71,7 +72,7 @@ public class RegisterAcceptanceIT {
                 By.xpath("//button[contains(text(),'Create account')]")
         );
 
-        Assertions.assertNotNull(usernameField,"Username field not found");
+        Assertions.assertNotNull(usernameField, "Username field not found");
         Assertions.assertNotNull(emailField, "Email field not found");
         Assertions.assertNotNull(passwordField, "Password field not found");
         Assertions.assertNotNull(confirmPasswordField, "Confirm password field not found");
@@ -79,7 +80,7 @@ public class RegisterAcceptanceIT {
     }
 
     @Test
-    public void testPasswordShowToggleOnRegister() throws InterruptedException {
+    public void testPasswordShowToggleOnRegister() {
         driver.get(baseUrl + "/register");
 
         WebElement passwordField = wait.until(d -> findAny(
@@ -99,19 +100,21 @@ public class RegisterAcceptanceIT {
 
         String originalType = passwordField.getAttribute("type");
         passwordToggle.click();
-        Thread.sleep(500);
-        Assertions.assertNotEquals("Password input type should toggle", originalType, passwordField.getAttribute("type"));
+        String toggledType = "password".equalsIgnoreCase(originalType) ? "text" : "password";
+        wait.until(ExpectedConditions.attributeToBe(passwordField, "type", toggledType));
+        Assertions.assertNotEquals(originalType, passwordField.getAttribute("type"), "Password input type should toggle");
         passwordToggle.click();
-        Thread.sleep(500);
+        wait.until(ExpectedConditions.attributeToBe(passwordField, "type", originalType));
         Assertions.assertEquals("Password input type should toggle back", originalType, passwordField.getAttribute("type"));
 
         if (confirmToggle != null) {
             String confirmOriginalType = confirmPasswordField.getAttribute("type");
             confirmToggle.click();
-            Thread.sleep(500);
+            String confirmToggled = "password".equalsIgnoreCase(confirmOriginalType) ? "text" : "password";
+            wait.until(ExpectedConditions.attributeToBe(confirmPasswordField, "type", confirmToggled));
             Assertions.assertNotEquals("Confirm password input type should toggle", confirmOriginalType, confirmPasswordField.getAttribute("type"));
             confirmToggle.click();
-            Thread.sleep(500);
+            wait.until(ExpectedConditions.attributeToBe(confirmPasswordField, "type", confirmOriginalType));
             Assertions.assertEquals("Confirm password input type should toggle back", confirmOriginalType, confirmPasswordField.getAttribute("type"));
         }
     }

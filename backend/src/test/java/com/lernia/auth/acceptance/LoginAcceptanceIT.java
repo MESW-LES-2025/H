@@ -68,10 +68,10 @@ public class LoginAcceptanceIT {
         ));
 
         Assertions.assertNotNull(userField, "Username/email field not found - inspect page HTML and update selectors");
-        Assertions.assertNotNull(passField,"Password field not found - inspect page HTML and update selectors");
+        Assertions.assertNotNull(passField, "Password field not found - inspect page HTML and update selectors");
 
         String title = driver.getTitle();
-        Assertions.assertTrue(title != null && title.toLowerCase().contains("login"), "Page title does not contain 'Login'");
+        Assertions.assertTrue(title.toLowerCase().contains("login"), "Page title does not contain 'Login'");
     }
 
     @Test
@@ -169,14 +169,13 @@ public class LoginAcceptanceIT {
         WebElement rememberMeCheckbox = wait.until(d -> findAny(By.cssSelector("input[type='checkbox'][formcontrolname='remember']"), By.name("remember")));
 
         Assertions.assertNotNull(rememberMeCheckbox, "Remember me checkbox not found");
-
         if (!rememberMeCheckbox.isSelected()) {
             rememberMeCheckbox.click();
-            Assertions.assertTrue( rememberMeCheckbox.isSelected(), "Remember me checkbox should be checked");
+            Assertions.assertTrue(rememberMeCheckbox.isSelected(), "Remember me checkbox should be checked");
         }
 
         rememberMeCheckbox.click();
-        Assertions.assertFalse( rememberMeCheckbox.isSelected(), "Remember me checkbox should be unchecked");
+        Assertions.assertFalse(rememberMeCheckbox.isSelected(), "Remember me checkbox should be unchecked");
     }
 
     @Test
