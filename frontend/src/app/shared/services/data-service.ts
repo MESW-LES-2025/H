@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, firstValueFrom, map, Observable} from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {AreasOfStudy} from '../viewmodels/area-of-study';
+import { environment } from '../../../environments/environment';
+import { AreasOfStudy } from '../viewmodels/area-of-study';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -18,20 +18,23 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
-  loadFilterLists(): Promise<void> {
-    return Promise.all([
-      firstValueFrom(this.http.get<AreasOfStudy[]>(`${this.baseUrl}/api/area-of-study`).pipe(map(areas => areas.map(area => area.name)))),
-      firstValueFrom(this.http.get<string[]>(`${this.baseUrl}/api/courses/languages`)),
-      firstValueFrom(this.http.get<string[]>(`${this.baseUrl}/api/university/countries`))
-    ]).then(([areas, languages, countries]) => {
+  loadFilterLists(): void {
+    forkJoin({
+      areas: this.http.get<AreasOfStudy[]>(`${this.baseUrl}/api/area-of-study`).pipe(
+        map(areas => areas.map(area => area.name))
+      ),
+      languages: this.http.get<string[]>(`${this.baseUrl}/api/courses/languages`),
+      countries: this.http.get<string[]>(`${this.baseUrl}/api/university/countries`)
+    }).pipe(
+      catchError(error => {
+        console.error('Failed to load filter lists', error);
+        return of({ areas: [], languages: [], countries: [] });
+      })
+    ).subscribe(({ areas, languages, countries }) => {
       this.areasOfStudySubject.next(areas);
       this.languagesSubject.next(languages);
       this.countriesSubject.next(countries);
-    }).catch(error => {
-      console.error('Failed to load filter lists', error);
-      this.areasOfStudySubject.next([]);
-      this.languagesSubject.next([]);
-      this.countriesSubject.next([]);
     });
   }
+
 }
