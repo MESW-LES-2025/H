@@ -10,6 +10,7 @@ import {CourseFiltersForm} from "./viewmodels/course-filters-form";
 import {Page} from "../shared/viewmodels/pagination";
 import {CourseTypeEnum} from "../shared/enums/course-type-enum";
 import {DataService} from "../shared/services/data-service";
+import {integerValidator} from '../shared/validators/integer-validator';
 
 @Component({
   selector: 'app-courses',
@@ -44,11 +45,11 @@ export class Courses implements OnInit, OnDestroy {
     }),
     costMax: new FormControl<number | null>(null, [
       Validators.min(1),
-      this.integerValidator,
+      integerValidator,
     ]),
     duration: new FormControl<number | null>(null, [
       Validators.min(1),
-      this.integerValidator,
+      integerValidator,
     ]),
     languages: new FormControl<string[]>([], {
       nonNullable: true,
@@ -170,12 +171,6 @@ export class Courses implements OnInit, OnDestroy {
       return false;
     }
     return selectedValues.includes(value);
-  }
-
-  integerValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    if (value == null) return null; // allow null, use required validator if needed
-    return Number.isInteger(value) ? null : { integer: true };
   }
 
   ngOnDestroy(): void {

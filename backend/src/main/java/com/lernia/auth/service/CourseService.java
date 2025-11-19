@@ -59,39 +59,15 @@ public class CourseService {
 
     public Page<CourseDTO> getCourses(CourseFilter filter, Pageable pageable) {
 
-        String courseTypesParam = null;
-        if (filter.getCourseTypes() != null && !filter.getCourseTypes().isEmpty()) {
-            courseTypesParam = filter.getCourseTypes().stream()
-                    .map(Enum::name)
-                    .collect(Collectors.joining(","));
-        }
-
-        String languagesParam = null;
-        if (filter.getLanguages() != null && !filter.getLanguages().isEmpty()) {
-            languagesParam = String.join(",", filter.getLanguages());
-        }
-
-        String countriesParam = null;
-        if (filter.getCountries() != null && !filter.getCountries().isEmpty()) {
-            countriesParam = String.join(",", filter.getCountries());
-        }
-
-        String areasOfStudyParam = null;
-        if (filter.getAreasOfStudy() != null && !filter.getAreasOfStudy().isEmpty()) {
-            areasOfStudyParam = filter.getAreasOfStudy().stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(","));
-        }
-
         Page<CourseEntity> page = courseRepository.findCourses(
                 filter.getName(),
-                courseTypesParam,
+                filter.getCourseTypes(),
                 filter.getOnlyRemote(),
                 filter.getCostMax(),
                 filter.getDuration(),
-                languagesParam,
-                countriesParam,
-                areasOfStudyParam,
+                filter.getLanguages(),
+                filter.getCountries(),
+                filter.getAreasOfStudy(),
                 pageable
         );
 

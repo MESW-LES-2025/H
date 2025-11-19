@@ -1,6 +1,5 @@
 package com.lernia.auth.entity;
 
-import com.lernia.auth.entity.enums.CourseType;
 import lombok.Data;
 
 import jakarta.persistence.Entity;
@@ -28,5 +27,5 @@ public class ScholarshipEntity {
     private String description;
     private Integer amount;
     @Enumerated(EnumType.STRING)
-    private CourseType courseType;
+    private String courseType;
 }

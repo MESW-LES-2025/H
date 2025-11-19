@@ -1,7 +1,5 @@
 package com.lernia.auth.dto;
 
-import com.lernia.auth.entity.enums.CourseType;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class CourseDTO {
     private Long id;
     private String name;
     private String description;
-    private CourseType courseType;
+    private String courseType;
     private Boolean isRemote;
     private Integer minAdmissionGrade;
     private Integer cost;

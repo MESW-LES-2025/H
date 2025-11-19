@@ -1,6 +1,5 @@
 package com.lernia.auth.entity;
 
-import com.lernia.auth.entity.enums.CourseType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,8 +23,7 @@ public class CourseEntity {
     private String name;
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private CourseType courseType;
+    private String courseType;
 
     private Boolean isRemote;
     private Integer minAdmissionGrade;

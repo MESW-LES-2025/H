@@ -3,7 +3,6 @@ CREATE SCHEMA IF NOT EXISTS lernia;
 ------------------------------------------------------------
 -- ENUM Types
 ------------------------------------------------------------
-CREATE TYPE lernia.course_type AS ENUM ('BACHELOR', 'MASTER', 'DOCTORATE');
 CREATE TYPE lernia.user_role AS ENUM ('REGULAR', 'PREMIUM', 'STUDENT', 'ADMIN');
 CREATE TYPE lernia.gender AS ENUM ('MALE', 'FEMALE', 'OTHER');
 
@@ -61,7 +60,7 @@ CREATE TABLE lernia.courses (
     university_id BIGINT NOT NULL REFERENCES lernia.universities(id),
     name VARCHAR(60) NOT NULL,
     description TEXT,
-    course_type lernia.course_type,
+    course_type VARCHAR(30),
     is_remote BOOLEAN,
     min_admission_grade INT,
     cost INT,
@@ -118,7 +117,7 @@ CREATE TABLE lernia.scholarships (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     amount INT NOT NULL,
-    course_type lernia.course_type
+    course_type VARCHAR(30)
 );
 
 CREATE TABLE lernia.user_bookmarked_courses (

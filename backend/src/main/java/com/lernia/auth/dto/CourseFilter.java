@@ -1,6 +1,5 @@
 package com.lernia.auth.dto;
 
-import com.lernia.auth.entity.enums.CourseType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CourseFilter {
     private String name;
-    private List<CourseType> courseTypes;
+    private List<String> courseTypes;
     private Boolean onlyRemote;
     private Integer costMax;
     private Integer duration;
