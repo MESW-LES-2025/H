@@ -127,8 +127,13 @@ jobs:
       - name: Install geckodriver (for Firefox)
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox-geckodriver firefox
-          echo "GECKODRIVER_PATH=$(which geckodriver)" >> $GITHUB_ENV
+          sudo apt-get install -y firefox jq
+          GECKO_TAG=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r .tag_name)
+          curl -L -o geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/${GECKO_TAG}/geckodriver-${GECKO_TAG}-linux64.tar.gz"
+          tar -xzf geckodriver.tar.gz
+          sudo mv geckodriver /usr/local/bin/geckodriver
+          sudo chmod +x /usr/local/bin/geckodriver
+          echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> $GITHUB_ENV
 
       - name: Run backend acceptance tests (compile tests + run Failsafe)
         run: mvn -B -DskipTests=true -DfailIfNoTests=false verify
