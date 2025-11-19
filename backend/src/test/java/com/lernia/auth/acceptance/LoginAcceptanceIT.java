@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
-public class LoginAcceptanceTest {
+public class LoginAcceptanceIT {
 
     private WebDriver driver;
     private WebDriverWait wait;

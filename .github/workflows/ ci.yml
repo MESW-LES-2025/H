@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ lernia-dev ]
+    branches: [lernina-dev]
   pull_request:
-    branches: [ lernia-dev ]
+    branches: [lernina-dev]
 
 jobs:
   backend-unit-tests:
@@ -23,7 +23,7 @@ jobs:
           cache: 'maven'
 
       - name: Run Unit Tests
-        run: mvn test
+        run: mvn test -Dtest='**.*Test'
         working-directory: ./backend
 
   backend-build:
@@ -71,7 +71,7 @@ jobs:
         run: npm ci
         working-directory: ./frontend
 
-      - name: Run Tests
+      - name: Run Frontend Unit Tests
         run: npm run test -- --watch=false --browsers=ChromeHeadless
         working-directory: ./frontend
 
@@ -88,7 +88,7 @@ jobs:
   acceptance-tests:
     name: Run Acceptance Tests
     runs-on: ubuntu-latest
-    needs: [ backend-build, frontend ]
+    needs: [backend-build, frontend]
 
     steps:
       - name: Checkout code
@@ -112,7 +112,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Run backend acceptance tests
-        run: mvn test -Dtest=com.lernia.auth.acceptance.*
+        run: mvn failsafe:integration-test failsafe:verify -DfailIfNoTests=false
         working-directory: ./backend
 
       - name: Stop frontend server

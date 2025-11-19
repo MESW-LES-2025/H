@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
-public class RegisterAcceptanceTests {
+public class RegisterAcceptanceIT {
 
     private WebDriver driver;
     private WebDriverWait wait;
