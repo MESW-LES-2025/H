@@ -23,6 +23,11 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
     @NonNull
     Optional<CourseEntity> findById(@NonNull Long id);
 
+    @EntityGraph(attributePaths = {
+            "university",
+            "university.location",
+            "areaOfStudies"
+    })
     @Query(
             value = """
         SELECT DISTINCT c.*

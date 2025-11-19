@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class CourseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", nullable = false)
+    @BatchSize(size = 10)
     private UniversityEntity university;
 
     @OneToMany(mappedBy = "course")
@@ -57,6 +59,7 @@ public class CourseEntity {
     @JoinTable(name = "course_area_of_study",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "area_of_study_id"))
+    @BatchSize(size = 10)
     private List<AreaOfStudyEntity> areaOfStudies = new ArrayList<>();
 }
 
