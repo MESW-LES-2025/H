@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "university_review", schema = "lernia")
+@Table(name = "university_reviews", schema = "lernia")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UniversityReviewEntity extends ReviewEntity {
