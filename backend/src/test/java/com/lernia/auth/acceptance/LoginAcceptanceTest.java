@@ -1,15 +1,16 @@
 package com.lernia.auth.acceptance;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
@@ -20,8 +21,7 @@ public class LoginAcceptanceTest {
     private String baseUrl;
 
 
-
-    @Before
+    @BeforeEach
     public void setUp() {
         String geckoDriverPath = System.getenv("GECKODRIVER_PATH");
         if (geckoDriverPath == null || geckoDriverPath.isBlank()) {
@@ -50,8 +50,6 @@ public class LoginAcceptanceTest {
     public void testLoginPageContainsFields() {
         driver.get(baseUrl + "/login");
 
-
-
         WebElement userField = wait.until(d -> findAny(
                 By.name("username"),
                 By.id("username"),
@@ -69,11 +67,11 @@ public class LoginAcceptanceTest {
                 By.cssSelector("input[formcontrolname='password']")
         ));
 
-        assertNotNull("Username/email field not found - inspect page HTML and update selectors", userField);
-        assertNotNull("Password field not found - inspect page HTML and update selectors", passField);
+        Assertions.assertNotNull(userField, "Username/email field not found - inspect page HTML and update selectors");
+        Assertions.assertNotNull(passField,"Password field not found - inspect page HTML and update selectors");
 
         String title = driver.getTitle();
-        assertTrue("Page title does not contain 'Login'", title != null && title.toLowerCase().contains("login"));
+        Assertions.assertTrue(title != null && title.toLowerCase().contains("login"), "Page title does not contain 'Login'");
     }
 
     @Test
@@ -101,9 +99,9 @@ public class LoginAcceptanceTest {
                 By.xpath("//button[contains(text(),'Login') or contains(text(),'Sign In')]")
         );
 
-        assertNotNull("Login form elements not found - inspect page HTML", userField);
-        assertNotNull("Login form elements not found - inspect page HTML", passField);
-        assertNotNull("Login button not found - inspect page HTML", submit);
+        Assertions.assertNotNull(userField, "Login form elements not found - inspect page HTML");
+        Assertions.assertNotNull(passField, "Login form elements not found - inspect page HTML");
+        Assertions.assertNotNull(submit, "Login button not found - inspect page HTML");
 
         userField.clear();
         userField.sendKeys("invalid_user");
@@ -124,7 +122,7 @@ public class LoginAcceptanceTest {
                 elementExists(By.cssSelector(".toast-error")) ||
                 elementExists(By.cssSelector(".mat-error"));
 
-        assertTrue("Expected error message after failed login - inspect page HTML for error element", errorFound);
+        Assertions.assertTrue(errorFound, "Expected error message after failed login - inspect page HTML for error element");
     }
 
     @Test
@@ -146,9 +144,9 @@ public class LoginAcceptanceTest {
                 By.id("login-button")
         );
 
-        assertNotNull(userField);
-        assertNotNull(passField);
-        assertNotNull(submit);
+        Assertions.assertNotNull(userField);
+        Assertions.assertNotNull(passField);
+        Assertions.assertNotNull(submit);
 
         userField.clear();
         userField.sendKeys("asmith");
@@ -159,10 +157,10 @@ public class LoginAcceptanceTest {
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
 
         String currentUrl = driver.getCurrentUrl();
-        assertFalse("Expected redirect after login", currentUrl.contains("/login"));
-        assertTrue("Redirected to dashboard", currentUrl.contains("/dashboard") || currentUrl.contains("/home"));
+        Assertions.assertFalse(currentUrl.contains("/login"), "Expected redirect after login");
+        Assertions.assertTrue(currentUrl.contains("/dashboard") || currentUrl.contains("/home"), "Redirected to dashboard");
 
-        assertTrue(elementExists(By.id("logout-button")) || elementExists(By.xpath("//*[contains(text(),'Welcome')]")));
+        Assertions.assertTrue(elementExists(By.id("logout-button")) || elementExists(By.xpath("//*[contains(text(),'Welcome')]")));
     }
 
     @Test
@@ -170,15 +168,15 @@ public class LoginAcceptanceTest {
         driver.get(baseUrl + "/login");
         WebElement rememberMeCheckbox = wait.until(d -> findAny(By.cssSelector("input[type='checkbox'][formcontrolname='remember']"), By.name("remember")));
 
-        assertNotNull("Remember me checkbox not found", rememberMeCheckbox);
+        Assertions.assertNotNull(rememberMeCheckbox, "Remember me checkbox not found");
 
         if (!rememberMeCheckbox.isSelected()) {
             rememberMeCheckbox.click();
-            assertTrue("Remember me checkbox should be checked", rememberMeCheckbox.isSelected());
+            Assertions.assertTrue( rememberMeCheckbox.isSelected(), "Remember me checkbox should be checked");
         }
 
         rememberMeCheckbox.click();
-        assertFalse("Remember me checkbox should be unchecked", rememberMeCheckbox.isSelected());
+        Assertions.assertFalse( rememberMeCheckbox.isSelected(), "Remember me checkbox should be unchecked");
     }
 
     @Test
@@ -188,23 +186,22 @@ public class LoginAcceptanceTest {
         WebElement passwordField = wait.until(d -> findAny(By.id("password"), By.name("password")));
         WebElement toggleButton = findAny(By.cssSelector("button.icon[aria-label='Toggle password']"));
 
-        assertNotNull("Password field not found", passwordField);
-        assertNotNull("Password show toggle button not found", toggleButton);
+        Assertions.assertNotNull(passwordField, "Password field not found");
+        Assertions.assertNotNull(toggleButton, "Password show toggle button not found");
 
         String originalType = passwordField.getAttribute("type");
 
         toggleButton.click();
 
-        try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+        wait.until(ExpectedConditions.attributeToBe(passwordField, "type", originalType.equals("password") ? "text" : "password"));
 
         String toggledType = passwordField.getAttribute("type");
-
-        assertNotEquals("Password field type should toggle", originalType, toggledType);
+        Assertions.assertNotEquals("Password field type should toggle", originalType, toggledType);
 
         toggleButton.click();
-        try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+        wait.until(ExpectedConditions.attributeToBe(passwordField, "type", originalType));
 
-        assertEquals("Password field type should toggle back", originalType, passwordField.getAttribute("type"));
+        Assertions.assertEquals("Password field type should toggle back", originalType, passwordField.getAttribute("type"));
     }
 
     @Test
@@ -213,13 +210,13 @@ public class LoginAcceptanceTest {
 
         WebElement forgotLink = findAny(By.linkText("Forgot Password"), By.cssSelector("a.link[href*='forgot']"));
 
-        assertNotNull("Forgot Password link not found", forgotLink);
+        Assertions.assertNotNull(forgotLink, "Forgot Password link not found");
 
         forgotLink.click();
 
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
 
-        assertTrue(driver.getCurrentUrl().toLowerCase().contains("forgot"));
+        Assertions.assertTrue(driver.getCurrentUrl().toLowerCase().contains("forgot"));
     }
 
     @Test
@@ -228,17 +225,17 @@ public class LoginAcceptanceTest {
 
         WebElement guestLink = findAny(By.cssSelector("a.guest"), By.linkText("Continue as guest"));
 
-        assertNotNull("Continue as guest link not found", guestLink);
+        Assertions.assertNotNull(guestLink, "Continue as guest link not found");
 
         guestLink.click();
 
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
 
-        assertTrue(driver.getCurrentUrl().toLowerCase().contains("explore") || driver.getCurrentUrl().toLowerCase().contains("guest"));
+        Assertions.assertTrue(driver.getCurrentUrl().toLowerCase().contains("explore") || driver.getCurrentUrl().toLowerCase().contains("guest"));
     }
 
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (driver != null) {
             driver.quit();

@@ -1,10 +1,9 @@
 package com.lernia.auth.acceptance;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -19,7 +18,7 @@ public class RegisterAcceptanceTests {
     private WebDriverWait wait;
     private String baseUrl;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         String geckoDriverPath = System.getenv("GECKODRIVER_PATH");
         if (geckoDriverPath == null || geckoDriverPath.isBlank()) {
@@ -72,11 +71,11 @@ public class RegisterAcceptanceTests {
                 By.xpath("//button[contains(text(),'Create account')]")
         );
 
-        assertNotNull("Username field not found", usernameField);
-        assertNotNull("Email field not found", emailField);
-        assertNotNull("Password field not found", passwordField);
-        assertNotNull("Confirm password field not found", confirmPasswordField);
-        assertNotNull("Create account button not found", submitButton);
+        Assertions.assertNotNull(usernameField,"Username field not found");
+        Assertions.assertNotNull(emailField, "Email field not found");
+        Assertions.assertNotNull(passwordField, "Password field not found");
+        Assertions.assertNotNull(confirmPasswordField, "Confirm password field not found");
+        Assertions.assertNotNull(submitButton, "Create account button not found");
     }
 
     @Test
@@ -101,19 +100,19 @@ public class RegisterAcceptanceTests {
         String originalType = passwordField.getAttribute("type");
         passwordToggle.click();
         Thread.sleep(500);
-        assertNotEquals("Password input type should toggle", originalType, passwordField.getAttribute("type"));
+        Assertions.assertNotEquals("Password input type should toggle", originalType, passwordField.getAttribute("type"));
         passwordToggle.click();
         Thread.sleep(500);
-        assertEquals("Password input type should toggle back", originalType, passwordField.getAttribute("type"));
+        Assertions.assertEquals("Password input type should toggle back", originalType, passwordField.getAttribute("type"));
 
         if (confirmToggle != null) {
             String confirmOriginalType = confirmPasswordField.getAttribute("type");
             confirmToggle.click();
             Thread.sleep(500);
-            assertNotEquals("Confirm password input type should toggle", confirmOriginalType, confirmPasswordField.getAttribute("type"));
+            Assertions.assertNotEquals("Confirm password input type should toggle", confirmOriginalType, confirmPasswordField.getAttribute("type"));
             confirmToggle.click();
             Thread.sleep(500);
-            assertEquals("Confirm password input type should toggle back", confirmOriginalType, confirmPasswordField.getAttribute("type"));
+            Assertions.assertEquals("Confirm password input type should toggle back", confirmOriginalType, confirmPasswordField.getAttribute("type"));
         }
     }
 
@@ -144,7 +143,7 @@ public class RegisterAcceptanceTests {
         boolean errorFound = elementExists(By.cssSelector(".alert-danger")) ||
                 elementExists(By.cssSelector(".error"));
 
-        assertTrue("Expected error message after invalid registration", errorFound);
+        Assertions.assertTrue(errorFound, "Expected error message after invalid registration");
     }
 
     @Test
@@ -156,16 +155,16 @@ public class RegisterAcceptanceTests {
                 By.cssSelector("a.switch-link[href*='login']")
         );
 
-        assertNotNull("Log in link not found on register page", loginLink);
+        Assertions.assertNotNull(loginLink, "Log in link not found on register page");
 
         loginLink.click();
 
         wait.until(d -> d.getCurrentUrl().contains("/login"));
 
-        assertTrue("Did not navigate to login page", driver.getCurrentUrl().contains("/login"));
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Did not navigate to login page");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (driver != null) {
             driver.quit();
