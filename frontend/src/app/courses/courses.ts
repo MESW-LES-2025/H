@@ -28,6 +28,7 @@ export class Courses implements OnInit, OnDestroy {
 
   courses: CourseViewmodel[] = [];
   pagedCourses: Page<CourseViewmodel> | null = null;
+  isLoading: boolean = false;
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -69,10 +70,18 @@ export class Courses implements OnInit, OnDestroy {
       this.currentPage = 0;
       this.loadCourses();
     });
+
+    // Set loading state immediately when form changes (before debounce)
+    this.filterCoursesForm.valueChanges.pipe(
+        takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.isLoading = true;
+    });
   }
 
   loadCourses(): void {
     if (this.filterCoursesForm.valid) {
+      this.isLoading = true;
       const filters = this.getFilters();
       const pageRequest = {
         page: this.currentPage,
@@ -85,8 +94,12 @@ export class Courses implements OnInit, OnDestroy {
             next: (pagedResponse: Page<CourseViewmodel>) => {
               this.pagedCourses = pagedResponse;
               this.courses = pagedResponse.content;
+              this.isLoading = false;
             },
-            error: (err) => console.error(err)  // TODO: Notifications
+            error: (err) => {
+              console.error(err);  // TODO: Notifications
+              this.isLoading = false;
+            }
           });
     }
   }
