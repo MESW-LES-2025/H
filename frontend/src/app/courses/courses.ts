@@ -58,8 +58,6 @@ export class Courses implements OnInit, OnDestroy {
     }),
   });
 
-  constructor() {}
-
   ngOnInit(): void {
     this.loadCourses();
 
@@ -88,7 +86,7 @@ export class Courses implements OnInit, OnDestroy {
               this.pagedCourses = pagedResponse;
               this.courses = pagedResponse.content;
             },
-            error: (err) => console.error(err)
+            error: (err) => console.error(err)  // TODO: Notifications
           });
     }
   }

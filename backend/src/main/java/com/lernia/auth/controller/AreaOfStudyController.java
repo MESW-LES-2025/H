@@ -17,7 +17,7 @@ public class AreaOfStudyController {
     private final AreaOfStudyService areaOfStudyService;
 
     @GetMapping
-    public List<AreaOfStudyDTO> getAllCourses() {
+    public List<AreaOfStudyDTO> getAllAreasOfStudy() {
         return areaOfStudyService.getAllAreasOfStudy();
     }
 }
