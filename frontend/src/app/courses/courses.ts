@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CoursesService } from './service/courses-service';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
 import { Subject, takeUntil } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {AsyncPipe, DatePipe} from '@angular/common';
-import {CourseFilters} from "./viewmodels/course-filters";
-import {CourseFiltersForm} from "./viewmodels/course-filters-form";
-import {Page} from "../shared/viewmodels/pagination";
-import {CourseTypeEnum} from "../shared/enums/course-type-enum";
-import {DataService} from "../shared/services/data-service";
-import {integerValidator} from '../shared/validators/integer-validator';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { CourseFilters } from "./viewmodels/course-filters";
+import { CourseFiltersForm } from "./viewmodels/course-filters-form";
+import { Page } from "../shared/viewmodels/pagination";
+import { CourseTypeEnum } from "../shared/enums/course-type-enum";
+import { DataService } from "../shared/services/data-service";
+import { integerValidator } from '../shared/validators/integer-validator';
 
 @Component({
   selector: 'app-courses',
@@ -63,9 +63,9 @@ export class Courses implements OnInit, OnDestroy {
     this.loadCourses();
 
     this.filterCoursesForm.valueChanges.pipe(
-        debounceTime(2500),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        takeUntil(this.destroy$)
+      debounceTime(2500),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
     ).subscribe(() => {
       this.currentPage = 0;
       this.loadCourses();
