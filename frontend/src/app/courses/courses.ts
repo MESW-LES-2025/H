@@ -44,11 +44,11 @@ export class Courses implements OnInit, OnDestroy {
     }),
     costMax: new FormControl<number | null>(null, [
       Validators.min(1),
-      this.integerValidator,
+      Courses.integerValidator,
     ]),
     duration: new FormControl<number | null>(null, [
       Validators.min(1),
-      this.integerValidator,
+      Courses.integerValidator,
     ]),
     languages: new FormControl<string[]>([], {
       nonNullable: true,
@@ -172,7 +172,7 @@ export class Courses implements OnInit, OnDestroy {
     return selectedValues.includes(value);
   }
 
-  integerValidator(control: AbstractControl): ValidationErrors | null {
+  static integerValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (value == null) return null; // allow null, use required validator if needed
     return Number.isInteger(value) ? null : { integer: true };
