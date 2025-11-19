@@ -7,6 +7,7 @@ import com.lernia.auth.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class CoursesController {
             @RequestParam(required = false) List<String> languages,
             @RequestParam(required = false) List<String> countries,
             @RequestParam(required = false) List<String> areasOfStudy,
-            Pageable pageable
+            @PageableDefault(size = 20, page = 0) Pageable pageable
     ) {
         CourseFilter filter = new CourseFilter();
         filter.setName(name);
