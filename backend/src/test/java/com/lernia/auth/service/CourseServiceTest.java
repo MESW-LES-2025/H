@@ -20,7 +20,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
-class CourseServiceTests {
+class CourseServiceTest {
 
     @InjectMocks
     private CourseService courseService;
