@@ -4,7 +4,6 @@ import { NgIf } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
-
 import { NavbarComponent } from './shared/navbar/navbar.component';
 
 @Component({
@@ -36,7 +35,7 @@ export class App {
           '/register': 'Register',
         };
 
-        const pageTitle = titles[url] || 'Default Title';
+        const pageTitle = titles[url] || 'Lernia';
         this.titleService.setTitle(pageTitle);
       });
   }
