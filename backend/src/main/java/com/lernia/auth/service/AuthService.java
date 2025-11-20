@@ -36,7 +36,7 @@ public class AuthService {
         String hash = passwordEncoder.encode(req.getPassword());
         UserEntity user = new UserEntity();
         user.setUsername(req.getUsername());
-        user.setName(req.getUsername());
+        user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setPassword(hash);
         user.setGender(Gender.OTHER);
