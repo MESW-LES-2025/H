@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "user_course", schema = "lernia")
+@Table(name = "user_courses", schema = "lernia")
 @Data
 public class UserCourseEntity {
 

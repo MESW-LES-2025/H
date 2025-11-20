@@ -16,3 +16,10 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+select[multiple] {
+  height: auto;
+  min-height: 4.5rem;
+  max-height: 8rem;
+  overflow-y: auto;
+}

@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "curricular_unit", schema = "lernia")
+@Table(name = "curricular_units", schema = "lernia")
 @Data
 public class CurricularUnitEntity {
 
