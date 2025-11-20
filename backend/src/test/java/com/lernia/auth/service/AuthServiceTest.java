@@ -20,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDate;
 import java.util.Optional;
 
-class AuthServiceTests {
+class AuthServiceTest {
 
     @InjectMocks
     private AuthService authService;

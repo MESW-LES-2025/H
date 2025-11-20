@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.time.LocalDate;
 import java.util.Optional;
 
-class UserProfileServiceTests {
+class UserProfileServiceTest {
 
     @InjectMocks
     private UserProfileService userProfileService;

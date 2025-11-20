@@ -1,4 +1,4 @@
 package com.lernia.auth.controller;
 
-public class AuthControllerTests {
+public class AuthControllerTest {
 }
