@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { NgIf } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
@@ -11,7 +10,6 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
   standalone: true,
   imports: [
     RouterOutlet,
-    NgIf,
     NavbarComponent,
   ],
   templateUrl: './app.html',

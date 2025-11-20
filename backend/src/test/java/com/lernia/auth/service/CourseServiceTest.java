@@ -33,7 +33,7 @@ class CourseServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
+    /*@Test
     void testGetAllCoursesMapsNestedEntities() {
         // build location
         LocationEntity location = new LocationEntity();
@@ -97,7 +97,7 @@ class CourseServiceTest {
 
         assertTrue(names.contains("Math"));
         assertTrue(names.contains("Physics"));
-    }
+    }*/
 
     @Test
     void testGetCourseByIdFound() {

@@ -105,17 +105,17 @@ public class RegisterAcceptanceIT {
         Assertions.assertNotEquals(originalType, passwordField.getAttribute("type"), "Password input type should toggle");
         passwordToggle.click();
         wait.until(ExpectedConditions.attributeToBe(passwordField, "type", originalType));
-        Assertions.assertEquals("Password input type should toggle back", originalType, passwordField.getAttribute("type"));
+        Assertions.assertEquals(originalType, passwordField.getAttribute("type"), "Password input type should toggle back");
 
         if (confirmToggle != null) {
             String confirmOriginalType = confirmPasswordField.getAttribute("type");
             confirmToggle.click();
             String confirmToggled = "password".equalsIgnoreCase(confirmOriginalType) ? "text" : "password";
             wait.until(ExpectedConditions.attributeToBe(confirmPasswordField, "type", confirmToggled));
-            Assertions.assertNotEquals("Confirm password input type should toggle", confirmOriginalType, confirmPasswordField.getAttribute("type"));
+            Assertions.assertNotEquals(confirmOriginalType, confirmPasswordField.getAttribute("type"), "Confirm password input type should toggle");
             confirmToggle.click();
             wait.until(ExpectedConditions.attributeToBe(confirmPasswordField, "type", confirmOriginalType));
-            Assertions.assertEquals("Confirm password input type should toggle back", confirmOriginalType, confirmPasswordField.getAttribute("type"));
+            Assertions.assertEquals(confirmOriginalType, confirmPasswordField.getAttribute("type"), "Confirm password input type should toggle back");
         }
     }
 
@@ -139,13 +139,7 @@ public class RegisterAcceptanceIT {
         confirmPasswordField.sendKeys("pass1234");
         submitButton.click();
 
-        wait.until(d -> elementExists(By.cssSelector(".alert-danger")) ||
-                elementExists(By.cssSelector(".error")) ||
-                elementExists(By.xpath("//*[contains(text(),'invalid') or contains(text(),'error') or contains(text(),'incorrect')]")));
-
-        boolean errorFound = elementExists(By.cssSelector(".alert-danger")) ||
-                elementExists(By.cssSelector(".error"));
-
+        boolean errorFound = waitUntilAny(errorSelectors());
         Assertions.assertTrue(errorFound, "Expected error message after invalid registration");
     }
 
@@ -191,5 +185,25 @@ public class RegisterAcceptanceIT {
             return false;
         }
     }
+
+    private By[] errorSelectors() {
+        return new By[] {
+                By.cssSelector(".alert-danger"),
+                By.cssSelector(".error"),
+                // case-insensitive text search for common error words
+                By.xpath("//*[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'invalid') or contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'error') or contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'incorrect')]")
+        };
+    }
+
+    private boolean waitUntilAny(By... selectors) {
+        try {
+            wait.until(d -> findAny(selectors) != null);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 
 }
