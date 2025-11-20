@@ -39,8 +39,8 @@ export class RegisterComponent {
   }
 
   onSubmit() {
-    console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
     this.form.markAllAsTouched();
+    console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
     if (this.form.invalid) return;
     const { username, email, password } = this.form.value;
     this.auth.register({ username, email, password }).subscribe({

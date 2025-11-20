@@ -36,7 +36,7 @@ public class AuthService {
         String hash = passwordEncoder.encode(req.getPassword());
         UserEntity user = new UserEntity();
         user.setUsername(req.getUsername());
-        user.setName(req.getName());             
+        user.setName(req.getUsername());
         user.setEmail(req.getEmail());
         user.setPassword(hash);
         user.setGender(Gender.OTHER);
@@ -62,7 +62,9 @@ public class AuthService {
         }
         
         LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUserId(user.getId());          
+        res.setUserId(user.getId());
+        res.setUsername(user.getUsername());
+        res.setRole(user.getUserRole().name());
         return res;    
     }
 }

@@ -32,7 +32,6 @@
           (input)="q.set($any($event.target).value)"
         />
 
-
         <button class="search-btn" (click)="search()">Search</button>
       </div>
 
@@ -47,18 +46,25 @@
     <aside class="filters-card">
       <div class="filters-head">
         <h3>Filters</h3>
-        <span class="muted">Coming soon</span>
+        <span class="muted">Languages</span>
       </div>
 
-      <div class="skeleton">
-        <div class="line w-70"></div>
-        <div class="block"></div>
-        <div class="line w-50"></div>
-        <div class="block"></div>
-        <div class="line w-60"></div>
-        <div class="block sm"></div>
-        <div class="block sm"></div>
-        <div class="block"></div>
+      <div class="p-2">
+        <div *ngFor="let l of languagesOptions">
+          <div class="form-check form-check-inline" *ngIf="l.value !== 'Any'">
+            <input class="form-check-input"
+                   type="checkbox"
+                   [id]="'lang-' + l.value"
+                   [checked]="selectedLanguages().includes(l.value)"
+                   (change)="toggleLanguage(l.value, $any($event.target).checked)" />
+            <label class="form-check-label" [for]="'lang-' + l.value">{{ l.label }}</label>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <button class="btn btn-sm btn-primary" (click)="search()">Apply</button>
+          <button class="btn btn-sm btn-outline-secondary ms-2" (click)="selectedLanguages.set([]); search()">Clear</button>
+        </div>
       </div>
     </aside>
 

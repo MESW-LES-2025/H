@@ -31,6 +31,6 @@ export class AuthService {
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body);
+    return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body, { withCredentials: true });
   }
 }

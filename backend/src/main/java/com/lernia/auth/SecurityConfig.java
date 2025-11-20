@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class SecurityConfig {
       @Value("${app.cors.allowed-origins}") String corsOrigins
   ) throws Exception {
     http
+
       .cors(cors -> cors
         .configurationSource(request -> {
           CorsConfiguration configuration = new CorsConfiguration();
@@ -35,13 +37,17 @@ public class SecurityConfig {
         })
       )
       .csrf(csrf -> csrf
-        .ignoringRequestMatchers("/login", "/register")
+        .ignoringRequestMatchers(
+          new AntPathRequestMatcher("/login", "POST"),
+          new AntPathRequestMatcher("/register", "POST")
+        )
       )
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/profile/**", "/api/courses/**", "/api/university/**", "/api/area-of-study").permitAll()
         .anyRequest().authenticated()
-      );
+      )
+      ;
 
     return http.build();
   }

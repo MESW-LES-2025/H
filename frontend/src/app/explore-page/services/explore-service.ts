@@ -10,43 +10,58 @@ export class ExploreService {
       id: '1',
       name: 'Yale University',
       blurb: 'Pellentesque aliquam blandit in dictumst at donec...',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0',
       accent: '#4BA28F',
       country: 'USA',
       field: 'Engineering',
-      degree: 'Bachelor'
+      degree: 'Bachelor',
+      languages: ['English']
     },
     {
       id: '2',
       name: 'Cambridge University',
       blurb: 'Vestibulum ante ipsum primis in faucibus orci luctus...',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0',
       accent: '#5AA593',
       country: 'UK',
       field: 'Science',
-      degree: 'Master'
+      degree: 'Master',
+      languages: ['English', 'French']
     },
     {
       id: '3',
-      name: 'Harvard University',
+      name: 'Universidade de Lisboa',
       blurb: 'Nulla facilisi. Ut commodo elit id pretium vehicula.',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0',
       accent: '#3F907E',
-      country: 'USA',
+      country: 'Portugal',
       field: 'Arts',
-      degree: 'PhD'
+      degree: 'PhD',
+      languages: ['Portuguese', 'English']
     }
   ];
 
-  search(query: string, country: string, field: string, mode: string): Observable<CollegeVM[]> {
-    const q = query.toLowerCase();
+
+  getAvailableLanguages(): string[] {
+    const set = new Set<string>();
+    this.data.forEach(d => (d.languages || []).forEach(l => set.add(l)));
+    return Array.from(set).sort();
+  }
+
+
+  search(query: string, country: string, field: string, selectedLanguages: string[] = []): Observable<CollegeVM[]> {
+    const q = (query || '').toLowerCase();
+    const langs = (selectedLanguages || []).map(l => (l || '').toLowerCase());
 
     const mapped = this.data
       .filter(dto =>
-        !q ||
-        dto.name.toLowerCase().includes(q) ||
-        dto.blurb.toLowerCase().includes(q)
+        (!q || dto.name.toLowerCase().includes(q) || dto.blurb.toLowerCase().includes(q))
       )
+      .filter(dto => {
+        if (!langs || langs.length === 0) return true;
+        if (!dto.languages || dto.languages.length === 0) return false;
+        return dto.languages.some(dl => langs.includes(dl.toLowerCase()));
+      })
       .map(toCollegeVM);
 
     return of(mapped);
