@@ -2,19 +2,13 @@ package com.lernia.auth.acceptance;
 
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
 
-public class LoginAcceptanceIT extends BaseAcceptanceIT{
+public class LoginAcceptanceIT extends BaseAcceptanceIT {
 
 
     @Test
@@ -163,12 +157,12 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT{
         wait.until(ExpectedConditions.attributeToBe(passwordField, "type", originalType.equals("password") ? "text" : "password"));
 
         String toggledType = passwordField.getAttribute("type");
-        Assertions.assertNotEquals("Password field type should toggle", originalType, toggledType);
+        Assertions.assertNotEquals(originalType, toggledType, "Password field type should toggle");
 
         toggleButton.click();
         wait.until(ExpectedConditions.attributeToBe(passwordField, "type", originalType));
 
-        Assertions.assertEquals("Password field type should toggle back", originalType, passwordField.getAttribute("type"));
+        Assertions.assertEquals(originalType, passwordField.getAttribute("type"), "Password field type should toggle back");
     }
 
     @Test

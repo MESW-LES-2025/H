@@ -29,8 +29,13 @@ public class BaseAcceptanceIT {
         }
 
         baseUrl = System.getenv().getOrDefault("APP_BASE_URL", "http://localhost:4200");
-        waitSeconds = Integer.parseInt(System.getenv().getOrDefault("WAIT_SECONDS", "10"));
-
+        String waitSecondsStr = System.getenv().getOrDefault("WAIT_SECONDS", "10");
+        try {
+            waitSeconds = Integer.parseInt(waitSecondsStr);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid WAIT_SECONDS value: '" + waitSecondsStr + "'. Using default value 10.");
+            waitSeconds = 10;
+        }
         FirefoxOptions options = new FirefoxOptions();
         String headless = System.getenv().getOrDefault("HEADLESS", "false");
         if (!"false".equalsIgnoreCase(headless)) {
