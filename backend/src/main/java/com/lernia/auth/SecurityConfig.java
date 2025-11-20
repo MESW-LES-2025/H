@@ -35,10 +35,10 @@ public class SecurityConfig {
         })
       )
       .csrf(csrf -> csrf
-        .ignoringRequestMatchers("/login", "/register")
+        .ignoringRequestMatchers("/login", "/register", "/api/courses/search")
       )
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
+        .requestMatchers(HttpMethod.POST, "/register", "/login", "/api/courses/search").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/profile/**", "/api/courses/**", "/api/university/**", "/api/area-of-study").permitAll()
         .anyRequest().authenticated()
       );
