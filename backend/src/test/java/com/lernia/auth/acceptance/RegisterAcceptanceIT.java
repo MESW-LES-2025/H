@@ -13,36 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
-public class RegisterAcceptanceIT {
-
-    private WebDriver driver;
-    private WebDriverWait wait;
-    private String baseUrl;
-
-    @BeforeEach
-    public void setUp() {
-        String geckoDriverPath = System.getenv("GECKODRIVER_PATH");
-        if (geckoDriverPath == null || geckoDriverPath.isBlank()) {
-            geckoDriverPath = System.getProperty("webdriver.gecko.driver");
-        }
-        if (geckoDriverPath != null && !geckoDriverPath.isBlank()) {
-            System.setProperty("webdriver.gecko.driver", geckoDriverPath);
-        }
-
-        baseUrl = System.getenv().getOrDefault("APP_BASE_URL", "http://localhost:4200");
-
-        FirefoxOptions options = new FirefoxOptions();
-        String headless = System.getenv().getOrDefault("HEADLESS", "false");
-        if (!"false".equalsIgnoreCase(headless)) {
-            options.addArguments("--headless");
-        }
-        options.addArguments("--disable-gpu");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-
-        driver = new FirefoxDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
-    }
+public class RegisterAcceptanceIT extends BaseAcceptanceIT {
 
 
     @Test
@@ -160,50 +131,4 @@ public class RegisterAcceptanceIT {
 
         Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Did not navigate to login page");
     }
-
-    @AfterEach
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
-
-    private WebElement findAny(By... selectors) {
-        for (By s : selectors) {
-            try {
-                WebElement e = driver.findElement(s);
-                if (e != null && e.isDisplayed()) return e;
-            } catch (Exception ignored) {}
-        }
-        return null;
-    }
-
-    private boolean elementExists(By selector) {
-        try {
-            return !driver.findElements(selector).isEmpty();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private By[] errorSelectors() {
-        return new By[] {
-                By.cssSelector(".alert-danger"),
-                By.cssSelector(".error"),
-                // case-insensitive text search for common error words
-                By.xpath("//*[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'invalid') or contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'error') or contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'incorrect')]")
-        };
-    }
-
-    private boolean waitUntilAny(By... selectors) {
-        try {
-            wait.until(d -> findAny(selectors) != null);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-
 }

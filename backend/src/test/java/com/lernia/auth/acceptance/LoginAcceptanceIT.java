@@ -14,37 +14,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
-public class LoginAcceptanceIT {
+public class LoginAcceptanceIT extends BaseAcceptanceIT{
 
-    private WebDriver driver;
-    private WebDriverWait wait;
-    private String baseUrl;
-
-
-    @BeforeEach
-    public void setUp() {
-        String geckoDriverPath = System.getenv("GECKODRIVER_PATH");
-        if (geckoDriverPath == null || geckoDriverPath.isBlank()) {
-            geckoDriverPath = System.getProperty("webdriver.gecko.driver");
-        }
-        if (geckoDriverPath != null && !geckoDriverPath.isBlank()) {
-            System.setProperty("webdriver.gecko.driver", geckoDriverPath);
-        }
-
-        baseUrl = System.getenv().getOrDefault("APP_BASE_URL", "http://localhost:4200");
-
-        FirefoxOptions options = new FirefoxOptions();
-        String headless = System.getenv().getOrDefault("HEADLESS", "false");
-        if (!"false".equalsIgnoreCase(headless)) {
-            options.addArguments("--headless");
-        }
-        options.addArguments("--disable-gpu");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-
-        driver = new FirefoxDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    }
 
     @Test
     public void testLoginPageContainsFields() {
@@ -56,9 +27,7 @@ public class LoginAcceptanceIT {
                 By.name("email"),
                 By.id("email"),
                 By.cssSelector("input[type='email']"),
-                By.cssSelector("input[name='username']"),
-                By.cssSelector("input[formcontrolname='username']"),
-                By.cssSelector("input[formcontrolname='email']")
+                By.cssSelector("input[name='username']")
         ));
         WebElement passField = wait.until(d -> findAny(
                 By.name("password"),
@@ -82,9 +51,7 @@ public class LoginAcceptanceIT {
                 By.name("username"),
                 By.id("username"),
                 By.name("email"),
-                By.id("email"),
-                By.cssSelector("input[formcontrolname='username']"),
-                By.cssSelector("input[formcontrolname='email']")
+                By.id("email")
         ));
         WebElement passField = wait.until(d -> findAny(
                 By.name("password"),
@@ -120,7 +87,8 @@ public class LoginAcceptanceIT {
                 elementExists(By.cssSelector(".alert-danger")) ||
                 elementExists(By.id("login-error")) ||
                 elementExists(By.cssSelector(".toast-error")) ||
-                elementExists(By.cssSelector(".mat-error"));
+                elementExists(By.cssSelector(".mat-error")) ||
+                elementExists(By.xpath("//*[contains(text(),'Invalid') or contains(text(),'failed') or contains(text(),'incorrect')]"));
 
         Assertions.assertTrue(errorFound, "Expected error message after failed login - inspect page HTML for error element");
     }
@@ -231,31 +199,5 @@ public class LoginAcceptanceIT {
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
 
         Assertions.assertTrue(driver.getCurrentUrl().toLowerCase().contains("explore") || driver.getCurrentUrl().toLowerCase().contains("guest"));
-    }
-
-
-    @AfterEach
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
-
-    private WebElement findAny(By... selectors) {
-        for (By s : selectors) {
-            try {
-                WebElement e = driver.findElement(s);
-                if (e != null && e.isDisplayed()) return e;
-            } catch (Exception ignored) {}
-        }
-        return null;
-    }
-
-    private boolean elementExists(By selector) {
-        try {
-            return !driver.findElements(selector).isEmpty();
-        } catch (Exception e) {
-            return false;
-        }
     }
 }
