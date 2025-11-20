@@ -16,6 +16,11 @@ export class ExploreComponent implements OnInit {
 
   q = signal<string>('');
 
+  country = signal<string>('Any');
+
+  // opções disponíveis
+  countries = ['Any', 'USA', 'UK'];
+
   results = signal<CollegeVM[]>([]);
 
   ngOnInit(): void {
@@ -23,8 +28,15 @@ export class ExploreComponent implements OnInit {
   }
 
   search(): void {
-    this.svc.search(this.q(), 'Any', 'Any field', 'Any').subscribe(list => {
-      this.results.set(list);
-    });
+    this.svc
+      .search(this.q(), this.country(), 'Any field', 'Any')
+      .subscribe(list => {
+        this.results.set(list);
+      });
+  }
+
+  onCountryChange(value: string): void {
+    this.country.set(value);
+    this.search();
   }
 }

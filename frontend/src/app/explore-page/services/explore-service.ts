@@ -40,15 +40,24 @@ export class ExploreService {
 
   search(query: string, country: string, field: string, mode: string): Observable<CollegeVM[]> {
     const q = query.toLowerCase();
+    const normalizedCountry = country.toLowerCase();
 
     const mapped = this.data
-      .filter(dto =>
-        !q ||
-        dto.name.toLowerCase().includes(q) ||
-        dto.blurb.toLowerCase().includes(q)
-      )
+      .filter(dto => {
+        const matchesQuery =
+          !q ||
+          dto.name.toLowerCase().includes(q) ||
+          dto.blurb.toLowerCase().includes(q);
+
+        const matchesCountry =
+          country === 'Any' ||
+          dto.country.toLowerCase() === normalizedCountry;
+
+        return matchesQuery && matchesCountry;
+      })
       .map(toCollegeVM);
 
     return of(mapped);
   }
+
 }
