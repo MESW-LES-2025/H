@@ -3,8 +3,6 @@ package com.lernia.auth.entity;
 import lombok.Data;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,6 +24,5 @@ public class ScholarshipEntity {
     private String name;
     private String description;
     private Integer amount;
-    @Enumerated(EnumType.STRING)
     private String courseType;
 }
