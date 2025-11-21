@@ -1,4 +1,5 @@
 -- 5 Users
+-- TODO: Fix Passwords
 INSERT INTO lernia.users (name, username, email, password, age, gender, location, profile_picture, job_title, creation_date, user_role, premium_start_date) VALUES
     ('Alice Smith', 'asmith', 'alice@example.com', 'pass1', 21, 'FEMALE', 'Lisbon', 'asmith.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
     ('Bob Johnson', 'bjohnson', 'bob@example.com', 'pass2', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
