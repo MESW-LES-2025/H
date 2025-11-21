@@ -18,8 +18,8 @@ public class CoursesController {
 
     private final CourseService courseService;
 
-    @PostMapping("/search")
-    public ResponseEntity<Page<CourseDTO>> getCoursesByFilter(@RequestBody CourseFilter courseFilter, Pageable pageable) {
+    @GetMapping("/search")
+    public ResponseEntity<Page<CourseDTO>> getCoursesByFilter(@ModelAttribute CourseFilter courseFilter, Pageable pageable) {
         Page<CourseDTO> page = courseService.getCourses(courseFilter, pageable);
         return ResponseEntity.ok(page);
     }
