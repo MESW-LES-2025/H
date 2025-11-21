@@ -26,6 +26,6 @@ public class ScholarshipEntity {
     private String name;
     private String description;
     private Integer amount;
-    @Enumerated(EnumType.STRING)
+    // @Enumerated(EnumType.STRING)
     private String courseType;
 }
