@@ -63,6 +63,7 @@ export class ExploreService {
     const normalizedCountry = country.toLowerCase();
     const normalizedCost = cost.toLowerCase();
     const normalizedScholarship = scholarship.toLowerCase();
+    const normalizedLanguage = language.toLowerCase();
 
 
     const mapped = this.data
@@ -96,8 +97,8 @@ export class ExploreService {
         // Language filter
         const matchesLanguage =
           language === 'Any' ||
-          dto.language.toLowerCase() === language.toLowerCase();
-
+          dto.language.toLowerCase() === normalizedLanguage;
+          
         return (
           matchesQuery &&
           matchesCountry &&
