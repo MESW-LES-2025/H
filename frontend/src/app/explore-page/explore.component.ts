@@ -38,13 +38,22 @@ export class ExploreComponent implements OnInit {
     this.search();
   }
 
+  language = signal<string>('Any');
+  languageOptions = ['Any', 'Portuguese', 'French', 'English'];
+
+  onLanguageChange(value: string): void {
+    this.language.set(value);
+    this.search();
+  }
+
   search(): void {
     this.svc
       .search(
         this.q(),
         this.country(),
         this.cost(),
-        this.scholarship()   
+        this.scholarship(),
+        this.language()
       )
       .subscribe(list => this.results.set(list));
   }
@@ -63,6 +72,7 @@ export class ExploreComponent implements OnInit {
     this.country.set('Any');
     this.cost.set('Any');
     this.scholarship.set('Any');
+    this.language.set('Any');
     this.search();
   }
 

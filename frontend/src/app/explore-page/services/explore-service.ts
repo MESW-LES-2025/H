@@ -16,9 +16,10 @@ export class ExploreService {
       field: 'Engineering',
       degree: 'Bachelor',
 
-      
+
       costOfLiving: 'High',
-      hasScholarship: true
+      hasScholarship: true,
+      language: 'English'
     },
     {
       id: '2',
@@ -31,7 +32,8 @@ export class ExploreService {
       degree: 'Master',
 
       costOfLiving: 'Medium',
-      hasScholarship: false
+      hasScholarship: false,
+      language: 'French'
     },
     {
       id: '3',
@@ -44,7 +46,8 @@ export class ExploreService {
       degree: 'PhD',
 
       costOfLiving: 'Low',
-      hasScholarship: true
+      hasScholarship: true,
+      language: 'Portuguese'
     }
   ];
 
@@ -52,13 +55,16 @@ export class ExploreService {
     query: string,
     country: string,
     cost: string,
-    scholarship: string
+    scholarship: string,
+    language: string
   ): Observable<CollegeVM[]> {
 
     const q = query.toLowerCase();
     const normalizedCountry = country.toLowerCase();
     const normalizedCost = cost.toLowerCase();
     const normalizedScholarship = scholarship.toLowerCase();
+    const normalizedLanguage = language.toLowerCase();
+
 
     const mapped = this.data
       .filter(dto => {
@@ -88,11 +94,17 @@ export class ExploreService {
           }
         }
 
+        // Language filter
+        const matchesLanguage =
+          language === 'Any' ||
+          dto.language.toLowerCase() === normalizedLanguage;
+          
         return (
           matchesQuery &&
           matchesCountry &&
           matchesCost &&
           matchesScholarship
+          && matchesLanguage
         );
       })
       .map(toCollegeVM);

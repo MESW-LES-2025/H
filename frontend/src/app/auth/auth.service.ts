@@ -26,7 +26,7 @@ export class AuthService {
     if (this.csrfToken && this.csrfHeaderName) {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
-  return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true });
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true });
 
   }
 

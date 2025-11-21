@@ -36,7 +36,7 @@ public class AuthService {
         String hash = passwordEncoder.encode(req.getPassword());
         UserEntity user = new UserEntity();
         user.setUsername(req.getUsername());
-        user.setName(req.getName());             
+        user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setPassword(hash);
         user.setGender(Gender.OTHER);
@@ -56,13 +56,13 @@ public class AuthService {
         }
 
         UserEntity user = userOpt.get();
-        
+
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             return new LoginResponse("Invalid credentials", "error");
         }
-        
+
         LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUserId(user.getId());          
-        return res;    
+        res.setUserId(user.getId());
+        return res;
     }
 }
