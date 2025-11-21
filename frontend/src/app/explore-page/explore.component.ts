@@ -23,6 +23,13 @@ export class ExploreComponent implements OnInit {
   cost = signal<string>('Any');
   costOptions = ['Any', 'Low', 'Medium', 'High'];
 
+  country = signal<string>('Any');
+  countries = ['Any', 'Portugal', 'Spain', 'France', 'UK', 'USA', 'Germany', 'Italy', 'Netherlands'];
+
+  //  filtro custo de vida
+  cost = signal<string>('Any');
+  costOptions = ['Any', 'Low', 'Medium', 'High'];
+
   results = signal<CollegeVM[]>([]);
 
   ngOnInit(): void {
