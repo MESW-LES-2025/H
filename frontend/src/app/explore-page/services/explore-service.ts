@@ -11,7 +11,6 @@ export class ExploreService {
       name: 'Yale University',
       blurb: 'Pellentesque aliquam blandit in dictumst at donec...',
       photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
       accent: '#4BA28F',
       country: 'USA',
       field: 'Engineering',
@@ -41,7 +40,6 @@ export class ExploreService {
       name: 'Harvard University',
       blurb: 'Nulla facilisi. Ut commodo elit id pretium vehicula.',
       photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
       accent: '#3F907E',
       country: 'USA',
       field: 'Arts',
@@ -65,9 +63,7 @@ export class ExploreService {
     const normalizedCountry = country.toLowerCase();
     const normalizedCost = cost.toLowerCase();
     const normalizedScholarship = scholarship.toLowerCase();
-    const normalizedCountry = country.toLowerCase();
-    const normalizedCost = cost.toLowerCase();
-    const normalizedScholarship = scholarship.toLowerCase();
+
 
     const mapped = this.data
       .filter(dto => {
