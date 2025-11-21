@@ -28,19 +28,19 @@ export class RegisterComponent {
 
   constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
     this.form = this.fb.group(
-        {
-          username: ['', [Validators.required, Validators.minLength(3)]],
-          email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required, Validators.minLength(6)]],
-          confirm: ['', [Validators.required]],
-        },
-        { validators: matchPasswords }
+      {
+        username: ['', [Validators.required, Validators.minLength(3)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirm: ['', [Validators.required]],
+      },
+      { validators: matchPasswords }
     );
   }
 
   onSubmit() {
-    this.form.markAllAsTouched();
     console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
+    this.form.markAllAsTouched();
     if (this.form.invalid) return;
     const { username, email, password } = this.form.value;
     this.auth.register({ username, email, password }).subscribe({

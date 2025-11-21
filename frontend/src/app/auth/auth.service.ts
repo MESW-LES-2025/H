@@ -26,11 +26,11 @@ export class AuthService {
     if (this.csrfToken && this.csrfHeaderName) {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
-  return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true });
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true });
 
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body, { withCredentials: true });
+    return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body);
   }
 }

@@ -2,7 +2,6 @@ package com.lernia.auth.entity;
 
 import lombok.Data;
 
-import com.lernia.auth.entity.enums.CourseType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

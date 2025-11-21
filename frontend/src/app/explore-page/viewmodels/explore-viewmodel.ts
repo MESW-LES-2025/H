@@ -7,7 +7,10 @@ export interface CollegeDTO {
   country: string;
   field: string;
   degree: 'Bachelor' | 'Master' | 'PhD';
-  languages?: string[];
+
+  costOfLiving: 'Low' | 'Medium' | 'High';
+  hasScholarship: boolean;
+  language: 'Portuguese' | 'French' | 'English';
 }
 
 export interface CollegeVM {
@@ -19,7 +22,11 @@ export interface CollegeVM {
   country: string;
   field: string;
   degree: 'Bachelor' | 'Master' | 'PhD';
-  languages: string[];
+
+  costOfLiving: 'Low' | 'Medium' | 'High';
+  hasScholarship: boolean;
+  language: 'Portuguese' | 'French' | 'English';
+
 }
 
 export function toCollegeVM(dto: CollegeDTO): CollegeVM {
@@ -32,6 +39,9 @@ export function toCollegeVM(dto: CollegeDTO): CollegeVM {
     country: dto.country,
     field: dto.field,
     degree: dto.degree,
-    languages: dto.languages ? [...dto.languages] : [],
+
+    costOfLiving: dto.costOfLiving,
+    hasScholarship: dto.hasScholarship,
+    language: dto.language
   };
 }
