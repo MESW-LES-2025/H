@@ -1,8 +1,13 @@
 package com.lernia.auth.dto;
 
-public record UniversityDTOLight(
-        Long id,
-        String name,
-        String description,
-        LocationDTO location
-) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class UniversityDTOLight {
+    private Long id;
+    private String name;
+    private String description;
+    private LocationDTO location;
+}

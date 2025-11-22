@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "review", schema = "lernia")
+@Table(name = "reviews", schema = "lernia")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor

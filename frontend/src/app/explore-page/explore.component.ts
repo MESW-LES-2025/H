@@ -16,15 +16,64 @@ export class ExploreComponent implements OnInit {
 
   q = signal<string>('');
 
+  country = signal<string>('Any');
+  countries = ['Any', 'Portugal', 'Spain', 'France', 'UK', 'USA', 'Germany', 'Italy', 'Netherlands'];
+
+  //  filtro custo de vida
+  cost = signal<string>('Any');
+  costOptions = ['Any', 'Low', 'Medium', 'High'];
+
   results = signal<CollegeVM[]>([]);
 
   ngOnInit(): void {
     this.search();
   }
 
-  search(): void {
-    this.svc.search(this.q(), 'Any', 'Any field', 'Any').subscribe(list => {
-      this.results.set(list);
-    });
+  //  filtro de scholarships
+  scholarship = signal<string>('Any');
+  scholarshipOptions = ['Any', 'Yes', 'No'];
+
+  onScholarshipChange(value: string): void {
+    this.scholarship.set(value);
+    this.search();
   }
+
+  language = signal<string>('Any');
+  languageOptions = ['Any', 'Portuguese', 'French', 'English'];
+
+  onLanguageChange(value: string): void {
+    this.language.set(value);
+    this.search();
+  }
+
+  search(): void {
+    this.svc
+      .search(
+        this.q(),
+        this.country(),
+        this.cost(),
+        this.scholarship(),
+        this.language()
+      )
+      .subscribe(list => this.results.set(list));
+  }
+
+  onCountryChange(value: string): void {
+    this.country.set(value);
+    this.search();
+  }
+
+  onCostChange(value: string): void {
+    this.cost.set(value);
+    this.search();
+  }
+
+  clearFilters(): void {
+    this.country.set('Any');
+    this.cost.set('Any');
+    this.scholarship.set('Any');
+    this.language.set('Any');
+    this.search();
+  }
+
 }

@@ -1,11 +1,8 @@
 package com.lernia.auth.entity;
 
-import com.lernia.auth.entity.enums.CourseType;
 import lombok.Data;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "scholarship", schema = "lernia")
+@Table(name = "scholarships", schema = "lernia")
 @Data
 public class ScholarshipEntity {
 
@@ -27,6 +24,5 @@ public class ScholarshipEntity {
     private String name;
     private String description;
     private Integer amount;
-    @Enumerated(EnumType.STRING)
-    private CourseType courseType;
+    private String courseType;
 }

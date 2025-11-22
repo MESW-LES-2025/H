@@ -47,20 +47,79 @@
     <aside class="filters-card">
       <div class="filters-head">
         <h3>Filters</h3>
-        <span class="muted">Coming soon</span>
+        <button
+          type="button"
+          class="clear-link"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
       </div>
 
-      <div class="skeleton">
-        <div class="line w-70"></div>
-        <div class="block"></div>
-        <div class="line w-50"></div>
-        <div class="block"></div>
-        <div class="line w-60"></div>
-        <div class="block sm"></div>
-        <div class="block sm"></div>
-        <div class="block"></div>
+      <div class="filters-body">
+        <!-- Country -->
+        <label class="filter-field">
+          <span class="filter-label">Country</span>
+          <select
+            class="filter-select"
+            [value]="country()"
+            (change)="onCountryChange($any($event.target).value)"
+          >
+            <option *ngFor="let c of countries" [value]="c">
+              {{ c === 'Any' ? 'Any country' : c }}
+            </option>
+          </select>
+        </label>
+
+        <!-- Cost of living -->
+        <label class="filter-field">
+          <span class="filter-label">Cost of living</span>
+          <select
+            class="filter-select"
+            [value]="cost()"
+            (change)="onCostChange($any($event.target).value)"
+          >
+            <option *ngFor="let opt of costOptions" [value]="opt">
+              {{ opt === 'Any' ? 'Any cost' : opt }}
+            </option>
+          </select>
+        </label>
+        <!-- Scholarships -->
+        <label class="filter-field">
+          <span class="filter-label">Scholarships</span>
+          <select
+            class="filter-select"
+            [value]="scholarship()"
+            (change)="onScholarshipChange($any($event.target).value)"
+          >
+            <option *ngFor="let opt of scholarshipOptions" [value]="opt">
+              {{ opt === 'Any' ? 'Any scholarship option' : opt }}
+            </option>
+          </select>
+        </label>
+        <!-- Language -->
+        <label class="filter-field">
+          <span class="filter-label">Language</span>
+          <select
+
+            class="filter-select"
+            [value]="language()"
+            (change)="onLanguageChange($any($event.target).value)"
+          >
+            <option *ngFor="let lang of languageOptions" [value]="lang">
+              {{ lang === 'Any' ? 'Any language' : lang }}
+            </option>
+          </select>
+        </label>
+
+
+        <p class="muted small-note">
+          More filters will be added soon.
+        </p>
       </div>
     </aside>
+
+
 
     <!-- RESULTADOS -->
     <section class="results">

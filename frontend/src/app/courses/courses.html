@@ -1,0 +1,267 @@
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold mb-2">Available Courses</h2>
+            <p class="text-muted">Browse and select from our comprehensive course catalog</p>
+        </div>
+    </div>
+    <!-- Filter Section -->
+    @if (filterCoursesForm) {
+
+        <form [formGroup]="filterCoursesForm" class="mb-4 container">
+
+            <!-- Name -->
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                      <i class="bi bi-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        class="form-control rounded-end"
+                        placeholder="Search by course name"
+                        formControlName="name"
+                        aria-label="Search by course name"
+                    />
+                </div>
+            </div>
+
+
+            <div class="row g-3">
+
+                <!-- Course Types -->
+                @if(CourseTypeEnum) {
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Course Types</label>
+                            @for ( type of CourseTypeEnum; track type) {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" [value]="type"
+                                           [checked]="isValueSelected('courseTypes', type)"
+                                           (change)="onCheckboxChange($event, 'courseTypes')"
+                                           [id]="'courseType-' + type">
+                                    <label class="form-check-label" [for]="'courseType-' + type">{{ type }}</label>
+                                </div>
+                            }
+                    </div>
+                }
+
+                <!-- Areas Of Study -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Areas of Study</label>
+                    <div class="overflow-y-auto p-1 rounded" style="max-height: 120px;">
+                        @for ( areaOfStudy of dataService.areasOfStudy$ | async; track areaOfStudy) {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" [value]="areaOfStudy"
+                                       [checked]="isValueSelected('areasOfStudy', areaOfStudy)"
+                                       (change)="onCheckboxChange($event, 'areasOfStudy')"
+                                       [id]="'areaOfStudy-' + areaOfStudy">
+                                <label class="form-check-label" [for]="'areaOfStudy-' + areaOfStudy">{{ areaOfStudy }}</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Languages -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Languages</label>
+                    <div class="overflow-y-auto p-1 rounded" style="max-height: 120px;">
+                        @for ( language of dataService.languages$ | async; track language) {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" [value]="language"
+                                       [checked]="isValueSelected('languages', language)"
+                                       (change)="onCheckboxChange($event, 'languages')"
+                                       [id]="'language-' + language">
+                                <label class="form-check-label" [for]="'language-' + language">{{ language }}</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Countries -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Countries</label>
+                    <div class="overflow-y-auto p-1 rounded" style="max-height: 120px;">
+                        @for ( country of dataService.countries$ | async; track country) {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" [value]="country"
+                                       [checked]="isValueSelected('countries', country)"
+                                       (change)="onCheckboxChange($event, 'countries')"
+                                       [id]="'country-' + country">
+                                <label class="form-check-label" [for]="'country-' + country">{{ country }}</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Max Cost -->
+                <div class="col-md-3 d-flex gap-2 h-100 align-items-center flex-nowrap">
+                    <label class="form-label fw-bold mb-0" for="costMax">Max Cost:</label>
+                    <input
+                        type="number"
+                        id="costMax"
+                        formControlName="costMax"
+                        class="form-control form-control-sm no-spinner"
+                        style="max-width: 90px;"
+                    />
+                </div>
+
+                <!-- Duration -->
+                <div class="col-md-3 d-flex gap-2 h-100 align-items-center flex-nowrap">
+                    <label class="form-label fw-bold mb-0" for="duration">Duration (years):</label>
+                    <input
+                        type="number"
+                        id="duration"
+                        class="form-control form-control-sm"
+                        formControlName="duration"
+                        style="max-width: 60px;"
+                    />
+                </div>
+
+                <!-- Remote Checkbox -->
+                <div class="col-md-3 d-flex align-items-center justify-content-center">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" formControlName="onlyRemote" id="onlyRemote" />
+                        <label class="form-check-label" for="onlyRemote">Remote Only</label>
+                    </div>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="col-md-3 d-flex align-items-center">
+                    <button type="button" class="btn btn-secondary" (click)="resetFilters()">Reset Filters</button>
+                </div>
+
+            </div>
+
+        </form>
+    }
+
+    <nav aria-label="Course pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 0">
+                <button class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Previous" [disabled]="currentPage === 0">
+                    &laquo;
+                </button>
+            </li>
+
+                @for (page of pages; track page) {
+                    <li
+                            class="page-item"
+                            [class.active]="page === currentPage"
+                    >
+                        <button class="page-link" (click)="goToPage(page)">{{ page + 1 }}</button>
+                    </li>
+
+                }
+                <li class="page-item" [class.disabled]="currentPage >= totalPages - 1">
+                    <button class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Next" [disabled]="currentPage >= totalPages - 1">
+                        &raquo;
+                    </button>
+                </li>
+        </ul>
+    </nav>
+
+    <div class="list-group">
+    @for (course of courses; track course.id) {
+        <div class="list-group-item p-3 mb-3 rounded shadow-sm hover-shadow cursor-pointer"
+           tabindex="0"
+           role="button">
+            <div class="row g-3 align-items-center">
+                <div class="col-auto d-none d-md-block">
+                    <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                        <i class="bi bi-journal-bookmark-fill text-primary fs-3"></i>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="d-flex flex-column align-items-start gap-1 mb-2">
+                        <div class="d-flex gap-2">
+                            <span class="badge align-content-center bg-primary">{{ course.courseType }}</span>
+                            @if (course.isRemote) {
+                                <span class="bg-info align-content-center px-2 rounded text-white">Remote</span>
+                            }
+                            @for (areaOfStudy of course.areasOfStudy; track areaOfStudy.id) {
+                                <small class="bg-body-secondary align-content-center px-2 rounded">
+                                    {{ areaOfStudy.name }}
+                                </small>
+                            }
+                        </div>
+                      <h5 class="fw-semibold mb-1 text-primary">{{ course.name }}</h5>
+                    </div>
+
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-building me-2"></i>{{ course.university.name }}
+                    </p>
+
+                    <p class="mb-3 text-secondary" style="line-height: 1.4;">
+                        {{ course.description }}
+                    </p>
+
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <a href="mailto:{{ course.contactEmail }}" class="btn btn-outline-primary btn-sm w-100 w-sm-auto">
+                            <i class="bi bi-envelope me-1"></i> Contact
+                        </a>
+
+                        <a href="{{ course.website }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 w-sm-auto">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Website
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-5">
+                    <div class="row text-muted small">
+                        <div class="col-6 mb-2">
+                            <div>
+                                <i class="bi bi-clock me-1"></i>
+                                <span>
+                                    Duration: {{ course.duration }} years
+                                </span>
+                            </div>
+                            <div>
+                                <i class="bi bi-calendar-event me-1"></i>
+                                <span>
+                                    Start: {{ course.startDate | date:'MMM d, yyyy' }}
+                                </span>
+                            </div>
+                            <div>
+                                <i class="bi bi-clock-history me-1"></i>
+                                <span>
+                                    Apply By: {{ course.applicationDeadline | date:'MMM d, yyyy' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <div>
+                                <i class="bi bi-translate me-1"></i>
+                                <span>
+                                    Language: {{ course.language }}
+                                </span>
+                            </div>
+                            <div>
+                                <i class="bi bi-award me-1"></i>
+                                <span>
+                                    Credits: {{ course.credits }}
+                                </span>
+                            </div>
+                            <div>
+                                <i class="bi bi-cash-coin me-1"></i>
+                                <span class="text-success fw-semibold">€{{ course.cost }} / year</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-auto d-flex justify-content-center">
+                    <button class="btn btn-outline-primary w-100 w-md-auto mt-2 mt-md-0">
+                        View Details
+                        <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    } @empty {
+        <div class="list-group-item text-center text-muted py-5">
+            No courses available at the moment.
+        </div>
+    }
+    </div>
+</div>

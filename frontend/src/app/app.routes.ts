@@ -29,4 +29,9 @@ export const routes: Routes = [
       loadComponent: () =>
         import('./explore-page/explore.component').then(m => m.ExploreComponent),
     },
+    {
+      path: 'courses',
+      loadComponent: () =>
+        import('./courses/courses').then(m => m.Courses),
+    },
 ];

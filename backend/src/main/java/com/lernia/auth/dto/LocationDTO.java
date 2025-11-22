@@ -1,7 +1,13 @@
 package com.lernia.auth.dto;
 
-public record LocationDTO(
-        Long id,
-        String city,
-        String country
-) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class LocationDTO {
+    private Long id;
+    private String city;
+    private String country;
+    private Integer costOfLiving;
+}
