@@ -21,18 +21,18 @@
             <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">
                 <label>Email or Username</label>
                 <div class="field">
-                    <input formControlName="text" type="text" placeholder="Enter your email or username" />
+                  <input formControlName="text" id="username" name="username" type="text" placeholder="Enter your email or username" />
                 </div>
 
                 <label>Password</label>
                 <div class="field has-icon">
-                    <input formControlName="password" [type]="show ? 'text' : 'password'" placeholder="Enter your password" />
-                    <button type="button" class="icon" (click)="toggle()" aria-label="Toggle password">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+                  <input formControlName="password" id="password" name="password" [type]="show ? 'text' : 'password'" placeholder="Enter your password" />
+                  <button type="button" class="icon" (click)="toggle()" aria-label="Toggle password">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
                 </div>
 
                 <div class="row">
@@ -43,7 +43,8 @@
                     <a class="link" href="#">Forgot Password</a>
                 </div>
 
-                <button class="primary ripple" type="submit">Sign in</button>
+                <div class="alert error" *ngIf="errorMessage">{{ errorMessage }}</div>
+                <button id="login-button" class="primary ripple" type="submit">Sign in</button>
 
                 <div class="or">Or</div>
 
@@ -63,7 +64,7 @@
                 <a href (click)="goTo('register', $event)" class="switch-link">Create one</a>
             </p>
 
-            <a routerLink="/register" class="guest">Continue as guest <span class="arrow">→</span></a>
+            <a routerLink="/explore" class="guest">Continue as guest <span class="arrow">→</span></a>
         </div>
     </div>
 </div>
