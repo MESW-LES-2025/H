@@ -10,6 +10,7 @@ export interface CollegeDTO {
 
   costOfLiving: 'Low' | 'Medium' | 'High';
   hasScholarship: boolean;
+  language: 'Portuguese' | 'French' | 'English';
 }
 
 export interface CollegeVM {
@@ -24,6 +25,8 @@ export interface CollegeVM {
 
   costOfLiving: 'Low' | 'Medium' | 'High';
   hasScholarship: boolean;
+  language: 'Portuguese' | 'French' | 'English';
+
 }
 
 export function toCollegeVM(dto: CollegeDTO): CollegeVM {
@@ -39,5 +42,6 @@ export function toCollegeVM(dto: CollegeDTO): CollegeVM {
 
     costOfLiving: dto.costOfLiving,
     hasScholarship: dto.hasScholarship,
+    language: dto.language
   };
 }
