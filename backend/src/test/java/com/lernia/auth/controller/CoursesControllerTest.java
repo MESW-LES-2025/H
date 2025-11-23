@@ -1,6 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lernia.auth.utils.BaseIntegrationTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CoursesControllerTest {
+class CoursesControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
