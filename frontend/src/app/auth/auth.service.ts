@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import {UserViewmodel} from '../profile-page/viewmodels/user-viewmodel';
 
 export interface LoginRequest { text: string; password: string; }
-export interface LoginResponse { message: string; status: string; userId?: number;}
+export interface LoginResponse { message: string; status: string; user?: UserViewmodel;}
 export interface RegisterRequest { username: string; email: string; password: string; }
 export interface RegisterResponse { message: string; status: string; }
 export interface CsrfResponse {

@@ -36,8 +36,8 @@ export class LoginComponent {
       next: (res) => {
         this.loading = false;
         console.log('Login OK', res);
-        if (res.status === 'success' && res.userId) {
-          this.router.navigate(['/profile', res.userId]);
+        if (res.status === 'success' && res.user?.id) {
+          this.router.navigate(['/profile', res.user.id]);
         } else {
           this.errorMessage = res.message || 'Login failed';
         }

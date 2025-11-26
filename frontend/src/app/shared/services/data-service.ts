@@ -3,6 +3,7 @@ import { BehaviorSubject, catchError, forkJoin, map, Observable, of } from 'rxjs
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AreasOfStudy } from '../viewmodels/area-of-study';
+import {UserViewmodel} from '../../profile-page/viewmodels/user-viewmodel';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -13,6 +14,7 @@ export class DataService {
   private countriesSubject = new BehaviorSubject<string[]>([]);
 
   private userAtualId: number | null = null;
+  private userActual: UserViewmodel | null = null;
 
   areasOfStudy$: Observable<string[]> = this.areasOfStudySubject.asObservable();
   languages$: Observable<string[]> = this.languagesSubject.asObservable();

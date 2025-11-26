@@ -3,13 +3,10 @@ package com.lernia.auth.service;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.lernia.auth.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
@@ -61,8 +58,27 @@ public class AuthService {
             return new LoginResponse("Invalid credentials", "error");
         }
 
+        UserProfileResponse profile = map(user);
+
         LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUserId(user.getId());
+        res.setUser(profile);
         return res;
+    }
+
+    private UserProfileResponse map(UserEntity u) {
+        UserProfileResponse r = new UserProfileResponse();
+        r.setId(u.getId());
+        r.setUsername(u.getUsername());
+        r.setName(u.getName());
+        r.setEmail(u.getEmail());
+        r.setAge(u.getAge());
+        r.setGender(u.getGender() != null ? u.getGender().name() : null);
+        r.setLocation(u.getLocation());
+        r.setProfilePicture(u.getProfilePicture());
+        r.setJobTitle(u.getJobTitle());
+        r.setCreationDate(u.getCreationDate());
+        r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
+        r.setPremiumStartDate(u.getPremiumStartDate());
+        return r;
     }
 }
