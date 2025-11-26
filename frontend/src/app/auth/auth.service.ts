@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import {UserViewmodel} from '../profile-page/viewmodels/user-viewmodel';
 
 export interface LoginRequest { text: string; password: string; }
 export interface LoginResponse { message: string; status: string; userId?: number;}
@@ -27,10 +28,17 @@ export class AuthService {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true });
-
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body);
+  }
+
+  getUserById(userId: number): Observable<UserViewmodel> {
+    return this.http.get<UserViewmodel>(`${this.baseUrl}/api/users/${userId}`);
+  }
+
+  updateUser(userId: number, userData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/api/users/${userId}`, userData);
   }
 }
