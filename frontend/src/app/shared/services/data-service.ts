@@ -12,6 +12,8 @@ export class DataService {
   private languagesSubject = new BehaviorSubject<string[]>([]);
   private countriesSubject = new BehaviorSubject<string[]>([]);
 
+  private userAtualId: number | null = null;
+
   areasOfStudy$: Observable<string[]> = this.areasOfStudySubject.asObservable();
   languages$: Observable<string[]> = this.languagesSubject.asObservable();
   countries$: Observable<string[]> = this.countriesSubject.asObservable();
@@ -35,6 +37,14 @@ export class DataService {
       this.languagesSubject.next(languages);
       this.countriesSubject.next(countries);
     });
+  }
+
+  public getUserAtualId(): number | null {
+    return this.userAtualId;
+  }
+
+  public setUserAtualId(userId: number): void {
+    this.userAtualId = userId;
   }
 
 }

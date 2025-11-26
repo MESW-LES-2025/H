@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import {EditProfile} from './profile-page/edit-profile/edit-profile';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,8 +14,14 @@ export const routes: Routes = [
             import('./auth/register.component').then(m => m.RegisterComponent),
     },
     {
-        path: 'profile/:id',
-        loadComponent: () => import('./profile-page/profile-page').then(m => m.ProfilePage)
+    path: 'profile/:id',
+    loadComponent: () => import('./profile-page/profile-page').then(m => m.ProfilePage),
+    children: [
+      {
+        path: 'edit',
+        loadComponent: () => import('./profile-page/edit-profile/edit-profile').then(m => m.EditProfile)
+      }
+    ]
     },
     {
         path: 'university/:id',
