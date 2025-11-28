@@ -24,13 +24,8 @@
           <img src="/images/lupa.png" alt="Search icon" />
         </div>
 
-        <input
-          class="hero-input"
-          type="search"
-          placeholder="Search for a course, university, or area of study..."
-          [value]="q()"
-          (input)="q.set($any($event.target).value)"
-        />
+        <input class="hero-input" type="search" placeholder="Search for a course, university, or area of study..."
+          [value]="q()" (input)="q.set($any($event.target).value)" />
 
 
         <button class="search-btn" (click)="search()">Search</button>
@@ -47,11 +42,7 @@
     <aside class="filters-card">
       <div class="filters-head">
         <h3>Filters</h3>
-        <button
-          type="button"
-          class="clear-link"
-          (click)="clearFilters()"
-        >
+        <button type="button" class="clear-link" (click)="clearFilters()">
           Clear
         </button>
       </div>
@@ -60,12 +51,8 @@
         <!-- Country -->
         <label class="filter-field">
           <span class="filter-label">Country</span>
-          <select
-            class="filter-select"
-            [value]="country()"
-            (change)="onCountryChange($any($event.target).value)"
-          >
-            <option *ngFor="let c of countries" [value]="c">
+          <select class="filter-select" [value]="country()" (change)="onCountryChange($any($event.target).value)">
+            <option *ngFor="let c of countries()" [value]="c">
               {{ c === 'Any' ? 'Any country' : c }}
             </option>
           </select>
@@ -74,11 +61,7 @@
         <!-- Cost of living -->
         <label class="filter-field">
           <span class="filter-label">Cost of living</span>
-          <select
-            class="filter-select"
-            [value]="cost()"
-            (change)="onCostChange($any($event.target).value)"
-          >
+          <select class="filter-select" [value]="cost()" (change)="onCostChange($any($event.target).value)">
             <option *ngFor="let opt of costOptions" [value]="opt">
               {{ opt === 'Any' ? 'Any cost' : opt }}
             </option>
@@ -87,11 +70,8 @@
         <!-- Scholarships -->
         <label class="filter-field">
           <span class="filter-label">Scholarships</span>
-          <select
-            class="filter-select"
-            [value]="scholarship()"
-            (change)="onScholarshipChange($any($event.target).value)"
-          >
+          <select class="filter-select" [value]="scholarship()"
+            (change)="onScholarshipChange($any($event.target).value)">
             <option *ngFor="let opt of scholarshipOptions" [value]="opt">
               {{ opt === 'Any' ? 'Any scholarship option' : opt }}
             </option>
@@ -100,13 +80,8 @@
         <!-- Language -->
         <label class="filter-field">
           <span class="filter-label">Language</span>
-          <select
-
-            class="filter-select"
-            [value]="language()"
-            (change)="onLanguageChange($any($event.target).value)"
-          >
-            <option *ngFor="let lang of languageOptions" [value]="lang">
+          <select class="filter-select" [value]="language()" (change)="onLanguageChange($any($event.target).value)">
+            <option *ngFor="let lang of languageOptions()" [value]="lang">
               {{ lang === 'Any' ? 'Any language' : lang }}
             </option>
           </select>

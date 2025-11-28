@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExploreService } from './services/explore-service';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
+import { DataService } from '../shared/services/data-service';
 
 @Component({
   selector: 'app-explore',
@@ -12,12 +13,12 @@ import { CollegeVM } from './viewmodels/explore-viewmodel';
   styleUrls: ['./explore.component.css'],
 })
 export class ExploreComponent implements OnInit {
-  constructor(private svc: ExploreService) {}
+  constructor(private svc: ExploreService, private dataService: DataService) {}
 
   q = signal<string>('');
 
   country = signal<string>('Any');
-  countries = ['Any', 'Portugal', 'Spain', 'France', 'UK', 'USA', 'Germany', 'Italy', 'Netherlands'];
+  countries = signal<string[]>(['Any']);
 
   //  filtro custo de vida
   cost = signal<string>('Any');
@@ -26,6 +27,14 @@ export class ExploreComponent implements OnInit {
   results = signal<CollegeVM[]>([]);
 
   ngOnInit(): void {
+    this.dataService.countries$.subscribe(countries => {
+      this.countries.set(['Any', ...countries]);
+    });
+
+    this.dataService.languages$.subscribe(languages => {
+      this.languageOptions.set(['Any', ...languages]);
+    });
+
     this.search();
   }
 
@@ -39,7 +48,7 @@ export class ExploreComponent implements OnInit {
   }
 
   language = signal<string>('Any');
-  languageOptions = ['Any', 'Portuguese', 'French', 'English'];
+  languageOptions = signal<string[]>(['Any']);
 
   onLanguageChange(value: string): void {
     this.language.set(value);
