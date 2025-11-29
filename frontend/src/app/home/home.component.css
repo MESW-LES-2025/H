@@ -108,7 +108,7 @@
   width: 90px;
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #72ae95, #f5886b);
+  background: linear-gradient(90deg, #72ae95, #f3e6bc);
   margin: 20px 0 16px;
 }
 
@@ -146,8 +146,8 @@
 }
 
 .hero-chip.primary {
-  background: #f5886b;
-  border-color: #f5886b;
+  background: #f3e6bc;
+  border-color: #f3e6bc;
   color: #16352c;
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
 }
@@ -155,7 +155,7 @@
 .hero-chip:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
-  background: rgba(255, 255, 255, 0.12);
+  background: #f1c972;
 }
 
 .hero-chip.primary:hover {
