@@ -1,41 +1,97 @@
 <!-- ======================================= -->
-<!-- HEADER DO USER                          -->
+<!-- PROFILE HEADER                          -->
 <!-- ======================================= -->
-<section class="profile-header">
-
+<section class="profile-header" *ngIf="user as u">
   <div class="profile-header-inner">
 
-    <!-- FOTO DO USER -->
-    <div class="profile-avatar-wrapper">
-      <img
-        *ngIf="user"
-        class="profile-avatar"
-        [src]="user?.profileImage || '/assets/profile/default-avatar.png'"
-        [alt]="user?.name || 'User picture'"
-      />
+    <div class="header-shape header-shape-left"></div>
+    <div class="header-shape header-shape-circle"></div>
+    <div class="header-shape header-shape-right"></div>
+
+    <div class="profile-main">
+      <div class="profile-avatar-wrapper">
+        <img
+          class="profile-avatar"
+          [src]="u.profileImage || '/images/default-avatar.png'"
+          [alt]="u.name || 'User picture'"
+        />
+      </div>
+
+      <!-- NOME + LOCALIZAÇÃO + META -->
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <h1 class="profile-name">{{ u.name }}</h1>
+        </div>
+
+        <p class="profile-location" *ngIf="u.location">
+          {{ u.location }}
+        </p>
+
+        <p class="profile-job" *ngIf="u.jobTitle">
+          {{ u.jobTitle }}
+        </p>
+
+        <div class="profile-meta">
+          <span class="meta-pill" *ngIf="u.age">
+            {{ u.age }} years
+          </span>
+          <span class="meta-pill" *ngIf="u.gender">
+            {{ u.gender }}
+          </span>
+        </div>
+      </div>
     </div>
-
-    <!-- NOME + LOCALIZAÇÃO -->
-    <div class="profile-info">
-      <h1 class="profile-name">
-        {{ user?.name }}
-      </h1>
-
-      <p class="profile-location">
-        {{ user?.location }}
-      </p>
-    </div>
-
-
   </div>
-
 </section>
+
 
 <!-- ======================================= -->
 <!-- USER INFO BOX                           -->
 <!-- ======================================= -->
 <section class="user-info-box">
-  <div class="user-info-container"></div>
+  <div class="user-info-container">
+
+    <h2 class="user-info-title">User’s Info</h2>
+
+    <ng-container *ngIf="user as u; else noUserInfo">
+      <div class="user-info-grid">
+        <div class="user-info-column">
+          <p class="user-info-row">
+            <span class="label">Name</span>
+            <span class="value">{{ u.name }}</span>
+          </p>
+
+          <p class="user-info-row">
+            <span class="label">Location</span>
+            <span class="value">{{ u.location }}</span>
+          </p>
+        </div>
+
+        <div class="user-info-column">
+          <p class="user-info-row" *ngIf="u.jobTitle">
+            <span class="label">Job title</span>
+            <span class="value">{{ u.jobTitle }}</span>
+          </p>
+
+          <p class="user-info-row">
+            <span class="label">Profile</span>
+            <span class="value">
+              {{ u.age ? (u.age + ' years') : '' }}
+              <span *ngIf="u.age && u.gender">&nbsp;•&nbsp;</span>
+              {{ u.gender }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noUserInfo>
+      <p class="user-info-empty">
+        No user loaded yet. Please select a profile from the Explore page.
+      </p>
+    </ng-template>
+
+  </div>
 </section>
 
 <!-- ======================================= -->
@@ -67,31 +123,31 @@
     Countries
   </button>
 
-  <button
-    class="tab-btn"
-    [class.active]="activeTab === 'other'"
-    (click)="setTab('other')"
-  >
-    Lorem???
-  </button>
 
 </section>
 
 <!-- ======================================= -->
 <!-- CARDS: UNIVERSITIES                     -->
 <!-- ======================================= -->
+
 <section *ngIf="activeTab === 'universities'" class="cards-grid">
 
   <article
     class="uni-card"
     *ngFor="let uni of universities; trackBy: trackById"
   >
-    <img [src]="uni.image" class="uni-image" />
+    <div class="uni-image-wrapper">
+      <img [src]="uni.image" class="uni-image" alt="{{ uni.name }}" />
+    </div>
 
-    <h3>{{ uni.name }}</h3>
-    <p>{{ uni.city }}, {{ uni.country }}</p>
+    <div class="uni-card-body">
+      <h3 class="uni-title">{{ uni.name }}</h3>
+      <p class="uni-location">{{ uni.city }}, {{ uni.country }}</p>
+    </div>
 
-    <button class="fav-btn">❤</button>
+    <button class="fav-btn" aria-label="Toggle favourite">
+      <span class="fav-icon">❤</span>
+    </button>
   </article>
 
 </section>
@@ -99,3 +155,17 @@
 <section *ngIf="activeTab !== 'universities'" class="empty-tab">
   <p>No items in this tab yet.</p>
 </section>
+
+<!-- ======================================= -->
+<!-- FOOTER                                  -->
+<!-- ======================================= -->
+<footer class="mini-footer">
+  <span class="mini-footer-logo">Lernia.</span>
+  <span class="mini-footer-text">
+    Helping students make confident international education decisions.
+  </span>
+  <span class="mini-footer-copy">
+    © 2025 Lernia • All rights reserved
+  </span>
+</footer>
+

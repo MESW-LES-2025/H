@@ -29,21 +29,21 @@ export class ProfilePage implements OnInit {
   protected universities = [
     {
       id: 1,
-      image: '/assets/profile/oxford.jpg',
+      image: '/images/oxford-university-banner.jpg',
       name: 'Oxford University',
       city: 'Oxford',
       country: 'United Kingdom',
     },
     {
       id: 2,
-      image: '/assets/profile/royal-holloway.jpg',
+      image: '/images/oxford-university-banner.jpg',
       name: 'Royal Holloway University',
       city: 'Egham',
       country: 'United Kingdom',
     },
     {
       id: 3,
-      image: '/assets/profile/yale.jpg',
+      image: '/images/oxford-university-banner.jpg',
       name: 'Yale University',
       city: 'New Haven',
       country: 'United States',
