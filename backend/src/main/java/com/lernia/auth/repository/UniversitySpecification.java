@@ -16,9 +16,15 @@ public class UniversitySpecification {
     }
 
     public static Specification<UniversityEntity> filter(UniversityFilter req) {
-        return Specification.where(hasCountries(req.getCountries()))
+        return Specification.where(hasName(req.getName()))
+                .and(hasCountries(req.getCountries()))
                 .and(maxCostOfLiving(req.getCostOfLivingMax()))
                 .and(hasScholarship(req.getHasScholarship()));
+    }
+
+    private static Specification<UniversityEntity> hasName(String name) {
+        return (root, query, cb) -> name == null || name.isEmpty() ? cb.conjunction()
+                : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     private static Specification<UniversityEntity> hasCountries(List<String> countries) {

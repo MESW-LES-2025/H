@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UniversityFilter {
+    private String name;
     private List<String> countries;
     private Integer costOfLivingMax;
     private Boolean hasScholarship;

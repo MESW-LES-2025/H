@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ExploreService } from './services/explore-service';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
 import { DataService } from '../shared/services/data-service';
+import { PageRequest } from '../shared/viewmodels/pagination';
 
 @Component({
   selector: 'app-explore',
@@ -20,49 +21,42 @@ export class ExploreComponent implements OnInit {
   country = signal<string>('Any');
   countries = signal<string[]>(['Any']);
 
-  //  filtro custo de vida
-  cost = signal<string>('Any');
-  costOptions = ['Any', 'Low', 'Medium', 'High'];
+  // Cost of living filter (max value)
+  cost = signal<number>(5000);
+  maxCost = 5000;
 
   results = signal<CollegeVM[]>([]);
+
+  // Scholarship filter
+  scholarship = signal<string>('Any');
+  scholarshipOptions = ['Any', 'Yes', 'No'];
+
+  // Pagination
+  pageRequest: PageRequest = { page: 0, size: 3 }; //TODO: correct pagination
 
   ngOnInit(): void {
     this.dataService.countries$.subscribe(countries => {
       this.countries.set(['Any', ...countries]);
     });
 
-    this.dataService.languages$.subscribe(languages => {
-      this.languageOptions.set(['Any', ...languages]);
-    });
-
     this.search();
   }
-
-  //  filtro de scholarships
-  scholarship = signal<string>('Any');
-  scholarshipOptions = ['Any', 'Yes', 'No'];
 
   onScholarshipChange(value: string): void {
     this.scholarship.set(value);
     this.search();
   }
 
-  language = signal<string>('Any');
-  languageOptions = signal<string[]>(['Any']);
-
-  onLanguageChange(value: string): void {
-    this.language.set(value);
-    this.search();
-  }
-
   search(): void {
+    const costMax = this.cost() >= this.maxCost ? null : this.cost();
+
     this.svc
       .search(
         this.q(),
         this.country(),
-        this.cost(),
+        costMax,
         this.scholarship(),
-        this.language()
+        this.pageRequest
       )
       .subscribe(list => this.results.set(list));
   }
@@ -72,17 +66,16 @@ export class ExploreComponent implements OnInit {
     this.search();
   }
 
-  onCostChange(value: string): void {
+  onCostChange(value: number): void {
     this.cost.set(value);
     this.search();
   }
 
   clearFilters(): void {
+    this.q.set('');
     this.country.set('Any');
-    this.cost.set('Any');
+    this.cost.set(this.maxCost);
     this.scholarship.set('Any');
-    this.language.set('Any');
     this.search();
   }
-
 }

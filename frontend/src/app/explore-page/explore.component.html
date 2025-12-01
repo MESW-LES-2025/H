@@ -24,9 +24,8 @@
           <img src="/images/lupa.png" alt="Search icon" />
         </div>
 
-        <input class="hero-input" type="search" placeholder="Search for a course, university, or area of study..."
-          [value]="q()" (input)="q.set($any($event.target).value)" />
-
+        <input class="hero-input" type="search" placeholder="Search for a university..." [value]="q()"
+          (input)="q.set($any($event.target).value)" />
 
         <button class="search-btn" (click)="search()">Search</button>
       </div>
@@ -60,12 +59,15 @@
 
         <!-- Cost of living -->
         <label class="filter-field">
-          <span class="filter-label">Cost of living</span>
-          <select class="filter-select" [value]="cost()" (change)="onCostChange($any($event.target).value)">
-            <option *ngFor="let opt of costOptions" [value]="opt">
-              {{ opt === 'Any' ? 'Any cost' : opt }}
-            </option>
-          </select>
+          <span class="filter-label">Max Cost of Living:
+            <strong>{{ cost() >= maxCost ? 'Any' : '$' + cost() + '/month' }}</strong>
+          </span>
+          <input type="range" class="filter-slider" [min]="500" [max]="maxCost" [step]="100" [value]="cost()"
+            (input)="onCostChange(+$any($event.target).value)" />
+          <div class="slider-labels">
+            <span>$500</span>
+            <span>Any</span>
+          </div>
         </label>
         <!-- Scholarships -->
         <label class="filter-field">
@@ -74,15 +76,6 @@
             (change)="onScholarshipChange($any($event.target).value)">
             <option *ngFor="let opt of scholarshipOptions" [value]="opt">
               {{ opt === 'Any' ? 'Any scholarship option' : opt }}
-            </option>
-          </select>
-        </label>
-        <!-- Language -->
-        <label class="filter-field">
-          <span class="filter-label">Language</span>
-          <select class="filter-select" [value]="language()" (change)="onLanguageChange($any($event.target).value)">
-            <option *ngFor="let lang of languageOptions()" [value]="lang">
-              {{ lang === 'Any' ? 'Any language' : lang }}
             </option>
           </select>
         </label>
@@ -100,8 +93,8 @@
     <section class="results">
       <div class="results-head">
         <div>
-          <h2>Explore Colleges</h2>
-          <p>Use the search to find schools that are a good fit for you.</p>
+          <h2>Explore Universities</h2>
+          <p>Use the filters to find universities that are a good fit for you.</p>
         </div>
         <div class="views">
           <button class="view active">Grid View</button>
@@ -113,6 +106,10 @@
         <div class="left" [style.backgroundColor]="c.color">
           <h3>{{ c.title }}</h3>
           <p>{{ c.blurb }}</p>
+          <div class="meta">
+            <span>📍 {{ c.city }}, {{ c.country }}</span>
+            <span *ngIf="c.costOfLiving > 0">💰 ${{ c.costOfLiving }}/month</span>
+          </div>
         </div>
         <div class="right">
           <img [src]="c.photo" [alt]="c.title" />
@@ -121,7 +118,7 @@
       </article>
 
       <div class="load-more">
-        <button class="more">Show more Colleges</button>
+        <button class="more">Show more Universities</button>
       </div>
     </section>
   </section>
