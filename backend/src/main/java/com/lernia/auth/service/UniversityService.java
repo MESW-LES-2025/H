@@ -66,8 +66,7 @@ public class UniversityService {
                             .map(course -> new CourseLightDTO(
                                     course.getId(),
                                     course.getName(),
-                                    course.getCourseType()
-                            ))
+                                    course.getCourseType()))
                             .collect(Collectors.toList());
 
                     return new UniversityDTO(
@@ -83,8 +82,7 @@ public class UniversityService {
                                     university.getLocation().getCity(),
                                     university.getLocation().getCountry(),
                                     university.getLocation().getCost_of_living()) : null,
-                            courses
-                    );
+                            courses);
                 })
                 .orElse(null);
     }

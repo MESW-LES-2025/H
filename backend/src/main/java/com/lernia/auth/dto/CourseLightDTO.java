@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CourseLightDTO {
-    private Long id;
-    private String name;
-    private String courseType;
+  private Long id;
+  private String name;
+  private String courseType;
 }

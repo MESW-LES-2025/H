@@ -46,7 +46,7 @@ export class UniversityPageService {
   }
 
   private mapToViewmodel(dto: UniversityDTO): UniversityViewmodel {
-    const location = dto.location 
+    const location = dto.location
       ? `${dto.location.city}, ${dto.location.country}`
       : 'Location not available';
 
