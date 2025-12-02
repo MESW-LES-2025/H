@@ -53,6 +53,7 @@ class CoursesControllerTest {
         when(courseService.getCourses(any(CourseFilter.class), eq(pageable)))
                 .thenReturn(pageMock);
 
+        // CHAMAMOS O MÉTODO EXATAMENTE COM A ASSINATURA DO CONTROLLER
         ResponseEntity<Page<CourseDTO>> response = coursesController.getCoursesByFilter(
                 name,
                 courseTypes,
@@ -69,6 +70,7 @@ class CoursesControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertSame(pageMock, response.getBody());
 
+        // Capturamos o CourseFilter que o controller constrói internamente
         ArgumentCaptor<CourseFilter> filterCaptor = ArgumentCaptor.forClass(CourseFilter.class);
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
 
@@ -106,6 +108,7 @@ class CoursesControllerTest {
         when(courseService.getCourses(any(CourseFilter.class), eq(pageable)))
                 .thenReturn(emptyPage);
 
+        // Chamamos outra vez com a assinatura exata do controller
         ResponseEntity<Page<CourseDTO>> response = coursesController.getCoursesByFilter(
                 name,
                 courseTypes,
@@ -127,6 +130,8 @@ class CoursesControllerTest {
 
         CourseFilter passedFilter = filterCaptor.getValue();
 
+        // Aqui assumimos que o CoursesController constrói o CourseFilter
+        // de forma a usar os defaults do DTO (listas vazias, onlyRemote=false, etc.)
         assertNull(passedFilter.getName());
 
         assertNotNull(passedFilter.getCourseTypes());
