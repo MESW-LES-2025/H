@@ -23,4 +23,16 @@ export class ReviewService {
   addReview(review: Review): Observable<Review> {
     return this.http.post<Review>(this.apiUrl, review, { withCredentials: true });
   }
+
+  getCourseReviews(courseId: number): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.apiUrl}/course/${courseId}`);
+  }
+
+  checkCourseEligibility(courseId: number, userId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/course/eligibility/${courseId}?userId=${userId}`);
+  }
+
+  addCourseReview(review: Review): Observable<Review> {
+    return this.http.post<Review>(`${this.apiUrl}/course`, review, { withCredentials: true });
+  }
 }

@@ -4,12 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
-import { ReviewsComponent } from './reviews/reviews.component'; // Import this
+import { ReviewsComponent } from './reviews/reviews.component'; 
 
 @Component({
   selector: 'app-university-page',
   standalone: true,
-  imports: [CommonModule, NgbNavModule, DecimalPipe, ReviewsComponent], // Add to imports
+  imports: [CommonModule, NgbNavModule, DecimalPipe, ReviewsComponent], 
   templateUrl: './university-page.html',
   styleUrls: ['./university-page.css'],
 })

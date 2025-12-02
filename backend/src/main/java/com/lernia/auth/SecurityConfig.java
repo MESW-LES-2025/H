@@ -58,10 +58,11 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.GET, 
             "/api/profile/**", 
             "/api/courses/**", 
+            "/api/course/**",
             "/api/courses/search", 
             "/api/university/**", 
             "/api/area-of-study",
-            "/api/reviews/**" 
+            "/api/reviews/**"
         ).permitAll()
         .anyRequest().authenticated()
       );

@@ -25,8 +25,23 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.canUserReview(userId, universityId));
     }
 
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<ReviewDTO>> getCourseReviews(@PathVariable Long courseId) {
+        return ResponseEntity.ok(reviewService.getReviewsByCourse(courseId));
+    }
+
+    @GetMapping("/course/eligibility/{courseId}")
+    public ResponseEntity<Boolean> checkCourseEligibility(@PathVariable Long courseId, @RequestParam Long userId) {
+        return ResponseEntity.ok(reviewService.canUserReviewCourse(userId, courseId));
+    }
+
     @PostMapping
     public ResponseEntity<ReviewDTO> addReview(@RequestBody ReviewDTO reviewDto) {
         return ResponseEntity.ok(reviewService.addReview(reviewDto));
+    }
+
+    @PostMapping("/course")
+    public ResponseEntity<ReviewDTO> addCourseReview(@RequestBody ReviewDTO reviewDto) {
+        return ResponseEntity.ok(reviewService.addCourseReview(reviewDto));
     }
 }

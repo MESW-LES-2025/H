@@ -1,0 +1,50 @@
+<div class="reviews-container">
+
+  <!-- Add Review Section: Only visible if logged in AND eligible -->
+  <div class="add-review-section" *ngIf="isLoggedIn && isEligible">
+    
+        <h4>Write a Review</h4>
+        
+        <div class="form-row">
+            <div class="rating-input">
+            <label>Rating:</label>
+            <select [(ngModel)]="newReview.rating">
+                <option [value]="5">5 - Excellent</option>
+                <option [value]="4">4 - Very Good</option>
+                <option [value]="3">3 - Good</option>
+                <option [value]="2">2 - Fair</option>
+                <option [value]="1">1 - Poor</option>
+            </select>
+            </div>
+            <div class="title-input">
+                <input type="text" [(ngModel)]="newReview.title" placeholder="Review Title (e.g., Great Campus!)">
+            </div>
+        </div>
+
+        <textarea [(ngModel)]="newReview.description" placeholder="Share your experience..." rows="3"></textarea>
+        <button class="btn-submit" (click)="submitReview()" [disabled]="!newReview.description || !newReview.title">Post Review</button>
+
+  </div>
+
+  <!-- Reviews List -->
+  <div class="reviews-list">
+    <div class="review-card" *ngFor="let review of reviews">
+      <div class="review-header">
+        <div class="header-left">
+            <span class="user-name">{{ review.userName || 'Anonymous' }}</span>
+            <div class="star-rating">
+                <span *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= review.rating">★</span>
+            </div>
+        </div>
+        <span class="review-date">{{ review.reviewDate | date:'mediumDate' }}</span>
+      </div>
+      
+      <h5 class="review-title">{{ review.title }}</h5>
+      <p class="review-comment">{{ review.description }}</p>
+    </div>
+    
+    <div *ngIf="reviews.length === 0" class="no-reviews">
+      <p>No reviews yet.</p>
+    </div>
+  </div>
+</div>

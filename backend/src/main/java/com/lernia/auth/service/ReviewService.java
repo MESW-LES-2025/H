@@ -4,10 +4,14 @@ import com.lernia.auth.dto.ReviewDTO;
 import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.entity.UniversityReviewEntity;
 import com.lernia.auth.entity.UserEntity;
+import com.lernia.auth.entity.CourseReviewEntity;
+import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.repository.UniversityRepository; 
 import com.lernia.auth.repository.UniversityReviewRepository;
 import com.lernia.auth.repository.UserRepository; 
 import com.lernia.auth.repository.UserCourseRepository;
+import com.lernia.auth.repository.CourseReviewRepository;
+import com.lernia.auth.repository.CourseRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,11 @@ public class ReviewService {
     @Autowired
     private UniversityReviewRepository reviewRepository;
     @Autowired
+    private CourseReviewRepository courseReviewRepository; // Inject new repo
+    @Autowired
     private UniversityRepository universityRepository;
+    @Autowired
+    private CourseRepository courseRepository; // Inject course repo
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -32,9 +40,19 @@ public class ReviewService {
         return userCourseRepository.existsByUserIdAndCourse_UniversityId(userId, universityId);
     }
 
+    public boolean canUserReviewCourse(Long userId, Long courseId) {
+        return userCourseRepository.existsByUserIdAndCourseId(userId, courseId);
+    }
+
     public List<ReviewDTO> getReviewsByUniversity(Long universityId) {
         return reviewRepository.findByUniversityIdOrderByReviewDateDesc(universityId).stream()
                 .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReviewDTO> getReviewsByCourse(Long courseId) {
+        return courseReviewRepository.findByCourseIdOrderByReviewDateDesc(courseId).stream()
+                .map(this::convertCourseReviewToDto)
                 .collect(Collectors.toList());
     }
 
@@ -62,6 +80,29 @@ public class ReviewService {
         return convertToDto(savedReview);
     }
 
+    public ReviewDTO addCourseReview(ReviewDTO reviewDTO) {
+        if (!canUserReviewCourse(reviewDTO.getUserId(), reviewDTO.getCourseId())) {
+            throw new RuntimeException("User is not eligible to review this course.");
+        }
+
+        CourseReviewEntity review = new CourseReviewEntity();
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
+        review.setReviewDate(LocalDate.now());
+
+        CourseEntity course = courseRepository.findById(reviewDTO.getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        UserEntity user = userRepository.findById(reviewDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        review.setCourse(course);
+        review.setUser(user);
+
+        CourseReviewEntity savedReview = courseReviewRepository.save(review);
+        return convertCourseReviewToDto(savedReview);
+    }
+
     private ReviewDTO convertToDto(UniversityReviewEntity review) {
         ReviewDTO dto = new ReviewDTO();
         dto.setId(review.getId());
@@ -72,6 +113,19 @@ public class ReviewService {
         dto.setUserId(review.getUser().getId());
         dto.setUserName(review.getUser().getName());
         dto.setUniversityId(review.getUniversity().getId());
+        return dto;
+    }
+
+    private ReviewDTO convertCourseReviewToDto(CourseReviewEntity review) {
+        ReviewDTO dto = new ReviewDTO();
+        dto.setId(review.getId());
+        dto.setRating(review.getRating());
+        dto.setTitle(review.getTitle());
+        dto.setDescription(review.getDescription());
+        dto.setReviewDate(review.getReviewDate());
+        dto.setUserId(review.getUser().getId());
+        dto.setUserName(review.getUser().getName());
+        dto.setCourseId(review.getCourse().getId());
         return dto;
     }
 }

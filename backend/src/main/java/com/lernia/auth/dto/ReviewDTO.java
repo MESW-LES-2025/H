@@ -10,6 +10,7 @@ public class ReviewDTO {
     private Long userId;
     private String userName;
     private Long universityId;
+    private Long courseId;
     private Float rating;
     private String title;
     private String description;
