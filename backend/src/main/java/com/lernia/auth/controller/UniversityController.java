@@ -1,5 +1,6 @@
 package com.lernia.auth.controller;
 
+import com.lernia.auth.dto.UniversityDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.dto.UniversityFilter;
 import com.lernia.auth.service.UniversityService;
@@ -31,8 +32,8 @@ public class UniversityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UniversityDTOLight> getUniversityById(@PathVariable Long id) {
-        UniversityDTOLight university = universityService.getUniversityById(id);
+    public ResponseEntity<UniversityDTO> getUniversityById(@PathVariable Long id) {
+        UniversityDTO university = universityService.getUniversityDetailsById(id);
         if (university != null) {
             return ResponseEntity.ok(university);
         } else {
