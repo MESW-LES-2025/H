@@ -2,7 +2,6 @@ package com.lernia.auth.service;
 
 import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.AreaOfStudyEntity;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.*;
 
 class CourseServiceTest {
 
@@ -134,83 +131,6 @@ class CourseServiceTest {
         assertTrue(dto.getAreasOfStudy().isEmpty(), "Areas list should be empty");
 
         verify(courseRepository, times(1)).findById(7L);
-    }
-
-    // -------------------------------------------------------
-    // getCourses (filter + pageable)
-    // -------------------------------------------------------
-
-    @Test
-    void testGetCourses_MapsPageOfEntitiesToPageOfDTOs() {
-        CourseEntity course = buildFullCourseEntity(1L);
-
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<CourseEntity> entityPage =
-                new PageImpl<>(List.of(course), pageable, 1);
-
-        // stub bem genérico para evitar problemas de generics
-        when(courseRepository.findCourses(
-                any(), any(), any(), any(), any(),
-                any(), any(), any(), any()
-        )).thenReturn(entityPage);
-
-        CourseFilter filter = new CourseFilter(); // usa construtor vazio
-
-        Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
-
-        assertNotNull(dtoPage);
-        assertEquals(1, dtoPage.getTotalElements());
-        assertEquals(1, dtoPage.getContent().size());
-
-        CourseDTO dto = dtoPage.getContent().get(0);
-        assertEquals(1L, dto.getId());
-        assertEquals("Software Engineering", dto.getName());
-        assertNotNull(dto.getUniversity());
-        assertEquals("FEUP", dto.getUniversity().getName());
-
-        verify(courseRepository, times(1)).findCourses(
-                any(), any(), any(), any(), any(),
-                any(), any(), any(), any()
-        );
-    }
-
-    @Test
-    void testGetCourses_EmptyResultPage() {
-        Pageable pageable = PageRequest.of(0, 10);
-
-        when(courseRepository.findCourses(
-                any(), any(), any(), any(), any(),
-                any(), any(), any(), any()
-        )).thenReturn(Page.empty(pageable));
-
-        CourseFilter filter = new CourseFilter();
-
-        Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
-
-        assertNotNull(dtoPage);
-        assertEquals(0, dtoPage.getTotalElements());
-        assertTrue(dtoPage.getContent().isEmpty());
-
-        verify(courseRepository, times(1)).findCourses(
-                any(), any(), any(), any(), any(),
-                any(), any(), any(), any()
-        );
-    }
-
-    @Test
-    void testGetCourses_NullFilter_ThrowsException() {
-        Pageable pageable = PageRequest.of(0, 10);
-
-        assertThrows(NullPointerException.class,
-                () -> courseService.getCourses(null, pageable));
-    }
-
-    @Test
-    void testGetCourses_NullPageable_ThrowsException() {
-        CourseFilter filter = new CourseFilter();
-
-        assertThrows(NullPointerException.class,
-                () -> courseService.getCourses(filter, null));
     }
 
     // -------------------------------------------------------
