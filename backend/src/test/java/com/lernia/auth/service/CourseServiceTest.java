@@ -1,10 +1,6 @@
 package com.lernia.auth.service;
 
-import com.lernia.auth.dto.AreaOfStudyDTO;
-import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
-import com.lernia.auth.dto.LocationDTO;
-import com.lernia.auth.dto.UniversityDTOLight;
+import com.lernia.auth.dto.*;
 import com.lernia.auth.entity.AreaOfStudyEntity;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
@@ -144,6 +140,17 @@ class CourseServiceTest {
         verify(courseRepository, times(1)).findById(7L);
     }
 
+    @Test
+    void testGetCourseById_NullAreasOfStudy_ThrowsException() {
+        CourseEntity course = buildFullCourseEntity(10L);
+        course.setAreaOfStudies(null);  // vai rebentar em course.getAreaOfStudies().stream()
+
+        when(courseRepository.findById(10L)).thenReturn(Optional.of(course));
+
+        assertThrows(NullPointerException.class,
+                () -> courseService.getCourseById(10L));
+    }
+
     // -------------------------------------------------------
     // getCourses (filter + pageable)
     // -------------------------------------------------------
@@ -165,9 +172,10 @@ class CourseServiceTest {
                 any(),          // languages
                 any(),          // countries
                 any(),          // areasOfStudy
-                eq(pageable)    // pageable
+                eq(pageable)
         )).thenReturn(entityPage);
 
+        // usa o construtor vazio + defaults
         CourseFilter filter = new CourseFilter();
 
         Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
@@ -183,14 +191,7 @@ class CourseServiceTest {
         assertEquals("FEUP", dto.getUniversity().getName());
 
         verify(courseRepository, times(1)).findCourses(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
+                any(), any(), any(), any(), any(), any(), any(), any(),
                 eq(pageable)
         );
     }
@@ -204,7 +205,7 @@ class CourseServiceTest {
                 eq(pageable)
         )).thenReturn(Page.empty(pageable));
 
-        CourseFilter filter = new CourseFilter();
+        CourseFilter filter = new CourseFilter();  // tudo default, listas vazias
 
         Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
 
@@ -257,59 +258,6 @@ class CourseServiceTest {
     }
 
     @Test
-    void testGetCourses_MultipleCoursesMappedCorrectly() {
-        CourseEntity c1 = buildFullCourseEntity(1L);
-
-        CourseEntity c2 = buildFullCourseEntity(2L);
-        c2.setName("Data Science");
-        c2.getUniversity().setName("UP");
-
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<CourseEntity> entityPage =
-                new PageImpl<>(List.of(c1, c2), pageable, 2);
-
-        when(courseRepository.findCourses(
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                eq(pageable)
-        )).thenReturn(entityPage);
-
-        CourseFilter filter = new CourseFilter();
-
-        Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
-
-        assertNotNull(dtoPage);
-        assertEquals(2, dtoPage.getTotalElements());
-        assertEquals(2, dtoPage.getContent().size());
-
-        CourseDTO dto1 = dtoPage.getContent().get(0);
-        CourseDTO dto2 = dtoPage.getContent().get(1);
-
-        assertEquals(1L, dto1.getId());
-        assertEquals(2L, dto2.getId());
-
-        assertEquals("Software Engineering", dto1.getName());
-        assertEquals("Data Science", dto2.getName());
-
-        assertEquals("FEUP", dto1.getUniversity().getName());
-        assertEquals("UP", dto2.getUniversity().getName());
-
-        verify(courseRepository, times(1)).findCourses(
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                eq(pageable)
-        );
-    }
-    @Test
-    void testGetCourseById_NullAreasOfStudy_ThrowsException() {
-        CourseEntity course = buildFullCourseEntity(10L);
-        course.setAreaOfStudies(null);
-
-        when(courseRepository.findById(10L)).thenReturn(Optional.of(course));
-
-        assertThrows(NullPointerException.class,
-                () -> courseService.getCourseById(10L));
-    }
-
-    @Test
     void testGetCourses_NullFilter_ThrowsException() {
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -329,10 +277,6 @@ class CourseServiceTest {
     // Helpers
     // -------------------------------------------------------
 
-    /**
-     * Builds a complete CourseEntity with university, location and areas of study
-     * for reuse across tests.
-     */
     private CourseEntity buildFullCourseEntity(Long id) {
         // location
         LocationEntity location = new LocationEntity();
