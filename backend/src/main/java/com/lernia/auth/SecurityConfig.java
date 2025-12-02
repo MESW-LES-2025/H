@@ -17,31 +17,30 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,
-      @Value("${app.cors.allowed-origins}") String corsOrigins
-  ) throws Exception {
+      @Value("${app.cors.allowed-origins}") String corsOrigins) throws Exception {
     http
-      .cors(cors -> cors
-        .configurationSource(request -> {
-          CorsConfiguration configuration = new CorsConfiguration();
-          List<String> origins = Arrays.stream(corsOrigins.split(","))
-              .map(String::trim)
-              .filter(s -> !s.isEmpty())
-              .collect(Collectors.toList());
-          configuration.setAllowedOrigins(origins);
-          configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-          configuration.setAllowedHeaders(List.of("*"));
-          configuration.setAllowCredentials(true);
-          return configuration;
-        })
-      )
-      .csrf(csrf -> csrf
-        .ignoringRequestMatchers("/login", "/register")
-      )
-      .authorizeHttpRequests(auth -> auth
-        .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
-        .requestMatchers(HttpMethod.GET, "/api/profile/**", "/api/courses/**", "/api/courses/search", "/api/university/**", "/api/area-of-study").permitAll()
-        .anyRequest().authenticated()
-      );
+        .cors(cors -> cors
+            .configurationSource(request -> {
+              CorsConfiguration configuration = new CorsConfiguration();
+              List<String> origins = Arrays.stream(corsOrigins.split(","))
+                  .map(String::trim)
+                  .filter(s -> !s.isEmpty())
+                  .collect(Collectors.toList());
+              configuration.setAllowedOrigins(origins);
+              configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+              configuration.setAllowedHeaders(List.of("*"));
+              configuration.setAllowCredentials(true);
+              return configuration;
+            }))
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers("/login", "/register"))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/profile/**", "/api/courses/**", "/api/courses/search",
+                "/api/university/**", "/api/area-of-study")
+            .permitAll()
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+            .anyRequest().authenticated());
 
     return http.build();
   }
