@@ -16,7 +16,11 @@ export class ReviewService {
     return this.http.get<Review[]>(`${this.apiUrl}/university/${universityId}`);
   }
 
+  checkEligibility(universityId: number, userId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/eligibility/${universityId}?userId=${userId}`);
+  }
+
   addReview(review: Review): Observable<Review> {
-    return this.http.post<Review>(this.apiUrl, review);
+    return this.http.post<Review>(this.apiUrl, review, { withCredentials: true });
   }
 }

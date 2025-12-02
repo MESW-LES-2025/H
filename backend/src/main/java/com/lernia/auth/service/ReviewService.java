@@ -7,6 +7,8 @@ import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UniversityRepository; 
 import com.lernia.auth.repository.UniversityReviewRepository;
 import com.lernia.auth.repository.UserRepository; 
+import com.lernia.auth.repository.UserCourseRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,12 @@ public class ReviewService {
     private UniversityRepository universityRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserCourseRepository userCourseRepository;
+
+    public boolean canUserReview(Long userId, Long universityId) {
+        return userCourseRepository.existsByUserIdAndCourse_UniversityId(userId, universityId);
+    }
 
     public List<ReviewDTO> getReviewsByUniversity(Long universityId) {
         return reviewRepository.findByUniversityIdOrderByReviewDateDesc(universityId).stream()
@@ -31,6 +39,11 @@ public class ReviewService {
     }
 
     public ReviewDTO addReview(ReviewDTO ReviewDTO) {
+        // Enforce eligibility check before saving
+        if (!canUserReview(ReviewDTO.getUserId(), ReviewDTO.getUniversityId())) {
+            throw new RuntimeException("User is not eligible to review this university.");
+        }
+
         UniversityReviewEntity review = new UniversityReviewEntity();
         review.setRating(ReviewDTO.getRating());
         review.setTitle(ReviewDTO.getTitle());

@@ -23,6 +23,7 @@ export class ReviewsComponent implements OnInit {
     description: ''
   };
   isLoggedIn = false;
+  isEligible = false;
 
   constructor(
     private reviewService: ReviewService,
@@ -32,11 +33,20 @@ export class ReviewsComponent implements OnInit {
   ngOnInit(): void {
     this.loadReviews();
     this.authService.currentUser$.subscribe(user => {
+        this.isLoggedIn = !!user;
         if (user) {
-            this.isLoggedIn = true;
             this.newReview.userId = user.id;
+            this.checkEligibility(user.id);
         }
     });
+  }
+
+  checkEligibility(userId: number) {
+    if (this.universityId) {
+      this.reviewService.checkEligibility(this.universityId, userId).subscribe(eligible => {
+        this.isEligible = eligible;
+      });
+    }
   }
 
   loadReviews() {

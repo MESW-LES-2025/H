@@ -80,7 +80,7 @@ public class CourseService {
                 location.getId(),
                 location.getCity(),
                 location.getCountry(),
-                location.getCost_of_living()
+                location.getCostOfLiving()
         );
 
         return new UniversityDTOLight(

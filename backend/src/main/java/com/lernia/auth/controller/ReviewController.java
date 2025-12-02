@@ -20,6 +20,11 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsByUniversity(universityId));
     }
 
+    @GetMapping("/eligibility/{universityId}")
+    public ResponseEntity<Boolean> checkEligibility(@PathVariable Long universityId, @RequestParam Long userId) {
+        return ResponseEntity.ok(reviewService.canUserReview(userId, universityId));
+    }
+
     @PostMapping
     public ResponseEntity<ReviewDTO> addReview(@RequestBody ReviewDTO reviewDto) {
         return ResponseEntity.ok(reviewService.addReview(reviewDto));

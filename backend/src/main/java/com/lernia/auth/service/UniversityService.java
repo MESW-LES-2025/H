@@ -1,5 +1,6 @@
 package com.lernia.auth.service;
 
+import com.lernia.auth.dto.LocationDTO; // Import LocationDTO
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.repository.UniversityRepository;
@@ -30,17 +31,16 @@ public class UniversityService {
         dto.setContactInfo(entity.getContactInfo());
         dto.setWebsite(entity.getWebsite());
 
+    
         if (entity.getLocation() != null) {
-            String city = entity.getLocation().getCity() != null ? entity.getLocation().getCity() : "";
-            String country = entity.getLocation().getCountry() != null ? entity.getLocation().getCountry() : "";
-            String locStr = city;
-            if (!city.isEmpty() && !country.isEmpty()) {
-                locStr += ", ";
-            }
-            locStr += country;
-            dto.setLocation(locStr);
+            dto.setLocation(new LocationDTO(
+                entity.getLocation().getId(),
+                entity.getLocation().getCity(),
+                entity.getLocation().getCountry(),
+                entity.getLocation().getCostOfLiving()
+            ));
         } else {
-            dto.setLocation("Unknown Location");
+            dto.setLocation(null);
         }
 
         dto.setStudentCount(5000); 

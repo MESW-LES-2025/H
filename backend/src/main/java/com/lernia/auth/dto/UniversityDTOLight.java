@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UniversityDTOLight {
     private Long id;
     private String name;
     private String description;
-    private String location; 
+    private LocationDTO location; 
     
     private String logo;
     private String bannerImage;
@@ -21,4 +23,12 @@ public class UniversityDTOLight {
     private String website;
     
     private List<Object> courses; 
+
+    // This constructor is required by CourseService
+    public UniversityDTOLight(Long id, String name, String description, LocationDTO location) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.location = location;
+    }
 }
