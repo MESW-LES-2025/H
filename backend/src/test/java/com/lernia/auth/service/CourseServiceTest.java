@@ -148,20 +148,19 @@ class CourseServiceTest {
         Page<CourseEntity> entityPage =
                 new PageImpl<>(List.of(course), pageable, 1);
 
-        // filtr o padrão (construtor vazio)
-        CourseFilter filter = new CourseFilter();
+        CourseFilter filter = new CourseFilter(); // usa defaults
 
-        // MATCH exato aos valores que o service vai passar
+        // usamos nullable(...) e anyList() para casar com a assinatura real do repositório
         when(courseRepository.findCourses(
-                isNull(),                 // name
-                eq(List.of()),            // courseTypes
-                eq(false),                // onlyRemote
-                isNull(),                 // costMax
-                isNull(),                 // duration
-                eq(List.of()),            // languages
-                eq(List.of()),            // countries
-                eq(List.of()),            // areasOfStudy
-                eq(pageable)              // pageable
+                nullable(String.class),        // name
+                anyList(),                     // courseTypes
+                nullable(Boolean.class),       // onlyRemote
+                nullable(Integer.class),       // costMax
+                nullable(Integer.class),       // duration
+                anyList(),                     // languages
+                anyList(),                     // countries
+                anyList(),                     // areasOfStudy
+                any(Pageable.class)            // pageable
         )).thenReturn(entityPage);
 
         Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
@@ -177,24 +176,33 @@ class CourseServiceTest {
         assertEquals("FEUP", dto.getUniversity().getName());
 
         verify(courseRepository, times(1)).findCourses(
-                isNull(), eq(List.of()), eq(false),
-                isNull(), isNull(),
-                eq(List.of()), eq(List.of()), eq(List.of()),
-                eq(pageable)
+                nullable(String.class),
+                anyList(),
+                nullable(Boolean.class),
+                nullable(Integer.class),
+                nullable(Integer.class),
+                anyList(),
+                anyList(),
+                anyList(),
+                any(Pageable.class)
         );
     }
 
     @Test
     void testGetCourses_EmptyResultPage() {
         Pageable pageable = PageRequest.of(0, 10);
-
         CourseFilter filter = new CourseFilter();
 
         when(courseRepository.findCourses(
-                isNull(), eq(List.of()), eq(false),
-                isNull(), isNull(),
-                eq(List.of()), eq(List.of()), eq(List.of()),
-                eq(pageable)
+                nullable(String.class),
+                anyList(),
+                nullable(Boolean.class),
+                nullable(Integer.class),
+                nullable(Integer.class),
+                anyList(),
+                anyList(),
+                anyList(),
+                any(Pageable.class)
         )).thenReturn(Page.empty(pageable));
 
         Page<CourseDTO> dtoPage = courseService.getCourses(filter, pageable);
@@ -204,10 +212,15 @@ class CourseServiceTest {
         assertTrue(dtoPage.getContent().isEmpty());
 
         verify(courseRepository, times(1)).findCourses(
-                isNull(), eq(List.of()), eq(false),
-                isNull(), isNull(),
-                eq(List.of()), eq(List.of()), eq(List.of()),
-                eq(pageable)
+                nullable(String.class),
+                anyList(),
+                nullable(Boolean.class),
+                nullable(Integer.class),
+                nullable(Integer.class),
+                anyList(),
+                anyList(),
+                anyList(),
+                any(Pageable.class)
         );
     }
 
