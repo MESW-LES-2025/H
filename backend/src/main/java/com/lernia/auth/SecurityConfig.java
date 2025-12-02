@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,12 +35,18 @@ public class SecurityConfig {
           return configuration;
         })
       )
-      .csrf(csrf -> csrf
-        .ignoringRequestMatchers("/login", "/register")
-      )
+      .csrf(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
-        .requestMatchers(HttpMethod.GET, "/api/profile/**", "/api/courses/**", "/api/courses/search", "/api/university/**", "/api/area-of-study").permitAll()
+        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
+        .requestMatchers(HttpMethod.GET, 
+            "/api/profile/**", 
+            "/api/courses/**", 
+            "/api/courses/search", 
+            "/api/university/**", 
+            "/api/area-of-study",
+            "/api/reviews/**" 
+        ).permitAll()
         .anyRequest().authenticated()
       );
 
