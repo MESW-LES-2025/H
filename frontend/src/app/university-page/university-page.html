@@ -141,6 +141,18 @@
               </div>
             </ng-template>
           </li>
+
+          <!-- NEW: Reviews Tab -->
+          <li [ngbNavItem]="4">
+            <button ngbNavLink>Reviews</button>
+            <ng-template ngbNavContent>
+              <div class="p-4">
+                <h3 class="h5 fw-bold mb-3">Student Reviews</h3>
+                <!-- Pass the university ID to the reviews component -->
+                <app-reviews [universityId]="university.id"></app-reviews>
+              </div>
+            </ng-template>
+          </li>
         </ul>
 
         <!-- Tab Content Outlet -->

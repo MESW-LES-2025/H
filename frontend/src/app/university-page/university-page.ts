@@ -1,16 +1,17 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
-import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import { ReviewsComponent } from './reviews/reviews.component'; // Import this
 
 @Component({
   selector: 'app-university-page',
   standalone: true,
-  imports: [CommonModule, NgbNavModule],
+  imports: [CommonModule, NgbNavModule, DecimalPipe, ReviewsComponent], // Add to imports
   templateUrl: './university-page.html',
-  styleUrl: './university-page.css',
+  styleUrls: ['./university-page.css'],
 })
 export class UniversityPage implements OnInit {
   private universityPageService: UniversityPageService = inject(UniversityPageService);
