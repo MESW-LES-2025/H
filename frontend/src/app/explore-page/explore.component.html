@@ -114,8 +114,14 @@
         </div>
       </article>
 
-      <div class="load-more">
-        <button class="more">Show more Universities</button>
+      <div class="load-more" *ngIf="hasMorePages()">
+        <button class="more" (click)="loadMore()" [disabled]="isLoading()">
+          {{ isLoading() ? 'Loading...' : 'Show more Universities' }}
+        </button>
+      </div>
+
+      <div class="no-more" *ngIf="!hasMorePages() && results().length > 0">
+        <p>No more universities to show</p>
       </div>
     </section>
   </section>

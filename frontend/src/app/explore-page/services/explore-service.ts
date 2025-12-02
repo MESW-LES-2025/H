@@ -18,7 +18,7 @@ export class ExploreService {
     costMax: number | null,
     scholarship: string,
     pageRequest: PageRequest
-  ): Observable<CollegeVM[]> {
+  ): Observable<Page<CollegeVM>> {
     let params = new HttpParams()
       .set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString());
@@ -46,7 +46,13 @@ export class ExploreService {
 
     return this.http.get<Page<UniversityDTO>>(`${this.baseUrl}/api/university`, { params })
       .pipe(
-        map(page => page.content.map(toCollegeVM))
+        map(page => ({
+          content: page.content.map(toCollegeVM),
+          totalElements: page.totalElements,
+          totalPages: page.totalPages,
+          size: page.size,
+          number: page.number
+        }))
       );
   }
 }

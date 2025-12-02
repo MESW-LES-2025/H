@@ -33,7 +33,9 @@ export class ExploreComponent implements OnInit {
   scholarshipOptions = ['Any', 'Yes', 'No'];
 
   // Pagination
-  pageRequest: PageRequest = { page: 0, size: 3 }; //TODO: correct pagination
+  pageRequest: PageRequest = { page: 0, size: 3 };
+  hasMorePages = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   ngOnInit(): void {
     this.dataService.countries$.subscribe(countries => {
@@ -49,6 +51,8 @@ export class ExploreComponent implements OnInit {
   }
 
   search(): void {
+    this.pageRequest.page = 0;
+    this.isLoading.set(true);
     const costMax = this.cost() >= this.maxCost ? null : this.cost();
 
     this.svc
@@ -59,7 +63,11 @@ export class ExploreComponent implements OnInit {
         this.scholarship(),
         this.pageRequest
       )
-      .subscribe(list => this.results.set(list));
+      .subscribe(page => {
+        this.results.set(page.content);
+        this.hasMorePages.set(page.number + 1 < page.totalPages);
+        this.isLoading.set(false);
+      });
   }
 
   onCountryChange(value: string): void {
@@ -78,6 +86,30 @@ export class ExploreComponent implements OnInit {
     this.cost.set(this.maxCost);
     this.scholarship.set('Any');
     this.search();
+  }
+
+  loadMore(): void {
+    if (this.isLoading() || !this.hasMorePages()) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.pageRequest.page++;
+    const costMax = this.cost() >= this.maxCost ? null : this.cost();
+
+    this.svc
+      .search(
+        this.q(),
+        this.country(),
+        costMax,
+        this.scholarship(),
+        this.pageRequest
+      )
+      .subscribe(page => {
+        this.results.set([...this.results(), ...page.content]);
+        this.hasMorePages.set(page.number + 1 < page.totalPages);
+        this.isLoading.set(false);
+      });
   }
 
   goToUniversity(id: string): void {
