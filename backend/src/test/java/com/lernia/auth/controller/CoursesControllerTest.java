@@ -38,7 +38,7 @@ class CoursesControllerTest {
 
     @Test
     void testGetCoursesByFilter_AllParamsProvided_DelegatesWithCorrectFilter() {
-        // parâmetros que o controller realmente recebe por @RequestParam
+        // given
         String name = "Software";
         List<String> courseTypes = List.of("BACHELOR", "MASTER");
         Boolean onlyRemote = true;
@@ -53,11 +53,10 @@ class CoursesControllerTest {
         CourseDTO dtoMock = mock(CourseDTO.class);
         Page<CourseDTO> pageMock = new PageImpl<>(List.of(dtoMock), pageable, 1);
 
-        // o service recebe um CourseFilter + pageable
         when(courseService.getCourses(any(CourseFilter.class), eq(pageable)))
                 .thenReturn(pageMock);
 
-        // CHAMAR O CONTROLLER COM A ASSINATURA CORRETA (sem CourseFilter)
+        // when
         ResponseEntity<Page<CourseDTO>> response = coursesController.getCoursesByFilter(
                 name,
                 courseTypes,
@@ -70,15 +69,16 @@ class CoursesControllerTest {
                 pageable
         );
 
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
         assertSame(pageMock, response.getBody());
 
-        // capturar o CourseFilter construído pelo controller
         ArgumentCaptor<CourseFilter> filterCaptor = ArgumentCaptor.forClass(CourseFilter.class);
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
 
-        verify(courseService, times(1)).getCourses(filterCaptor.capture(), pageableCaptor.capture());
+        verify(courseService, times(1))
+                .getCourses(filterCaptor.capture(), pageableCaptor.capture());
 
         CourseFilter passedFilter = filterCaptor.getValue();
         Pageable passedPageable = pageableCaptor.getValue();
@@ -97,7 +97,7 @@ class CoursesControllerTest {
 
     @Test
     void testGetCoursesByFilter_NullOptionalParams_UsesDefaultsAndEmptyLists() {
-        // todos os params opcionais a null
+        // given
         String name = null;
         List<String> courseTypes = null;
         Boolean onlyRemote = null;
@@ -113,7 +113,7 @@ class CoursesControllerTest {
         when(courseService.getCourses(any(CourseFilter.class), eq(pageable)))
                 .thenReturn(emptyPage);
 
-        // outra vez, chamamos com a ASSINATURA REAL do controller
+        // when
         ResponseEntity<Page<CourseDTO>> response = coursesController.getCoursesByFilter(
                 name,
                 courseTypes,
@@ -126,6 +126,7 @@ class CoursesControllerTest {
                 pageable
         );
 
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
         assertSame(emptyPage, response.getBody());
@@ -135,8 +136,7 @@ class CoursesControllerTest {
 
         CourseFilter passedFilter = filterCaptor.getValue();
 
-        // como o DTO CourseFilter tem construtor vazio com defaults,
-        // o controller deve usá-lo e depois setar só o que não está null.
+        // O controller constrói o CourseFilter com defaults
         assertNull(passedFilter.getName());
 
         assertNotNull(passedFilter.getCourseTypes());
