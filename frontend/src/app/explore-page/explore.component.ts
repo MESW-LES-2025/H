@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ExploreService } from './services/explore-service';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
 import { DataService } from '../shared/services/data-service';
@@ -14,7 +15,7 @@ import { PageRequest } from '../shared/viewmodels/pagination';
   styleUrls: ['./explore.component.css'],
 })
 export class ExploreComponent implements OnInit {
-  constructor(private svc: ExploreService, private dataService: DataService) {}
+  constructor(private svc: ExploreService, private dataService: DataService, private router: Router) {}
 
   q = signal<string>('');
 
@@ -77,5 +78,9 @@ export class ExploreComponent implements OnInit {
     this.cost.set(this.maxCost);
     this.scholarship.set('Any');
     this.search();
+  }
+
+  goToUniversity(id: string): void {
+    this.router.navigate(['/university', id]);
   }
 }

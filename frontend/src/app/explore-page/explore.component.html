@@ -57,6 +57,17 @@
           </select>
         </label>
 
+        <!-- Scholarships -->
+        <label class="filter-field">
+          <span class="filter-label">Scholarships</span>
+          <select class="filter-select" [value]="scholarship()"
+            (change)="onScholarshipChange($any($event.target).value)">
+            <option *ngFor="let opt of scholarshipOptions" [value]="opt">
+              {{ opt === 'Any' ? 'Any scholarship option' : opt }}
+            </option>
+          </select>
+        </label>
+
         <!-- Cost of living -->
         <label class="filter-field">
           <span class="filter-label">Max Cost of Living:
@@ -68,16 +79,6 @@
             <span>$500</span>
             <span>Any</span>
           </div>
-        </label>
-        <!-- Scholarships -->
-        <label class="filter-field">
-          <span class="filter-label">Scholarships</span>
-          <select class="filter-select" [value]="scholarship()"
-            (change)="onScholarshipChange($any($event.target).value)">
-            <option *ngFor="let opt of scholarshipOptions" [value]="opt">
-              {{ opt === 'Any' ? 'Any scholarship option' : opt }}
-            </option>
-          </select>
         </label>
 
 
@@ -96,13 +97,9 @@
           <h2>Explore Universities</h2>
           <p>Use the filters to find universities that are a good fit for you.</p>
         </div>
-        <div class="views">
-          <button class="view active">Grid View</button>
-          <button class="view" disabled>Map View</button>
-        </div>
       </div>
 
-      <article class="college-card" *ngFor="let c of results()">
+      <article class="college-card" *ngFor="let c of results()" (click)="goToUniversity(c.id)" style="cursor: pointer;">
         <div class="left" [style.backgroundColor]="c.color">
           <h3>{{ c.title }}</h3>
           <p>{{ c.blurb }}</p>
