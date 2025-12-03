@@ -8,6 +8,8 @@ import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.dto.RegisterRequest;
 import com.lernia.auth.dto.RegisterResponse;
 import com.lernia.auth.entity.UserEntity;
+import com.lernia.auth.entity.enums.Gender;
+import com.lernia.auth.entity.enums.UserRole;
 import com.lernia.auth.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -162,4 +164,231 @@ class AuthServiceTest {
         assertEquals("error", res.getStatus());
         assertEquals("Invalid credentials", res.getMessage());
     }
+    @Test
+    void testLoginWithEmailSuccess() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String rawPassword = "secret-email";
+        String hashed = encoder.encode(rawPassword);
+
+        UserEntity user = new UserEntity();
+        user.setId(123L);
+        user.setUsername("userEmail");
+        user.setEmail("email@example.com");
+        user.setPassword(hashed);
+        user.setCreationDate(LocalDate.now());
+
+        when(userRepository.findByUsername("email@example.com"))
+                .thenReturn(Optional.empty());
+        when(userRepository.findByEmail("email@example.com"))
+                .thenReturn(Optional.of(user));
+
+        LoginRequest req = new LoginRequest();
+        req.setText("email@example.com");
+        req.setPassword(rawPassword);
+
+        LoginResponse res = authService.login(req);
+
+        assertNotNull(res);
+        assertEquals("success", res.getStatus());
+        assertEquals("Login successful", res.getMessage());
+        assertEquals(123L, res.getUserId());
+
+        verify(userRepository).findByUsername("email@example.com");
+        verify(userRepository).findByEmail("email@example.com");
+    }
+
+    @Test
+    void testRegisterUsernameAndEmailTakenStillReturnsUsernameError() {
+        RegisterRequest req = new RegisterRequest(
+                "Name",
+                "existingUser",
+                "password123",
+                "taken@example.com"
+        );
+
+        when(userRepository.existsByUsername("existingUser")).thenReturn(true);
+        when(userRepository.existsByEmail("taken@example.com")).thenReturn(true);
+
+        RegisterResponse res = authService.register(req);
+
+        assertNotNull(res);
+        assertEquals("error", res.getStatus());
+        assertEquals("Username already taken", res.getMessage());
+
+        verify(userRepository, never()).save(any());
+    }
+    @Test
+    void testRegisterChecksUsernameAndEmail() {
+        RegisterRequest req = new RegisterRequest(
+                "Name",
+                "someUser",
+                "somePassword",
+                "some@example.com"
+        );
+
+        when(userRepository.existsByUsername("someUser")).thenReturn(false);
+        when(userRepository.existsByEmail("some@example.com")).thenReturn(false);
+
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> {
+            UserEntity u = invocation.getArgument(0);
+            u.setId(1L);
+            return u;
+        });
+
+        RegisterResponse res = authService.register(req);
+
+        assertNotNull(res);
+        assertEquals("success", res.getStatus());
+
+        verify(userRepository, times(1)).existsByUsername("someUser");
+        verify(userRepository, times(1)).existsByEmail("some@example.com");
+        verify(userRepository, times(1)).save(any(UserEntity.class));
+    }
+    @Test
+    void testLoginUserNotFoundChecksUsernameAndEmail() {
+        when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("ghost")).thenReturn(Optional.empty());
+
+        LoginRequest req = new LoginRequest();
+        req.setText("ghost");
+        req.setPassword("whatever");
+
+        LoginResponse res = authService.login(req);
+
+        assertNotNull(res);
+        assertEquals("error", res.getStatus());
+        assertEquals("Invalid credentials", res.getMessage());
+
+        verify(userRepository, times(1)).findByUsername("ghost");
+        verify(userRepository, times(1)).findByEmail("ghost");
+    }
+    @Test
+    void testLoginWithEmailWrongPassword() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String correctPassword = "correct-pass";
+        String hashed = encoder.encode(correctPassword);
+
+        UserEntity user = new UserEntity();
+        user.setId(555L);
+        user.setUsername("userEmail");
+        user.setEmail("email2@example.com");
+        user.setPassword(hashed);
+        user.setCreationDate(LocalDate.now());
+
+        when(userRepository.findByUsername("email2@example.com"))
+                .thenReturn(Optional.empty());
+        when(userRepository.findByEmail("email2@example.com"))
+                .thenReturn(Optional.of(user));
+
+        LoginRequest req = new LoginRequest();
+        req.setText("email2@example.com");
+        req.setPassword("wrong-pass");
+
+        LoginResponse res = authService.login(req);
+
+        assertNotNull(res);
+        assertEquals("error", res.getStatus());
+        assertEquals("Invalid credentials", res.getMessage());
+
+        verify(userRepository, times(1)).findByUsername("email2@example.com");
+        verify(userRepository, times(1)).findByEmail("email2@example.com");
+    }
+
+    @Test
+    void testRegisterWithoutEmail_SuccessAndDoesNotCheckEmail() {
+        RegisterRequest req = new RegisterRequest(
+                "Name",
+                "userNoEmail",
+                "password123",
+                null
+        );
+
+        when(userRepository.existsByUsername("userNoEmail")).thenReturn(false);
+
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> {
+            UserEntity u = invocation.getArgument(0);
+            u.setId(7L);
+            return u;
+        });
+
+        RegisterResponse res = authService.register(req);
+
+        assertNotNull(res);
+        assertEquals("success", res.getStatus());
+        assertEquals("User registered", res.getMessage());
+
+        ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
+        verify(userRepository).save(captor.capture());
+        UserEntity saved = captor.getValue();
+
+        assertEquals("userNoEmail", saved.getUsername());
+        assertNull(saved.getEmail());
+
+        verify(userRepository, times(1)).existsByUsername("userNoEmail");
+        verify(userRepository, never()).existsByEmail(anyString());
+    }
+
+    @Test
+    void testRegisterSetsDefaultGenderRoleAndCreationDate() {
+        RegisterRequest req = new RegisterRequest(
+                "Name",
+                "roleUser",
+                "pass123",
+                "role@example.com"
+        );
+
+        when(userRepository.existsByUsername("roleUser")).thenReturn(false);
+        when(userRepository.existsByEmail("role@example.com")).thenReturn(false);
+
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> {
+            UserEntity u = invocation.getArgument(0);
+            u.setId(10L);
+            return u;
+        });
+
+        LocalDate today = LocalDate.now();
+
+        RegisterResponse res = authService.register(req);
+
+        assertNotNull(res);
+        assertEquals("success", res.getStatus());
+
+        ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
+        verify(userRepository).save(captor.capture());
+        UserEntity saved = captor.getValue();
+
+        assertEquals(Gender.OTHER, saved.getGender());
+        assertEquals(UserRole.REGULAR, saved.getUserRole());
+        assertNotNull(saved.getCreationDate());
+        assertEquals(today, saved.getCreationDate());
+    }
+
+    @Test
+    void testLoginByUsernameDoesNotCallFindByEmail() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String rawPassword = "plain-pass";
+        String hashed = encoder.encode(rawPassword);
+
+        UserEntity user = new UserEntity();
+        user.setId(321L);
+        user.setUsername("simpleuser");
+        user.setPassword(hashed);
+
+        when(userRepository.findByUsername("simpleuser")).thenReturn(Optional.of(user));
+
+        LoginRequest req = new LoginRequest();
+        req.setText("simpleuser");
+        req.setPassword(rawPassword);
+
+        LoginResponse res = authService.login(req);
+
+        assertNotNull(res);
+        assertEquals("success", res.getStatus());
+        assertEquals("Login successful", res.getMessage());
+        assertEquals(321L, res.getUserId());
+
+        verify(userRepository, times(1)).findByUsername("simpleuser");
+        verify(userRepository, never()).findByEmail(anyString());
+    }
+
 }
