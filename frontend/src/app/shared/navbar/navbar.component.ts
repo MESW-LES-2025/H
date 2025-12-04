@@ -1,38 +1,38 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { AuthService } from '../../auth/auth.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
+export class NavbarComponent implements OnInit {
 
-export class NavbarComponent implements OnInit, OnDestroy {
   links = [
     { label: 'Home', path: '/home' },
     { label: 'Explore', path: '/explore' },
     { label: 'About Us', path: '/about' },
   ];
 
-  userId: number | null = null;
-  private userSubscription?: Subscription;
+  protected userId: number | null = null;
 
-  constructor(private authService: AuthService) {}
+  private router = inject(Router);
 
   ngOnInit(): void {
-    this.userSubscription = this.authService.currentUser$.subscribe(user => {
-      this.userId = user ? user.id : null;
-    });
+    const storedId = localStorage.getItem('userId');
+    this.userId = storedId ? Number(storedId) : null;
   }
 
-  ngOnDestroy(): void {
-    this.userSubscription?.unsubscribe();
+  goToProfile(): void {
+    const storedId = localStorage.getItem('userId');
+
+    if (storedId) {
+      const id = Number(storedId);
+      this.router.navigate(['/profile', id]);
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 }
