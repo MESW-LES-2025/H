@@ -29,7 +29,6 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   currentUserId: number | null = null; 
   private userSubscription: Subscription | undefined;
 
-  // Add a variable to hold the review currently being edited
   editingReview: Review = { ...this.newReview }; 
 
   constructor(
@@ -115,7 +114,8 @@ export class ReviewsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error deleting review:', error);
-        alert('Failed to delete review.');
+        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        alert('Failed to delete review: ' + errorMessage);
       }
     });
   }
@@ -145,7 +145,8 @@ export class ReviewsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error updating review:', error);
-        alert('Failed to update review.');
+        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        alert('Failed to update review: ' + errorMessage);
       }
     });
   }

@@ -4,7 +4,9 @@ import com.lernia.auth.dto.ReviewDTO;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;
 import com.lernia.auth.service.ReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/reviews")
 public class ReviewController {
 
-    @Autowired
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/university/{universityId}")
     public ResponseEntity<List<ReviewDTO>> getReviews(@PathVariable Long universityId) {
@@ -32,8 +33,7 @@ public class ReviewController {
         if (principal == null) {
             return ResponseEntity.ok(false);
         }
-        UserEntity user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = getUserFromPrincipal(principal);
         return ResponseEntity.ok(reviewService.canUserReview(user.getId(), universityId));
     }
 
@@ -47,8 +47,7 @@ public class ReviewController {
         if (principal == null) {
             return ResponseEntity.ok(false);
         }
-        UserEntity user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = getUserFromPrincipal(principal);
         return ResponseEntity.ok(reviewService.canUserReviewCourse(user.getId(), courseId));
     }
 
@@ -58,8 +57,7 @@ public class ReviewController {
             return ResponseEntity.status(401).body(Map.of("message", "You must be logged in to post a review."));
         }
         try {
-            UserEntity user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = getUserFromPrincipal(principal);
             
             reviewDto.setUserId(user.getId());
             
@@ -76,8 +74,7 @@ public class ReviewController {
             return ResponseEntity.status(401).body(Map.of("message", "You must be logged in to post a review."));
         }
         try {
-            UserEntity user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = getUserFromPrincipal(principal);
             
             reviewDto.setUserId(user.getId());
             
@@ -94,8 +91,7 @@ public class ReviewController {
             if (principal == null) {
                 return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
             }
-            UserEntity user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = getUserFromPrincipal(principal);
             
             reviewService.deleteReview(reviewId, user.getId());
             
@@ -111,8 +107,7 @@ public class ReviewController {
             if (principal == null) {
                 return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
             }
-            UserEntity user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = getUserFromPrincipal(principal);
             
             reviewService.deleteCourseReview(reviewId, user.getId());
             
@@ -128,8 +123,7 @@ public class ReviewController {
             return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
         }
         try {
-            UserEntity user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = getUserFromPrincipal(principal);
 
             return ResponseEntity.ok(reviewService.updateReview(reviewId, reviewDto, user.getId()));
         } catch (RuntimeException e) {
@@ -143,12 +137,16 @@ public class ReviewController {
             return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
         }
         try {
-            UserEntity user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = getUserFromPrincipal(principal);
 
             return ResponseEntity.ok(reviewService.updateCourseReview(reviewId, reviewDto, user.getId()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
+    }
+
+    private UserEntity getUserFromPrincipal(Principal principal) {
+        return userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

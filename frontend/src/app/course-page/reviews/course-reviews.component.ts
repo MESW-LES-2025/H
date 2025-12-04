@@ -20,6 +20,7 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
   newReview: Review = {
     userId: 0,
     universityId: 0,
+    courseId: 0,
     rating: 5,
     title: '',
     description: ''
@@ -113,7 +114,8 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error deleting review:', error);
-        alert('Failed to delete review.');
+        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        alert('Failed to delete review: ' + errorMessage);
       }
     });
   }
@@ -142,7 +144,8 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error updating review:', error);
-        alert('Failed to update review.');
+        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        alert('Failed to update review: ' + errorMessage);
       }
     });
   }
