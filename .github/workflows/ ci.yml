@@ -134,10 +134,16 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> $GITHUB_ENV
 
+      - name: Download Backend Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: backend/target
+
       - name: Start backend server in background
         run: |
-          mvn spring-boot:run &
-          npx wait-on --timeout 60000 http://localhost:8080
+          java -jar target/*.jar &
+          npx wait-on --timeout 120000 http://localhost:8080
         working-directory: ./backend
 
       - name: Run acceptance tests
