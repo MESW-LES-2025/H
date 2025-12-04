@@ -168,15 +168,24 @@
 <section *ngIf="activeTab === 'courses'" class="cards-grid">
 
   <ng-container *ngIf="courses.length > 0; else noCourses">
-    <article
-      class="uni-card"
-      *ngFor="let course of courses; trackBy: trackById"
-    >
+    <article class="uni-card" *ngFor="let course of courses; trackBy: trackById">
       <div class="uni-card-body">
         <h3 class="uni-title">{{ course.name }}</h3>
         <p class="uni-location">{{ course.type }}</p>
       </div>
+
+      <button
+        class="fav-btn"
+        aria-label="Toggle favourite"
+        (click)="toggleCourseFavorite(course); $event.stopPropagation()"
+      >
+    <span class="fav-icon"
+          [style.color]="course.isFavorite ? '#c92a2a' : '#999'">
+      {{ course.isFavorite ? '❤' : '♡' }}
+    </span>
+      </button>
     </article>
+
   </ng-container>
 
 </section>

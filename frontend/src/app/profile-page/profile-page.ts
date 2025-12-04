@@ -24,22 +24,22 @@ export class ProfilePage implements OnInit {
 
   protected user: UserViewmodel | null = null;
 
-  // Tab actual
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' = 'universities';
 
-  // Favoritos (preenchidos a partir do backend)
   protected universities: {
     id: number;
     image: string;
     name: string;
     city: string;
     country: string;
+    isFavorite: boolean;
   }[] = [];
 
   protected courses: {
     id: number;
     name: string;
     type: string;
+    isFavorite: boolean;
   }[] = [];
 
   ngOnInit(): void {
@@ -56,33 +56,30 @@ export class ProfilePage implements OnInit {
         .subscribe(user => (this.user = user));
     }
 
-    // Favoritos do user autenticado (universities + courses)
-    this.profilePageService
-      .getOwnFavorites()
-      .subscribe({
-        next: (favs: FavoritesResponse) => {
-          this.universities = (favs.universities || []).map(
-            (u: FavoriteUniversityDTO) => ({
-              id: u.id,
-              image: '/images/oxford-university-banner.jpg', // placeholder
-              name: u.name,
-              city: u.location?.city ?? 'Unknown',
-              country: u.location?.country ?? 'Unknown',
-            })
-          );
+    this.loadFavorites();
+  }
 
-          this.courses = (favs.courses || []).map(
-            (c: FavoriteCourseDTO) => ({
-              id: c.id,
-              name: c.name,
-              type: c.courseType,
-            })
-          );
-        },
-        error: err => {
-          console.error('Error loading favorites', err);
-        },
-      });
+  private loadFavorites(): void {
+    this.profilePageService.getOwnFavorites().subscribe({
+      next: (favs: FavoritesResponse) => {
+        this.universities = (favs.universities ?? []).map(u => ({
+          id: u.id,
+          image: '/images/oxford-university-banner.jpg',
+          name: u.name,
+          city: u.location?.city ?? 'Unknown',
+          country: u.location?.country ?? 'Unknown',
+          isFavorite: true,
+        }));
+
+        this.courses = (favs.courses ?? []).map(c => ({
+          id: c.id,
+          name: c.name,
+          type: c.courseType,
+          isFavorite: true,
+        }));
+      },
+      error: err => console.error('Error loading favorites', err),
+    });
   }
 
   protected setTab(tab: 'universities' | 'courses' | 'countries' | 'other'): void {
@@ -93,6 +90,43 @@ export class ProfilePage implements OnInit {
     return item.id;
   }
 
+  // -------------------------------------------
+  // TOGGLE UNIVERSITY FAVORITE FROM PROFILE
+  // -------------------------------------------
+  protected toggleUniversityFavorite(uni: any): void {
+    if (!uni.isFavorite) {
+      this.profilePageService.addFavoriteUniversity(uni.id).subscribe({
+        next: () => (uni.isFavorite = true),
+        error: err => console.error(err),
+      });
+    } else {
+      this.profilePageService.removeFavoriteUniversity(uni.id).subscribe({
+        next: () => {
+          this.universities = this.universities.filter(u => u.id !== uni.id);
+        },
+        error: err => console.error(err),
+      });
+    }
+  }
+
+  // -------------------------------------------
+  // TOGGLE COURSE FAVORITE FROM PROFILE
+  // -------------------------------------------
+  protected toggleCourseFavorite(course: any): void {
+    if (!course.isFavorite) {
+      this.profilePageService.addFavoriteCourse(course.id).subscribe({
+        next: () => (course.isFavorite = true),
+        error: err => console.error(err),
+      });
+    } else {
+      this.profilePageService.removeFavoriteCourse(course.id).subscribe({
+        next: () => {
+          this.courses = this.courses.filter(c => c.id !== course.id);
+        },
+        error: err => console.error(err),
+      });
+    }
+  }
   protected removeFavoriteUniversity(id: number): void {
     this.profilePageService.removeFavoriteUniversity(id).subscribe({
       next: () => {
