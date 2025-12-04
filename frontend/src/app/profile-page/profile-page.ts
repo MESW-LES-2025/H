@@ -1,8 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ProfilePageService } from './services/profile-page-service';
-import { UserViewmodel, FavoritesResponse, FavoriteUniversityDTO } from './viewmodels/user-viewmodel';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe, NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
+
+import { ProfilePageService } from './services/profile-page-service';
+import {
+  UserViewmodel,
+  FavoritesResponse,
+  FavoriteUniversityDTO,
+  FavoriteCourseDTO
+} from './viewmodels/user-viewmodel';
 
 @Component({
   selector: 'app-profile-page',
@@ -18,14 +24,10 @@ export class ProfilePage implements OnInit {
 
   protected user: UserViewmodel | null = null;
 
-  // ---------------------------
-  // UI STATE
-  // ---------------------------
+  // Tab actual
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' = 'universities';
 
-  // ---------------------------
-  // FAVORITE UNIVERSITIES
-  // ---------------------------
+  // Favoritos (preenchidos a partir do backend)
   protected universities: {
     id: number;
     image: string;
@@ -34,25 +36,52 @@ export class ProfilePage implements OnInit {
     country: string;
   }[] = [];
 
+  protected courses: {
+    id: number;
+    name: string;
+    type: string;
+  }[] = [];
+
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const idParam = this.route.snapshot.paramMap.get('id');
+    const id = idParam ? Number(idParam) : NaN;
 
-    // perfil
-    this.profilePageService
-      .getUserProfile(id)
-      .subscribe(data => this.user = data);
+    if (!isNaN(id)) {
+      this.profilePageService
+        .getUserProfile(id)
+        .subscribe(user => (this.user = user));
+    } else {
+      this.profilePageService
+        .getOwnProfile()
+        .subscribe(user => (this.user = user));
+    }
 
-    // favoritos
+    // Favoritos do user autenticado (universities + courses)
     this.profilePageService
       .getOwnFavorites()
-      .subscribe((favs: FavoritesResponse) => {
-        this.universities = favs.universities.map((uni: FavoriteUniversityDTO) => ({
-          id: uni.id,
-          image: '/images/oxford-university-banner.jpg',
-          name: uni.name,
-          city: uni.location?.city ?? 'Unknown',
-          country: uni.location?.country ?? 'Unknown',
-        }));
+      .subscribe({
+        next: (favs: FavoritesResponse) => {
+          this.universities = (favs.universities || []).map(
+            (u: FavoriteUniversityDTO) => ({
+              id: u.id,
+              image: '/images/oxford-university-banner.jpg', // placeholder
+              name: u.name,
+              city: u.location?.city ?? 'Unknown',
+              country: u.location?.country ?? 'Unknown',
+            })
+          );
+
+          this.courses = (favs.courses || []).map(
+            (c: FavoriteCourseDTO) => ({
+              id: c.id,
+              name: c.name,
+              type: c.courseType,
+            })
+          );
+        },
+        error: err => {
+          console.error('Error loading favorites', err);
+        },
       });
   }
 
@@ -67,11 +96,9 @@ export class ProfilePage implements OnInit {
   protected removeFavoriteUniversity(id: number): void {
     this.profilePageService.removeFavoriteUniversity(id).subscribe({
       next: () => {
-        this.universities = this.universities.filter(u => u.id !== id);
+        this.universities = this.universities.filter(uni => uni.id !== id);
       },
-      error: err => {
-        console.error('Error removing favorite:', err);
-      }
+      error: err => console.error('Error removing favorite university', err),
     });
   }
 }

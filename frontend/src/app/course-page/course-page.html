@@ -10,10 +10,11 @@
 
     <div class="card-body p-4 position-relative flex-grow-1">
       <!-- Save Course Button -->
-      <button class="btn btn-save-course">
-        <i class="bi bi-heart-fill"></i>
-        Save Course
+      <button class="btn btn-save-course" (click)="toggleFavorite()">
+        <i class="bi" [ngClass]="isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
+        {{ isFavorite ? 'Saved' : 'Save Course' }}
       </button>
+
 
       <div class="row align-items-start g-3">
         <!-- Course Info -->
