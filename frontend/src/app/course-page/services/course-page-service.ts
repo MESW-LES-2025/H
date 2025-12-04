@@ -4,6 +4,7 @@ import { CourseViewmodel } from '../viewmodels/course-viewmodel';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+
 import { Location as LocationModel } from '../../shared/viewmodels/location';
 
 interface LocationDTO {
@@ -44,6 +45,7 @@ interface CourseDTO {
   areasOfStudy: AreaOfStudyDTO[];
 }
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -51,6 +53,7 @@ export class CoursePageService {
   private readonly baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
+
 
   public getCourseProfile(id: number): Observable<CourseViewmodel> {
     return this.http.get<CourseDTO>(`${this.baseUrl}/api/courses/${id}`)

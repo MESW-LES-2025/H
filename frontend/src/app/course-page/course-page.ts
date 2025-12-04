@@ -4,11 +4,12 @@ import { CourseViewmodel } from './viewmodels/course-viewmodel';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import { CourseReviewsComponent } from './reviews/course-reviews.component';
 
 @Component({
   selector: 'app-course-page',
   standalone: true,
-  imports: [CommonModule, NgbNavModule],
+  imports: [CommonModule, NgbNavModule, CourseReviewsComponent], 
   templateUrl: './course-page.html',
   styleUrl: './course-page.css',
 })

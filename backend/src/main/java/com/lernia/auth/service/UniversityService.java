@@ -1,5 +1,9 @@
 package com.lernia.auth.service;
 
+
+import com.lernia.auth.dto.LocationDTO; 
+import com.lernia.auth.dto.UniversityDTOLight;
+import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.dto.*;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.repository.CourseRepository;
@@ -11,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +27,38 @@ public class UniversityService {
 
     public List<String> getAllCountries() {
         return universityRepository.findDistinctCountries();
+    }
+
+
+    public UniversityDTOLight getUniversityById(Long id) {
+        UniversityEntity entity = universityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("University not found"));
+
+        UniversityDTOLight dto = new UniversityDTOLight();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setLogo(entity.getLogo());
+        dto.setContactInfo(entity.getContactInfo());
+        dto.setWebsite(entity.getWebsite());
+
+    
+        if (entity.getLocation() != null) {
+            dto.setLocation(new LocationDTO(
+                entity.getLocation().getId(),
+                entity.getLocation().getCity(),
+                entity.getLocation().getCountry(),
+                entity.getLocation().getCostOfLiving()
+            ));
+        } else {
+            dto.setLocation(null);
+        }
+
+        dto.setStudentCount(5000); 
+        dto.setFoundedYear(1990);
+        dto.setCourses(new ArrayList<>());
+
+        return dto;
     }
 
     public Page<UniversityDTOLight> getUniversitiesByFilter(UniversityFilter filter, Pageable pageable) {
@@ -36,27 +73,26 @@ public class UniversityService {
                                 university.getLocation().getId(),
                                 university.getLocation().getCity(),
                                 university.getLocation().getCountry(),
-                                university.getLocation().getCost_of_living()) : null));
+                                university.getLocation().getCostOfLiving()) : null));
     }
 
-    public UniversityDTOLight getUniversityById(Long id) {
-        return universityRepository.findById(id)
-                .map(university -> new UniversityDTOLight(
-                        university.getId(),
-                        university.getName(),
-                        university.getDescription(),
-                        university.getLocation() != null ? new LocationDTO(
-                                university.getLocation().getId(),
-                                university.getLocation().getCity(),
-                                university.getLocation().getCountry(),
-                                university.getLocation().getCost_of_living()) : null))
-                .orElse(null);
-    }
+//    public UniversityDTOLight getUniversityById(Long id) {
+//        return universityRepository.findById(id)
+//                .map(university -> new UniversityDTOLight(
+//                        university.getId(),
+//                        university.getName(),
+//                        university.getDescription(),
+//                        university.getLocation() != null ? new LocationDTO(
+//                                university.getLocation().getId(),
+//                                university.getLocation().getCity(),
+//                                university.getLocation().getCountry(),
+//                                university.getLocation().getCost_of_living()) : null))
+//                .orElse(null);
+//    }
 
     public UniversityDTO getUniversityDetailsById(Long id) {
         return universityRepository.findById(id)
                 .map(university -> {
-                    // Get courses for this university
                     List<CourseEntity> courseEntities = courseRepository.findAll()
                             .stream()
                             .filter(course -> course.getUniversity().getId().equals(id))
@@ -81,7 +117,7 @@ public class UniversityService {
                                     university.getLocation().getId(),
                                     university.getLocation().getCity(),
                                     university.getLocation().getCountry(),
-                                    university.getLocation().getCost_of_living()) : null,
+                                    university.getLocation().getCostOfLiving()) : null,
                             courses);
                 })
                 .orElse(null);

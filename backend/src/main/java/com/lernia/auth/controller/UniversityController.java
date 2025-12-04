@@ -45,4 +45,5 @@ public class UniversityController {
     public List<String> getAllCountries() {
         return universityService.getAllCountries();
     }
+
 }

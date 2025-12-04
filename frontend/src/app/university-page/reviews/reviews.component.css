@@ -1,0 +1,169 @@
+.reviews-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h3 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Add Review Form */
+.add-review-section {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.rating-input select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-left: 0.5rem;
+}
+
+.title-input {
+    flex-grow: 1;
+}
+
+.title-input input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.btn-submit {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-submit:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Review List */
+.review-card {
+  border-bottom: 1px solid #eee;
+  padding: 1.5rem 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.review-title {
+    font-weight: 700;
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+.review-date {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.star-rating {
+  color: #ddd;
+  font-size: 0.9rem;
+}
+
+.star-rating .filled {
+  color: #ffc107;
+}
+
+.review-comment {
+  color: #555;
+  line-height: 1.5;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 6px 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.btn-delete {
+    color: #dc3545;
+}
+
+.btn-edit {
+    color: #0d6efd; /* Blue */
+}
+
+.btn-action:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+}
+
+.btn-delete:hover {
+    background-color: #ffebee; 
+}
+
+.btn-edit:hover {
+    background-color: #e7f1ff;
+}

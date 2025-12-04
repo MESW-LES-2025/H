@@ -57,8 +57,8 @@ export class UniversityPageService {
       logo: dto.logo || 'https://via.placeholder.com/100',
       bannerImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop',
       description: dto.description || 'No description available',
-      studentCount: 0, // Not available from backend
-      foundedYear: 0,  // Not available from backend
+      studentCount: 0,
+      foundedYear: 0,  
       courses: dto.courses.map(course => ({
         id: course.id,
         name: course.name,
