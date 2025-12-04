@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -62,7 +63,71 @@ class ReviewControllerTest {
         reviewDTO.setDescription("Description");
     }
 
-    // --- University Review Tests ---
+    // --- GET Reviews Tests ---
+
+    @Test
+    void getReviews_ShouldReturnList() throws Exception {
+        when(reviewService.getReviewsByUniversity(1L)).thenReturn(List.of(reviewDTO));
+
+        mockMvc.perform(get("/api/reviews/university/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Great"));
+    }
+
+    @Test
+    void getCourseReviews_ShouldReturnList() throws Exception {
+        when(reviewService.getReviewsByCourse(1L)).thenReturn(List.of(reviewDTO));
+
+        mockMvc.perform(get("/api/reviews/course/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Great"));
+    }
+
+    // --- Eligibility Tests ---
+
+    @Test
+    void checkEligibility_ShouldReturnTrue_WhenEligible() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.canUserReview(1L, 1L)).thenReturn(true);
+
+        mockMvc.perform(get("/api/reviews/eligibility/1").principal(principal))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    void checkEligibility_ShouldReturnFalse_WhenNotEligible() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.canUserReview(1L, 1L)).thenReturn(false);
+
+        mockMvc.perform(get("/api/reviews/eligibility/1").principal(principal))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
+
+    @Test
+    void checkEligibility_ShouldReturnFalse_WhenPrincipalIsNull() throws Exception {
+        mockMvc.perform(get("/api/reviews/eligibility/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
+
+    @Test
+    void checkCourseEligibility_ShouldReturnTrue_WhenEligible() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.canUserReviewCourse(1L, 1L)).thenReturn(true);
+
+        mockMvc.perform(get("/api/reviews/course/eligibility/1").principal(principal))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    void checkCourseEligibility_ShouldReturnFalse_WhenPrincipalIsNull() throws Exception {
+        mockMvc.perform(get("/api/reviews/course/eligibility/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
 
     // --- Add Review Tests ---
 
@@ -89,6 +154,18 @@ class ReviewControllerTest {
                 .andDo(print()) 
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("You must be logged in to post a review."));
+    }
+
+    @Test
+    void addCourseReview_ShouldReturnOk_WhenAuthenticated() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.addCourseReview(any(ReviewDTO.class))).thenReturn(reviewDTO);
+
+        mockMvc.perform(post("/api/reviews/course")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isOk());
     }
 
     // --- Update Review Tests ---
@@ -139,20 +216,6 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.message").value("You must be logged in."));
     }
 
-    // --- Course Review Tests ---
-
-    @Test
-    void addCourseReview_ShouldReturnOk_WhenAuthenticated() throws Exception {
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-        when(reviewService.addCourseReview(any(ReviewDTO.class))).thenReturn(reviewDTO);
-
-        mockMvc.perform(post("/api/reviews/course")
-                .principal(principal)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(reviewDTO)))
-                .andExpect(status().isOk());
-    }
-
     @Test
     void deleteCourseReview_ShouldReturnOk_WhenAuthorized() throws Exception {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
@@ -163,4 +226,5 @@ class ReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Review deleted successfully"));
     }
+
 }
