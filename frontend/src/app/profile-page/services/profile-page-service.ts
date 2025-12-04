@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class ProfilePageService {
-  private apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -36,9 +36,8 @@ export class ProfilePageService {
   // ----------------------------
 
   /**
-   * Instead of throwing an error when user is not logged in (like before),
-   * we return an EMPTY favorites response.
-   * This prevents test failures and avoids runtime crashes.
+   * Se não houver userId em localStorage, devolvemos favoritos vazios.
+   * Isto evita erros em testes e em sessões não autenticadas.
    */
   public getOwnFavorites(): Observable<FavoritesResponse> {
     const storedId = localStorage.getItem('userId');
@@ -66,7 +65,7 @@ export class ProfilePageService {
     const storedId = localStorage.getItem('userId');
 
     if (!storedId) {
-      return of(undefined);
+      return of(undefined as void);
     }
 
     const params = new HttpParams().set('userId', storedId);
@@ -82,7 +81,7 @@ export class ProfilePageService {
     const storedId = localStorage.getItem('userId');
 
     if (!storedId) {
-      return of(undefined);
+      return of(undefined as void);
     }
 
     const params = new HttpParams().set('userId', storedId);
@@ -101,7 +100,7 @@ export class ProfilePageService {
     const storedId = localStorage.getItem('userId');
 
     if (!storedId) {
-      return of(undefined);
+      return of(undefined as void);
     }
 
     const params = new HttpParams().set('userId', storedId);
@@ -117,7 +116,7 @@ export class ProfilePageService {
     const storedId = localStorage.getItem('userId');
 
     if (!storedId) {
-      return of(undefined);
+      return of(undefined as void);
     }
 
     const params = new HttpParams().set('userId', storedId);
@@ -125,6 +124,17 @@ export class ProfilePageService {
     return this.http.delete<void>(
       `${this.apiUrl}/api/favorites/courses/${id}`,
       { params, withCredentials: true }
+    );
+  }
+
+  // ----------------------------
+  // DELETE ACCOUNT
+  // ----------------------------
+
+  public deleteAccount(userId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/api/profile/delete/${userId}`,
+      { withCredentials: true }
     );
   }
 }

@@ -112,4 +112,12 @@ public class AuthService {
         return res;
     }
 
+    public void deleteAccount(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+
+        userRepository.deleteById(id);
+    }
+
 }

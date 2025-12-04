@@ -12,10 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,32 +21,54 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            @Value("${app.cors.allowed-origins:http://localhost:4200}") String corsOrigins
+            @Value("${app.cors.allowed-origins:http://localhost:4200}") String corsOrigins,
+            SecurityContextRepository securityContextRepository
     ) throws Exception {
 
         http
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration configuration = new CorsConfiguration();
-
-                    List<String> origins = Arrays.stream(corsOrigins.split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .collect(Collectors.toList());
-
-                    configuration.setAllowedOrigins(origins);
-                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    configuration.setAllowedHeaders(List.of("*"));
-                    configuration.setAllowCredentials(true);
-                    return configuration;
-                }))
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/login", "/register", "/api/favorites/**")
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration configuration = new CorsConfiguration();
+                            List<String> origins = Arrays.stream(corsOrigins.split(","))
+                                    .map(String::trim)
+                                    .filter(s -> !s.isEmpty())
+                                    .collect(Collectors.toList());
+                            configuration.setAllowedOrigins(origins);
+                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            configuration.setAllowedHeaders(List.of("*"));
+                            configuration.setAllowCredentials(true);
+                            return configuration;
+                        })
                 )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(
+                                "/login",
+                                "/register",
+                                "/api/favorites/**",
+                                "/api/profile/delete/**"
+                        )
+                )
+                .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
+                        // Login / Register públicos
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-
+                        // Preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Delete account
+                        .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
+                        // Endpoints GET públicos
                         .requestMatchers(HttpMethod.GET,
                                 "/api/profile/**",
                                 "/api/courses/**",
@@ -59,15 +78,13 @@ public class SecurityConfig {
                                 "/api/favorites/**",
                                 "/api/reviews/**"
                         ).permitAll()
-
-                        .requestMatchers("/api/favorites/**").permitAll()
-
+                        // Swagger
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-
+                        // Tudo o resto precisa de autenticação
                         .anyRequest().authenticated()
                 );
 
