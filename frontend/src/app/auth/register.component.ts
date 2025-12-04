@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService, RegisterRequest, RegisterResponse } from './auth.service';
 
 import {
-  FormBuilder, FormGroup, Validators,
-  AbstractControl, ValidationErrors, ReactiveFormsModule
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ReactiveFormsModule
 } from '@angular/forms';
 
 function matchPasswords(group: AbstractControl): ValidationErrors | null {
@@ -26,7 +30,11 @@ export class RegisterComponent {
   show1 = false;
   show2 = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private auth: AuthService
+  ) {
     this.form = this.fb.group(
       {
         username: ['', [Validators.required, Validators.minLength(3)]],
@@ -42,12 +50,24 @@ export class RegisterComponent {
     console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
+
     const { username, email, password } = this.form.value;
-    this.auth.register({ username, email, password }).subscribe({
-      next: (res) => {
+
+    const body: RegisterRequest = {
+      name: username,
+      username,
+      email,
+      password,
+    };
+
+    this.auth.register(body).subscribe({
+      next: (res: RegisterResponse) => {
         console.log('Register OK', res);
-        if (res.status === 'success') this.router.navigate(['/login']);
-        else alert(res.message || 'Registration failed');
+        if (res.status === 'success') {
+          this.router.navigate(['/login']);
+        } else {
+          alert(res.message || 'Registration failed');
+        }
       },
       error: (err) => {
         console.error('Register error', err);

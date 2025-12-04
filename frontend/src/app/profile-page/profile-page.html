@@ -123,36 +123,83 @@
     Countries
   </button>
 
-
 </section>
 
 <!-- ======================================= -->
 <!-- CARDS: UNIVERSITIES                     -->
 <!-- ======================================= -->
-
 <section *ngIf="activeTab === 'universities'" class="cards-grid">
 
-  <article
-    class="uni-card"
-    *ngFor="let uni of universities; trackBy: trackById"
-  >
-    <div class="uni-image-wrapper">
-      <img [src]="uni.image" class="uni-image" alt="{{ uni.name }}" />
-    </div>
+  <ng-container *ngIf="universities.length > 0; else noUniversities">
+    <article
+      class="uni-card"
+      *ngFor="let uni of universities; trackBy: trackById"
+    >
+      <div class="uni-image-wrapper">
+        <img [src]="uni.image" class="uni-image" alt="{{ uni.name }}" />
+      </div>
 
-    <div class="uni-card-body">
-      <h3 class="uni-title">{{ uni.name }}</h3>
-      <p class="uni-location">{{ uni.city }}, {{ uni.country }}</p>
-    </div>
+      <div class="uni-card-body">
+        <h3 class="uni-title">{{ uni.name }}</h3>
+        <p class="uni-location">{{ uni.city }}, {{ uni.country }}</p>
+      </div>
 
-    <button class="fav-btn" aria-label="Toggle favourite">
-      <span class="fav-icon">❤</span>
-    </button>
-  </article>
+      <button
+        class="fav-btn"
+        aria-label="Remove favourite university"
+        (click)="removeFavoriteUniversity(uni.id)"
+      >
+        <span class="fav-icon">❤</span>
+      </button>
+    </article>
+  </ng-container>
 
 </section>
 
-<section *ngIf="activeTab !== 'universities'" class="empty-tab">
+<ng-template #noUniversities>
+  <section class="empty-tab">
+    <p>No favourite universities yet.</p>
+  </section>
+</ng-template>
+
+<!-- ======================================= -->
+<!-- CARDS: COURSES                          -->
+<!-- ======================================= -->
+<section *ngIf="activeTab === 'courses'" class="cards-grid">
+
+  <ng-container *ngIf="courses.length > 0; else noCourses">
+    <article class="uni-card" *ngFor="let course of courses; trackBy: trackById">
+      <div class="uni-card-body">
+        <h3 class="uni-title">{{ course.name }}</h3>
+        <p class="uni-location">{{ course.type }}</p>
+      </div>
+
+      <button
+        class="fav-btn"
+        aria-label="Toggle favourite"
+        (click)="toggleCourseFavorite(course); $event.stopPropagation()"
+      >
+    <span class="fav-icon"
+          [style.color]="course.isFavorite ? '#c92a2a' : '#999'">
+      {{ course.isFavorite ? '❤' : '♡' }}
+    </span>
+      </button>
+    </article>
+
+  </ng-container>
+
+</section>
+
+<ng-template #noCourses>
+  <section class="empty-tab">
+    <p>No favourite courses yet.</p>
+  </section>
+</ng-template>
+
+<!-- ======================================= -->
+<!-- EMPTY TAB FOR COUNTRIES    -->
+<!-- ======================================= -->
+<section *ngIf="activeTab === 'countries'" class="empty-tab">
   <p>No items in this tab yet.</p>
 </section>
 
@@ -168,4 +215,3 @@
     © 2025 Lernia • All rights reserved
   </span>
 </footer>
-

@@ -58,6 +58,25 @@ public class AuthService {
         userRepository.save(user);
         return new RegisterResponse("User registered", "success");
     }
+/*
+    public LoginResponse login(LoginRequest req) {
+        String text = req.getText();
+        Optional<UserEntity> userOpt = userRepository.findByUsername(text);
+        if (userOpt.isEmpty()) userOpt = userRepository.findByEmail(text);
+        if (userOpt.isEmpty()) {
+            return new LoginResponse("Invalid credentials", "error");
+        }
+
+        UserEntity user = userOpt.get();
+
+        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+            return new LoginResponse("Invalid credentials", "error");
+        }
+
+        LoginResponse res = new LoginResponse("Login successful", "success");
+        res.setUserId(user.getId());
+        return res;
+    }*/
 
     public LoginResponse login(LoginRequest req, HttpServletRequest request, HttpServletResponse response) {
         String text = req.getText();
@@ -92,4 +111,5 @@ public class AuthService {
         res.setRole(user.getUserRole().name());
         return res;
     }
+
 }
