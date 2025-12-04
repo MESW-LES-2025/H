@@ -76,7 +76,7 @@ public class FavoritesService {
         userRepository.save(user);
     }
 
-    // ------------- LISTAR FAVORITOS DO USER  -------------
+    // ------------- LISTAR FAVORITOS DO USER -------------
 
     public FavoritesResponse getFavoritesForUser(Long userId) {
         UserEntity user = findUserById(userId);
@@ -104,7 +104,7 @@ public class FavoritesService {
                     loc.getId(),
                     loc.getCity(),
                     loc.getCountry(),
-                    loc.getCost_of_living()
+                    loc.getCostOfLiving()
             );
         }
 
