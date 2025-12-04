@@ -17,7 +17,7 @@ export class ReviewService {
   }
 
   checkEligibility(universityId: number, userId: number): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/eligibility/${universityId}?userId=${userId}`);
+    return this.http.get<boolean>(`${this.apiUrl}/eligibility/${universityId}`, { withCredentials: true });
   }
 
   addReview(review: Review): Observable<Review> {
@@ -29,7 +29,7 @@ export class ReviewService {
   }
 
   checkCourseEligibility(courseId: number, userId: number): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/course/eligibility/${courseId}?userId=${userId}`);
+    return this.http.get<boolean>(`${this.apiUrl}/course/eligibility/${courseId}`, { withCredentials: true });
   }
 
   addCourseReview(review: Review): Observable<Review> {
@@ -38,5 +38,9 @@ export class ReviewService {
 
   deleteReview(reviewId: number, userId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${reviewId}?userId=${userId}`, { withCredentials: true });
+  }
+
+  deleteCourseReview(reviewId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/course/${reviewId}`, { withCredentials: true });
   }
 }

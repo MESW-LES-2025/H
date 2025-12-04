@@ -57,7 +57,6 @@ public class ReviewService {
     }
 
     public ReviewDTO addReview(ReviewDTO reviewDTO) {
-        // Enforce eligibility check before saving
         if (!canUserReview(reviewDTO.getUserId(), reviewDTO.getUniversityId())) {
             throw new RuntimeException("User is not eligible to review this university.");
         }
