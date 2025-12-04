@@ -26,11 +26,11 @@ public class ReviewService {
     @Autowired
     private UniversityReviewRepository reviewRepository;
     @Autowired
-    private CourseReviewRepository courseReviewRepository; // Inject new repo
+    private CourseReviewRepository courseReviewRepository;
     @Autowired
     private UniversityRepository universityRepository;
     @Autowired
-    private CourseRepository courseRepository; // Inject course repo
+    private CourseRepository courseRepository; 
     @Autowired
     private UserRepository userRepository;
     @Autowired

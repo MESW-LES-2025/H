@@ -73,7 +73,7 @@ public class UniversityService {
                                 university.getLocation().getId(),
                                 university.getLocation().getCity(),
                                 university.getLocation().getCountry(),
-                                university.getLocation().getCost_of_living()) : null));
+                                university.getLocation().getCostOfLiving()) : null));
     }
 
 //    public UniversityDTOLight getUniversityById(Long id) {
@@ -117,7 +117,7 @@ public class UniversityService {
                                     university.getLocation().getId(),
                                     university.getLocation().getCity(),
                                     university.getLocation().getCountry(),
-                                    university.getLocation().getCost_of_living()) : null,
+                                    university.getLocation().getCostOfLiving()) : null,
                             courses);
                 })
                 .orElse(null);

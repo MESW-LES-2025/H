@@ -1,13 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router'; 
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
 import { ReviewsComponent } from './reviews/reviews.component'; 
-import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-university-page',

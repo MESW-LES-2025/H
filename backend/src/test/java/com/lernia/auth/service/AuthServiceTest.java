@@ -1,6 +1,8 @@
 package com.lernia.auth.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import com.lernia.auth.dto.LoginRequest;
@@ -11,6 +13,11 @@ import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
 import com.lernia.auth.repository.UserRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,9 +37,21 @@ class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpServletResponse response;
+
+    @Mock
+    private HttpSession session;
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(request.getSession(true)).thenReturn(session);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
@@ -118,12 +137,13 @@ class AuthServiceTest {
         req.setText("loginuser");
         req.setPassword(rawPassword);
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
         assertEquals(99L, res.getUserId());
+        verify(session).setAttribute("user", "loginuser");
     }
 
     @Test
@@ -135,7 +155,7 @@ class AuthServiceTest {
         req.setText("noone");
         req.setPassword("whatever");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
@@ -158,7 +178,7 @@ class AuthServiceTest {
         req.setText("user1");
         req.setPassword("wrongpass");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
@@ -186,7 +206,7 @@ class AuthServiceTest {
         req.setText("email@example.com");
         req.setPassword(rawPassword);
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("success", res.getStatus());
@@ -253,7 +273,7 @@ class AuthServiceTest {
         req.setText("ghost");
         req.setPassword("whatever");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
@@ -284,7 +304,7 @@ class AuthServiceTest {
         req.setText("email2@example.com");
         req.setPassword("wrong-pass");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
@@ -380,7 +400,7 @@ class AuthServiceTest {
         req.setText("simpleuser");
         req.setPassword(rawPassword);
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("success", res.getStatus());

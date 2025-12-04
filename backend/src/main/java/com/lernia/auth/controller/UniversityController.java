@@ -46,8 +46,4 @@ public class UniversityController {
         return universityService.getAllCountries();
     }
 
-    @GetMapping("/{id}")
-    public UniversityDTOLight getUniversityById(@PathVariable Long id) {
-        return universityService.getUniversityById(id);
-    }
 }

@@ -143,7 +143,7 @@ class CourseServiceTest {
         location.setId(10L);
         location.setCity("Porto");
         location.setCountry("Portugal");
-        location.setCost_of_living(850);
+        location.setCostOfLiving(850);
 
         // university
         UniversityEntity university = new UniversityEntity();

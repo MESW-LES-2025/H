@@ -26,11 +26,7 @@
               <div class="col-6">
                 <h2 class="h1 fw-bold mb-1">{{ university.name }}</h2>
                 <p class="h4 mb-0">
-                  @if (university.location) {
-                    {{ university.location.city }}, {{ university.location.country }}
-                  } @else {
-                    Unknown Location
-                  }
+                  {{ university.location || 'Unknown Location' }}
                 </p>
               </div>
               <div class="col-6">
@@ -76,11 +72,7 @@
                       <p class="stat-label text-muted mb-1">Location</p>
                       <!-- Updated Location Display in Overview Tab -->
                       <p class="stat-value fw-bold h5">
-                        @if (university.location) {
-                            {{ university.location.city }}
-                        } @else {
-                            N/A
-                        }
+                          {{ university.location || 'N/A' }}
                       </p>
                     </div>
                   </div>
@@ -140,11 +132,7 @@
                   <label class="text-muted small fw-semibold d-block mb-2">LOCATION</label>
                   <!-- Updated Location Display in Info Tab -->
                   <p class="fw-bold mb-0">
-                    @if (university.location) {
-                        {{ university.location.city }}, {{ university.location.country }}
-                    } @else {
-                        Unknown
-                    }
+                    {{ university.location || 'N/A' }}
                   </p>
                 </div>
 

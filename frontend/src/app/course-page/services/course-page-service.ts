@@ -54,7 +54,6 @@ export class CoursePageService {
 
   constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) {}
 
   public getCourseProfile(id: number): Observable<CourseViewmodel> {
     return this.http.get<CourseDTO>(`${this.baseUrl}/api/courses/${id}`)

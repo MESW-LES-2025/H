@@ -107,12 +107,6 @@
             <version>1.10.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -171,6 +165,11 @@
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
                             <version>1.5.5.Final</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
