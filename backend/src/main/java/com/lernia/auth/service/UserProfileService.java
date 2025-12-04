@@ -45,7 +45,6 @@ public class UserProfileService {
     public UpdateUserProfileResponse updateProfile(Long id, EditProfileRequest request) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found: " + id));
-
         user.setName(request.getName());
         user.setAge(request.getAge());
         user.setGender(request.getGender());

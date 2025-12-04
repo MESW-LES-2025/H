@@ -7,6 +7,5 @@ export interface EditProfileForm {
   age: FormControl<number | null>;
   gender: FormControl<string | null>;
   location: FormControl<string | null>;
-  profileImage: FormControl<string | null>;
   jobTitle: FormControl<string | null>;
 }

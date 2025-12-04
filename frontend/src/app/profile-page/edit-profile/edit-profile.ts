@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ProfilePageService} from '../services/profile-page-service';
-import {UserCourse} from '../../shared/viewmodels/user-course';
+import { EditProfileRequest } from './viewmodels/edit-profile-request';
 
 @Component({
   selector: 'app-edit-profile',
@@ -25,12 +25,6 @@ export class EditProfile implements OnInit {
   ) {
   }
 
-  get academicHistory(): FormArray {
-    return this.editProfileForm.get('academicHistory') as FormArray;
-  }
-
-
-
   ngOnInit(): void {
     const userIdParam = this.route.snapshot.paramMap.get('id');
     this.userIdAtual = userIdParam ? Number(userIdParam) : null;
@@ -47,18 +41,18 @@ export class EditProfile implements OnInit {
 
   onSubmit(): void {
     if (this.editProfileForm.valid && this.userIdAtual) {
-      const raw = this.editProfileForm.value as any;
+      const raw = this.editProfileForm.value as EditProfileRequest;
 
-      const mappedAcademic: UserCourse[] = [];
-
-      const updated = {...raw, academicHistory: mappedAcademic} as any;
-
-      this.profilePageService.updateProfile(updated).subscribe(() => {
-        this.router.navigate(['/profile', this.userIdAtual!]);
+      this.profilePageService.updateProfile(raw).subscribe({
+        next: () => {
+          this.router.navigate(['/profile', this.userIdAtual!]);
+        },
+        error: (error) => {
+          console.error('Failed to update profile:', error);
+        }
       });
     } else {
       this.editProfileForm.markAllAsTouched();
     }
   }
 }
-

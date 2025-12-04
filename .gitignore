@@ -60,3 +60,5 @@ backend/.mvn/
 backend/mvnw
 backend/mvnw.cmd
 *.log
+
+frontend/coverage
