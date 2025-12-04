@@ -65,4 +65,26 @@ public class AuthService {
         res.setUserId(user.getId());
         return res;
     }
+
+    public LoginResponse login(LoginRequest req) {
+        String text = req.getText();
+        Optional<UserEntity> userOpt = userRepository.findByUsername(text);
+        if (userOpt.isEmpty()) userOpt = userRepository.findByEmail(text);
+        if (userOpt.isEmpty()) {
+            return new LoginResponse("Invalid credentials", "error");
+        }
+
+        UserEntity user = userOpt.get();
+
+        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+            return new LoginResponse("Invalid credentials", "error");
+        }
+
+        LoginResponse res = new LoginResponse("Login successful", "success");
+        res.setUserId(user.getId());
+        res.setUsername(user.getUsername());
+        res.setRole(user.getUserRole().name());
+        return res;
+    }
+
 }

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ProfilePageService } from './services/profile-page-service';
-import { UserViewmodel } from './viewmodels/user-viewmodel';
+import { UserViewmodel, FavoritesResponse, FavoriteUniversityDTO } from './viewmodels/user-viewmodel';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe, NgIf, NgFor } from '@angular/common';
 
@@ -24,38 +24,36 @@ export class ProfilePage implements OnInit {
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' = 'universities';
 
   // ---------------------------
-  // MOCK DATA (cards)
+  // FAVORITE UNIVERSITIES
   // ---------------------------
-  protected universities = [
-    {
-      id: 1,
-      image: '/images/oxford-university-banner.jpg',
-      name: 'Oxford University',
-      city: 'Oxford',
-      country: 'United Kingdom',
-    },
-    {
-      id: 2,
-      image: '/images/oxford-university-banner.jpg',
-      name: 'Royal Holloway University',
-      city: 'Egham',
-      country: 'United Kingdom',
-    },
-    {
-      id: 3,
-      image: '/images/oxford-university-banner.jpg',
-      name: 'Yale University',
-      city: 'New Haven',
-      country: 'United States',
-    }
-  ];
+  protected universities: {
+    id: number;
+    image: string;
+    name: string;
+    city: string;
+    country: string;
+  }[] = [];
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
+    // perfil
     this.profilePageService
       .getUserProfile(id)
       .subscribe(data => this.user = data);
+
+    // favoritos
+    this.profilePageService
+      .getOwnFavorites()
+      .subscribe((favs: FavoritesResponse) => {
+        this.universities = favs.universities.map((uni: FavoriteUniversityDTO) => ({
+          id: uni.id,
+          image: '/images/oxford-university-banner.jpg',
+          name: uni.name,
+          city: uni.location?.city ?? 'Unknown',
+          country: uni.location?.country ?? 'Unknown',
+        }));
+      });
   }
 
   protected setTab(tab: 'universities' | 'courses' | 'countries' | 'other'): void {
@@ -64,5 +62,16 @@ export class ProfilePage implements OnInit {
 
   protected trackById(index: number, item: any): number {
     return item.id;
+  }
+
+  protected removeFavoriteUniversity(id: number): void {
+    this.profilePageService.removeFavoriteUniversity(id).subscribe({
+      next: () => {
+        this.universities = this.universities.filter(u => u.id !== id);
+      },
+      error: err => {
+        console.error('Error removing favorite:', err);
+      }
+    });
   }
 }

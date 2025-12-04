@@ -15,24 +15,25 @@ import { PageRequest } from '../shared/viewmodels/pagination';
   styleUrls: ['./explore.component.css'],
 })
 export class ExploreComponent implements OnInit {
-  constructor(private svc: ExploreService, private dataService: DataService, private router: Router) {}
+  constructor(
+    private svc: ExploreService,
+    private dataService: DataService,
+    private router: Router
+  ) {}
 
   q = signal<string>('');
 
   country = signal<string>('Any');
   countries = signal<string[]>(['Any']);
 
-  // Cost of living filter (max value)
   cost = signal<number>(5000);
   maxCost = 5000;
 
   results = signal<CollegeVM[]>([]);
 
-  // Scholarship filter
   scholarship = signal<string>('Any');
   scholarshipOptions = ['Any', 'Yes', 'No'];
 
-  // Pagination
   pageRequest: PageRequest = { page: 0, size: 3 };
   hasMorePages = signal<boolean>(false);
   isLoading = signal<boolean>(false);
@@ -114,5 +115,34 @@ export class ExploreComponent implements OnInit {
 
   goToUniversity(id: string): void {
     this.router.navigate(['/university', id]);
+  }
+
+  // ---------------- FAVOURITES (toggle) ----------------
+
+  onFavoriteUniversityClick(college: CollegeVM, event: MouseEvent): void {
+    event.stopPropagation();
+
+    const uniId = Number(college.id);
+    if (isNaN(uniId)) return;
+
+    if (!college.isFavorite) {
+      this.svc.addFavoriteUniversity(uniId).subscribe({
+        next: () => {
+          college.isFavorite = true;
+        },
+        error: err => {
+          console.error('Error adding favorite:', err);
+        },
+      });
+    } else {
+      this.svc.removeFavoriteUniversity(uniId).subscribe({
+        next: () => {
+          college.isFavorite = false;
+        },
+        error: err => {
+          console.error('Error removing favorite:', err);
+        },
+      });
+    }
   }
 }

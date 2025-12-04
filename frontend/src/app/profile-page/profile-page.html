@@ -145,9 +145,14 @@
       <p class="uni-location">{{ uni.city }}, {{ uni.country }}</p>
     </div>
 
-    <button class="fav-btn" aria-label="Toggle favourite">
+    <button
+      class="fav-btn"
+      aria-label="Toggle favourite"
+      (click)="removeFavoriteUniversity(uni.id)"
+    >
       <span class="fav-icon">❤</span>
     </button>
+
   </article>
 
 </section>
