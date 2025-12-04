@@ -103,6 +103,28 @@ public class ReviewService {
         return convertCourseReviewToDto(savedReview);
     }
 
+    public void deleteReview(Long reviewId, Long userId) {
+        UniversityReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to delete this review.");
+        }
+
+        reviewRepository.delete(review);
+    }
+
+    public void deleteCourseReview(Long reviewId, Long userId) {
+        CourseReviewEntity review = courseReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to delete this review.");
+        }
+
+        courseReviewRepository.delete(review);
+    }
+
     private ReviewDTO convertToDto(UniversityReviewEntity review) {
         ReviewDTO dto = new ReviewDTO();
         dto.setId(review.getId());

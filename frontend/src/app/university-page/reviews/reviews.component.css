@@ -127,3 +127,24 @@ textarea {
   border-radius: 4px;
   margin-bottom: 2rem;
 }
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    line-height: 1;
+}
+
+.btn-delete:hover {
+    background-color: #ffebee; /* Vermelho claro */
+}

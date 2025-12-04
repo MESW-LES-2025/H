@@ -54,4 +54,24 @@ public class ReviewController {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @RequestParam Long userId) {
+        try {
+            reviewService.deleteReview(reviewId, userId);
+            return ResponseEntity.ok(Map.of("message", "Review deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/course/{reviewId}")
+    public ResponseEntity<?> deleteCourseReview(@PathVariable Long reviewId, @RequestParam Long userId) {
+        try {
+            reviewService.deleteCourseReview(reviewId, userId);
+            return ResponseEntity.ok(Map.of("message", "Review deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
 }
