@@ -52,22 +52,25 @@ public class SecurityConfig {
                             return configuration;
                         })
                 )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(
-                                "/login",
-                                "/register",
-                                "/api/favorites/**",
-                                "/api/profile/delete/**"
-                        )
-                )
+
+                .csrf(AbstractHttpConfigurer::disable)
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
                         // Login / Register públicos
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+
                         // Preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Delete account
                         .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
+
+                        // Favoritos (GET/POST/DELETE)
+                        .requestMatchers("/api/favorites/**").permitAll()
+
+                        // Endpoint de sessão para o frontend
+                        .requestMatchers("/api/auth/me").permitAll()
+
                         // Endpoints GET públicos
                         .requestMatchers(HttpMethod.GET,
                                 "/api/profile/**",
@@ -75,15 +78,16 @@ public class SecurityConfig {
                                 "/api/courses/search",
                                 "/api/university/**",
                                 "/api/area-of-study",
-                                "/api/favorites/**",
                                 "/api/reviews/**"
                         ).permitAll()
+
                         // Swagger
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+
                         // Tudo o resto precisa de autenticação
                         .anyRequest().authenticated()
                 );
