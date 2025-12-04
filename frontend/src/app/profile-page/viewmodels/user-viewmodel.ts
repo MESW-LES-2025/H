@@ -10,3 +10,27 @@ export interface UserViewmodel {
   jobTitle: string;
   academicHistory: UserCourse[];
 }
+
+export interface FavoriteUniversityDTO {
+  id: number;
+  name: string;
+  description: string;
+  location: {
+    id: number;
+    city: string;
+    country: string;
+    costOfLiving: number;
+  } | null;
+}
+
+export interface FavoriteCourseDTO {
+  id: number;
+  name: string;
+  courseType: string;
+}
+
+export interface FavoritesResponse {
+  universities: FavoriteUniversityDTO[];
+  courses: FavoriteCourseDTO[];
+}
+
