@@ -118,4 +118,34 @@ public class ReviewController {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<?> updateReview(@PathVariable Long reviewId, @RequestBody ReviewDTO reviewDto, Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
+        }
+        try {
+            UserEntity user = userRepository.findByUsername(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return ResponseEntity.ok(reviewService.updateReview(reviewId, reviewDto, user.getId()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/course/{reviewId}")
+    public ResponseEntity<?> updateCourseReview(@PathVariable Long reviewId, @RequestBody ReviewDTO reviewDto, Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
+        }
+        try {
+            UserEntity user = userRepository.findByUsername(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return ResponseEntity.ok(reviewService.updateCourseReview(reviewId, reviewDto, user.getId()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
 }

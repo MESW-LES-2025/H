@@ -29,6 +29,9 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   currentUserId: number | null = null; 
   private userSubscription: Subscription | undefined;
 
+  // Add a variable to hold the review currently being edited
+  editingReview: Review = { ...this.newReview }; 
+
   constructor(
     private reviewService: ReviewService,
     private authService: AuthService,
@@ -116,6 +119,36 @@ export class ReviewsComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error deleting review:', error);
         alert('Failed to delete review.');
+      }
+    });
+  }
+
+  openEditModal(content: TemplateRef<any>, review: Review) {
+    this.editingReview = { ...review };
+    
+    this.modalService.open(content, { centered: true }).result.then(
+      (result) => {
+        if (result === 'save') {
+          this.saveEditedReview();
+        }
+      },
+      () => {}
+    );
+  }
+
+  saveEditedReview() {
+    if (!this.editingReview.id) return;
+
+    this.reviewService.updateReview(this.editingReview.id, this.editingReview).subscribe({
+      next: (updatedReview) => {
+        const index = this.reviews.findIndex(r => r.id === updatedReview.id);
+        if (index !== -1) {
+          this.reviews[index] = updatedReview;
+        }
+      },
+      error: (error) => {
+        console.error('Error updating review:', error);
+        alert('Failed to update review.');
       }
     });
   }

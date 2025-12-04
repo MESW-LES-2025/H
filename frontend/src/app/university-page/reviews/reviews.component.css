@@ -134,17 +134,36 @@ textarea {
     gap: 10px;
 }
 
-.btn-delete {
+.btn-action {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 1.1rem;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    padding: 6px 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
     line-height: 1;
+    opacity: 0.7;
+}
+
+.btn-delete {
+    color: #dc3545;
+}
+
+.btn-edit {
+    color: #0d6efd; /* Blue */
+}
+
+.btn-action:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: #f0f0f0;
 }
 
 .btn-delete:hover {
     background-color: #ffebee; /* Vermelho claro */
+}
+
+.btn-edit:hover {
+    background-color: #e7f1ff;
 }

@@ -131,6 +131,40 @@ public class ReviewService {
         courseReviewRepository.delete(review);
     }
 
+    public ReviewDTO updateReview(Long reviewId, ReviewDTO reviewDTO, Long userId) {
+        UniversityReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to edit this review.");
+        }
+
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
+        review.setReviewDate(LocalDate.now());
+
+        UniversityReviewEntity updatedReview = reviewRepository.save(review);
+        return convertToDto(updatedReview);
+    }
+
+    public ReviewDTO updateCourseReview(Long reviewId, ReviewDTO reviewDTO, Long userId) {
+        CourseReviewEntity review = courseReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to edit this review.");
+        }
+
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
+        review.setReviewDate(LocalDate.now());
+
+        CourseReviewEntity updatedReview = courseReviewRepository.save(review);
+        return convertCourseReviewToDto(updatedReview);
+    }
+
     private ReviewDTO convertToDto(UniversityReviewEntity review) {
         ReviewDTO dto = new ReviewDTO();
         dto.setId(review.getId());

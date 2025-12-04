@@ -24,7 +24,8 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
     title: '',
     description: ''
   };
-  
+  editingReview: Review = { ...this.newReview };
+
   isLoggedIn = false;
   isEligible = false;
   currentUserId: number | null = null;
@@ -112,6 +113,35 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error deleting review:', error);
         alert('Failed to delete review.');
+      }
+    });
+  }
+
+  openEditModal(content: TemplateRef<any>, review: Review) {
+    this.editingReview = { ...review };
+    this.modalService.open(content, { centered: true }).result.then(
+      (result) => {
+        if (result === 'save') {
+          this.saveEditedReview();
+        }
+      },
+      () => {}
+    );
+  }
+
+  saveEditedReview() {
+    if (!this.editingReview.id) return;
+
+    this.reviewService.updateCourseReview(this.editingReview.id, this.editingReview).subscribe({
+      next: (updatedReview) => {
+        const index = this.reviews.findIndex(r => r.id === updatedReview.id);
+        if (index !== -1) {
+          this.reviews[index] = updatedReview;
+        }
+      },
+      error: (error) => {
+        console.error('Error updating review:', error);
+        alert('Failed to update review.');
       }
     });
   }
