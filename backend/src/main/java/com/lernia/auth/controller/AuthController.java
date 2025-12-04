@@ -41,6 +41,12 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Principal principal) {
         if (principal == null) {

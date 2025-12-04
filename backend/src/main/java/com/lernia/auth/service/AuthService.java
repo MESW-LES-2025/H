@@ -92,4 +92,10 @@ public class AuthService {
         res.setRole(user.getUserRole().name());
         return res;
     }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
+    }
 }

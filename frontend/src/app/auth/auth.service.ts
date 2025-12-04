@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 export interface LoginRequest { text: string; password: string; }
@@ -27,7 +28,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.restoreSession();
   }
 
@@ -61,5 +62,18 @@ export class AuthService {
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.baseUrl}/api/auth/register`, body);
+  }
+
+  logout(): void {
+    this.http.post(`${this.baseUrl}/api/auth/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => {
+        this.currentUserSubject.next(null);
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.currentUserSubject.next(null);
+        this.router.navigate(['/']);
+      }
+    });
   }
 }
