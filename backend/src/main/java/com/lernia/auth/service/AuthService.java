@@ -46,7 +46,7 @@ public class AuthService {
         userRepository.save(user);
         return new RegisterResponse("User registered", "success");
     }
-
+/*
     public LoginResponse login(LoginRequest req) {
         String text = req.getText();
         Optional<UserEntity> userOpt = userRepository.findByUsername(text);
@@ -64,7 +64,7 @@ public class AuthService {
         LoginResponse res = new LoginResponse("Login successful", "success");
         res.setUserId(user.getId());
         return res;
-    }
+    }*/
 
     public LoginResponse login(LoginRequest req) {
         String text = req.getText();
