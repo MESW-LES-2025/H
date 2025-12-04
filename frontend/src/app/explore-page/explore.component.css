@@ -100,7 +100,6 @@
   margin-top: 16px;
 }
 
-/* imagem principal */
 
 .hero-image {
   width: 100%;
@@ -110,7 +109,6 @@
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.25);
 }
 
-/* barra de pesquisa em cima da imagem */
 
 .searchbar.hero-searchbar {
   position: absolute;
@@ -133,7 +131,6 @@
   overflow: hidden;
 }
 
-/* wrapper do ícone */
 
 .hero-searchbar .icon {
   display: flex;
@@ -407,7 +404,7 @@
 
 .college-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); /* ~60/40 */
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   align-items: stretch;
 
   margin: 26px 0;
@@ -477,6 +474,36 @@
 }
 
 /* botão de favorito */
+.fav {
+  border: none;
+  background: white;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, color 0.1s ease;
+  color: #444; /* coração "vazio" */
+}
+
+.fav--active {
+  color: #e53935; /* vermelho quando favorito */
+}
+
+.fav:hover {
+  transform: scale(1.1);
+}
+
+button.fav {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+  color: #ffffff;
+}
+
+button.fav-active {
+  color: red;
+  transform: scale(1.1);
+}
 
 .college-card .fav {
   position: absolute;

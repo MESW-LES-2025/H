@@ -99,7 +99,12 @@
         </div>
       </div>
 
-      <article class="college-card" *ngFor="let c of results()" (click)="goToUniversity(c.id)" style="cursor: pointer;">
+      <article
+        class="college-card"
+        *ngFor="let c of results()"
+        (click)="goToUniversity(c.id)"
+        style="cursor: pointer;"
+      >
         <div class="left" [style.backgroundColor]="c.color">
           <h3>{{ c.title }}</h3>
           <p>{{ c.blurb }}</p>
@@ -108,11 +113,20 @@
             <span *ngIf="c.costOfLiving > 0">💰 ${{ c.costOfLiving }}/month</span>
           </div>
         </div>
+
         <div class="right">
           <img [src]="c.photo" [alt]="c.title" />
-          <button class="fav" aria-label="Save">♡</button>
+          <button
+            class="fav"
+            aria-label="Save"
+            (click)="onFavoriteUniversityClick(c, $event)"
+            [class.fav-active]="c.isFavorite"
+          >
+            {{ c.isFavorite ? '❤' : '♡' }}
+          </button>
         </div>
       </article>
+
 
       <div class="load-more" *ngIf="hasMorePages()">
         <button class="more" (click)="loadMore()" [disabled]="isLoading()">
