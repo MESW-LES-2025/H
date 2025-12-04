@@ -10,6 +10,11 @@ import {
 } from '../viewmodels/explore-viewmodel';
 import { Page, PageRequest } from '../../shared/viewmodels/pagination';
 
+export interface FavoritesResponse {
+  universities: { id: number }[];
+  courses: { id: number }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class ExploreService {
   private readonly baseUrl = environment.apiUrl;
@@ -86,6 +91,20 @@ export class ExploreService {
 
     return this.http.delete<void>(
       `${this.baseUrl}/api/favorites/universities/${id}`,
+      { params }
+    );
+  }
+
+  getFavorites(): Observable<FavoritesResponse> {
+    const storedId = localStorage.getItem('userId');
+    if (!storedId) {
+      return throwError(() => new Error('User not logged in'));
+    }
+
+    const params = new HttpParams().set('userId', storedId);
+
+    return this.http.get<FavoritesResponse>(
+      `${this.baseUrl}/api/favorites`,
       { params }
     );
   }

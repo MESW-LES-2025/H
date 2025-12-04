@@ -38,37 +38,87 @@ export class ExploreComponent implements OnInit {
   hasMorePages = signal<boolean>(false);
   isLoading = signal<boolean>(false);
 
+  favoriteUniversityIds = signal<number[]>([]);
+
   ngOnInit(): void {
     this.dataService.countries$.subscribe(countries => {
       this.countries.set(['Any', ...countries]);
     });
 
-    this.search();
+    this.loadFavoritesAndSearch();
   }
+
+  // ================== FAVORITOS ==================
+
+  private loadFavoritesAndSearch(): void {
+    const storedId = localStorage.getItem('userId');
+    if (!storedId) {
+      this.search();
+      return;
+    }
+
+    this.svc.getFavorites().subscribe({
+      next: resp => {
+        const uniIds = resp.universities?.map(u => u.id) ?? [];
+        this.favoriteUniversityIds.set(uniIds);
+        this.search();
+      },
+      error: err => {
+        console.error('Error loading favorites:', err);
+        this.search();
+      },
+    });
+  }
+
+  private withFavoriteFlag(content: CollegeVM[]): CollegeVM[] {
+    const favIds = this.favoriteUniversityIds();
+    return content.map(c => ({
+      ...c,
+      isFavorite: favIds.includes(Number(c.id)),
+    }));
+  }
+
+  // click no coracao
+  onFavoriteUniversityClick(college: CollegeVM, event: MouseEvent): void {
+    event.stopPropagation();
+
+    const uniId = Number(college.id);
+    if (isNaN(uniId)) return;
+
+    if (!college.isFavorite) {
+      this.svc.addFavoriteUniversity(uniId).subscribe({
+        next: () => {
+          college.isFavorite = true;
+
+          const current = this.favoriteUniversityIds();
+          if (!current.includes(uniId)) {
+            this.favoriteUniversityIds.set([...current, uniId]);
+          }
+        },
+        error: err => {
+          console.error('Error adding favorite:', err);
+        },
+      });
+    } else {
+      this.svc.removeFavoriteUniversity(uniId).subscribe({
+        next: () => {
+          college.isFavorite = false;
+
+          const updated = this.favoriteUniversityIds().filter(id => id !== uniId);
+          this.favoriteUniversityIds.set(updated);
+        },
+        error: err => {
+          console.error('Error removing favorite:', err);
+        },
+      });
+    }
+  }
+
+  // ================== FILTROS / PESQUISA ==================
 
   onScholarshipChange(value: string): void {
     this.scholarship.set(value);
     this.search();
-  }
-
-  search(): void {
-    this.pageRequest.page = 0;
-    this.isLoading.set(true);
-    const costMax = this.cost() >= this.maxCost ? null : this.cost();
-
-    this.svc
-      .search(
-        this.q(),
-        this.country(),
-        costMax,
-        this.scholarship(),
-        this.pageRequest
-      )
-      .subscribe(page => {
-        this.results.set(page.content);
-        this.hasMorePages.set(page.number + 1 < page.totalPages);
-        this.isLoading.set(false);
-      });
   }
 
   onCountryChange(value: string): void {
@@ -89,6 +139,27 @@ export class ExploreComponent implements OnInit {
     this.search();
   }
 
+  search(): void {
+    this.pageRequest.page = 0;
+    this.isLoading.set(true);
+    const costMax = this.cost() >= this.maxCost ? null : this.cost();
+
+    this.svc
+      .search(
+        this.q(),
+        this.country(),
+        costMax,
+        this.scholarship(),
+        this.pageRequest
+      )
+      .subscribe(page => {
+        const contentWithFav = this.withFavoriteFlag(page.content);
+        this.results.set(contentWithFav);
+        this.hasMorePages.set(page.number + 1 < page.totalPages);
+        this.isLoading.set(false);
+      });
+  }
+
   loadMore(): void {
     if (this.isLoading() || !this.hasMorePages()) {
       return;
@@ -107,7 +178,8 @@ export class ExploreComponent implements OnInit {
         this.pageRequest
       )
       .subscribe(page => {
-        this.results.set([...this.results(), ...page.content]);
+        const extraWithFav = this.withFavoriteFlag(page.content);
+        this.results.set([...this.results(), ...extraWithFav]);
         this.hasMorePages.set(page.number + 1 < page.totalPages);
         this.isLoading.set(false);
       });
@@ -115,34 +187,5 @@ export class ExploreComponent implements OnInit {
 
   goToUniversity(id: string): void {
     this.router.navigate(['/university', id]);
-  }
-
-  // ---------------- FAVOURITES (toggle) ----------------
-
-  onFavoriteUniversityClick(college: CollegeVM, event: MouseEvent): void {
-    event.stopPropagation();
-
-    const uniId = Number(college.id);
-    if (isNaN(uniId)) return;
-
-    if (!college.isFavorite) {
-      this.svc.addFavoriteUniversity(uniId).subscribe({
-        next: () => {
-          college.isFavorite = true;
-        },
-        error: err => {
-          console.error('Error adding favorite:', err);
-        },
-      });
-    } else {
-      this.svc.removeFavoriteUniversity(uniId).subscribe({
-        next: () => {
-          college.isFavorite = false;
-        },
-        error: err => {
-          console.error('Error removing favorite:', err);
-        },
-      });
-    }
   }
 }
