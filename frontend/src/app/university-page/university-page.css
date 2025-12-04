@@ -103,6 +103,32 @@
   margin-bottom: 1rem;
 }
 
+.scholarship-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+}
+
+.scholarship-icon i {
+  font-size: 24px;
+}
+
+.scholarship-item:hover {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding-left: 12px;
+}
+
+.scholarship-item:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.scholarships-list {
+  margin-bottom: 1rem;
+}
+
 .stat-box {
   padding: 1rem;
   background-color: #f8f9fa;

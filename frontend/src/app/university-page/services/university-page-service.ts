@@ -18,6 +18,14 @@ interface CourseLightDTO {
   courseType: string;
 }
 
+interface ScholarshipDTO {
+  id: number;
+  name: string;
+  description: string;
+  amount: number;
+  courseType: string;
+}
+
 interface UniversityDTO {
   id: number;
   name: string;
@@ -28,6 +36,7 @@ interface UniversityDTO {
   logo: string;
   location: LocationDTO;
   courses: CourseLightDTO[];
+  scholarships: ScholarshipDTO[];
 }
 
 @Injectable({
@@ -58,7 +67,7 @@ export class UniversityPageService {
       bannerImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop',
       description: dto.description || 'No description available',
       studentCount: 0,
-      foundedYear: 0,  
+      foundedYear: 0,
       courses: dto.courses.map(course => ({
         id: course.id,
         name: course.name,
@@ -73,7 +82,11 @@ export class UniversityPageService {
           },
           logo: dto.logo || null
         }
-      }))
+      })),
+      scholarships: dto.scholarships || [],
+      address: dto.address || 'N/A',
+      contactInfo: dto.contactInfo || 'N/A',
+      website: dto.website || 'N/A'
     };
   }
 }
