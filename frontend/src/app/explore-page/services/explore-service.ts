@@ -108,4 +108,20 @@ export class ExploreService {
       { params }
     );
   }
+
+  getFavoriteUniversities(userId: number): Observable<number[]> {
+    const params = new HttpParams().set('userId', userId);
+
+    return this.http
+      .get<{ universities: { id: number }[] }>(
+        `${this.baseUrl}/api/favorites`,
+        { params }
+      )
+      .pipe(
+        map(response =>
+          response.universities.map(u => u.id)
+        )
+      );
+  }
+
 }

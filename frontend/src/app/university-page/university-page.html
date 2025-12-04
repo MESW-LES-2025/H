@@ -14,9 +14,13 @@
 
       <div class="card-body p-4 position-relative flex-grow-1">
         <!-- Save College Button -->
-        <button class="btn btn-save-college">
-          <i class="bi bi-heart-fill"></i>
-          Save College
+        <button
+          class="btn btn-save-college"
+          (click)="onToggleFavorite()"
+          [class.fav-active]="isFavorite"
+        >
+          <i class="bi" [ngClass]="isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
+          {{ isFavorite ? 'Saved to favourites' : 'Save College' }}
         </button>
 
         <div class="row align-items-start g-3">
@@ -86,8 +90,8 @@
                 @if (university.courses && university.courses.length > 0) {
                   <div class="courses-list">
                     @for (course of university.courses; track course.id) {
-                      <div class="course-item d-flex gap-3 pb-3 mb-3 border-bottom" 
-                           (click)="goToCourse(course.id)" 
+                      <div class="course-item d-flex gap-3 pb-3 mb-3 border-bottom"
+                           (click)="goToCourse(course.id)"
                            style="cursor: pointer;"
                            role="button"
                            tabindex="0">
