@@ -1,6 +1,9 @@
 package com.lernia.auth.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.lernia.auth.dto.LoginRequest;
@@ -11,13 +14,20 @@ import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
 import com.lernia.auth.repository.UserRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -30,9 +40,35 @@ class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpServletResponse response;
+
+    @Mock
+    private HttpSession session;
+
+    @Mock
+    private SecurityContextRepository securityContextRepository; 
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        
+        when(request.getSession(true)).thenReturn(session);
+        when(request.getSession()).thenReturn(session);
+        
+        when(passwordEncoder.encode(anyString())).thenReturn("encoded_password_placeholder");
+
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        doNothing().when(securityContextRepository)
+            .saveContext(any(SecurityContext.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
@@ -41,6 +77,8 @@ class AuthServiceTest {
 
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+
+        when(passwordEncoder.encode("password123")).thenReturn("$2a$10$mockedhashvalue");
 
         when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> {
             UserEntity u = invocation.getArgument(0);
@@ -62,10 +100,7 @@ class AuthServiceTest {
         assertEquals("Name", saved.getName());
         assertEquals("new@example.com", saved.getEmail());
         assertNotNull(saved.getPassword());
-        // Ensure password was hashed (bcrypt hashes start with $2a$, $2b$ or $2y$)
-        assertTrue(saved.getPassword().startsWith("$2a$") ||
-                   saved.getPassword().startsWith("$2b$") ||
-                   saved.getPassword().startsWith("$2y$"));
+        assertEquals("$2a$10$mockedhashvalue", saved.getPassword());
     }
 
     @Test
@@ -101,9 +136,8 @@ class AuthServiceTest {
 
     @Test
     void testLoginSuccess() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String rawPassword = "secret";
-        String hashed = encoder.encode(rawPassword);
+        String hashed = "$2a$10$hashedsecret";
 
         UserEntity user = new UserEntity();
         user.setId(99L);
@@ -113,29 +147,29 @@ class AuthServiceTest {
         user.setCreationDate(LocalDate.now());
 
         when(userRepository.findByUsername("loginuser")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(rawPassword, hashed)).thenReturn(true);
 
         LoginRequest req = new LoginRequest();
         req.setText("loginuser");
         req.setPassword(rawPassword);
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
         assertEquals(99L, res.getUserId());
+        
     }
 
     @Test
     void testLoginUserNotFound() {
-        when(userRepository.findByUsername("noone")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("noone")).thenReturn(Optional.empty());
-
+        
         LoginRequest req = new LoginRequest();
         req.setText("noone");
         req.setPassword("whatever");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
@@ -144,8 +178,7 @@ class AuthServiceTest {
 
     @Test
     void testLoginWrongPassword() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashed = encoder.encode("rightpass");
+        String hashed = "$2a$10$hashedpass";
 
         UserEntity user = new UserEntity();
         user.setId(11L);
@@ -153,22 +186,23 @@ class AuthServiceTest {
         user.setPassword(hashed);
 
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongpass", hashed)).thenReturn(false);
 
         LoginRequest req = new LoginRequest();
         req.setText("user1");
         req.setPassword("wrongpass");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
         assertEquals("Invalid credentials", res.getMessage());
     }
+
     @Test
     void testLoginWithEmailSuccess() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String rawPassword = "secret-email";
-        String hashed = encoder.encode(rawPassword);
+        String hashed = "$2a$10$hashedemailpass";
 
         UserEntity user = new UserEntity();
         user.setId(123L);
@@ -177,23 +211,21 @@ class AuthServiceTest {
         user.setPassword(hashed);
         user.setCreationDate(LocalDate.now());
 
-        when(userRepository.findByUsername("email@example.com"))
-                .thenReturn(Optional.empty());
-        when(userRepository.findByEmail("email@example.com"))
-                .thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("email@example.com")).thenReturn(Optional.of(user));
+        
+        when(passwordEncoder.matches(rawPassword, hashed)).thenReturn(true);
 
         LoginRequest req = new LoginRequest();
         req.setText("email@example.com");
         req.setPassword(rawPassword);
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
         assertEquals(123L, res.getUserId());
 
-        verify(userRepository).findByUsername("email@example.com");
         verify(userRepository).findByEmail("email@example.com");
     }
 
@@ -217,6 +249,7 @@ class AuthServiceTest {
 
         verify(userRepository, never()).save(any());
     }
+
     @Test
     void testRegisterChecksUsernameAndEmail() {
         RegisterRequest req = new RegisterRequest(
@@ -244,16 +277,15 @@ class AuthServiceTest {
         verify(userRepository, times(1)).existsByEmail("some@example.com");
         verify(userRepository, times(1)).save(any(UserEntity.class));
     }
+
     @Test
     void testLoginUserNotFoundChecksUsernameAndEmail() {
-        when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("ghost")).thenReturn(Optional.empty());
 
         LoginRequest req = new LoginRequest();
         req.setText("ghost");
         req.setPassword("whatever");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
@@ -262,11 +294,10 @@ class AuthServiceTest {
         verify(userRepository, times(1)).findByUsername("ghost");
         verify(userRepository, times(1)).findByEmail("ghost");
     }
+
     @Test
     void testLoginWithEmailWrongPassword() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String correctPassword = "correct-pass";
-        String hashed = encoder.encode(correctPassword);
+        String hashed = "$2a$10$hashedpass2";
 
         UserEntity user = new UserEntity();
         user.setId(555L);
@@ -275,22 +306,20 @@ class AuthServiceTest {
         user.setPassword(hashed);
         user.setCreationDate(LocalDate.now());
 
-        when(userRepository.findByUsername("email2@example.com"))
-                .thenReturn(Optional.empty());
-        when(userRepository.findByEmail("email2@example.com"))
-                .thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("email2@example.com")).thenReturn(Optional.of(user));
+        
+        when(passwordEncoder.matches("wrong-pass", hashed)).thenReturn(false);
 
         LoginRequest req = new LoginRequest();
         req.setText("email2@example.com");
         req.setPassword("wrong-pass");
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("error", res.getStatus());
         assertEquals("Invalid credentials", res.getMessage());
 
-        verify(userRepository, times(1)).findByUsername("email2@example.com");
         verify(userRepository, times(1)).findByEmail("email2@example.com");
     }
 
@@ -365,9 +394,8 @@ class AuthServiceTest {
 
     @Test
     void testLoginByUsernameDoesNotCallFindByEmail() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String rawPassword = "plain-pass";
-        String hashed = encoder.encode(rawPassword);
+        String hashed = "$2a$10$hashedplain";
 
         UserEntity user = new UserEntity();
         user.setId(321L);
@@ -375,12 +403,13 @@ class AuthServiceTest {
         user.setPassword(hashed);
 
         when(userRepository.findByUsername("simpleuser")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(rawPassword, hashed)).thenReturn(true);
 
         LoginRequest req = new LoginRequest();
         req.setText("simpleuser");
         req.setPassword(rawPassword);
 
-        LoginResponse res = authService.login(req);
+        LoginResponse res = authService.login(req, request, response);
 
         assertNotNull(res);
         assertEquals("success", res.getStatus());
@@ -390,5 +419,4 @@ class AuthServiceTest {
         verify(userRepository, times(1)).findByUsername("simpleuser");
         verify(userRepository, never()).findByEmail(anyString());
     }
-
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface LoginRequest { text: string; password: string; }
@@ -13,11 +14,19 @@ export interface CsrfResponse {
   token: string;
 }
 
+export interface User {
+    id: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = environment.apiUrl;
   csrfToken: string | null = null;
   csrfHeaderName: string | null = null;
+
+  // Add state management for the current user
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -26,8 +35,13 @@ export class AuthService {
     if (this.csrfToken && this.csrfHeaderName) {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true });
-
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true })
+      .pipe(tap(res => {
+        // Update the subject when login is successful
+        if (res.status === 'success' && res.userId) {
+          this.currentUserSubject.next({ id: res.userId });
+        }
+      }));
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {

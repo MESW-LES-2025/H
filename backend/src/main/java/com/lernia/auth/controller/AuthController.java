@@ -2,10 +2,12 @@ package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.RegisterRequest;
 import com.lernia.auth.dto.RegisterResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.lernia.auth.dto.LoginRequest;
 import com.lernia.auth.dto.LoginResponse;
@@ -21,8 +23,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
+    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+        return authService.login(loginRequest, request, response);
     }
 
     @PostMapping("/register")

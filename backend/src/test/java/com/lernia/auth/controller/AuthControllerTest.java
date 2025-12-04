@@ -5,6 +5,8 @@ import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.dto.RegisterRequest;
 import com.lernia.auth.dto.RegisterResponse;
 import com.lernia.auth.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,6 +24,12 @@ class AuthControllerTest {
 
     @Mock
     private AuthService authService;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpServletResponse response;
 
     @BeforeEach
     void setUp() {
@@ -42,9 +50,10 @@ class AuthControllerTest {
                 new LoginResponse("Login successful", "success");
         serviceResponse.setUserId(123L);
 
-        when(authService.login(any(LoginRequest.class))).thenReturn(serviceResponse);
+        when(authService.login(any(LoginRequest.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenReturn(serviceResponse);
 
-        LoginResponse controllerResponse = authController.login(req);
+        LoginResponse controllerResponse = authController.login(req, request, response);
 
         assertNotNull(controllerResponse);
         assertEquals("Login successful", controllerResponse.getMessage());
@@ -52,7 +61,7 @@ class AuthControllerTest {
         assertEquals(123L, controllerResponse.getUserId());
 
         ArgumentCaptor<LoginRequest> captor = ArgumentCaptor.forClass(LoginRequest.class);
-        verify(authService, times(1)).login(captor.capture());
+        verify(authService, times(1)).login(captor.capture(), eq(request), eq(response));
         LoginRequest passedReq = captor.getValue();
 
         assertSame(req, passedReq);
@@ -67,15 +76,16 @@ class AuthControllerTest {
         LoginResponse errorResponse =
                 new LoginResponse("Invalid credentials", "error");
 
-        when(authService.login(req)).thenReturn(errorResponse);
+        when(authService.login(eq(req), any(HttpServletRequest.class), any(HttpServletResponse.class)))
+                .thenReturn(errorResponse);
 
-        LoginResponse controllerResponse = authController.login(req);
+        LoginResponse controllerResponse = authController.login(req, request, response);
 
         assertNotNull(controllerResponse);
         assertEquals("error", controllerResponse.getStatus());
         assertEquals("Invalid credentials", controllerResponse.getMessage());
 
-        verify(authService, times(1)).login(req);
+        verify(authService, times(1)).login(req, request, response);
     }
 
     // -------------------------------------------------------
