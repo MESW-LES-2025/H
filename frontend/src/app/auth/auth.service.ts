@@ -78,6 +78,14 @@ export class AuthService {
       `${this.baseUrl}/login`,
       body,
       { withCredentials: true }
+    ).pipe(
+      tap(response => {
+        if (response.status === 'success') {
+          this.currentUserSubject.next({
+            id: response.userId
+          });
+        }
+      })
     );
   }
 
