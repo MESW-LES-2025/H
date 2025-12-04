@@ -57,7 +57,7 @@ public class SecurityConfig {
       .csrf(AbstractHttpConfigurer::disable)
       .securityContext(context -> context.securityContextRepository(securityContextRepository))
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
         .requestMatchers(HttpMethod.GET, 
             "/api/profile/**", 

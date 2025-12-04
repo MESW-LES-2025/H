@@ -83,7 +83,6 @@ public class AuthService {
         context.setAuthentication(authToken);
         SecurityContextHolder.setContext(context);
         
-        // This saves the session to the request/response (creates JSESSIONID cookie)
         securityContextRepository.saveContext(context, request, response);
         // ----------------------
 
