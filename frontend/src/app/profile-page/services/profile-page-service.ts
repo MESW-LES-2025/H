@@ -17,5 +17,9 @@ public getUserProfile(id: number): Observable<UserViewmodel> {
   return this.http.get<UserViewmodel>(`${this.apiUrl}/api/profile/${id}`, { withCredentials: true });
 }
 
+  public deleteAccount(userId: number) {
+    return this.http.delete(`${this.apiUrl}/api/profile/delete/${userId}`);
+  }
+
 
 }

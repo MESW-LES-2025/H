@@ -396,6 +396,26 @@
   font-size: 14px;
 }
 
+.delete-section {
+  width: min(1100px, 92%);
+  margin: 40px auto;
+  text-align: right;
+}
+
+.delete-btn {
+  background: #d9534f;
+  color: white;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #c9302c;
+}
 
 /* ======================================
    FOOTER

@@ -65,4 +65,23 @@ export class ProfilePage implements OnInit {
   protected trackById(index: number, item: any): number {
     return item.id;
   }
+  protected confirmDelete(): void {
+    if (!this.user) { return; }
+
+    const sure = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    if (!sure) return;
+
+    this.profilePageService.deleteAccount(this.user.id).subscribe({
+      next: () => {
+        alert('Account deleted successfully.');
+        localStorage.removeItem('userId');
+        window.location.href = '/home';
+      },
+      error: err => {
+        console.error('Error deleting account', err);
+        alert('Failed to delete account.');
+      },
+    });
+  }
+
 }

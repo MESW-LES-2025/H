@@ -155,6 +155,11 @@
 <section *ngIf="activeTab !== 'universities'" class="empty-tab">
   <p>No items in this tab yet.</p>
 </section>
+<section class="delete-section" *ngIf="user">
+  <button class="delete-btn" (click)="confirmDelete()">
+    Delete Account
+  </button>
+</section>
 
 <!-- ======================================= -->
 <!-- FOOTER                                  -->
