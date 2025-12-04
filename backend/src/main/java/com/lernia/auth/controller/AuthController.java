@@ -5,7 +5,6 @@ import com.lernia.auth.dto.RegisterResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.lernia.auth.dto.LoginRequest;
 import com.lernia.auth.dto.LoginResponse;

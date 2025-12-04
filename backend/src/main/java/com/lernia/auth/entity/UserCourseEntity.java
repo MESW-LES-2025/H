@@ -1,31 +1,37 @@
 package com.lernia.auth.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "user_courses", schema = "lernia")
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserCourseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
-    @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    private CourseEntity course;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "course_id", nullable = false)
+    private Long courseId;
+
+    @Column(name = "start_date")
     private LocalDate startDate;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
-    private Boolean isFinished;
+
+    @Column(name = "is_finished")
+    private Boolean finished;
 }

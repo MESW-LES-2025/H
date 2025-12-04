@@ -1,5 +1,7 @@
 package com.lernia.auth.controller;
 
+import com.lernia.auth.dto.EditProfileRequest;
+import com.lernia.auth.dto.UpdateUserProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,32 +21,22 @@ public class UserProfileController {
         this.service = service;
     }
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<UserProfileResponse> getOwnProfile(Authentication authentication) {
         String username = authentication.getName();
         return ResponseEntity.ok(service.getProfileByUsername(username));
-    }
-
-    @PutMapping
-    public ResponseEntity<UserProfileResponse> updateOwnProfile(Authentication authentication,
-                                                                @RequestBody UserProfileRequest req) {
-        String username = authentication.getName();
-        return ResponseEntity.ok(service.updateProfileByUsername(username, req));
-    }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<UserProfileResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getProfileById(id));
     }
 
-    @GetMapping("/by-username/{username}")
-    public ResponseEntity<UserProfileResponse> getByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(service.getProfileByUsername(username));
-    }
+    @PutMapping("/{id}/update-profile")
+    public ResponseEntity<UpdateUserProfileResponse> updateProfile(
+            @PathVariable Long id,
+            @RequestBody EditProfileRequest request) {
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserProfileResponse> update(@PathVariable Long id,
-                                                      @RequestBody UserProfileRequest req) {
-        return ResponseEntity.ok(service.updateProfile(id, req));
+        return ResponseEntity.ok(service.updateProfile(id, request));
     }
 }

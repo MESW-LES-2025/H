@@ -72,7 +72,7 @@ public class AuthService {
         r.setName(u.getName());
         r.setEmail(u.getEmail());
         r.setAge(u.getAge());
-        r.setGender(u.getGender() != null ? u.getGender().name() : null);
+        r.setGender(u.getGender() != null ? u.getGender() : null);
         r.setLocation(u.getLocation());
         r.setProfilePicture(u.getProfilePicture());
         r.setJobTitle(u.getJobTitle());

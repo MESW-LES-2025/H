@@ -1,5 +1,7 @@
 package com.lernia.auth.dto;
 
+import com.lernia.auth.entity.enums.Gender;
+
 import java.time.LocalDate;
 
 public class UserProfileResponse {
@@ -9,7 +11,7 @@ public class UserProfileResponse {
     private String username;
     private String email;
     private Integer age;
-    private String gender;     
+    private Gender gender;
     private String location;
     private String profilePicture;
     private String jobTitle;
@@ -18,8 +20,6 @@ public class UserProfileResponse {
     private LocalDate premiumStartDate;
 
     public UserProfileResponse() {}
-
-    // Getters Setters
 
     public Long getId() {
         return id;
@@ -56,10 +56,10 @@ public class UserProfileResponse {
         this.age = age;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
