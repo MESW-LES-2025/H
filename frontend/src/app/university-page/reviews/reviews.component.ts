@@ -16,6 +16,7 @@ export class ReviewsComponent implements OnInit {
   @Input() universityId!: number;
   reviews: Review[] = [];
   newReview: Review = {
+    // Remove 'id' or ensure it is undefined/null
     userId: 0,
     universityId: 0,
     rating: 5,
@@ -58,12 +59,23 @@ export class ReviewsComponent implements OnInit {
   }
 
   submitReview() {
-    this.newReview.universityId = this.universityId;
-    this.reviewService.addReview(this.newReview).subscribe(savedReview => {
-      this.reviews.unshift(savedReview);
-      this.newReview.title = '';
-      this.newReview.description = '';
-      this.newReview.rating = 5;
+    const reviewToSend = { ...this.newReview };
+    delete reviewToSend.id; 
+    
+    reviewToSend.universityId = this.universityId;
+    
+    this.reviewService.addReview(reviewToSend).subscribe({
+      next: (savedReview) => {
+        this.reviews.unshift(savedReview);
+        this.newReview.title = '';
+        this.newReview.description = '';
+        this.newReview.rating = 5;
+      },
+      error: (error) => {
+        console.error('Error posting review:', error);
+        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        alert('Failed to post review: ' + errorMessage);
+      }
     });
   }
 }

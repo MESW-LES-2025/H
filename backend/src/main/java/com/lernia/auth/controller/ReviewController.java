@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -36,12 +37,21 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDTO> addReview(@RequestBody ReviewDTO reviewDto) {
-        return ResponseEntity.ok(reviewService.addReview(reviewDto));
+    public ResponseEntity<?> addReview(@RequestBody ReviewDTO reviewDto) {
+        try {
+            return ResponseEntity.ok(reviewService.addReview(reviewDto));
+        } catch (RuntimeException e) {
+            // Return 400 Bad Request with the specific error message
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/course")
-    public ResponseEntity<ReviewDTO> addCourseReview(@RequestBody ReviewDTO reviewDto) {
-        return ResponseEntity.ok(reviewService.addCourseReview(reviewDto));
+    public ResponseEntity<?> addCourseReview(@RequestBody ReviewDTO reviewDto) {
+        try {
+            return ResponseEntity.ok(reviewService.addCourseReview(reviewDto));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 }
