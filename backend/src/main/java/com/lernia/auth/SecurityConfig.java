@@ -64,6 +64,7 @@ public class SecurityConfig {
             "/api/area-of-study",
             "/api/reviews/**"
         ).permitAll()
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
         .anyRequest().authenticated()
       );
 

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CoursePage } from './course-page';
 import { CoursePageService } from './services/course-page-service';
 import { ActivatedRoute } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('CoursePage', () => {
   let component: CoursePage;
@@ -12,6 +13,7 @@ describe('CoursePage', () => {
     await TestBed.configureTestingModule({
       imports: [CoursePage],
       providers: [
+        provideHttpClient(),
         CoursePageService,
         {
           provide: ActivatedRoute,

@@ -5,6 +5,9 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
 import { ReviewsComponent } from './reviews/reviews.component'; 
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-university-page',
@@ -16,6 +19,7 @@ import { ReviewsComponent } from './reviews/reviews.component';
 export class UniversityPage implements OnInit {
   private universityPageService: UniversityPageService = inject(UniversityPageService);
   private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
   protected university: UniversityViewmodel | null = null;
   active: number = 1;
 
@@ -24,5 +28,9 @@ export class UniversityPage implements OnInit {
 
     this.universityPageService.getUniversityProfile(id)
       .subscribe(data => this.university = data);
+  }
+
+  goToCourse(courseId: number): void {
+    this.router.navigate(['/course', courseId]);
   }
 }
