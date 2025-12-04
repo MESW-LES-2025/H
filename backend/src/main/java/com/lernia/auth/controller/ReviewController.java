@@ -41,7 +41,6 @@ public class ReviewController {
         try {
             return ResponseEntity.ok(reviewService.addReview(reviewDto));
         } catch (RuntimeException e) {
-            // Return 400 Bad Request with the specific error message
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }

@@ -56,21 +56,21 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public ReviewDTO addReview(ReviewDTO ReviewDTO) {
+    public ReviewDTO addReview(ReviewDTO reviewDTO) {
         // Enforce eligibility check before saving
-        if (!canUserReview(ReviewDTO.getUserId(), ReviewDTO.getUniversityId())) {
+        if (!canUserReview(reviewDTO.getUserId(), reviewDTO.getUniversityId())) {
             throw new RuntimeException("User is not eligible to review this university.");
         }
 
         UniversityReviewEntity review = new UniversityReviewEntity();
-        review.setRating(ReviewDTO.getRating());
-        review.setTitle(ReviewDTO.getTitle());
-        review.setDescription(ReviewDTO.getDescription());
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
         review.setReviewDate(LocalDate.now());
         
-        UniversityEntity university = universityRepository.findById(ReviewDTO.getUniversityId())
+        UniversityEntity university = universityRepository.findById(reviewDTO.getUniversityId())
                 .orElseThrow(() -> new RuntimeException("University not found"));
-        UserEntity user = userRepository.findById(ReviewDTO.getUserId())
+        UserEntity user = userRepository.findById(reviewDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         review.setUniversity(university);
