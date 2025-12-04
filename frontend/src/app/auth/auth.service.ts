@@ -24,20 +24,35 @@ export class AuthService {
   csrfToken: string | null = null;
   csrfHeaderName: string | null = null;
 
-  // Add state management for the current user
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.restoreSession();
+  }
+
+  private restoreSession(): void {
+    this.http.get<User>(`${this.baseUrl}/api/auth/me`, { withCredentials: true }).subscribe({
+      next: (user) => {
+        if (user && user.id) {
+          this.currentUserSubject.next(user);
+        } else {
+          this.currentUserSubject.next(null);
+        }
+      },
+      error: () => {
+        this.currentUserSubject.next(null);
+      }
+    });
+  }
 
   login(body: LoginRequest): Observable<LoginResponse> {
     let headers = new HttpHeaders();
     if (this.csrfToken && this.csrfHeaderName) {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, { withCredentials: true })
+    return this.http.post<LoginResponse>(`${this.baseUrl}/api/auth/login`, body, { withCredentials: true })
       .pipe(tap(res => {
-        // Update the subject when login is successful
         if (res.status === 'success' && res.userId) {
           this.currentUserSubject.next({ id: res.userId });
         }
@@ -45,6 +60,6 @@ export class AuthService {
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body);
+    return this.http.post<RegisterResponse>(`${this.baseUrl}/api/auth/register`, body);
   }
 }

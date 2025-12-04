@@ -13,7 +13,6 @@ import com.lernia.auth.repository.UserCourseRepository;
 import com.lernia.auth.repository.CourseReviewRepository;
 import com.lernia.auth.repository.CourseRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,18 +22,26 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewService {
 
-    @Autowired
-    private UniversityReviewRepository reviewRepository;
-    @Autowired
-    private CourseReviewRepository courseReviewRepository;
-    @Autowired
-    private UniversityRepository universityRepository;
-    @Autowired
-    private CourseRepository courseRepository; 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserCourseRepository userCourseRepository;
+    private final UniversityReviewRepository reviewRepository;
+    private final CourseReviewRepository courseReviewRepository;
+    private final UniversityRepository universityRepository;
+    private final CourseRepository courseRepository; 
+    private final UserRepository userRepository;
+    private final UserCourseRepository userCourseRepository;
+
+    public ReviewService(UniversityReviewRepository reviewRepository,
+                         CourseReviewRepository courseReviewRepository,
+                         UniversityRepository universityRepository,
+                         CourseRepository courseRepository,
+                         UserRepository userRepository,
+                         UserCourseRepository userCourseRepository) {
+        this.reviewRepository = reviewRepository;
+        this.courseReviewRepository = courseReviewRepository;
+        this.universityRepository = universityRepository;
+        this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
+        this.userCourseRepository = userCourseRepository;
+    }
 
     public boolean canUserReview(Long userId, Long universityId) {
         return userCourseRepository.existsByUserIdAndCourse_UniversityId(userId, universityId);
@@ -56,21 +63,20 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public ReviewDTO addReview(ReviewDTO ReviewDTO) {
-        // Enforce eligibility check before saving
-        if (!canUserReview(ReviewDTO.getUserId(), ReviewDTO.getUniversityId())) {
+    public ReviewDTO addReview(ReviewDTO reviewDTO) {
+        if (!canUserReview(reviewDTO.getUserId(), reviewDTO.getUniversityId())) {
             throw new RuntimeException("User is not eligible to review this university.");
         }
 
         UniversityReviewEntity review = new UniversityReviewEntity();
-        review.setRating(ReviewDTO.getRating());
-        review.setTitle(ReviewDTO.getTitle());
-        review.setDescription(ReviewDTO.getDescription());
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
         review.setReviewDate(LocalDate.now());
         
-        UniversityEntity university = universityRepository.findById(ReviewDTO.getUniversityId())
+        UniversityEntity university = universityRepository.findById(reviewDTO.getUniversityId())
                 .orElseThrow(() -> new RuntimeException("University not found"));
-        UserEntity user = userRepository.findById(ReviewDTO.getUserId())
+        UserEntity user = userRepository.findById(reviewDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         review.setUniversity(university);
@@ -101,6 +107,60 @@ public class ReviewService {
 
         CourseReviewEntity savedReview = courseReviewRepository.save(review);
         return convertCourseReviewToDto(savedReview);
+    }
+
+    public void deleteReview(Long reviewId, Long userId) {
+        UniversityReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to delete this review.");
+        }
+
+        reviewRepository.delete(review);
+    }
+
+    public void deleteCourseReview(Long reviewId, Long userId) {
+        CourseReviewEntity review = courseReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to delete this review.");
+        }
+
+        courseReviewRepository.delete(review);
+    }
+
+    public ReviewDTO updateReview(Long reviewId, ReviewDTO reviewDTO, Long userId) {
+        UniversityReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to edit this review.");
+        }
+
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
+
+        UniversityReviewEntity updatedReview = reviewRepository.save(review);
+        return convertToDto(updatedReview);
+    }
+
+    public ReviewDTO updateCourseReview(Long reviewId, ReviewDTO reviewDTO, Long userId) {
+        CourseReviewEntity review = courseReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to edit this review.");
+        }
+
+        review.setRating(reviewDTO.getRating());
+        review.setTitle(reviewDTO.getTitle());
+        review.setDescription(reviewDTO.getDescription());
+
+        CourseReviewEntity updatedReview = courseReviewRepository.save(review);
+        return convertCourseReviewToDto(updatedReview);
     }
 
     private ReviewDTO convertToDto(UniversityReviewEntity review) {

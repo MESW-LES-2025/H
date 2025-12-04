@@ -127,3 +127,43 @@ textarea {
   border-radius: 4px;
   margin-bottom: 2rem;
 }
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 6px 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.btn-delete {
+    color: #dc3545;
+}
+
+.btn-edit {
+    color: #0d6efd; /* Blue */
+}
+
+.btn-action:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+}
+
+.btn-delete:hover {
+    background-color: #ffebee; 
+}
+
+.btn-edit:hover {
+    background-color: #e7f1ff;
+}
