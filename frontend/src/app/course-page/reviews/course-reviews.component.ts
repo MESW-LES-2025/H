@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Review } from '../../university-page/viewmodels/review';
 import { ReviewService } from '../../university-page/services/review-service';
 import { AuthService } from '../../auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-reviews',
@@ -13,7 +14,7 @@ import { AuthService } from '../../auth/auth.service';
   templateUrl: './course-reviews.component.html',
   styleUrls: ['./course-reviews.component.css']
 })
-export class CourseReviewsComponent implements OnInit {
+export class CourseReviewsComponent implements OnInit, OnDestroy {
   @Input() courseId!: number;
   reviews: Review[] = [];
   newReview: Review = {
@@ -27,6 +28,7 @@ export class CourseReviewsComponent implements OnInit {
   isLoggedIn = false;
   isEligible = false;
   currentUserId: number | null = null;
+  private userSubscription: Subscription | undefined;
 
   constructor(
     private reviewService: ReviewService,
@@ -36,7 +38,7 @@ export class CourseReviewsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadReviews();
-    this.authService.currentUser$.subscribe(user => {
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
         this.isLoggedIn = !!user;
         if (user) {
             this.currentUserId = user.id;
@@ -45,6 +47,12 @@ export class CourseReviewsComponent implements OnInit {
             this.currentUserId = null;
         }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   loadReviews() {
@@ -57,7 +65,7 @@ export class CourseReviewsComponent implements OnInit {
 
   checkEligibility(userId: number) {
     if (this.courseId) {
-      this.reviewService.checkCourseEligibility(this.courseId, userId).subscribe(eligible => {
+      this.reviewService.checkCourseEligibility(this.courseId).subscribe(eligible => {
         this.isEligible = eligible;
       });
     }

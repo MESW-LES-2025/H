@@ -13,7 +13,6 @@ import com.lernia.auth.repository.UserCourseRepository;
 import com.lernia.auth.repository.CourseReviewRepository;
 import com.lernia.auth.repository.CourseRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,18 +22,26 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewService {
 
-    @Autowired
-    private UniversityReviewRepository reviewRepository;
-    @Autowired
-    private CourseReviewRepository courseReviewRepository;
-    @Autowired
-    private UniversityRepository universityRepository;
-    @Autowired
-    private CourseRepository courseRepository; 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserCourseRepository userCourseRepository;
+    private final UniversityReviewRepository reviewRepository;
+    private final CourseReviewRepository courseReviewRepository;
+    private final UniversityRepository universityRepository;
+    private final CourseRepository courseRepository; 
+    private final UserRepository userRepository;
+    private final UserCourseRepository userCourseRepository;
+
+    public ReviewService(UniversityReviewRepository reviewRepository,
+                         CourseReviewRepository courseReviewRepository,
+                         UniversityRepository universityRepository,
+                         CourseRepository courseRepository,
+                         UserRepository userRepository,
+                         UserCourseRepository userCourseRepository) {
+        this.reviewRepository = reviewRepository;
+        this.courseReviewRepository = courseReviewRepository;
+        this.universityRepository = universityRepository;
+        this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
+        this.userCourseRepository = userCourseRepository;
+    }
 
     public boolean canUserReview(Long userId, Long universityId) {
         return userCourseRepository.existsByUserIdAndCourse_UniversityId(userId, universityId);

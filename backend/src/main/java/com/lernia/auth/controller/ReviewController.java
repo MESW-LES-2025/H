@@ -94,7 +94,6 @@ public class ReviewController {
             UserEntity user = userRepository.findByUsername(principal.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            // Pass the authenticated user's ID
             reviewService.deleteReview(reviewId, user.getId());
             
             return ResponseEntity.ok(Map.of("message", "Review deleted successfully"));

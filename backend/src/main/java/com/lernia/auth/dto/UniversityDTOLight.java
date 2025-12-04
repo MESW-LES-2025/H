@@ -24,7 +24,6 @@ public class UniversityDTOLight {
     
     private List<Object> courses; 
 
-    // This constructor is required by CourseService
     public UniversityDTOLight(Long id, String name, String description, LocationDTO location) {
         this.id = id;
         this.name = name;

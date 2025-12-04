@@ -53,7 +53,7 @@ public class SecurityConfig {
       SecurityContextRepository securityContextRepository
   ) throws Exception {
     http
-      .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Use the bean method directly
+      .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .csrf(AbstractHttpConfigurer::disable)
       .securityContext(context -> context.securityContextRepository(securityContextRepository))
       .authorizeHttpRequests(auth -> auth
@@ -62,6 +62,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.GET, 
             "/api/profile/**", 
             "/api/courses/**", 
+            "/api/courses",
             "/api/course/**",
             "/api/courses/search", 
             "/api/university/**", 

@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core'; 
+import { Component, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { Review } from '../viewmodels/review';
 import { ReviewService } from '../services/review-service';
 import { AuthService } from '../../auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reviews',
@@ -13,7 +14,7 @@ import { AuthService } from '../../auth/auth.service';
   templateUrl: './reviews.component.html',
   styleUrls: ['./reviews.component.css']
 })
-export class ReviewsComponent implements OnInit {
+export class ReviewsComponent implements OnInit, OnDestroy {
   @Input() universityId!: number;
   reviews: Review[] = [];
   newReview: Review = {
@@ -26,6 +27,7 @@ export class ReviewsComponent implements OnInit {
   isLoggedIn = false;
   isEligible = false;
   currentUserId: number | null = null; 
+  private userSubscription: Subscription | undefined;
 
   constructor(
     private reviewService: ReviewService,
@@ -35,7 +37,7 @@ export class ReviewsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadReviews();
-    this.authService.currentUser$.subscribe(user => {
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
         this.isLoggedIn = !!user;
         if (user) {
             this.currentUserId = user.id; 
@@ -47,9 +49,15 @@ export class ReviewsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
   checkEligibility(userId: number) {
     if (this.universityId) {
-      this.reviewService.checkEligibility(this.universityId, userId).subscribe(eligible => {
+      this.reviewService.checkEligibility(this.universityId).subscribe(eligible => {
         this.isEligible = eligible;
       });
     }

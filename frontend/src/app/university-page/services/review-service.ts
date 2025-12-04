@@ -16,7 +16,7 @@ export class ReviewService {
     return this.http.get<Review[]>(`${this.apiUrl}/university/${universityId}`);
   }
 
-  checkEligibility(universityId: number, userId: number): Observable<boolean> {
+  checkEligibility(universityId: number): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/eligibility/${universityId}`, { withCredentials: true });
   }
 
@@ -28,7 +28,7 @@ export class ReviewService {
     return this.http.get<Review[]>(`${this.apiUrl}/course/${courseId}`);
   }
 
-  checkCourseEligibility(courseId: number, userId: number): Observable<boolean> {
+  checkCourseEligibility(courseId: number): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/course/eligibility/${courseId}`, { withCredentials: true });
   }
 
