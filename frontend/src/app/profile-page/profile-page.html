@@ -1,3 +1,5 @@
+<router-outlet></router-outlet>
+
 @if (user) {
   <div class="container" style="max-width: 900px;">
     <div class="card profile-card border-0 shadow position-relative my-4 d-flex flex-column">
@@ -33,7 +35,9 @@
               }
             </div>
             <div class="d-flex gap-2 w-50 mt-3">
-              <button class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1">
+              <button
+                class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1"
+                [routerLink]="['/profile', user.id, 'edit']">
                 Edit Profile
               </button>
               <button class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1">

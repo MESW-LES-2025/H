@@ -13,9 +13,13 @@ export class ProfilePageService {
   constructor(private http: HttpClient) {}
 
 
-public getUserProfile(id: number): Observable<UserViewmodel> {
-  return this.http.get<UserViewmodel>(`${this.apiUrl}/api/profile/${id}`, { withCredentials: true });
-}
+  public getUserProfile(id: number): Observable<UserViewmodel> {
+    return this.http.get<UserViewmodel>(`${this.apiUrl}/api/profile/${id}`, { withCredentials: true });
+  }
 
+  public updateProfile(user: UserViewmodel): Observable<UserViewmodel> {
+    const { id, ...userData } = user;
+    return this.http.put<UserViewmodel>(`${this.apiUrl}/api/profile/${id}/update-profile`, { id, ...userData });
+  }
 
 }

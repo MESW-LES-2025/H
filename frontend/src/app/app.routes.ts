@@ -14,14 +14,13 @@ export const routes: Routes = [
             import('./auth/register.component').then(m => m.RegisterComponent),
     },
     {
-    path: 'profile/:id',
-    loadComponent: () => import('./profile-page/profile-page').then(m => m.ProfilePage),
-    children: [
-      {
-        path: 'edit',
-        loadComponent: () => import('./profile-page/edit-profile/edit-profile').then(m => m.EditProfile)
-      }
-    ]
+      path: 'profile/:id',
+      loadComponent: () => import('./profile-page/profile-page').then(m => m.ProfilePage),
+    },
+    {
+      path: 'profile/:id/edit',
+      loadComponent: () => import('./profile-page/edit-profile/edit-profile')
+        .then(m => m.EditProfile)
     },
     {
         path: 'university/:id',

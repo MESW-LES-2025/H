@@ -1,36 +1,64 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../../auth/auth.service';
-import {DataService} from '../../shared/services/data-service';
+import {ProfilePageService} from '../services/profile-page-service';
+import {UserCourse} from '../../shared/viewmodels/user-course';
 
 @Component({
   selector: 'app-edit-profile',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './edit-profile.html',
-  styleUrl: './edit-profile.css',
+  styleUrls: ['./edit-profile.css'],
 })
 export class EditProfile implements OnInit {
-  editProfileForm: FormGroup;
-  userId: number | null = null;
+  userIdAtual: number | null = null;
+
+  editProfileForm: FormGroup = undefined as any;
 
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService,
-    private dataService: DataService
+    protected router: Router,
+    private profilePageService: ProfilePageService,
+    private route: ActivatedRoute
   ) {
+  }
+
+  get academicHistory(): FormArray {
+    return this.editProfileForm.get('academicHistory') as FormArray;
+  }
+
+
+
+  ngOnInit(): void {
+    const userIdParam = this.route.snapshot.paramMap.get('id');
+    this.userIdAtual = userIdParam ? Number(userIdParam) : null;
+
     this.editProfileForm = this.fb.group({
-      name: ['', Validators.required],
-      location: [''],
-      jobTitle: [''],
-      profileImage: ['']
+      id: this.fb.control<number | null>(this.userIdAtual, Validators.required),
+      name: this.fb.control<string | null>(null, Validators.required),
+      age: this.fb.control<number | null>(null),
+      gender: this.fb.control<string | null>(null, Validators.required),
+      location: this.fb.control<string | null>(null),
+      jobTitle: this.fb.control<string | null>(null)
     });
   }
 
-  ngOnInit(): void {
-    this.userId = this.dataService.getUserAtualId();
-  }
+  onSubmit(): void {
+    if (this.editProfileForm.valid && this.userIdAtual) {
+      const raw = this.editProfileForm.value as any;
 
+      const mappedAcademic: UserCourse[] = [];
+
+      const updated = {...raw, academicHistory: mappedAcademic} as any;
+
+      this.profilePageService.updateProfile(updated).subscribe(() => {
+        this.router.navigate(['/profile', this.userIdAtual!]);
+      });
+    } else {
+      this.editProfileForm.markAllAsTouched();
+    }
+  }
 }
+

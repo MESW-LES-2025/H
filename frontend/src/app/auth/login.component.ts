@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './auth.service';
+import {DataService} from '../shared/services/data-service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent {
   loading = false;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
+  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService, private dataService: DataService) {
     this.form = this.fb.group({
       text: ['', Validators.required],
       password: ['', Validators.required],
@@ -37,6 +38,7 @@ export class LoginComponent {
         this.loading = false;
         console.log('Login OK', res);
         if (res.status === 'success' && res.user?.id) {
+          this.dataService.setUserAtual(res.user);
           this.router.navigate(['/profile', res.user.id]);
         } else {
           this.errorMessage = res.message || 'Login failed';

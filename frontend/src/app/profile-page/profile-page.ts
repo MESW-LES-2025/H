@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ProfilePageService } from './services/profile-page-service';
 import { UserViewmodel } from './viewmodels/user-viewmodel';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-profile-page',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink, RouterOutlet],
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
 })

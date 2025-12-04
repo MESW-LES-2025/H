@@ -1,0 +1,39 @@
+<form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()" class="edit-profile-form">
+	<input formControlName="id" type="hidden" />
+
+	<div class="form-row">
+		<label for="name">Name</label>
+		<input id="name" formControlName="name" />
+		<div class="error" *ngIf="editProfileForm.get('name')?.invalid && editProfileForm.get('name')?.touched">Name is required</div>
+	</div>
+
+	<div class="form-row">
+		<label for="age">Age</label>
+		<input id="age" type="number" formControlName="age" />
+	</div>
+
+	<div class="form-row">
+		<label for="gender">Gender</label>
+		<select id="gender" formControlName="gender">
+			<option value="">-- Select --</option>
+			<option value="MALE">Male</option>
+			<option value="FEMALE">Female</option>
+			<option value="OTHER">Other</option>
+		</select>
+	</div>
+
+	<div class="form-row">
+		<label for="location">Location</label>
+		<input id="location" formControlName="location" />
+	</div>
+
+	<div class="form-row">
+		<label for="jobTitle">Job Title</label>
+		<input id="jobTitle" formControlName="jobTitle" />
+	</div>
+
+	<div class="form-actions">
+		<button type="submit">Save</button>
+		<button type="button" (click)="router.navigate(['/profile', userIdAtual])">Cancel</button>
+	</div>
+</form>

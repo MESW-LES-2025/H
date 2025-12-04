@@ -13,8 +13,7 @@ export class DataService {
   private languagesSubject = new BehaviorSubject<string[]>([]);
   private countriesSubject = new BehaviorSubject<string[]>([]);
 
-  private userAtualId: number | null = null;
-  private userActual: UserViewmodel | null = null;
+  private userAtual: UserViewmodel | null = null;
 
   areasOfStudy$: Observable<string[]> = this.areasOfStudySubject.asObservable();
   languages$: Observable<string[]> = this.languagesSubject.asObservable();
@@ -42,11 +41,15 @@ export class DataService {
   }
 
   public getUserAtualId(): number | null {
-    return this.userAtualId;
+    return this.userAtual === null ? null : this.userAtual.id;
   }
 
-  public setUserAtualId(userId: number): void {
-    this.userAtualId = userId;
+  public getUserAtual(): UserViewmodel | null {
+    return this.userAtual === null ? null : this.userAtual;
+  }
+
+  public setUserAtual(user: UserViewmodel): void {
+    this.userAtual = user;
   }
 
 }
