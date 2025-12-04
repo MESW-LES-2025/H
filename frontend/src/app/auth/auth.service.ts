@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface LoginRequest {
@@ -34,16 +35,39 @@ export interface CsrfResponse {
   token: string;
 }
 
+export interface User {
+    id: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = environment.apiUrl;
   csrfToken: string | null = null;
   csrfHeaderName: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    this.restoreSession();
+  }
+
+  private restoreSession(): void {
+    this.http.get<User>(`${this.baseUrl}/api/auth/me`, { withCredentials: true }).subscribe({
+      next: (user) => {
+        if (user && user.id) {
+          this.currentUserSubject.next(user);
+        } else {
+          this.currentUserSubject.next(null);
+        }
+      },
+      error: () => {
+        this.currentUserSubject.next(null);
+      }
+    });
+  }
 
   login(body: LoginRequest): Observable<LoginResponse> {
-    // se um dia quiseres mesmo usar CSRF, podes voltar a usar estes headers
     let headers = new HttpHeaders();
     if (this.csrfToken && this.csrfHeaderName) {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);

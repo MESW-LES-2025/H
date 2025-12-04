@@ -76,12 +76,16 @@ public class CourseService {
         UniversityEntity university = course.getUniversity();
         LocationEntity location = university.getLocation();
 
-        LocationDTO locationDTO = new LocationDTO(
+        LocationDTO locationDTO = null;
+        
+        if (location != null) {
+            locationDTO = new LocationDTO(
                 location.getId(),
                 location.getCity(),
                 location.getCountry(),
-                location.getCost_of_living()
-        );
+                location.getCostOfLiving()
+            );
+        }
 
         return new UniversityDTOLight(
                 university.getId(),

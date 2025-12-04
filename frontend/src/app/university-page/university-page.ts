@@ -1,4 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router'; 
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,13 +9,14 @@ import { CommonModule } from '@angular/common';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ExploreService } from '../explore-page/services/explore-service';
+import { ReviewsComponent } from './reviews/reviews.component'; 
 
 @Component({
   selector: 'app-university-page',
   standalone: true,
-  imports: [CommonModule, NgbNavModule],
+  imports: [CommonModule, NgbNavModule, DecimalPipe, ReviewsComponent], 
   templateUrl: './university-page.html',
-  styleUrl: './university-page.css',
+  styleUrls: ['./university-page.css'],
 })
 export class UniversityPage implements OnInit {
   private universityPageService = inject(UniversityPageService);

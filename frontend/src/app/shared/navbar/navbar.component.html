@@ -34,11 +34,29 @@
 
   <!-- DIREITA: ÍCONES -->
   <div class="navbar-actions">
+    <button class="icon-btn" aria-label="Favourites">
+      <img src="/images/heart-outline.svg" alt="" />
+    </button>
+
+    <!-- If logged in, go to profile -->
     <button
+      *ngIf="userId"
       class="icon-btn"
       aria-label="Profile"
-      (click)="goToProfile()">
-      <img src="/images/profile-outline.svg" alt="" />
+      [routerLink]="['/profile', userId]"
+    >
+      <img src="/images/profile-outline.svg" alt="Profile" />
     </button>
+
+    <!-- Se NÃO está autenticado: vai para login -->
+    <button
+      *ngIf="!userId"
+      class="icon-btn"
+      aria-label="Login"
+      routerLink="/login"
+    >
+      <img src="/images/profile-outline.svg" alt="Login" />
+    </button>
+
   </div>
 </header>

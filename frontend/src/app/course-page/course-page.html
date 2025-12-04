@@ -5,7 +5,7 @@
     <!-- Banner Image -->
     <div class="course-banner-container">
       <img [src]="course.bannerImage" alt="Course Banner" class="course-banner"
-        onerror="this.src='images/placeholder-banner.jpg'">
+        onerror="this.src='images/oxford-university-banner.jpg'">
     </div>
 
     <div class="card-body p-4 position-relative flex-grow-1">
@@ -140,6 +140,17 @@
               } @else {
                 <p class="text-muted">No specific requirements</p>
               }
+            </div>
+          </ng-template>
+        </li>
+
+        <!-- NEW: Reviews Tab -->
+        <li [ngbNavItem]="4">
+          <button ngbNavLink>Reviews</button>
+          <ng-template ngbNavContent>
+            <div class="p-4">
+              <h3 class="h5 fw-bold mb-3">Student Reviews</h3>
+              <app-course-reviews [courseId]="course.id"></app-course-reviews>
             </div>
           </ng-template>
         </li>
