@@ -142,7 +142,6 @@ public class ReviewService {
         review.setRating(reviewDTO.getRating());
         review.setTitle(reviewDTO.getTitle());
         review.setDescription(reviewDTO.getDescription());
-        review.setReviewDate(LocalDate.now());
 
         UniversityReviewEntity updatedReview = reviewRepository.save(review);
         return convertToDto(updatedReview);
@@ -159,7 +158,6 @@ public class ReviewService {
         review.setRating(reviewDTO.getRating());
         review.setTitle(reviewDTO.getTitle());
         review.setDescription(reviewDTO.getDescription());
-        review.setReviewDate(LocalDate.now());
 
         CourseReviewEntity updatedReview = courseReviewRepository.save(review);
         return convertCourseReviewToDto(updatedReview);

@@ -44,7 +44,6 @@ export class ReviewsComponent implements OnInit, OnDestroy {
         this.isLoggedIn = !!user;
         if (user) {
             this.currentUserId = user.id; 
-            this.newReview.userId = user.id;
             this.checkEligibility(user.id);
         } else {
             this.currentUserId = null;
@@ -110,9 +109,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   }
 
   deleteReview(reviewId: number) {
-    if (!this.currentUserId) return;
-
-    this.reviewService.deleteReview(reviewId, this.currentUserId).subscribe({
+    this.reviewService.deleteReview(reviewId).subscribe({
       next: () => {
         this.reviews = this.reviews.filter(r => r.id !== reviewId);
       },

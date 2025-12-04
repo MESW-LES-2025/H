@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 @Configuration
 public class SecurityConfig {
 
+  @Value("${app.cors.allowed-origins:http://localhost:4200}")
+  private List<String> allowedOrigins;
+
   @Bean
   public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
@@ -35,7 +38,7 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration configuration = new CorsConfiguration();
       
-      configuration.setAllowedOrigins(List.of("http://localhost:4200")); 
+      configuration.setAllowedOrigins(allowedOrigins); 
       
       configuration.setAllowCredentials(true); 
       

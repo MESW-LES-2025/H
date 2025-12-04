@@ -44,8 +44,8 @@ export class ReviewService {
     return this.http.put<Review>(`${this.apiUrl}/course/${reviewId}`, review, { withCredentials: true });
   }
 
-  deleteReview(reviewId: number, userId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${reviewId}?userId=${userId}`, { withCredentials: true });
+  deleteReview(reviewId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${reviewId}`, { withCredentials: true });
   }
 
   deleteCourseReview(reviewId: number): Observable<any> {

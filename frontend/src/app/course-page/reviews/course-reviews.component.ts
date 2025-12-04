@@ -43,6 +43,7 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
         this.isLoggedIn = !!user;
         if (user) {
             this.currentUserId = user.id;
+            this.newReview.userId = user.id; 
             this.checkEligibility(user.id);
         } else {
             this.currentUserId = null;

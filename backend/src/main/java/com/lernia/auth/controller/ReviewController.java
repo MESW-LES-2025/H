@@ -91,6 +91,9 @@ public class ReviewController {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, Principal principal) {
         try {
+            if (principal == null) {
+                return ResponseEntity.status(401).body(Map.of("message", "You must be logged in."));
+            }
             UserEntity user = userRepository.findByUsername(principal.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
