@@ -134,10 +134,17 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> $GITHUB_ENV
 
-      - name: Run backend acceptance tests (compile tests + run Failsafe)
-        run: mvn failsafe:integration-test failsafe:verify -DfailIfNoTests=false
+      - name: Start backend server in background
+        run: |
+          mvn spring-boot:run &
+          npx wait-on --timeout 60000 http://localhost:8080
         working-directory: ./backend
 
-      - name: Stop frontend server
+      - name: Run acceptance tests
+        run: mvn test
+        working-directory: ./acceptance-tests
+
+      - name: Stop servers
         run: |
           lsof -ti :4200 | xargs kill -9 || true
+          lsof -ti :8080 | xargs kill -9 || true
