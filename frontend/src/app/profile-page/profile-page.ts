@@ -2,20 +2,31 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FavoritesResponse } from './viewmodels/user-viewmodel';
 import { ProfilePageService } from './services/profile-page-service';
 import { UserViewmodel } from './viewmodels/user-viewmodel';
-import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { EditProfileRequest } from './viewmodels/edit-profile-request';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [RouterLink, RouterOutlet],
+  imports: [RouterOutlet, CommonModule, ReactiveFormsModule],
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
 })
 export class ProfilePage implements OnInit {
   private profilePageService = inject(ProfilePageService);
   private route = inject(ActivatedRoute);
+  private fb = inject(FormBuilder);
 
   protected user: UserViewmodel | null = null;
+  protected showEditModal = false;
+  protected editProfileForm: FormGroup = undefined as any;
 
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' =
     'universities';
@@ -43,14 +54,66 @@ export class ProfilePage implements OnInit {
     if (!isNaN(id)) {
       this.profilePageService
         .getUserProfile(id)
-        .subscribe((user) => (this.user = user));
+        .subscribe((user) => this.user = user);
     } else {
       this.profilePageService
         .getOwnProfile()
-        .subscribe((user) => (this.user = user));
+        .subscribe((user) => this.user = user);
     }
 
     this.loadFavorites();
+    this.initForm();
+  }
+
+  private initForm(): void {
+    this.editProfileForm = this.fb.group({
+      id: this.fb.control<number | null>(null, Validators.required),
+      name: this.fb.control<string | null>(null, Validators.required),
+      age: this.fb.control<number | null>(null),
+      gender: this.fb.control<string | null>(null, Validators.required),
+      location: this.fb.control<string | null>(null),
+      jobTitle: this.fb.control<string | null>(null),
+    });
+  }
+
+  protected openEditModal(): void {
+    if (!this.user) return;
+
+    // Pre-fill form with current user data
+    this.editProfileForm.patchValue({
+      id: this.user.id,
+      name: this.user.name,
+      age: this.user.age,
+      gender: this.user.gender,
+      location: this.user.location,
+      jobTitle: this.user.jobTitle,
+    });
+
+    this.showEditModal = true;
+  }
+
+  protected closeEditModal(): void {
+    this.showEditModal = false;
+    this.editProfileForm.reset();
+  }
+
+  protected onSubmitEdit(): void {
+    if (this.editProfileForm.valid) {
+      const raw = this.editProfileForm.value as EditProfileRequest;
+
+      this.profilePageService.updateProfile(raw).subscribe({
+        next: (updatedUser) => {
+          this.user = updatedUser;
+          this.closeEditModal();
+        },
+        error: (error) => {
+          console.error('Failed to update profile:', error);
+          alert('Failed to update profile. Please try again.');
+        },
+      });
+    } else {
+      this.editProfileForm.markAllAsTouched();
+    }
   }
 
   private loadFavorites(): void {
@@ -108,9 +171,6 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  // -------------------------------------------
-  // TOGGLE UNIVERSITY FAVORITE FROM PROFILE
-  // -------------------------------------------
   protected toggleUniversityFavorite(uni: any): void {
     if (!uni.isFavorite) {
       this.profilePageService.addFavoriteUniversity(uni.id).subscribe({
@@ -127,9 +187,6 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  // -------------------------------------------
-  // TOGGLE COURSE FAVORITE FROM PROFILE
-  // -------------------------------------------
   protected toggleCourseFavorite(course: any): void {
     if (!course.isFavorite) {
       this.profilePageService.addFavoriteCourse(course.id).subscribe({

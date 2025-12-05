@@ -46,7 +46,7 @@
 
             <button
               class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
-              [routerLink]="['/profile', user.id, 'edit']"
+              (click)="openEditModal()"
             >
               <i class="bi bi-pencil-square me-2"></i>
               Edit Profile
@@ -273,6 +273,132 @@
     </div>
   </div>
 }
+
+<!-- Edit Profile Modal -->
+@if (showEditModal) {
+  <div class="modal-backdrop fade show" (click)="closeEditModal()"></div>
+  <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-person-circle me-2"></i>
+            Edit Profile
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeEditModal()"
+          ></button>
+        </div>
+        <div class="modal-body pt-2">
+          <form [formGroup]="editProfileForm" (ngSubmit)="onSubmitEdit()">
+            <input formControlName="id" type="hidden" />
+
+            <div class="mb-3">
+              <label for="name" class="form-label fw-semibold">Name *</label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [class.is-invalid]="
+                  editProfileForm.get('name')?.invalid &&
+                  editProfileForm.get('name')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editProfileForm.get('name')?.invalid &&
+                  editProfileForm.get('name')?.touched
+                "
+              >
+                Name is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="age" class="form-label fw-semibold">Age</label>
+              <input
+                id="age"
+                type="number"
+                class="form-control"
+                formControlName="age"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="gender" class="form-label fw-semibold">Gender *</label>
+              <select
+                id="gender"
+                class="form-select"
+                formControlName="gender"
+                [class.is-invalid]="
+                  editProfileForm.get('gender')?.invalid &&
+                  editProfileForm.get('gender')?.touched
+                "
+              >
+                <option value="">-- Select --</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editProfileForm.get('gender')?.invalid &&
+                  editProfileForm.get('gender')?.touched
+                "
+              >
+                Gender is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="location" class="form-label fw-semibold">Location</label>
+              <input
+                id="location"
+                type="text"
+                class="form-control"
+                formControlName="location"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="jobTitle" class="form-label fw-semibold">Job Title</label>
+              <input
+                id="jobTitle"
+                type="text"
+                class="form-control"
+                formControlName="jobTitle"
+              />
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+              <button
+                type="button"
+                class="btn btn-light rounded-pill px-4"
+                (click)="closeEditModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary rounded-pill px-4"
+                [disabled]="editProfileForm.invalid"
+              >
+                <i class="bi bi-check-lg me-2"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
 <!-- Footer -->
 <footer class="bg-light border-top py-4 mt-5">
   <div class="container text-center">

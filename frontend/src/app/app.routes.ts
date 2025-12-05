@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { EditProfile } from './profile-page/edit-profile/edit-profile';
 
 export const routes: Routes = [
   // redirect inicial
@@ -19,13 +18,6 @@ export const routes: Routes = [
     path: 'profile/:id',
     loadComponent: () =>
       import('./profile-page/profile-page').then((m) => m.ProfilePage),
-  },
-  {
-    path: 'profile/:id/edit',
-    loadComponent: () =>
-      import('./profile-page/edit-profile/edit-profile').then(
-        (m) => m.EditProfile,
-      ),
   },
   {
     path: 'university/:id',

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { UserViewmodel, FavoritesResponse } from '../viewmodels/user-viewmodel';
 import { environment } from '../../../environments/environment';
-import { EditProfileRequest } from '../edit-profile/viewmodels/edit-profile-request';
+import { EditProfileRequest } from '../viewmodels/edit-profile-request';
 
 @Injectable({
   providedIn: 'root',
