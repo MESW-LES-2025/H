@@ -2,7 +2,6 @@ package com.lernia.auth.acceptance;
 
 
 import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -87,7 +86,7 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         Assertions.assertTrue(errorFound, "Expected error message after failed login - inspect page HTML for error element");
     }
 
-    /*@Test
+    @Test
     public void testSuccessfulLoginRedirects() {
         driver.get(baseUrl + "/login");
 
@@ -111,7 +110,7 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         userField.clear();
         userField.sendKeys("asmith");
         passField.clear();
-        passField.sendKeys("123456");
+        passField.sendKeys("pass1");
         submit.click();
 
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
@@ -120,7 +119,7 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         Assertions.assertFalse(currentUrl.contains("/login"), "Expected redirect after login");
         Assertions.assertTrue(currentUrl.contains("/profile"));
     }
-     */
+     
 
     @Test
     public void testRememberMeCheckbox() {
@@ -190,7 +189,115 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
 
         String currentUrl = driver.getCurrentUrl().toLowerCase();
-        Assertions.assertTrue(currentUrl.contains("explore") || currentUrl.contains("guest"),
-                "URL does not contain 'explore' or 'guest', current URL: " + currentUrl);
+        Assertions.assertTrue(currentUrl.contains("explore"),
+                "URL does not contain 'explore'. Current URL: " + currentUrl);
+    }
+
+    @Test
+    public void testLogoutAfterRegisterAndLogin() {
+        String unique = "accuser" + System.currentTimeMillis();
+        String username = unique;
+        String email = unique + "@example.com";
+        String password = "Passw0rd!";
+
+        // Register new user
+        driver.get(baseUrl + "/register");
+
+        WebElement usernameField = wait.until(d -> findAny(
+                By.cssSelector("input[formcontrolname='username']"),
+                By.cssSelector("input[placeholder='Choose a username']"),
+                By.name("username")
+        ));
+        WebElement emailField = wait.until(d -> findAny(
+                By.cssSelector("input[formcontrolname='email']"),
+                By.cssSelector("input[type='email']"),
+                By.name("email")
+        ));
+        WebElement passwordField = wait.until(d -> findAny(
+                By.cssSelector("input[formcontrolname='password']"),
+                By.cssSelector("input[placeholder='Enter your password']")
+        ));
+        WebElement confirmPasswordField = wait.until(d -> findAny(
+                By.cssSelector("input[formcontrolname='confirm']"),
+                By.cssSelector("input[placeholder='Enter your password']")
+        ));
+        WebElement submitButton = findAny(
+                By.cssSelector("button.primary[type='submit']"),
+                By.xpath("//button[contains(text(),'Create account')]"),
+                By.xpath("//button[contains(text(),'Register')]")
+        );
+
+        usernameField.clear();
+        usernameField.sendKeys(username);
+        emailField.clear();
+        emailField.sendKeys(email);
+        passwordField.clear();
+        passwordField.sendKeys(password);
+        confirmPasswordField.clear();
+        confirmPasswordField.sendKeys(password);
+        submitButton.click();
+
+        try {
+            wait.until(d -> d.getCurrentUrl().contains("/login"));
+        } catch (Exception e) {
+        }
+
+        if (!driver.getCurrentUrl().contains("/login")) {
+            driver.get(baseUrl + "/login");
+        }
+
+        WebElement loginTextField = wait.until(d -> findAny(
+                By.cssSelector("input[formcontrolname='text']"),
+                By.cssSelector("input[placeholder='Email or username']"),
+                By.name("text"),
+                By.name("username"),
+                By.cssSelector("input[type='email']"),
+                By.cssSelector("input[formcontrolname='username']")
+        ));
+        WebElement loginPasswordField = wait.until(d -> findAny(
+                By.cssSelector("input[formcontrolname='password']"),
+                By.cssSelector("input[placeholder='Enter your password']"),
+                By.cssSelector("input[type='password']")
+        ));
+        WebElement loginButton = findAny(
+                By.cssSelector("button.primary[type='submit']"),
+                By.xpath("//button[contains(text(),'Log in')]"),
+                By.xpath("//button[contains(text(),'Login')]")
+        );
+
+        loginTextField.clear();
+        loginTextField.sendKeys(username);
+        loginPasswordField.clear();
+        loginPasswordField.sendKeys(password);
+        loginButton.click();
+
+        wait.until(d -> d.getCurrentUrl().contains("/profile"));
+
+        WebElement logoutBtn = wait.until(d -> findAny(
+                By.cssSelector("button.btn-logout"),
+                By.xpath("//button[contains(text(),'Log Out')]"),
+                By.xpath("//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'log out')]")
+        ));
+        Assertions.assertNotNull(logoutBtn, "Logout button should be visible after login");
+
+        logoutBtn.click();
+
+        // Wait for redirect to Home
+        wait.until(d -> {
+            String url = d.getCurrentUrl();
+            return url.endsWith("/") || url.endsWith("/home");
+        });
+
+        WebElement profileBtn = wait.until(d -> findAny(
+                By.cssSelector("button[aria-label='Login']"),
+                By.cssSelector("button[routerLink='/login']"),
+                By.xpath("//button[.//img[contains(@src, 'profile')]]")
+        ));
+        Assertions.assertNotNull(profileBtn, "Profile/Login icon should be visible after logout");
+        
+        profileBtn.click();
+
+        wait.until(d -> d.getCurrentUrl().contains("/login"));
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Clicking profile button after logout should redirect to login page");
     }
 }

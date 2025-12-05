@@ -19,7 +19,9 @@ public class CoursesController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<Page<CourseDTO>> getCoursesByFilter(@ModelAttribute CourseFilter courseFilter, Pageable pageable) {
+    public ResponseEntity<Page<CourseDTO>> getCoursesByFilter(
+            @ModelAttribute CourseFilter courseFilter, Pageable pageable
+    ) {
         Page<CourseDTO> page = courseService.getCourses(courseFilter, pageable);
         return ResponseEntity.ok(page);
     }

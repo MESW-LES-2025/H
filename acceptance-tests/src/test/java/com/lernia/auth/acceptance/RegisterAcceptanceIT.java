@@ -107,7 +107,7 @@ public class RegisterAcceptanceIT extends BaseAcceptanceIT {
         Assertions.assertTrue(driver.getCurrentUrl().contains("/register"), "Expected to remain on register page after invalid submission");
     }
 
-    /*@Test
+    @Test
     public void testNavigateToLoginFromRegister() {
         driver.get(baseUrl + "/register");
 
@@ -120,6 +120,5 @@ public class RegisterAcceptanceIT extends BaseAcceptanceIT {
         wait.until(d -> d.getCurrentUrl().contains("/login"));
 
         Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Did not navigate to login page");
-
-    }*/
+    }
 }

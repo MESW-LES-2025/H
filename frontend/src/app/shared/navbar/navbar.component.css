@@ -13,7 +13,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 32px 14px 12px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 /* ================= LOGO À ESQUERDA ================= */
@@ -75,7 +80,6 @@
   background: #5a9b86;
 }
 
-
 /* ================= ÍCONES À DIREITA ================= */
 .navbar-actions {
   display: flex;
@@ -95,7 +99,9 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .icon-btn img {
@@ -106,6 +112,25 @@
 .icon-btn:hover {
   background: #f1ebe3;
   border-color: #8ab8a1;
+}
+
+.btn-logout {
+  padding: 6px 16px;
+  border: 1px solid #d9534f;
+  background-color: transparent;
+  color: #d9534f;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  font-family: inherit;
+}
+
+.btn-logout:hover {
+  background-color: #d9534f;
+  color: white;
 }
 
 /* ================= RESPONSIVO ================= */

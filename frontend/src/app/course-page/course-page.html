@@ -1,163 +1,187 @@
 @if (course) {
-<div class="container container-course">
-  <!-- Course Header Card -->
-  <div class="card course-card border-0 shadow position-relative my-4 d-flex flex-column">
-    <!-- Banner Image -->
-    <div class="course-banner-container">
-      <img [src]="course.bannerImage" alt="Course Banner" class="course-banner"
-        onerror="this.src='images/oxford-university-banner.jpg'">
-    </div>
+  <div class="container container-course">
+    <!-- Course Header Card -->
+    <div
+      class="card course-card border-0 shadow position-relative my-4 d-flex flex-column"
+    >
+      <!-- Banner Image -->
+      <div class="course-banner-container">
+        <img
+          [src]="course.bannerImage"
+          alt="Course Banner"
+          class="course-banner"
+          onerror="this.src = 'images/oxford-university-banner.jpg'"
+        />
+      </div>
 
-    <div class="card-body p-4 position-relative flex-grow-1">
-      <!-- Save Course Button -->
-      <button class="btn btn-save-course">
-        <i class="bi bi-heart-fill"></i>
-        Save Course
-      </button>
+      <div class="card-body p-4 position-relative flex-grow-1">
+        <!-- Save Course Button -->
+        <button class="btn btn-save-course" (click)="toggleFavorite()">
+          <i
+            class="bi"
+            [ngClass]="isFavorite ? 'bi-heart-fill' : 'bi-heart'"
+          ></i>
+          {{ isFavorite ? "Saved" : "Save Course" }}
+        </button>
 
-      <div class="row align-items-start g-3">
-        <!-- Course Info -->
-        <div class="col-12">
-          <div class="row">
-            <div class="col-8">
-              <h2 class="h1 fw-bold mb-1">{{ course.name }}</h2>
-              <p class="h4 mb-0">{{ course.university.name }}</p>
-              <p class="mb-0">{{ course.area }}</p>
-            </div>
-            <div class="col-4">
-              <div class="mt-3">
-                <p class="small mb-1">
-                  <strong>Duration: {{ course.duration }}</strong>
-                </p>
-                <p class="small mb-1">
-                  <strong>Level: {{ course.level }}</strong>
-                </p>
-                <p class="small mb-0">Credits: {{ course.credits }}</p>
+        <div class="row align-items-start g-3">
+          <!-- Course Info -->
+          <div class="col-12">
+            <div class="row">
+              <div class="col-8">
+                <h2 class="h1 fw-bold mb-1">{{ course.name }}</h2>
+                <p class="h4 mb-0">{{ course.university.name }}</p>
+                <p class="mb-0">{{ course.area }}</p>
+              </div>
+              <div class="col-4">
+                <div class="mt-3">
+                  <p class="small mb-1">
+                    <strong>Duration: {{ course.duration }}</strong>
+                  </p>
+                  <p class="small mb-1">
+                    <strong>Level: {{ course.level }}</strong>
+                  </p>
+                  <p class="small mb-0">Credits: {{ course.credits }}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Navigation Tabs -->
-  <div class="card border-0 shadow mb-4">
-    <div class="card-body p-4">
-      <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-        <!-- Overview Tab -->
-        <li [ngbNavItem]="1">
-          <button ngbNavLink>Overview</button>
-          <ng-template ngbNavContent>
-            <div class="p-4">
-              <h3 class="h5 fw-bold mb-3">About {{ course.name }}</h3>
-              <p class="text-muted">{{ course.description }}</p>
+    <!-- Navigation Tabs -->
+    <div class="card border-0 shadow mb-4">
+      <div class="card-body p-4">
+        <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+          <!-- Overview Tab -->
+          <li [ngbNavItem]="1">
+            <button ngbNavLink>Overview</button>
+            <ng-template ngbNavContent>
+              <div class="p-4">
+                <h3 class="h5 fw-bold mb-3">About {{ course.name }}</h3>
+                <p class="text-muted">{{ course.description }}</p>
 
-              <div class="row mt-4">
-                <div class="col-md-3">
-                  <div class="stat-box">
-                    <p class="stat-label text-muted mb-1">Duration</p>
-                    <p class="stat-value fw-bold h5">{{ course.duration }}</p>
+                <div class="row mt-4">
+                  <div class="col-md-3">
+                    <div class="stat-box">
+                      <p class="stat-label text-muted mb-1">Duration</p>
+                      <p class="stat-value fw-bold h5">{{ course.duration }}</p>
+                    </div>
                   </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="stat-box">
-                    <p class="stat-label text-muted mb-1">Level</p>
-                    <p class="stat-value fw-bold h5">{{ course.level }}</p>
+                  <div class="col-md-3">
+                    <div class="stat-box">
+                      <p class="stat-label text-muted mb-1">Level</p>
+                      <p class="stat-value fw-bold h5">{{ course.level }}</p>
+                    </div>
                   </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="stat-box">
-                    <p class="stat-label text-muted mb-1">Language</p>
-                    <p class="stat-value fw-bold h5">{{ course.language }}</p>
+                  <div class="col-md-3">
+                    <div class="stat-box">
+                      <p class="stat-label text-muted mb-1">Language</p>
+                      <p class="stat-value fw-bold h5">{{ course.language }}</p>
+                    </div>
                   </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="stat-box">
-                    <p class="stat-label text-muted mb-1">Credits</p>
-                    <p class="stat-value fw-bold h5">{{ course.credits }}</p>
+                  <div class="col-md-3">
+                    <div class="stat-box">
+                      <p class="stat-label text-muted mb-1">Credits</p>
+                      <p class="stat-value fw-bold h5">{{ course.credits }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ng-template>
-        </li>
+            </ng-template>
+          </li>
 
-        <!-- Topics Tab -->
-        <li [ngbNavItem]="2">
-          <button ngbNavLink>Topics</button>
-          <ng-template ngbNavContent>
-            <div class="p-4">
-              <h3 class="h5 fw-bold mb-3">Course Topics</h3>
+          <!-- Topics Tab -->
+          <li [ngbNavItem]="2">
+            <button ngbNavLink>Topics</button>
+            <ng-template ngbNavContent>
+              <div class="p-4">
+                <h3 class="h5 fw-bold mb-3">Course Topics</h3>
 
-              @if (course.topics && course.topics.length > 0) {
-                <div class="topics-list">
-                  @for (topic of course.topics; track topic) {
-                    <div class="topic-item d-flex gap-3 pb-3 mb-3 border-bottom">
-                      <div class="flex-shrink-0">
-                        <div class="topic-icon bg-light rounded d-flex align-items-center justify-content-center">
-                          <i class="bi bi-check-circle-fill topic-icon-inner"></i>
+                @if (course.topics && course.topics.length > 0) {
+                  <div class="topics-list">
+                    @for (topic of course.topics; track topic) {
+                      <div
+                        class="topic-item d-flex gap-3 pb-3 mb-3 border-bottom"
+                      >
+                        <div class="flex-shrink-0">
+                          <div
+                            class="topic-icon bg-light rounded d-flex align-items-center justify-content-center"
+                          >
+                            <i
+                              class="bi bi-check-circle-fill topic-icon-inner"
+                            ></i>
+                          </div>
+                        </div>
+
+                        <div class="flex-grow-1">
+                          <h5 class="fw-bold mb-0 fs-6">{{ topic }}</h5>
                         </div>
                       </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="text-muted">No topics available</p>
+                }
+              </div>
+            </ng-template>
+          </li>
 
-                      <div class="flex-grow-1">
-                        <h5 class="fw-bold mb-0 fs-6">{{ topic }}</h5>
-                      </div>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <p class="text-muted">No topics available</p>
-              }
-            </div>
-          </ng-template>
-        </li>
+          <!-- Requirements Tab -->
+          <li [ngbNavItem]="3">
+            <button ngbNavLink>Requirements</button>
+            <ng-template ngbNavContent>
+              <div class="p-4">
+                <h3 class="h5 fw-bold mb-3">Entry Requirements</h3>
 
-        <!-- Requirements Tab -->
-        <li [ngbNavItem]="3">
-          <button ngbNavLink>Requirements</button>
-          <ng-template ngbNavContent>
-            <div class="p-4">
-              <h3 class="h5 fw-bold mb-3">Entry Requirements</h3>
+                @if (course.requirements && course.requirements.length > 0) {
+                  <div class="requirements-list">
+                    @for (
+                      requirement of course.requirements;
+                      track requirement
+                    ) {
+                      <div
+                        class="requirement-item d-flex gap-3 pb-3 mb-3 border-bottom"
+                      >
+                        <div class="flex-shrink-0">
+                          <div
+                            class="requirement-icon bg-light rounded d-flex align-items-center justify-content-center"
+                          >
+                            <i
+                              class="bi bi-clipboard-check requirement-icon-inner"
+                            ></i>
+                          </div>
+                        </div>
 
-              @if (course.requirements && course.requirements.length > 0) {
-                <div class="requirements-list">
-                  @for (requirement of course.requirements; track requirement) {
-                    <div class="requirement-item d-flex gap-3 pb-3 mb-3 border-bottom">
-                      <div class="flex-shrink-0">
-                        <div class="requirement-icon bg-light rounded d-flex align-items-center justify-content-center">
-                          <i class="bi bi-clipboard-check requirement-icon-inner"></i>
+                        <div class="flex-grow-1">
+                          <p class="mb-0">{{ requirement }}</p>
                         </div>
                       </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="text-muted">No specific requirements</p>
+                }
+              </div>
+            </ng-template>
+          </li>
 
-                      <div class="flex-grow-1">
-                        <p class="mb-0">{{ requirement }}</p>
-                      </div>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <p class="text-muted">No specific requirements</p>
-              }
-            </div>
-          </ng-template>
-        </li>
+          <!-- NEW: Reviews Tab -->
+          <li [ngbNavItem]="4">
+            <button ngbNavLink>Reviews</button>
+            <ng-template ngbNavContent>
+              <div class="p-4">
+                <h3 class="h5 fw-bold mb-3">Student Reviews</h3>
+                <app-course-reviews [courseId]="course.id"></app-course-reviews>
+              </div>
+            </ng-template>
+          </li>
+        </ul>
 
-        <!-- NEW: Reviews Tab -->
-        <li [ngbNavItem]="4">
-          <button ngbNavLink>Reviews</button>
-          <ng-template ngbNavContent>
-            <div class="p-4">
-              <h3 class="h5 fw-bold mb-3">Student Reviews</h3>
-              <app-course-reviews [courseId]="course.id"></app-course-reviews>
-            </div>
-          </ng-template>
-        </li>
-      </ul>
-
-      <!-- Tab Content Outlet -->
-      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+        <!-- Tab Content Outlet -->
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+      </div>
     </div>
   </div>
-</div>
 }

@@ -11,7 +11,7 @@ public class CourseFilter {
     private String name;
     private List<String> courseTypes;
     private Boolean onlyRemote;
-    private Integer costMax;
+    private Integer maxCost;
     private Integer duration;
     private List<String> languages;
     private List<String> countries;

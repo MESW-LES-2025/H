@@ -26,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -58,6 +59,7 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        SecurityContextHolder.clearContext();
         
         when(request.getSession(true)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
@@ -158,8 +160,14 @@ class AuthServiceTest {
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
-        assertEquals(99L, res.getUserId());
-        
+        assertEquals(99L, res.getUser().getId());
+
+        ArgumentCaptor<SecurityContext> contextCaptor = ArgumentCaptor.forClass(SecurityContext.class);
+        verify(securityContextRepository).saveContext(contextCaptor.capture(), eq(request), eq(response));
+        SecurityContext context = contextCaptor.getValue();
+        assertNotNull(context.getAuthentication());
+        assertEquals("loginuser", context.getAuthentication().getPrincipal());
+        assertTrue(context.getAuthentication().isAuthenticated());
     }
 
     @Test
@@ -174,6 +182,8 @@ class AuthServiceTest {
         assertNotNull(res);
         assertEquals("error", res.getStatus());
         assertEquals("Invalid credentials", res.getMessage());
+
+        verifyNoInteractions(securityContextRepository);
     }
 
     @Test
@@ -197,6 +207,8 @@ class AuthServiceTest {
         assertNotNull(res);
         assertEquals("error", res.getStatus());
         assertEquals("Invalid credentials", res.getMessage());
+
+        verifyNoInteractions(securityContextRepository);
     }
 
     @Test
@@ -224,7 +236,7 @@ class AuthServiceTest {
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
-        assertEquals(123L, res.getUserId());
+        assertEquals(123L, res.getUser().getId());
 
         verify(userRepository).findByEmail("email@example.com");
     }
@@ -414,9 +426,45 @@ class AuthServiceTest {
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
-        assertEquals(321L, res.getUserId());
+        assertEquals(321L, res.getUser().getId());
 
         verify(userRepository, times(1)).findByUsername("simpleuser");
         verify(userRepository, never()).findByEmail(anyString());
+    }
+
+    @Test
+    void logout_ShouldClearSecurityContext() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        authService.logout(request, response);
+
+        ArgumentCaptor<SecurityContext> contextCaptor = ArgumentCaptor.forClass(SecurityContext.class);
+        verify(securityContextRepository).saveContext(contextCaptor.capture(), eq(request), eq(response));
+        
+        SecurityContext capturedContext = contextCaptor.getValue();
+        assertNull(capturedContext.getAuthentication(), "Authentication should be null after logout");
+        assertNull(SecurityContextHolder.getContext().getAuthentication(), "Holder should also be cleared");
+    }
+
+    @Test
+    void testDeleteAccount_UserExists() {
+        when(userRepository.existsById(55L)).thenReturn(true);
+
+        authService.deleteAccount(55L);
+
+        verify(userRepository).existsById(55L);
+        verify(userRepository).deleteById(55L);
+    }
+
+    @Test
+    void testDeleteAccount_UserMissingThrows() {
+        when(userRepository.existsById(77L)).thenReturn(false);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.deleteAccount(77L));
+        assertEquals("User not found", ex.getMessage());
+
+        verify(userRepository).existsById(77L);
+        verify(userRepository, never()).deleteById(anyLong());
     }
 }

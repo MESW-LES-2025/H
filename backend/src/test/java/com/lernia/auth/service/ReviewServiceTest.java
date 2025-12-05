@@ -150,14 +150,123 @@ class ReviewServiceTest {
         verify(reviewRepository).save(existingReview);
     }
 
-    // --- Course Review Tests ---
+    @Test
+    void canUserReview_ShouldDelegateToRepository() {
+        when(userCourseRepository.existsByUserIdAndCourse_UniversityId(1L, 9L)).thenReturn(true);
+
+        assertTrue(reviewService.canUserReview(1L, 9L));
+        verify(userCourseRepository).existsByUserIdAndCourse_UniversityId(1L, 9L);
+    }
+
+    @Test
+    void canUserReviewCourse_ShouldDelegateToRepository() {
+        when(userCourseRepository.existsByUserIdAndCourseId(1L, 7L)).thenReturn(false);
+
+        assertFalse(reviewService.canUserReviewCourse(1L, 7L));
+        verify(userCourseRepository).existsByUserIdAndCourseId(1L, 7L);
+    }
+
+    @Test
+    void getReviewsByUniversity_ShouldReturnMappedDtos() {
+        UniversityReviewEntity entity = new UniversityReviewEntity();
+        entity.setId(3L);
+        entity.setRating(4.5F);
+        entity.setTitle("Nice");
+        entity.setDescription("Detailed");
+        entity.setReviewDate(LocalDate.now());
+        entity.setUser(user);
+        entity.setUniversity(university);
+
+        when(reviewRepository.findByUniversityIdOrderByReviewDateDesc(1L)).thenReturn(List.of(entity));
+
+        List<ReviewDTO> result = reviewService.getReviewsByUniversity(1L);
+
+        assertEquals(1, result.size());
+        ReviewDTO dto = result.get(0);
+        assertEquals(3L, dto.getId());
+        assertEquals("Test User", dto.getUserName());
+        assertEquals(university.getId(), dto.getUniversityId());
+    }
+
+    @Test
+    void addReview_ShouldThrow_WhenUniversityMissing() {
+        reviewDTO.setUniversityId(2L);
+        when(userCourseRepository.existsByUserIdAndCourse_UniversityId(1L, 2L)).thenReturn(true);
+        when(universityRepository.findById(2L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.addReview(reviewDTO));
+        assertEquals("University not found", ex.getMessage());
+    }
+
+    @Test
+    void addReview_ShouldThrow_WhenUserMissing() {
+        reviewDTO.setUniversityId(2L);
+        when(userCourseRepository.existsByUserIdAndCourse_UniversityId(1L, 2L)).thenReturn(true);
+        when(universityRepository.findById(2L)).thenReturn(Optional.of(university));
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.addReview(reviewDTO));
+        assertEquals("User not found", ex.getMessage());
+    }
+
+    @Test
+    void deleteReview_ShouldThrow_WhenReviewMissing() {
+        when(reviewRepository.findById(50L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.deleteReview(50L, 1L));
+        assertEquals("Review not found", ex.getMessage());
+    }
+
+    @Test
+    void updateReview_ShouldThrow_WhenReviewMissing() {
+        when(reviewRepository.findById(80L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.updateReview(80L, reviewDTO, 1L));
+        assertEquals("Review not found", ex.getMessage());
+    }
+
+    @Test
+    void updateReview_ShouldThrow_WhenUserNotOwner() {
+        UniversityReviewEntity entity = new UniversityReviewEntity();
+        UserEntity other = new UserEntity();
+        other.setId(9L);
+        entity.setUser(other);
+
+        when(reviewRepository.findById(11L)).thenReturn(Optional.of(entity));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.updateReview(11L, reviewDTO, 1L));
+        assertEquals("You are not authorized to edit this review.", ex.getMessage());
+        verify(reviewRepository, never()).save(any());
+    }
+
+    @Test
+    void getReviewsByCourse_ShouldReturnMappedDtos() {
+        CourseReviewEntity entity = new CourseReviewEntity();
+        entity.setId(15L);
+        entity.setRating(3.5F);
+        entity.setTitle("Solid");
+        entity.setDescription("Informative");
+        entity.setReviewDate(LocalDate.now());
+        entity.setUser(user);
+        entity.setCourse(course);
+
+        when(courseReviewRepository.findByCourseIdOrderByReviewDateDesc(1L)).thenReturn(List.of(entity));
+
+        List<ReviewDTO> result = reviewService.getReviewsByCourse(1L);
+
+        assertEquals(1, result.size());
+        ReviewDTO dto = result.getFirst();
+        assertEquals(15L, dto.getId());
+        assertEquals("Test User", dto.getUserName());
+        assertEquals(course.getId(), dto.getCourseId());
+    }
 
     @Test
     void addCourseReview_ShouldSucceed_WhenUserIsEligible() {
-        reviewDTO.setCourseId(1L);
+        reviewDTO.setCourseId(3L);
 
-        when(userCourseRepository.existsByUserIdAndCourseId(1L, 1L)).thenReturn(true);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(userCourseRepository.existsByUserIdAndCourseId(1L, 3L)).thenReturn(true);
+        when(courseRepository.findById(3L)).thenReturn(Optional.of(course));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(courseReviewRepository.save(any(CourseReviewEntity.class))).thenAnswer(invocation -> {
             CourseReviewEntity saved = invocation.getArgument(0);
@@ -169,85 +278,99 @@ class ReviewServiceTest {
 
         assertNotNull(result);
         assertEquals(200L, result.getId());
+        assertEquals("Great!", result.getTitle());
         verify(courseReviewRepository).save(any(CourseReviewEntity.class));
     }
 
     @Test
-    void addCourseReview_ShouldThrowException_WhenUserNotEligible() {
-        reviewDTO.setCourseId(1L);
-        when(userCourseRepository.existsByUserIdAndCourseId(1L, 1L)).thenReturn(false);
+    void addCourseReview_ShouldThrow_WhenUserNotEligible() {
+        reviewDTO.setCourseId(4L);
+        when(userCourseRepository.existsByUserIdAndCourseId(1L, 4L)).thenReturn(false);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            reviewService.addCourseReview(reviewDTO);
-        });
-
-        assertEquals("User is not eligible to review this course.", exception.getMessage());
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.addCourseReview(reviewDTO));
+        assertEquals("User is not eligible to review this course.", ex.getMessage());
         verify(courseReviewRepository, never()).save(any());
     }
 
     @Test
     void deleteCourseReview_ShouldSucceed_WhenUserIsOwner() {
         CourseReviewEntity review = new CourseReviewEntity();
-        review.setId(20L);
+        review.setId(25L);
         review.setUser(user);
 
-        when(courseReviewRepository.findById(20L)).thenReturn(Optional.of(review));
+        when(courseReviewRepository.findById(25L)).thenReturn(Optional.of(review));
 
-        reviewService.deleteCourseReview(20L, 1L);
+        reviewService.deleteCourseReview(25L, 1L);
 
         verify(courseReviewRepository).delete(review);
     }
 
     @Test
-    void deleteCourseReview_ShouldThrowException_WhenUserIsNotOwner() {
-        UserEntity otherUser = new UserEntity();
-        otherUser.setId(99L);
+    void addCourseReview_ShouldThrow_WhenCourseMissing() {
+        reviewDTO.setCourseId(5L);
+        when(userCourseRepository.existsByUserIdAndCourseId(1L, 5L)).thenReturn(true);
+        when(courseRepository.findById(5L)).thenReturn(Optional.empty());
 
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.addCourseReview(reviewDTO));
+        assertEquals("Course not found", ex.getMessage());
+        verify(courseReviewRepository, never()).save(any());
+    }
+
+    @Test
+    void addCourseReview_ShouldThrow_WhenUserMissing() {
+        reviewDTO.setCourseId(6L);
+        when(userCourseRepository.existsByUserIdAndCourseId(1L, 6L)).thenReturn(true);
+        when(courseRepository.findById(6L)).thenReturn(Optional.of(course));
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.addCourseReview(reviewDTO));
+        assertEquals("User not found", ex.getMessage());
+        verify(courseReviewRepository, never()).save(any());
+    }
+
+    @Test
+    void deleteCourseReview_ShouldThrow_WhenReviewMissing() {
+        when(courseReviewRepository.findById(70L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.deleteCourseReview(70L, 1L));
+        assertEquals("Review not found", ex.getMessage());
+    }
+
+    @Test
+    void deleteCourseReview_ShouldThrow_WhenUserNotOwner() {
+        UserEntity other = new UserEntity();
+        other.setId(9L);
         CourseReviewEntity review = new CourseReviewEntity();
-        review.setId(20L);
-        review.setUser(otherUser); // Owner is ID 99
+        review.setId(71L);
+        review.setUser(other);
 
-        when(courseReviewRepository.findById(20L)).thenReturn(Optional.of(review));
+        when(courseReviewRepository.findById(71L)).thenReturn(Optional.of(review));
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            reviewService.deleteCourseReview(20L, 1L); // Trying to delete with ID 1
-        });
-
-        assertEquals("You are not authorized to delete this review.", exception.getMessage());
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.deleteCourseReview(71L, 1L));
+        assertEquals("You are not authorized to delete this review.", ex.getMessage());
         verify(courseReviewRepository, never()).delete(any());
     }
 
     @Test
-    void updateCourseReview_ShouldSucceed_WhenUserIsOwner() {
-        CourseReviewEntity existingReview = new CourseReviewEntity();
-        existingReview.setId(20L);
-        existingReview.setUser(user);
-        existingReview.setTitle("Old Course Title");
-        existingReview.setCourse(course); // Needed for DTO conversion
+    void updateCourseReview_ShouldThrow_WhenReviewMissing() {
+        when(courseReviewRepository.findById(80L)).thenReturn(Optional.empty());
 
-        reviewDTO.setTitle("New Course Title");
-
-        when(courseReviewRepository.findById(20L)).thenReturn(Optional.of(existingReview));
-        when(courseReviewRepository.save(any(CourseReviewEntity.class))).thenAnswer(i -> i.getArgument(0));
-
-        ReviewDTO result = reviewService.updateCourseReview(20L, reviewDTO, 1L);
-
-        assertEquals("New Course Title", result.getTitle());
-        verify(courseReviewRepository).save(existingReview);
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.updateCourseReview(80L, reviewDTO, 1L));
+        assertEquals("Review not found", ex.getMessage());
     }
 
     @Test
-    void getReviewsByCourse_ShouldReturnList() {
-        CourseReviewEntity review1 = new CourseReviewEntity();
-        review1.setId(2L);
-        review1.setUser(user);
-        review1.setCourse(course);
+    void updateCourseReview_ShouldThrow_WhenUserNotOwner() {
+        UserEntity other = new UserEntity();
+        other.setId(10L);
+        CourseReviewEntity review = new CourseReviewEntity();
+        review.setId(81L);
+        review.setUser(other);
 
-        when(courseReviewRepository.findByCourseIdOrderByReviewDateDesc(1L)).thenReturn(List.of(review1));
+        when(courseReviewRepository.findById(81L)).thenReturn(Optional.of(review));
 
-        List<ReviewDTO> results = reviewService.getReviewsByCourse(1L);
-
-        assertEquals(1, results.size());
-        assertEquals(2L, results.get(0).getId());
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reviewService.updateCourseReview(81L, reviewDTO, 1L));
+        assertEquals("You are not authorized to edit this review.", ex.getMessage());
+        verify(courseReviewRepository, never()).save(any());
     }
 }

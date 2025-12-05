@@ -15,46 +15,24 @@
       Home
     </a>
 
-    <a
-      class="nav-link"
-      routerLink="/explore"
-      routerLinkActive="active"
-    >
+    <a class="nav-link" routerLink="/explore" routerLinkActive="active">
       Explore
     </a>
 
-    <a
-      class="nav-link"
-      routerLink="/about"
-      routerLinkActive="active"
-    >
+    <a class="nav-link" routerLink="/about" routerLinkActive="active">
       About Us
     </a>
   </nav>
 
   <!-- DIREITA: ÍCONES -->
   <div class="navbar-actions">
-    <button class="icon-btn" aria-label="Favourites">
-      <img src="/images/heart-outline.svg" alt="" />
-    </button>
-
-    <!-- If logged in, go to profile -->
-    <button
-      *ngIf="userId"
-      class="icon-btn"
-      aria-label="Profile"
-      [routerLink]="['/profile', userId]">
+    <button class="icon-btn" aria-label="Profile" (click)="goToProfile()">
       <img src="/images/profile-outline.svg" alt="" />
     </button>
 
-    <!-- If NOT logged in, go to login -->
-    <button
-      *ngIf="!userId"
-      class="icon-btn"
-      aria-label="Login"
-      routerLink="/login">
-      <img src="/images/profile-outline.svg" alt="" />
+    <!-- Logout Button -->
+    <button *ngIf="userId" class="btn-logout" (click)="logout()">
+      Log Out
     </button>
   </div>
-
 </header>

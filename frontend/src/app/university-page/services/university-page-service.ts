@@ -48,10 +48,9 @@ export class UniversityPageService {
   constructor(private http: HttpClient) {}
 
   public getUniversityProfile(id: number): Observable<UniversityViewmodel> {
-    return this.http.get<UniversityDTO>(`${this.baseUrl}/api/university/${id}`)
-      .pipe(
-        map(dto => this.mapToViewmodel(dto))
-      );
+    return this.http
+      .get<UniversityDTO>(`${this.baseUrl}/api/university/${id}`)
+      .pipe(map((dto) => this.mapToViewmodel(dto)));
   }
 
   private mapToViewmodel(dto: UniversityDTO): UniversityViewmodel {
@@ -64,11 +63,12 @@ export class UniversityPageService {
       name: dto.name,
       location: location,
       logo: dto.logo || 'https://via.placeholder.com/100',
-      bannerImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop',
+      bannerImage:
+        'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop',
       description: dto.description || 'No description available',
       studentCount: 0,
       foundedYear: 0,
-      courses: dto.courses.map(course => ({
+      courses: dto.courses.map((course) => ({
         id: course.id,
         name: course.name,
         area: course.courseType || 'General',
@@ -78,7 +78,7 @@ export class UniversityPageService {
           location: {
             id: dto.location?.id || 0,
             city: dto.location?.city || '',
-            country: dto.location?.country || ''
+            country: dto.location?.country || '',
           },
           logo: dto.logo || null
         }

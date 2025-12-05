@@ -1,23 +1,40 @@
 @if (university) {
-<div class="container container-university">
-  <!-- University Header Card -->
-  <div class="card university-card border-0 shadow position-relative my-4 d-flex flex-column">
-    <!-- Banner Image -->
-    <div class="university-banner-container">
-      <img [src]="university.bannerImage" alt="University Banner" class="university-banner"
-        onerror="this.src='images/oxford-university-banner.jpg'">
-      <!-- University Logo Overlay -->
-      <div class="university-logo-overlay">
-        <img [src]="university.logo" alt="University Logo" class="university-logo-large rounded">
+  <div class="container container-university">
+    <!-- University Header Card -->
+    <div
+      class="card university-card border-0 shadow position-relative my-4 d-flex flex-column"
+    >
+      <!-- Banner Image -->
+      <div class="university-banner-container">
+        <img
+          [src]="university.bannerImage"
+          alt="University Banner"
+          class="university-banner"
+          onerror="this.src = 'images/oxford-university-banner.jpg'"
+        />
+        <!-- University Logo Overlay -->
+        <div class="university-logo-overlay">
+          <img
+            [src]="university.logo"
+            alt="University Logo"
+            class="university-logo-large rounded"
+          />
+        </div>
       </div>
-    </div>
 
-    <div class="card-body p-4 position-relative flex-grow-1">
-      <!-- Save College Button -->
-      <button class="btn btn-save-college">
-        <i class="bi bi-heart-fill"></i>
-        Save College
-      </button>
+      <div class="card-body p-4 position-relative flex-grow-1">
+        <!-- Save College Button -->
+        <button
+          class="btn btn-save-college"
+          (click)="onToggleFavorite()"
+          [class.fav-active]="isFavorite"
+        >
+          <i
+            class="bi"
+            [ngClass]="isFavorite ? 'bi-heart-fill' : 'bi-heart'"
+          ></i>
+          {{ isFavorite ? "Saved to favourites" : "Save College" }}
+        </button>
 
       <div class="row align-items-start g-3">
         <!-- University Info -->
@@ -128,16 +145,19 @@
             <div class="p-4">
               <h3 class="h5 fw-bold mb-3">Featured Courses</h3>
 
-              @if (university.courses && university.courses.length > 0) {
-              <div class="courses-list">
-                @for (course of university.courses; track course.id) {
-                <div class="course-item d-flex gap-3 pb-3 mb-3 border-bottom" (click)="goToCourse(course.id)"
-                  style="cursor: pointer;" role="button" tabindex="0">
-                  <div class="flex-shrink-0">
-                    <div class="course-icon bg-light rounded d-flex align-items-center justify-content-center">
-                      <i class="bi bi-book-fill course-icon-inner"></i>
-                    </div>
-                  </div>
+                @if (university.courses && university.courses.length > 0) {
+                  <div class="courses-list">
+                    @for (course of university.courses; track course.id) {
+                      <div class="course-item d-flex gap-3 pb-3 mb-3 border-bottom"
+                           (click)="goToCourse(course.id)"
+                           style="cursor: pointer;"
+                           role="button"
+                           tabindex="0">
+                        <div class="flex-shrink-0">
+                          <div class="course-icon bg-light rounded d-flex align-items-center justify-content-center">
+                            <i class="bi bi-book-fill course-icon-inner"></i>
+                          </div>
+                        </div>
 
                   <div class="flex-grow-1">
                     <h5 class="fw-bold mb-0 fs-6">{{ course.name }}</h5>

@@ -1,10 +1,9 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
+import com.lernia.auth.dto.*;
 import com.lernia.auth.service.AuthService;
+import com.lernia.auth.entity.UserEntity;
+import com.lernia.auth.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
+import java.security.Principal;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,6 +27,9 @@ class AuthControllerTest {
 
     @Mock
     private AuthService authService;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private HttpServletRequest request;
@@ -48,7 +54,8 @@ class AuthControllerTest {
 
         LoginResponse serviceResponse =
                 new LoginResponse("Login successful", "success");
-        serviceResponse.setUserId(123L);
+        serviceResponse.setUser(new UserProfileResponse());
+        serviceResponse.getUser().setId(123L);
 
         when(authService.login(any(LoginRequest.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(serviceResponse);
@@ -58,7 +65,7 @@ class AuthControllerTest {
         assertNotNull(controllerResponse);
         assertEquals("Login successful", controllerResponse.getMessage());
         assertEquals("success", controllerResponse.getStatus());
-        assertEquals(123L, controllerResponse.getUserId());
+        assertEquals(123L, controllerResponse.getUser().getId());
 
         ArgumentCaptor<LoginRequest> captor = ArgumentCaptor.forClass(LoginRequest.class);
         verify(authService, times(1)).login(captor.capture(), eq(request), eq(response));
@@ -140,5 +147,47 @@ class AuthControllerTest {
         assertEquals("Username already taken", controllerResponse.getMessage());
 
         verify(authService, times(1)).register(req);
+    }
+
+    @Test
+    void testLogout_ReturnsOkAndDelegates() {
+        ResponseEntity<?> responseEntity = authController.logout(request, response);
+
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertEquals(Map.of("message", "Logged out successfully"), responseEntity.getBody());
+        verify(authService).logout(request, response);
+    }
+
+    @Test
+    void testDeleteAccount_ReturnsNoContent() {
+        ResponseEntity<Void> responseEntity = authController.deleteAccount(88L);
+
+        assertEquals(204, responseEntity.getStatusCodeValue());
+        assertNull(responseEntity.getBody());
+        verify(authService).deleteAccount(88L);
+    }
+
+    @Test
+    void testGetCurrentUser_NotAuthenticated() {
+        ResponseEntity<?> responseEntity = authController.getCurrentUser(null);
+
+        assertEquals(401, responseEntity.getStatusCodeValue());
+        assertEquals(Map.of("message", "Not authenticated"), responseEntity.getBody());
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void testGetCurrentUser_ReturnsUserInfo() {
+        Principal principal = () -> "john";
+        UserEntity user = new UserEntity();
+        user.setId(5L);
+        user.setUsername("john");
+        when(userRepository.findByUsername("john")).thenReturn(java.util.Optional.of(user));
+
+        ResponseEntity<?> responseEntity = authController.getCurrentUser(principal);
+
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertEquals(Map.of("id", 5L, "username", "john"), responseEntity.getBody());
+        verify(userRepository).findByUsername("john");
     }
 }

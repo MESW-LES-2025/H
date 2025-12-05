@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../auth/auth.service';
 import { Subscription } from 'rxjs';
@@ -18,20 +18,33 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { label: 'About Us', path: '/about' },
   ];
 
-  userId: number | null = null;
-  private userSubscription: Subscription | undefined;
+  protected userId: number | null = null;
+  private userSubscription: Subscription | null = null;
 
-  constructor(private authService: AuthService) {}
+  private router = inject(Router);
+  private authService = inject(AuthService);
 
-  ngOnInit() {
-    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+  ngOnInit(): void {
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.userId = user ? user.id : null;
     });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+  }
+
+  goToProfile(): void {
+    if (this.userId) {
+      this.router.navigate(['/profile', this.userId]);
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 }

@@ -1,15 +1,20 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CoursesService } from './service/courses-service';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
 import { Subject, takeUntil } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { CourseFilters } from "./viewmodels/course-filters";
-import { CourseFiltersForm } from "./viewmodels/course-filters-form";
-import { Page } from "../shared/viewmodels/pagination";
-import { CourseTypeEnum } from "../shared/enums/course-type-enum";
-import { DataService } from "../shared/services/data-service";
+import { CourseFilters } from './viewmodels/course-filters';
+import { CourseFiltersForm } from './viewmodels/course-filters-form';
+import { Page } from '../shared/viewmodels/pagination';
+import { CourseTypeEnum } from '../shared/enums/course-type-enum';
+import { DataService } from '../shared/services/data-service';
 import { integerValidator } from '../shared/validators/integer-validator';
 
 @Component({
@@ -62,14 +67,16 @@ export class Courses implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCourses();
 
-    this.filterCoursesForm.valueChanges.pipe(
-      debounceTime(2500),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.currentPage = 0;
-      this.loadCourses();
-    });
+    this.filterCoursesForm.valueChanges
+      .pipe(
+        debounceTime(2500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.loadCourses();
+      });
   }
 
   loadCourses(): void {
@@ -80,32 +87,36 @@ export class Courses implements OnInit, OnDestroy {
         size: this.pageSize,
         sort: 'name,asc',
       };
-      this.courseService.getCourses(filters, pageRequest)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (pagedResponse: Page<CourseViewmodel>) => {
-              this.pagedCourses = pagedResponse;
-              this.courses = pagedResponse.content;
-            },
-            error: (err) => console.error(err)  // TODO: Notifications
-          });
+      this.courseService
+        .getCourses(filters, pageRequest)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (pagedResponse: Page<CourseViewmodel>) => {
+            this.pagedCourses = pagedResponse;
+            this.courses = pagedResponse.content;
+          },
+          error: (err) => console.error(err), // TODO: Notifications
+        });
     }
   }
 
   onCheckboxChange(event: Event, controlName: string) {
     const checkbox = event.target as HTMLInputElement;
     const value = checkbox.value;
-    const selectedValues: string[] = this.filterCoursesForm.get(controlName)?.value || [];
+    const selectedValues: string[] =
+      this.filterCoursesForm.get(controlName)?.value || [];
 
     let newValues: string[];
     if (checkbox.checked) {
       newValues = selectedValues.includes(value)
-          ? selectedValues
-          : [...selectedValues, value];
+        ? selectedValues
+        : [...selectedValues, value];
     } else {
-      newValues = selectedValues.filter(v => v !== value);
+      newValues = selectedValues.filter((v) => v !== value);
     }
-    this.filterCoursesForm.get(controlName)?.setValue(newValues, { emitEvent: true });
+    this.filterCoursesForm
+      .get(controlName)
+      ?.setValue(newValues, { emitEvent: true });
   }
 
   getFilters(): CourseFilters {
@@ -124,20 +135,22 @@ export class Courses implements OnInit, OnDestroy {
   }
 
   resetFilters(): void {
-    this.filterCoursesForm.reset({
-      name: null,
-      courseTypes: [],
-      areasOfStudy: [],
-      onlyRemote: false,
-      costMax: null,
-      duration: null,
-      languages: [],
-      countries: [],
-    }, { emitEvent: false });
+    this.filterCoursesForm.reset(
+      {
+        name: null,
+        courseTypes: [],
+        areasOfStudy: [],
+        onlyRemote: false,
+        costMax: null,
+        duration: null,
+        languages: [],
+        countries: [],
+      },
+      { emitEvent: false },
+    );
     this.currentPage = 0;
     this.loadCourses();
   }
-
 
   get totalPages(): number {
     return this.pagedCourses?.totalPages ?? 0;
@@ -153,14 +166,15 @@ export class Courses implements OnInit, OnDestroy {
     if (this.currentPage - half < 0) {
       end = Math.min(total - 1, end + (half - this.currentPage));
     } else if (this.currentPage + half > total - 1) {
-      start = Math.max(0, start - ((this.currentPage + half) - (total - 1)));
+      start = Math.max(0, start - (this.currentPage + half - (total - 1)));
     }
 
-    return Array.from({length: (end - start + 1)}, (_, i) => start + i);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
   goToPage(page: number): void {
-    if (page < 0 || page >= this.totalPages || page === this.currentPage) return;
+    if (page < 0 || page >= this.totalPages || page === this.currentPage)
+      return;
     this.currentPage = page;
     this.loadCourses();
   }
