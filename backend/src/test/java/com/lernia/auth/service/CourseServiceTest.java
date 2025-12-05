@@ -2,6 +2,7 @@ package com.lernia.auth.service;
 
 import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
+import com.lernia.auth.dto.CourseFilter;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.AreaOfStudyEntity;
@@ -9,6 +10,13 @@ import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.repository.CourseRepository;
+import com.lernia.auth.mapper.CourseMapper;
+import java.time.LocalDate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,6 +37,9 @@ class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+
+    @Mock
+    private CourseMapper courseMapper;
 
     @BeforeEach
     void setUp() {
@@ -131,6 +142,71 @@ class CourseServiceTest {
         assertTrue(dto.getAreasOfStudy().isEmpty(), "Areas list should be empty");
 
         verify(courseRepository, times(1)).findById(7L);
+    }
+
+    @Test
+    void testGetCourseById_UniversityWithoutLocation() {
+        CourseEntity course = buildFullCourseEntity(12L);
+        course.getUniversity().setLocation(null);
+
+        when(courseRepository.findById(12L)).thenReturn(Optional.of(course));
+
+        Optional<CourseDTO> opt = courseService.getCourseById(12L);
+
+        assertTrue(opt.isPresent(), "Expected Optional to be present");
+        UniversityDTOLight university = opt.get().getUniversity();
+        assertNotNull(university, "University DTO should not be null");
+        assertNull(university.getLocation(), "Location DTO should be null when entity location is null");
+
+        verify(courseRepository, times(1)).findById(12L);
+    }
+
+    // -------------------------------------------------------
+    // getCourses
+    // -------------------------------------------------------
+
+    @Test
+    void testGetCourses_ReturnsMappedPage() {
+        CourseFilter filter = new CourseFilter("software", List.of("Master"), true, 5000, 24,
+                List.of("English"), List.of("Portugal"), List.of("Computer Science"), true);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        CourseEntity entity = buildFullCourseEntity(11L);
+        Page<CourseEntity> entityPage = new PageImpl<>(List.of(entity));
+
+        CourseDTO dto = new CourseDTO(
+                11L, "Software Engineering", "SE description", "Master", true, 150, 5000,
+                24, 120, "English", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 5, 31),
+                "http://example.com", "contact@example.com", null, List.of()
+        );
+
+        when(courseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(entityPage);
+        when(courseMapper.toDTO(entity)).thenReturn(dto);
+
+        Page<CourseDTO> result = courseService.getCourses(filter, pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertSame(dto, result.getContent().getFirst());
+
+        verify(courseRepository, times(1)).findAll(any(Specification.class), eq(pageable));
+        verify(courseMapper, times(1)).toDTO(entity);
+    }
+
+    @Test
+    void testGetCourses_ReturnsEmptyPage() {
+        CourseFilter filter = new CourseFilter(null, null, null, null, null, null, null, null, null);
+        Pageable pageable = PageRequest.of(1, 5);
+
+        when(courseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
+
+        Page<CourseDTO> result = courseService.getCourses(filter, pageable);
+
+        assertNotNull(result);
+        assertTrue(result.getContent().isEmpty());
+
+        verify(courseRepository, times(1)).findAll(any(Specification.class), eq(pageable));
+        verifyNoInteractions(courseMapper);
     }
 
     // -------------------------------------------------------
