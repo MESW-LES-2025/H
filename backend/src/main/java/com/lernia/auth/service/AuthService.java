@@ -102,12 +102,11 @@ public class AuthService {
         SecurityContextHolder.setContext(context);
 
         securityContextRepository.saveContext(context, request, response);
-        // ----------------------
+
+        UserProfileResponse profile = map(user);
 
         LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUserId(user.getId());
-        res.setUsername(user.getUsername());
-        res.setRole(user.getUserRole().name());
+        res.setUser(profile);
         return res;
     }
 

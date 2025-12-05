@@ -18,7 +18,7 @@ export class ExploreComponent implements OnInit {
   constructor(
     private svc: ExploreService,
     private dataService: DataService,
-    private router: Router
+    private router: Router,
   ) {}
 
   q = signal<string>('');
@@ -41,7 +41,7 @@ export class ExploreComponent implements OnInit {
   favoriteUniversityIds = signal<number[]>([]);
 
   ngOnInit(): void {
-    this.dataService.countries$.subscribe(countries => {
+    this.dataService.countries$.subscribe((countries) => {
       this.countries.set(['Any', ...countries]);
     });
 
@@ -58,12 +58,12 @@ export class ExploreComponent implements OnInit {
     }
 
     this.svc.getFavorites().subscribe({
-      next: resp => {
-        const uniIds = resp.universities?.map(u => u.id) ?? [];
+      next: (resp) => {
+        const uniIds = resp.universities?.map((u) => u.id) ?? [];
         this.favoriteUniversityIds.set(uniIds);
         this.search();
       },
-      error: err => {
+      error: (err) => {
         console.error('Error loading favorites:', err);
         this.search();
       },
@@ -72,7 +72,7 @@ export class ExploreComponent implements OnInit {
 
   private withFavoriteFlag(content: CollegeVM[]): CollegeVM[] {
     const favIds = this.favoriteUniversityIds();
-    return content.map(c => ({
+    return content.map((c) => ({
       ...c,
       isFavorite: favIds.includes(Number(c.id)),
     }));
@@ -95,7 +95,7 @@ export class ExploreComponent implements OnInit {
             this.favoriteUniversityIds.set([...current, uniId]);
           }
         },
-        error: err => {
+        error: (err) => {
           console.error('Error adding favorite:', err);
         },
       });
@@ -104,10 +104,12 @@ export class ExploreComponent implements OnInit {
         next: () => {
           college.isFavorite = false;
 
-          const updated = this.favoriteUniversityIds().filter(id => id !== uniId);
+          const updated = this.favoriteUniversityIds().filter(
+            (id) => id !== uniId,
+          );
           this.favoriteUniversityIds.set(updated);
         },
-        error: err => {
+        error: (err) => {
           console.error('Error removing favorite:', err);
         },
       });
@@ -150,9 +152,9 @@ export class ExploreComponent implements OnInit {
         this.country(),
         costMax,
         this.scholarship(),
-        this.pageRequest
+        this.pageRequest,
       )
-      .subscribe(page => {
+      .subscribe((page) => {
         const contentWithFav = this.withFavoriteFlag(page.content);
         this.results.set(contentWithFav);
         this.hasMorePages.set(page.number + 1 < page.totalPages);
@@ -175,9 +177,9 @@ export class ExploreComponent implements OnInit {
         this.country(),
         costMax,
         this.scholarship(),
-        this.pageRequest
+        this.pageRequest,
       )
-      .subscribe(page => {
+      .subscribe((page) => {
         const extraWithFav = this.withFavoriteFlag(page.content);
         this.results.set([...this.results(), ...extraWithFav]);
         this.hasMorePages.set(page.number + 1 < page.totalPages);

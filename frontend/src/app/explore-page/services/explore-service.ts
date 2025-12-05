@@ -26,7 +26,7 @@ export class ExploreService {
     country: string,
     costMax: number | null,
     scholarship: string,
-    pageRequest: PageRequest
+    pageRequest: PageRequest,
   ): Observable<Page<CollegeVM>> {
     let params = new HttpParams()
       .set('page', pageRequest.page.toString())
@@ -56,13 +56,13 @@ export class ExploreService {
     return this.http
       .get<Page<UniversityDTO>>(`${this.baseUrl}/api/university`, { params })
       .pipe(
-        map(page => ({
+        map((page) => ({
           content: page.content.map(toCollegeVM),
           totalElements: page.totalElements,
           totalPages: page.totalPages,
           size: page.size,
           number: page.number,
-        }))
+        })),
       );
   }
 
@@ -77,7 +77,7 @@ export class ExploreService {
     return this.http.post<void>(
       `${this.baseUrl}/api/favorites/universities/${id}`,
       {},
-      { params }
+      { params },
     );
   }
 
@@ -91,7 +91,7 @@ export class ExploreService {
 
     return this.http.delete<void>(
       `${this.baseUrl}/api/favorites/universities/${id}`,
-      { params }
+      { params },
     );
   }
 
@@ -103,25 +103,18 @@ export class ExploreService {
 
     const params = new HttpParams().set('userId', storedId);
 
-    return this.http.get<FavoritesResponse>(
-      `${this.baseUrl}/api/favorites`,
-      { params }
-    );
+    return this.http.get<FavoritesResponse>(`${this.baseUrl}/api/favorites`, {
+      params,
+    });
   }
 
   getFavoriteUniversities(userId: number): Observable<number[]> {
     const params = new HttpParams().set('userId', userId);
 
     return this.http
-      .get<{ universities: { id: number }[] }>(
-        `${this.baseUrl}/api/favorites`,
-        { params }
-      )
-      .pipe(
-        map(response =>
-          response.universities.map(u => u.id)
-        )
-      );
+      .get<{
+        universities: { id: number }[];
+      }>(`${this.baseUrl}/api/favorites`, { params })
+      .pipe(map((response) => response.universities.map((u) => u.id)));
   }
-
 }

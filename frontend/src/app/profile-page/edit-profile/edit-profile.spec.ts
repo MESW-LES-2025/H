@@ -13,14 +13,16 @@ describe('EditProfile', () => {
   let mockActivatedRoute: any;
 
   beforeEach(async () => {
-    mockProfileService = jasmine.createSpyObj('ProfilePageService', ['updateProfile']);
+    mockProfileService = jasmine.createSpyObj('ProfilePageService', [
+      'updateProfile',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
       snapshot: {
         paramMap: {
-          get: jasmine.createSpy('get').and.returnValue('123')
-        }
-      }
+          get: jasmine.createSpy('get').and.returnValue('123'),
+        },
+      },
     };
 
     await TestBed.configureTestingModule({
@@ -28,10 +30,9 @@ describe('EditProfile', () => {
       providers: [
         { provide: ProfilePageService, useValue: mockProfileService },
         { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
-      ]
-    })
-    .compileComponents();
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EditProfile);
     component = fixture.componentInstance;
@@ -49,7 +50,7 @@ describe('EditProfile', () => {
   describe('ngOnInit', () => {
     it('should initialize form with user ID from route params', () => {
       component.ngOnInit();
-      
+
       expect(component.userIdAtual).toBe(123);
       expect(component.editProfileForm).toBeDefined();
       expect(component.editProfileForm.get('id')?.value).toBe(123);
@@ -58,14 +59,14 @@ describe('EditProfile', () => {
     it('should initialize form with null user ID when route param is missing', () => {
       mockActivatedRoute.snapshot.paramMap.get.and.returnValue(null);
       component.ngOnInit();
-      
+
       expect(component.userIdAtual).toBeNull();
       expect(component.editProfileForm.get('id')?.value).toBeNull();
     });
 
     it('should initialize form with all required controls', () => {
       component.ngOnInit();
-      
+
       expect(component.editProfileForm.get('id')).toBeDefined();
       expect(component.editProfileForm.get('name')).toBeDefined();
       expect(component.editProfileForm.get('age')).toBeDefined();
@@ -76,15 +77,15 @@ describe('EditProfile', () => {
 
     it('should set required validators on id, name, and gender fields', () => {
       component.ngOnInit();
-      
+
       const idControl = component.editProfileForm.get('id');
       const nameControl = component.editProfileForm.get('name');
       const genderControl = component.editProfileForm.get('gender');
-      
+
       idControl?.setValue(null);
       nameControl?.setValue(null);
       genderControl?.setValue(null);
-      
+
       expect(idControl?.hasError('required')).toBe(true);
       expect(nameControl?.hasError('required')).toBe(true);
       expect(genderControl?.hasError('required')).toBe(true);
@@ -92,15 +93,15 @@ describe('EditProfile', () => {
 
     it('should not set required validators on optional fields', () => {
       component.ngOnInit();
-      
+
       const ageControl = component.editProfileForm.get('age');
       const locationControl = component.editProfileForm.get('location');
       const jobTitleControl = component.editProfileForm.get('jobTitle');
-      
+
       ageControl?.setValue(null);
       locationControl?.setValue(null);
       jobTitleControl?.setValue(null);
-      
+
       expect(ageControl?.hasError('required')).toBe(false);
       expect(locationControl?.hasError('required')).toBe(false);
       expect(jobTitleControl?.hasError('required')).toBe(false);
@@ -109,10 +110,10 @@ describe('EditProfile', () => {
     it('should call ngOnInit multiple times without errors', () => {
       component.ngOnInit();
       const firstFormInstance = component.editProfileForm;
-      
+
       component.ngOnInit();
       const secondFormInstance = component.editProfileForm;
-      
+
       expect(firstFormInstance).not.toBe(secondFormInstance);
       expect(component.userIdAtual).toBe(123);
     });
@@ -125,14 +126,14 @@ describe('EditProfile', () => {
 
     it('should call updateProfile and navigate on successful form submission', () => {
       mockProfileService.updateProfile.and.returnValue(of({} as any));
-      
+
       component.editProfileForm.patchValue({
         id: 123,
         name: 'John Doe',
         age: 25,
         gender: 'MALE',
         location: 'New York',
-        jobTitle: 'Developer'
+        jobTitle: 'Developer',
       });
 
       component.onSubmit();
@@ -143,7 +144,7 @@ describe('EditProfile', () => {
         age: 25,
         gender: 'MALE',
         location: 'New York',
-        jobTitle: 'Developer'
+        jobTitle: 'Developer',
       });
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/profile', 123]);
     });
@@ -151,8 +152,8 @@ describe('EditProfile', () => {
     it('should not submit if form is invalid', () => {
       component.editProfileForm.patchValue({
         id: 123,
-        name: '',  // Required field is empty
-        gender: 'MALE'
+        name: '', // Required field is empty
+        gender: 'MALE',
       });
 
       component.onSubmit();
@@ -164,8 +165,8 @@ describe('EditProfile', () => {
     it('should mark all fields as touched when form is invalid', () => {
       component.editProfileForm.patchValue({
         id: 123,
-        name: '',  // Required field is empty
-        gender: 'MALE'
+        name: '', // Required field is empty
+        gender: 'MALE',
       });
 
       spyOn(component.editProfileForm, 'markAllAsTouched');
@@ -180,7 +181,7 @@ describe('EditProfile', () => {
       component.editProfileForm.patchValue({
         id: null,
         name: 'John Doe',
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       component.onSubmit();
@@ -194,7 +195,7 @@ describe('EditProfile', () => {
       component.editProfileForm.patchValue({
         id: 123,
         name: 'John Doe',
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       expect(component.editProfileForm.valid).toBe(true);
@@ -205,20 +206,21 @@ describe('EditProfile', () => {
 
     it('should handle all form fields correctly including optional ones', () => {
       mockProfileService.updateProfile.and.returnValue(of({} as any));
-      
+
       component.editProfileForm.patchValue({
         id: 123,
         name: 'John Doe',
-        age: null,  // Optional field
+        age: null, // Optional field
         gender: 'MALE',
-        location: null,  // Optional field
-        jobTitle: null  // Optional field
+        location: null, // Optional field
+        jobTitle: null, // Optional field
       });
 
       component.onSubmit();
 
       expect(mockProfileService.updateProfile).toHaveBeenCalled();
-      const callArgs = mockProfileService.updateProfile.calls.mostRecent().args[0];
+      const callArgs =
+        mockProfileService.updateProfile.calls.mostRecent().args[0];
       expect(callArgs.age).toBeNull();
       expect(callArgs.location).toBeNull();
       expect(callArgs.jobTitle).toBeNull();
@@ -227,21 +229,24 @@ describe('EditProfile', () => {
     it('should handle service error gracefully', () => {
       const errorResponse = new Error('Update failed');
       mockProfileService.updateProfile.and.returnValue(
-        throwError(() => errorResponse)
+        throwError(() => errorResponse),
       );
-      
+
       spyOn(console, 'error');
-      
+
       component.editProfileForm.patchValue({
         id: 123,
         name: 'John Doe',
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       component.onSubmit();
 
       expect(mockProfileService.updateProfile).toHaveBeenCalled();
-      expect(console.error).toHaveBeenCalledWith('Failed to update profile:', errorResponse);
+      expect(console.error).toHaveBeenCalledWith(
+        'Failed to update profile:',
+        errorResponse,
+      );
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
 
@@ -249,22 +254,26 @@ describe('EditProfile', () => {
       component.editProfileForm.patchValue({
         id: 123,
         name: '',
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       expect(component.editProfileForm.valid).toBe(false);
-      expect(component.editProfileForm.get('name')?.hasError('required')).toBe(true);
+      expect(component.editProfileForm.get('name')?.hasError('required')).toBe(
+        true,
+      );
     });
 
     it('should validate gender field is required', () => {
       component.editProfileForm.patchValue({
         id: 123,
         name: 'John Doe',
-        gender: ''
+        gender: '',
       });
 
       expect(component.editProfileForm.valid).toBe(false);
-      expect(component.editProfileForm.get('gender')?.hasError('required')).toBe(true);
+      expect(
+        component.editProfileForm.get('gender')?.hasError('required'),
+      ).toBe(true);
     });
 
     it('should accept valid age values', () => {
@@ -272,7 +281,7 @@ describe('EditProfile', () => {
         id: 123,
         name: 'John Doe',
         age: 30,
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       expect(component.editProfileForm.get('age')?.valid).toBe(true);
@@ -280,32 +289,33 @@ describe('EditProfile', () => {
 
     it('should handle different gender values', () => {
       mockProfileService.updateProfile.and.returnValue(of({} as any));
-      
+
       const genderValues = ['MALE', 'FEMALE', 'OTHER'];
-      
-      genderValues.forEach(gender => {
+
+      genderValues.forEach((gender) => {
         component.editProfileForm.patchValue({
           id: 123,
           name: 'Test User',
-          gender: gender
+          gender: gender,
         });
 
         component.onSubmit();
-        
-        const callArgs = mockProfileService.updateProfile.calls.mostRecent().args[0];
+
+        const callArgs =
+          mockProfileService.updateProfile.calls.mostRecent().args[0];
         expect(callArgs.gender).toBe(gender);
       });
     });
 
     it('should handle successful submission with all fields populated', () => {
       mockProfileService.updateProfile.and.returnValue(of({} as any));
-      
+
       component.editProfileForm.patchValue({
         name: 'Jane Smith',
         age: 35,
         gender: 'FEMALE',
         location: 'Paris',
-        jobTitle: 'Manager'
+        jobTitle: 'Manager',
       });
 
       component.onSubmit();
@@ -316,7 +326,7 @@ describe('EditProfile', () => {
         age: 35,
         gender: 'FEMALE',
         location: 'Paris',
-        jobTitle: 'Manager'
+        jobTitle: 'Manager',
       });
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/profile', 123]);
     });
@@ -324,10 +334,10 @@ describe('EditProfile', () => {
     it('should not navigate if updateProfile throws synchronous error', () => {
       mockProfileService.updateProfile.and.throwError('Sync error');
       spyOn(console, 'error');
-      
+
       component.editProfileForm.patchValue({
         name: 'John Doe',
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       expect(() => component.onSubmit()).toThrow();
@@ -336,15 +346,16 @@ describe('EditProfile', () => {
 
     it('should handle form submission with only required fields', () => {
       mockProfileService.updateProfile.and.returnValue(of({} as any));
-      
+
       component.editProfileForm.patchValue({
         name: 'Min User',
-        gender: 'OTHER'
+        gender: 'OTHER',
       });
 
       component.onSubmit();
 
-      const callArgs = mockProfileService.updateProfile.calls.mostRecent().args[0];
+      const callArgs =
+        mockProfileService.updateProfile.calls.mostRecent().args[0];
       expect(callArgs.id).toBe(123);
       expect(callArgs.name).toBe('Min User');
       expect(callArgs.gender).toBe('OTHER');
@@ -373,7 +384,7 @@ describe('EditProfile', () => {
       component.editProfileForm.patchValue({
         id: 123,
         name: 'Bob',
-        gender: 'MALE'
+        gender: 'MALE',
       });
 
       expect(component.editProfileForm.valid).toBe(true);
@@ -382,7 +393,7 @@ describe('EditProfile', () => {
     it('should handle form reset', () => {
       component.editProfileForm.patchValue({
         name: 'Test',
-        age: 25
+        age: 25,
       });
 
       component.editProfileForm.reset();
@@ -398,7 +409,7 @@ describe('EditProfile', () => {
         age: 40,
         gender: 'MALE',
         location: 'Tokyo',
-        jobTitle: 'Architect'
+        jobTitle: 'Architect',
       });
 
       expect(component.editProfileForm.value).toEqual({
@@ -407,14 +418,14 @@ describe('EditProfile', () => {
         age: 40,
         gender: 'MALE',
         location: 'Tokyo',
-        jobTitle: 'Architect'
+        jobTitle: 'Architect',
       });
     });
 
     it('should handle individual field updates', () => {
       component.editProfileForm.get('id')?.setValue(111);
       expect(component.editProfileForm.get('id')?.value).toBe(111);
-      
+
       component.editProfileForm.get('jobTitle')?.setValue('Engineer');
       expect(component.editProfileForm.get('jobTitle')?.value).toBe('Engineer');
     });

@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  TemplateRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -12,7 +18,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './course-reviews.component.html',
-  styleUrls: ['./course-reviews.component.css']
+  styleUrls: ['./course-reviews.component.css'],
 })
 export class CourseReviewsComponent implements OnInit, OnDestroy {
   @Input() courseId!: number;
@@ -23,7 +29,7 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
     courseId: 0,
     rating: 5,
     title: '',
-    description: ''
+    description: '',
   };
   editingReview: Review = { ...this.newReview };
 
@@ -35,20 +41,20 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
   constructor(
     private reviewService: ReviewService,
     private authService: AuthService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
   ) {}
 
   ngOnInit(): void {
     this.loadReviews();
-    this.userSubscription = this.authService.currentUser$.subscribe(user => {
-        this.isLoggedIn = !!user;
-        if (user) {
-            this.currentUserId = user.id;
-            this.newReview.userId = user.id; 
-            this.checkEligibility(user.id);
-        } else {
-            this.currentUserId = null;
-        }
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
+      this.isLoggedIn = !!user;
+      if (user) {
+        this.currentUserId = user.id;
+        this.newReview.userId = user.id;
+        this.checkEligibility(user.id);
+      } else {
+        this.currentUserId = null;
+      }
     });
   }
 
@@ -60,7 +66,7 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
 
   loadReviews() {
     if (this.courseId) {
-      this.reviewService.getCourseReviews(this.courseId).subscribe(data => {
+      this.reviewService.getCourseReviews(this.courseId).subscribe((data) => {
         this.reviews = data;
       });
     }
@@ -68,9 +74,11 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
 
   checkEligibility(userId: number) {
     if (this.courseId) {
-      this.reviewService.checkCourseEligibility(this.courseId).subscribe(eligible => {
-        this.isEligible = eligible;
-      });
+      this.reviewService
+        .checkCourseEligibility(this.courseId)
+        .subscribe((eligible) => {
+          this.isEligible = eligible;
+        });
     }
   }
 
@@ -88,9 +96,10 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error posting review:', error);
-        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        const errorMessage =
+          error.error?.message || 'An unexpected error occurred.';
         alert('Failed to post review: ' + errorMessage);
-      }
+      },
     });
   }
 
@@ -103,20 +112,21 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
           this.deleteReview(reviewId);
         }
       },
-      () => {}
+      () => {},
     );
   }
 
   deleteReview(reviewId: number) {
     this.reviewService.deleteCourseReview(reviewId).subscribe({
       next: () => {
-        this.reviews = this.reviews.filter(r => r.id !== reviewId);
+        this.reviews = this.reviews.filter((r) => r.id !== reviewId);
       },
       error: (error) => {
         console.error('Error deleting review:', error);
-        const errorMessage = error.error?.message || 'An unexpected error occurred.';
+        const errorMessage =
+          error.error?.message || 'An unexpected error occurred.';
         alert('Failed to delete review: ' + errorMessage);
-      }
+      },
     });
   }
 
@@ -128,25 +138,30 @@ export class CourseReviewsComponent implements OnInit, OnDestroy {
           this.saveEditedReview();
         }
       },
-      () => {}
+      () => {},
     );
   }
 
   saveEditedReview() {
     if (!this.editingReview.id) return;
 
-    this.reviewService.updateCourseReview(this.editingReview.id, this.editingReview).subscribe({
-      next: (updatedReview) => {
-        const index = this.reviews.findIndex(r => r.id === updatedReview.id);
-        if (index !== -1) {
-          this.reviews[index] = updatedReview;
-        }
-      },
-      error: (error) => {
-        console.error('Error updating review:', error);
-        const errorMessage = error.error?.message || 'An unexpected error occurred.';
-        alert('Failed to update review: ' + errorMessage);
-      }
-    });
+    this.reviewService
+      .updateCourseReview(this.editingReview.id, this.editingReview)
+      .subscribe({
+        next: (updatedReview) => {
+          const index = this.reviews.findIndex(
+            (r) => r.id === updatedReview.id,
+          );
+          if (index !== -1) {
+            this.reviews[index] = updatedReview;
+          }
+        },
+        error: (error) => {
+          console.error('Error updating review:', error);
+          const errorMessage =
+            error.error?.message || 'An unexpected error occurred.';
+          alert('Failed to update review: ' + errorMessage);
+        },
+      });
   }
 }

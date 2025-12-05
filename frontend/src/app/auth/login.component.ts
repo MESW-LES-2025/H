@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { AuthService, LoginResponse } from './auth.service';
-import {DataService} from '../shared/services/data-service';
+import { DataService } from '../shared/services/data-service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +23,12 @@ export class LoginComponent {
   loading = false;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService, private dataService: DataService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private auth: AuthService,
+    private dataService: DataService,
+  ) {
     this.form = this.fb.group({
       text: ['', Validators.required],
       password: ['', Validators.required],
@@ -26,7 +36,9 @@ export class LoginComponent {
     });
   }
 
-  toggle() { this.show = !this.show; }
+  toggle() {
+    this.show = !this.show;
+  }
 
   onSubmit() {
     if (this.form.invalid) return;
@@ -41,12 +53,12 @@ export class LoginComponent {
 
         if (res.status === 'success' && res.user?.id != null) {
           this.dataService.setUserAtual(res.user);
-          localStorage.setItem('userId', res.userId.toString());
-          if (res.username) {
-            localStorage.setItem('username', res.username);
+          localStorage.setItem('userId', res.user.id.toString());
+          if (res.user.name) {
+            localStorage.setItem('username', res.user.name);
           }
-          if (res.role) {
-            localStorage.setItem('role', res.role);
+          if (res.user.role) {
+            localStorage.setItem('role', res.user.role);
           }
 
           this.router.navigate(['/profile', res.user.id]);
@@ -58,7 +70,7 @@ export class LoginComponent {
         this.loading = false;
         console.error('Login error', err);
         this.errorMessage = 'Login error';
-      }
+      },
     });
   }
 

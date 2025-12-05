@@ -1,268 +1,290 @@
 <router-outlet></router-outlet>
 
 @if (user) {
-  <div class="container" style="max-width: 900px;">
-    <div class="card profile-card border-0 shadow position-relative my-4 d-flex flex-column">
-      <div class="circle-decoration circle-1"></div>
-      <div class="circle-decoration circle-2"></div>
-      <div class="circle-decoration circle-3"></div>
-<!-- ======================================= -->
-<!-- PROFILE HEADER                          -->
-<!-- ======================================= -->
-<section class="profile-header" *ngIf="user as u">
-  <div class="profile-header-inner">
-
-      <div class="card-body p-4 position-relative flex-grow-1">
-        <div class="row align-items-start g-3">
-          <div class="col-2">
-            <img [src]="user.profileImage"
-                 alt="User Profile Picture"
-                 class="rounded-circle border border-4 border-white"
-                 style="width: 120px; height: 120px; object-fit: cover;">
+  <div class="container" style="max-width: 1100px">
+    <div class="card border-0 shadow-sm position-relative my-4">
+      <!-- Profile Header -->
+      <div class="card-body p-4 bg-light rounded">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+          <!-- Avatar -->
+          <div class="position-relative">
+            <img
+              class="rounded-circle shadow-sm"
+              style="
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border: 4px solid white;
+              "
+              [src]="user.profileImage || '/images/default-avatar.png'"
+              [alt]="user.name || 'User picture'"
+            />
           </div>
-          <div class="col-10">
-            <div class="row">
-              <div class="col-6">
-                <h2 class="h2 fw-bold text-white mb-1">{{ user.name }}</h2>
-                <p class="text-white mb-0">{{ user.location }}</p>
-                <p class="text-white mb-0">{{ user.jobTitle }}</p>
-              </div>
-              @if (user.academicHistory && user.academicHistory.length > 0) {
-                <div class="col-6">
-                  <div class="mt-3">
-                    @let latestCourse = user.academicHistory[user.academicHistory.length - 1];
-                    <p class="text-white small mb-1">
-                      <strong>{{ latestCourse.course.university.name }}</strong>
-                    </p>
-                    <p class="text-white small mb-0">{{ latestCourse.course.name }}</p>
-                  </div>
-                </div>
-              }
+
+          <!-- Profile Info -->
+          <div class="flex-grow-1">
+            <h1 class="h3 fw-bold mb-2">{{ user.name }}</h1>
+            <p class="text-muted mb-1">
+              <i class="bi bi-geo-alt-fill me-1"></i>
+              {{ user.location ? user.location : "Location not set" }}
+            </p>
+            <p class="text-secondary mb-3">
+              <i class="bi bi-briefcase-fill me-1"></i>
+              {{ user.jobTitle ? user.jobTitle : "Job title not set" }}
+            </p>
+
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+              <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                <i class="bi bi-calendar3 me-1"></i>
+                {{ user.age ? user.age + " years" : "Age not set" }}
+              </span>
+              <span class="badge bg-info text-dark px-3 py-2 rounded-pill">
+                <i class="bi bi-person-fill me-1"></i>
+                {{ user.gender ? user.gender : "Gender not set" }}
+              </span>
             </div>
-            <div class="d-flex gap-2 w-50 mt-3">
-              <button
-                class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1"
-                [routerLink]="['/profile', user.id, 'edit']">
-                Edit Profile
-              </button>
-              <button class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1">
-                Message
-              </button>
-            </div>
+
+            <button
+              class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
+              [routerLink]="['/profile', user.id, 'edit']"
+            >
+              <i class="bi bi-pencil-square me-2"></i>
+              Edit Profile
+            </button>
           </div>
-    <div class="header-shape header-shape-left"></div>
-    <div class="header-shape header-shape-circle"></div>
-    <div class="header-shape header-shape-right"></div>
-
-    <div class="profile-main">
-      <div class="profile-avatar-wrapper">
-        <img
-          class="profile-avatar"
-          [src]="u.profileImage || '/images/default-avatar.png'"
-          [alt]="u.name || 'User picture'"
-        />
-      </div>
-
-      <!-- NOME + LOCALIZAÇÃO + META -->
-      <div class="profile-info">
-        <div class="profile-name-row">
-          <h1 class="profile-name">{{ u.name }}</h1>
-        </div>
-
-        <p class="profile-location" *ngIf="u.location">
-          {{ u.location }}
-        </p>
-
-        <p class="profile-job" *ngIf="u.jobTitle">
-          {{ u.jobTitle }}
-        </p>
-
-        <div class="profile-meta">
-          <span class="meta-pill" *ngIf="u.age">
-            {{ u.age }} years
-          </span>
-          <span class="meta-pill" *ngIf="u.gender">
-            {{ u.gender }}
-          </span>
         </div>
       </div>
     </div>
   </div>
-</section>
 
+  <!-- Tabs -->
+  <div class="container" style="max-width: 1100px">
+    <ul class="nav nav-tabs border-bottom-0 mb-4">
+      <li class="nav-item">
+        <button
+          class="nav-link px-4 py-2 rounded-top"
+          [class.active]="activeTab === 'universities'"
+          [class.fw-semibold]="activeTab === 'universities'"
+          (click)="setTab('universities')"
+        >
+          <i class="bi bi-building me-2"></i>
+          Universities
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class="nav-link px-4 py-2 rounded-top"
+          [class.active]="activeTab === 'courses'"
+          [class.fw-semibold]="activeTab === 'courses'"
+          (click)="setTab('courses')"
+        >
+          <i class="bi bi-book me-2"></i>
+          Courses
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class="nav-link px-4 py-2 rounded-top"
+          [class.active]="activeTab === 'countries'"
+          [class.fw-semibold]="activeTab === 'countries'"
+          (click)="setTab('countries')"
+        >
+          <i class="bi bi-globe2 me-2"></i>
+          Countries
+        </button>
+      </li>
+    </ul>
 
-<!-- ======================================= -->
-<!-- USER INFO BOX                           -->
-<!-- ======================================= -->
-<section class="user-info-box">
-  <div class="user-info-container">
-
-    <h2 class="user-info-title">User’s Info</h2>
-
-    <ng-container *ngIf="user as u; else noUserInfo">
-      <div class="user-info-grid">
-        <div class="user-info-column">
-          <p class="user-info-row">
-            <span class="label">Name</span>
-            <span class="value">{{ u.name }}</span>
-          </p>
-
-          <p class="user-info-row">
-            <span class="label">Location</span>
-            <span class="value">{{ u.location }}</span>
-          </p>
-        </div>
-
-        <div class="user-info-column">
-          <p class="user-info-row" *ngIf="u.jobTitle">
-            <span class="label">Job title</span>
-            <span class="value">{{ u.jobTitle }}</span>
-          </p>
-
-          <p class="user-info-row">
-            <span class="label">Profile</span>
-            <span class="value">
-              {{ u.age ? (u.age + ' years') : '' }}
-              <span *ngIf="u.age && u.gender">&nbsp;•&nbsp;</span>
-              {{ u.gender }}
-            </span>
-          </p>
-        </div>
+    <!-- Universities Tab -->
+    @if (activeTab === "universities") {
+      <div class="row g-4 mb-5">
+        @if (universities.length > 0) {
+          @for (uni of universities; track uni.id) {
+            <div class="col-12 col-md-6 col-lg-4">
+              <div
+                class="card h-100 shadow-sm border-0 position-relative transition-hover"
+              >
+                <div
+                  style="
+                    height: 190px;
+                    overflow: hidden;
+                    background: linear-gradient(
+                      135deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                  "
+                >
+                  <img
+                    [src]="uni.image"
+                    class="card-img-top w-100 h-100"
+                    style="object-fit: cover; opacity: 0.9"
+                    alt="{{ uni.name }}"
+                    onerror="this.style.display = 'none'"
+                  />
+                </div>
+                <div class="card-body pb-5 pt-3">
+                  <h5
+                    class="card-title fw-semibold mb-2"
+                    style="color: #2c3e50"
+                  >
+                    {{ uni.name }}
+                  </h5>
+                  <p class="card-text text-muted small mb-0">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    {{ uni.city }}, {{ uni.country }}
+                  </p>
+                </div>
+                <button
+                  class="btn btn-light rounded-circle shadow-sm position-absolute transition-scale"
+                  style="
+                    width: 42px;
+                    height: 42px;
+                    bottom: 12px;
+                    right: 12px;
+                    border: 2px solid rgba(201, 42, 42, 0.2);
+                  "
+                  aria-label="Remove favourite university"
+                  (click)="removeFavoriteUniversity(uni.id)"
+                >
+                  <i
+                    class="bi bi-heart-fill"
+                    style="color: #c92a2a; font-size: 1.1rem"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="col-12">
+            <div
+              class="alert alert-light text-center border-0 shadow-sm py-5"
+              role="alert"
+            >
+              <i
+                class="bi bi-building"
+                style="font-size: 3rem; color: #dee2e6"
+              ></i>
+              <p class="mt-3 mb-0 text-muted">No favourite universities yet.</p>
+              <p class="small text-muted">
+                Start exploring universities to add them to your favourites!
+              </p>
+            </div>
+          </div>
+        }
       </div>
-    </ng-container>
+    }
 
-    <ng-template #noUserInfo>
-      <p class="user-info-empty">
-        No user loaded yet. Please select a profile from the Explore page.
-      </p>
-    </ng-template>
+    <!-- Courses Tab -->
+    @if (activeTab === "courses") {
+      <div class="row g-4 mb-5">
+        @if (courses.length > 0) {
+          @for (course of courses; track course.id) {
+            <div class="col-12 col-md-6 col-lg-4">
+              <div
+                class="card h-100 shadow-sm border-0 position-relative transition-hover"
+              >
+                <div class="card-body pb-5 pt-4">
+                  <div class="d-flex align-items-start mb-3">
+                    <div
+                      class="bg-primary bg-opacity-10 rounded-circle p-3 me-3"
+                    >
+                      <i
+                        class="bi bi-journal-text text-primary"
+                        style="font-size: 1.5rem"
+                      ></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5
+                        class="card-title fw-semibold mb-1"
+                        style="color: #2c3e50"
+                      >
+                        {{ course.name }}
+                      </h5>
+                      <p class="card-text text-muted small mb-0">
+                        <i class="bi bi-tag me-1"></i>
+                        {{ course.type }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="btn btn-light rounded-circle shadow-sm position-absolute transition-scale"
+                  style="width: 42px; height: 42px; bottom: 12px; right: 12px"
+                  [style.border]="
+                    course.isFavorite
+                      ? '2px solid rgba(201, 42, 42, 0.2)'
+                      : '2px solid rgba(153, 153, 153, 0.2)'
+                  "
+                  aria-label="Toggle favourite"
+                  (click)="
+                    toggleCourseFavorite(course); $event.stopPropagation()
+                  "
+                >
+                  <i
+                    [class]="
+                      course.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'
+                    "
+                    [style.color]="course.isFavorite ? '#c92a2a' : '#999'"
+                    style="font-size: 1.1rem"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="col-12">
+            <div
+              class="alert alert-light text-center border-0 shadow-sm py-5"
+              role="alert"
+            >
+              <i class="bi bi-book" style="font-size: 3rem; color: #dee2e6"></i>
+              <p class="mt-3 mb-0 text-muted">No favourite courses yet.</p>
+              <p class="small text-muted">
+                Discover courses that match your interests!
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    }
 
+    <!-- Countries Tab -->
+    @if (activeTab === "countries") {
+      <div
+        class="alert alert-light text-center border-0 shadow-sm py-5 mb-5"
+        role="alert"
+      >
+        <i class="bi bi-globe2" style="font-size: 3rem; color: #dee2e6"></i>
+        <p class="mt-3 mb-0 text-muted">No items in this tab yet.</p>
+        <p class="small text-muted">This feature is coming soon!</p>
+      </div>
+    }
+
+    <!-- Delete Account -->
+    <div class="text-end mb-5">
+      <button
+        class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm"
+        (click)="confirmDelete()"
+      >
+        <i class="bi bi-trash3 me-2"></i>
+        Delete Account
+      </button>
+    </div>
   </div>
-</section>
-
-<!-- ======================================= -->
-<!-- TABS                                    -->
-<!-- ======================================= -->
-<section class="tabs-container">
-
-  <button
-    class="tab-btn"
-    [class.active]="activeTab === 'universities'"
-    (click)="setTab('universities')"
-  >
-    University
-  </button>
-
-  <button
-    class="tab-btn"
-    [class.active]="activeTab === 'courses'"
-    (click)="setTab('courses')"
-  >
-    Courses
-  </button>
-
-  <button
-    class="tab-btn"
-    [class.active]="activeTab === 'countries'"
-    (click)="setTab('countries')"
-  >
-    Countries
-  </button>
-
-</section>
-
-<!-- ======================================= -->
-<!-- CARDS: UNIVERSITIES                     -->
-<!-- ======================================= -->
-<section *ngIf="activeTab === 'universities'" class="cards-grid">
-
-  <ng-container *ngIf="universities.length > 0; else noUniversities">
-    <article
-      class="uni-card"
-      *ngFor="let uni of universities; trackBy: trackById"
-    >
-      <div class="uni-image-wrapper">
-        <img [src]="uni.image" class="uni-image" alt="{{ uni.name }}" />
-      </div>
-
-      <div class="uni-card-body">
-        <h3 class="uni-title">{{ uni.name }}</h3>
-        <p class="uni-location">{{ uni.city }}, {{ uni.country }}</p>
-      </div>
-
-      <button
-        class="fav-btn"
-        aria-label="Remove favourite university"
-        (click)="removeFavoriteUniversity(uni.id)"
-      >
-        <span class="fav-icon">❤</span>
-      </button>
-    </article>
-  </ng-container>
-
-</section>
-
-<ng-template #noUniversities>
-  <section class="empty-tab">
-    <p>No favourite universities yet.</p>
-  </section>
-</ng-template>
-
-<!-- ======================================= -->
-<!-- CARDS: COURSES                          -->
-<!-- ======================================= -->
-<section *ngIf="activeTab === 'courses'" class="cards-grid">
-
-  <ng-container *ngIf="courses.length > 0; else noCourses">
-    <article class="uni-card" *ngFor="let course of courses; trackBy: trackById">
-      <div class="uni-card-body">
-        <h3 class="uni-title">{{ course.name }}</h3>
-        <p class="uni-location">{{ course.type }}</p>
-      </div>
-
-      <button
-        class="fav-btn"
-        aria-label="Toggle favourite"
-        (click)="toggleCourseFavorite(course); $event.stopPropagation()"
-      >
-    <span class="fav-icon"
-          [style.color]="course.isFavorite ? '#c92a2a' : '#999'">
-      {{ course.isFavorite ? '❤' : '♡' }}
-    </span>
-      </button>
-    </article>
-
-  </ng-container>
-
-</section>
-
-<ng-template #noCourses>
-  <section class="empty-tab">
-    <p>No favourite courses yet.</p>
-  </section>
-</ng-template>
-
-<!-- ======================================= -->
-<!-- EMPTY TAB FOR COUNTRIES    -->
-<!-- ======================================= -->
-<section *ngIf="activeTab === 'countries'" class="empty-tab">
-  <p>No items in this tab yet.</p>
-</section>
-<section class="delete-section" *ngIf="user">
-  <button class="delete-btn" (click)="confirmDelete()">
-    Delete Account
-  </button>
-</section>
-
-<!-- ======================================= -->
-<!-- FOOTER                                  -->
-<!-- ======================================= -->
-<footer class="mini-footer">
-  <span class="mini-footer-logo">Lernia.</span>
-  <span class="mini-footer-text">
-    Helping students make confident international education decisions.
-  </span>
-  <span class="mini-footer-copy">
-    © 2025 Lernia • All rights reserved
-  </span>
+}
+<!-- Footer -->
+<footer class="bg-light border-top py-4 mt-5">
+  <div class="container text-center">
+    <div class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.25rem">
+      Lernia.
+    </div>
+    <p class="text-muted small mb-2">
+      <i class="bi bi-mortarboard-fill me-1"></i>
+      Helping students make confident international education decisions.
+    </p>
+    <p class="text-muted mb-0" style="font-size: 0.75rem">
+      © 2025 Lernia • All rights reserved
+    </p>
+  </div>
 </footer>

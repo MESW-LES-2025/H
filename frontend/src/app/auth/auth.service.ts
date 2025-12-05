@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import {UserViewmodel} from '../profile-page/viewmodels/user-viewmodel';
+import { UserViewmodel } from '../profile-page/viewmodels/user-viewmodel';
 
 export interface LoginRequest {
   text: string;
@@ -35,7 +35,7 @@ export interface CsrfResponse {
 }
 
 export interface User {
-    id: number;
+  id: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -52,18 +52,20 @@ export class AuthService {
   }
 
   private restoreSession(): void {
-    this.http.get<User>(`${this.baseUrl}/api/auth/me`, { withCredentials: true }).subscribe({
-      next: (user) => {
-        if (user && user.id) {
-          this.currentUserSubject.next(user);
-        } else {
+    this.http
+      .get<User>(`${this.baseUrl}/api/auth/me`, { withCredentials: true })
+      .subscribe({
+        next: (user) => {
+          if (user && user.id) {
+            this.currentUserSubject.next(user);
+          } else {
+            this.currentUserSubject.next(null);
+          }
+        },
+        error: () => {
           this.currentUserSubject.next(null);
-        }
-      },
-      error: () => {
-        this.currentUserSubject.next(null);
-      }
-    });
+        },
+      });
   }
 
   login(body: LoginRequest): Observable<LoginResponse> {
@@ -72,18 +74,13 @@ export class AuthService {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
 
-    return this.http.post<LoginResponse>(
-      `${this.baseUrl}/login`,
-      body,
-      { withCredentials: true }
-    );
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, body, {
+      withCredentials: true,
+    });
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(
-      `${this.baseUrl}/register`,
-      body
-    );
+    return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, body);
   }
 
   getUserById(userId: number): Observable<UserViewmodel> {

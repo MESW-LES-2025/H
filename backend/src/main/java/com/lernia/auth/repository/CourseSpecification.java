@@ -19,7 +19,7 @@ public class CourseSpecification {
         return Specification.where(hasName(req.getName()))
                 .and(hasTypes(req.getCourseTypes()))
                 .and(isRemote(req.getOnlyRemote()))
-                .and(maxCost(req.getCostMax()))
+                .and(maxCost(req.getMaxCost()))
                 .and(duration(req.getDuration()))
                 .and(hasLanguages(req.getLanguages()))
                 .and(hasCountries(req.getCountries()))
@@ -49,7 +49,7 @@ public class CourseSpecification {
 
     private static Specification<CourseEntity> duration(Integer duration) {
         return (root, query, cb) ->
-                duration == null ? cb.conjunction() : cb.lessThanOrEqualTo(root.get("duration"), duration);
+                duration == null ? cb.conjunction() : cb.equal(root.get("duration"), duration);
     }
 
     private static Specification<CourseEntity> hasLanguages(List<String> languages) {

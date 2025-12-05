@@ -1,8 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ProfilePageService} from '../services/profile-page-service';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProfilePageService } from '../services/profile-page-service';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
 
 @Component({
@@ -21,9 +27,8 @@ export class EditProfile implements OnInit {
     private fb: FormBuilder,
     protected router: Router,
     private profilePageService: ProfilePageService,
-    private route: ActivatedRoute
-  ) {
-  }
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     const userIdParam = this.route.snapshot.paramMap.get('id');
@@ -35,7 +40,7 @@ export class EditProfile implements OnInit {
       age: this.fb.control<number | null>(null),
       gender: this.fb.control<string | null>(null, Validators.required),
       location: this.fb.control<string | null>(null),
-      jobTitle: this.fb.control<string | null>(null)
+      jobTitle: this.fb.control<string | null>(null),
     });
   }
 
@@ -49,7 +54,7 @@ export class EditProfile implements OnInit {
         },
         error: (error) => {
           console.error('Failed to update profile:', error);
-        }
+        },
       });
     } else {
       this.editProfileForm.markAllAsTouched();

@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { ProfilePageService } from './profile-page-service';
 import { UserViewmodel } from '../viewmodels/user-viewmodel';
 import { EditProfileRequest } from '../edit-profile/viewmodels/edit-profile-request';
@@ -13,9 +16,9 @@ describe('ProfilePageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProfilePageService]
+      providers: [ProfilePageService],
     });
-    
+
     service = TestBed.inject(ProfilePageService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -38,10 +41,11 @@ describe('ProfilePageService', () => {
         location: 'New York',
         profileImage: 'image.jpg',
         jobTitle: 'Developer',
-        academicHistory: []
+        academicHistory: [],
+        role: 'USER',
       };
 
-      service.getUserProfile(123).subscribe(user => {
+      service.getUserProfile(123).subscribe((user) => {
         expect(user).toEqual(mockUser);
         expect(user.id).toBe(123);
         expect(user.name).toBe('John Doe');
@@ -62,10 +66,11 @@ describe('ProfilePageService', () => {
         location: 'Paris',
         profileImage: 'profile.jpg',
         jobTitle: 'Manager',
-        academicHistory: []
+        academicHistory: [],
+        role: 'USER',
       };
 
-      service.getUserProfile(456).subscribe(user => {
+      service.getUserProfile(456).subscribe((user) => {
         expect(user.id).toBe(456);
       });
 
@@ -82,7 +87,7 @@ describe('ProfilePageService', () => {
         (error) => {
           expect(error.status).toBe(404);
           expect(error.error).toBe(errorMessage);
-        }
+        },
       );
 
       const req = httpMock.expectOne(`${apiUrl}/api/profile/999`);
@@ -98,7 +103,8 @@ describe('ProfilePageService', () => {
         location: 'Tokyo',
         profileImage: 'test.jpg',
         jobTitle: 'Tester',
-        academicHistory: []
+        academicHistory: [],
+        role: 'USER',
       };
 
       service.getUserProfile(1).subscribe();
@@ -117,7 +123,7 @@ describe('ProfilePageService', () => {
         age: 31,
         gender: 'MALE',
         location: 'Boston',
-        jobTitle: 'Senior Developer'
+        jobTitle: 'Senior Developer',
       };
 
       const mockResponse: UserViewmodel = {
@@ -128,16 +134,19 @@ describe('ProfilePageService', () => {
         location: 'Boston',
         profileImage: 'image.jpg',
         jobTitle: 'Senior Developer',
-        academicHistory: []
+        academicHistory: [],
+        role: 'USER',
       };
 
-      service.updateProfile(updateRequest).subscribe(user => {
+      service.updateProfile(updateRequest).subscribe((user) => {
         expect(user).toEqual(mockResponse);
         expect(user.name).toBe('Updated Name');
         expect(user.jobTitle).toBe('Senior Developer');
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/123/update-profile`);
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/123/update-profile`,
+      );
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(updateRequest);
       req.flush(mockResponse);
@@ -150,12 +159,14 @@ describe('ProfilePageService', () => {
         age: 26,
         gender: 'FEMALE',
         location: 'London',
-        jobTitle: 'Director'
+        jobTitle: 'Director',
       };
 
       service.updateProfile(updateRequest).subscribe();
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/456/update-profile`);
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/456/update-profile`,
+      );
       expect(req.request.body.id).toBe(456);
       expect(req.request.body.name).toBe('Jane Updated');
       expect(req.request.body.age).toBe(26);
@@ -172,12 +183,14 @@ describe('ProfilePageService', () => {
         age: null,
         gender: 'OTHER',
         location: null,
-        jobTitle: null
+        jobTitle: null,
       };
 
       service.updateProfile(updateRequest).subscribe();
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/789/update-profile`);
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/789/update-profile`,
+      );
       expect(req.request.body.age).toBeNull();
       expect(req.request.body.location).toBeNull();
       expect(req.request.body.jobTitle).toBeNull();
@@ -191,7 +204,7 @@ describe('ProfilePageService', () => {
         age: 25,
         gender: 'MALE',
         location: 'City',
-        jobTitle: 'Job'
+        jobTitle: 'Job',
       };
 
       const errorMessage = 'Update failed';
@@ -201,10 +214,12 @@ describe('ProfilePageService', () => {
         (error) => {
           expect(error.status).toBe(400);
           expect(error.error).toBe(errorMessage);
-        }
+        },
       );
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/123/update-profile`);
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/123/update-profile`,
+      );
       req.flush(errorMessage, { status: 400, statusText: 'Bad Request' });
     });
 
@@ -215,7 +230,7 @@ describe('ProfilePageService', () => {
         age: 20,
         gender: 'MALE',
         location: 'Test City',
-        jobTitle: 'Tester'
+        jobTitle: 'Tester',
       };
 
       service.updateProfile(updateRequest).subscribe();
@@ -232,18 +247,23 @@ describe('ProfilePageService', () => {
         age: 25,
         gender: 'MALE',
         location: 'City',
-        jobTitle: 'Job'
+        jobTitle: 'Job',
       };
 
       service.updateProfile(updateRequest).subscribe(
         () => fail('should have failed with 500 error'),
         (error) => {
           expect(error.status).toBe(500);
-        }
+        },
       );
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/123/update-profile`);
-      req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/123/update-profile`,
+      );
+      req.flush('Server error', {
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
     });
 
     it('should use PUT method for updates', () => {
@@ -253,7 +273,7 @@ describe('ProfilePageService', () => {
         age: 20,
         gender: 'MALE',
         location: 'City',
-        jobTitle: 'Job'
+        jobTitle: 'Job',
       };
 
       service.updateProfile(updateRequest).subscribe();
@@ -288,7 +308,7 @@ describe('ProfilePageService', () => {
         age: 20,
         gender: 'MALE',
         location: 'City',
-        jobTitle: 'Job'
+        jobTitle: 'Job',
       };
 
       service.updateProfile(updateRequest).subscribe();
@@ -298,5 +318,4 @@ describe('ProfilePageService', () => {
       req.flush({} as UserViewmodel);
     });
   });
-
 });

@@ -30,10 +30,10 @@ export class UniversityPage implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     this.universityPageService.getUniversityProfile(id).subscribe({
-      next: uni => {
+      next: (uni) => {
         this.university = uni;
         this.loadFavoriteState();
-      }
+      },
     });
   }
 
@@ -50,10 +50,10 @@ export class UniversityPage implements OnInit {
     const userId = Number(storedId);
 
     this.exploreService.getFavoriteUniversities(userId).subscribe({
-      next: ids => {
+      next: (ids) => {
         this.isFavorite = ids.includes(this.university!.id);
       },
-      error: err => console.error('Favorite load error:', err)
+      error: (err) => console.error('Favorite load error:', err),
     });
   }
 
@@ -64,13 +64,13 @@ export class UniversityPage implements OnInit {
 
     if (!this.isFavorite) {
       this.exploreService.addFavoriteUniversity(uniId).subscribe({
-        next: () => this.isFavorite = true,
-        error: err => console.error('Error adding favorite:', err)
+        next: () => (this.isFavorite = true),
+        error: (err) => console.error('Error adding favorite:', err),
       });
     } else {
       this.exploreService.removeFavoriteUniversity(uniId).subscribe({
-        next: () => this.isFavorite = false,
-        error: err => console.error('Error removing favorite:', err)
+        next: () => (this.isFavorite = false),
+        error: (err) => console.error('Error removing favorite:', err),
       });
     }
   }

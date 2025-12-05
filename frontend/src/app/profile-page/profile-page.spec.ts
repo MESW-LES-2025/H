@@ -18,14 +18,13 @@ describe('ProfilePage', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => '1'
-              }
-            }
-          }
-        }
-      ]
-    })
-      .compileComponents();
+                get: () => '1',
+              },
+            },
+          },
+        },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;

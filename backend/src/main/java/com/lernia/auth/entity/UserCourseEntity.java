@@ -1,7 +1,7 @@
 package com.lernia.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,29 +9,28 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "user_courses", schema = "lernia")
-@Data
+@Table(name = "user_courses")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserCourseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
-    @Column(name = "course_id", nullable = false)
-    private Long courseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private CourseEntity course;
 
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    @Column(name = "is_finished")
-    private Boolean finished;
 }

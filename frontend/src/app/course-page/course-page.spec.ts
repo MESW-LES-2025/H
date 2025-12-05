@@ -20,12 +20,12 @@ describe('CoursePage', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => '201'
-              }
-            }
-          }
-        }
-      ]
+                get: () => '201',
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoursePage);

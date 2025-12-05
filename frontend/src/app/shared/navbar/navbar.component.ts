@@ -9,7 +9,6 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
-
   links = [
     { label: 'Home', path: '/home' },
     { label: 'Explore', path: '/explore' },

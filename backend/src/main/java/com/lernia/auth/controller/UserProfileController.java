@@ -33,7 +33,7 @@ public class UserProfileController {
     }
 
     @PutMapping("/{id}/update-profile")
-    public ResponseEntity<UpdateUserProfileResponse> updateProfile(
+    public ResponseEntity<UserProfileResponse> updateProfile(
             @PathVariable Long id,
             @RequestBody EditProfileRequest request) {
 
