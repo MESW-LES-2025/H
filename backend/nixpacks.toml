@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["maven", "jdk17"]
+
+[phases.build]
+cmds = ["mvn clean package -DskipTests"]
+
+[phases.start]
+cmd = "java -jar target/auth-1.0-SNAPSHOT.jar.original"
