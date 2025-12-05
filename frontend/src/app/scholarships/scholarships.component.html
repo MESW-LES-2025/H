@@ -1,0 +1,126 @@
+<main class="page">
+  <!-- HERO -->
+  <section class="hero">
+
+    <div class="hero-copy">
+      <img class="hero-arrow" src="/images/arrow.png" alt="arrow" />
+
+      <h1>
+        Discover Scholarship<br />
+        Opportunities
+      </h1>
+
+      <p class="hero-subtitle">
+        Find scholarships that match your academic goals and financial needs.
+        Search through available funding opportunities from universities worldwide
+        and take the next step toward achieving your dreams.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- GRID: filters + results -->
+  <section class="content">
+    <aside class="filters-card">
+      <div class="filters-head">
+        <h3>Filters</h3>
+        <button type="button" class="clear-link" (click)="clearFilters()">
+          Clear
+        </button>
+      </div>
+
+      <div class="filters-body">
+        <!-- Course Type -->
+        <label class="filter-field">
+          <span class="filter-label">Course Type</span>
+          <select class="filter-select" [value]="courseType()" (change)="onCourseTypeChange($any($event.target).value)">
+            <option *ngFor="let type of courseTypeOptions" [value]="type">
+              {{ type === 'Any' ? 'Any course type' : formatCourseType(type) }}
+            </option>
+          </select>
+        </label>
+
+        <!-- Min Amount -->
+        <label class="filter-field">
+          <span class="filter-label">Min Amount:
+            <strong>{{ minAmount() <= minAmountLimit ? 'Any' : '$' + minAmount() }}</strong>
+          </span>
+          <input type="range" class="filter-slider" [min]="0" [max]="maxAmountLimit" [step]="1000" [value]="minAmount()"
+            (input)="onMinAmountChange(+$any($event.target).value)" />
+          <div class="slider-labels">
+            <span>$0</span>
+            <span>${{ maxAmountLimit }}</span>
+          </div>
+        </label>
+
+        <!-- Max Amount -->
+        <label class="filter-field">
+          <span class="filter-label">Max Amount:
+            <strong>{{ maxAmount() >= maxAmountLimit ? 'Any' : '$' + maxAmount() }}</strong>
+          </span>
+          <input type="range" class="filter-slider" [min]="0" [max]="maxAmountLimit" [step]="1000" [value]="maxAmount()"
+            (input)="onMaxAmountChange(+$any($event.target).value)" />
+          <div class="slider-labels">
+            <span>$0</span>
+            <span>Any</span>
+          </div>
+        </label>
+
+        <p class="muted small-note">
+          Filter scholarships by course type and amount range.
+        </p>
+      </div>
+    </aside>
+
+    <!-- RESULTS -->
+    <section class="results">
+      <div class="searchbar results-searchbar">
+        <div class="icon">
+          <img src="/images/lupa.png" alt="Search icon" />
+        </div>
+
+        <input class="search-input" type="search" placeholder="Search scholarships, universities..." [value]="q()"
+          (input)="onSearchInput($any($event.target).value)" />
+
+        <button class="clear-search-btn" *ngIf="q()" (click)="clearSearch()">Clear</button>
+      </div>
+
+      <article class="scholarship-card" *ngFor="let s of results()">
+        <div class="left" [style.backgroundColor]="s.color">
+          <div class="scholarship-header">
+            <h3>{{ s.name }}</h3>
+            <span class="course-badge">{{ formatCourseType(s.courseType) }}</span>
+          </div>
+          <p class="description">{{ s.description }}</p>
+          <div class="meta">
+            <span class="university" (click)="goToUniversity(s.universityId); $event.stopPropagation()">
+              🎓 {{ s.universityName }}
+            </span>
+            <span class="amount">💰 ${{ s.amount | number }}</span>
+          </div>
+        </div>
+        <div class="right">
+          <div class="amount-display">
+            <span class="amount-label">Award Amount</span>
+            <span class="amount-value">${{ s.amount | number }}</span>
+          </div>
+          <button class="apply-btn">Learn More</button>
+        </div>
+      </article>
+
+      <div class="load-more" *ngIf="hasMorePages()">
+        <button class="more" (click)="loadMore()" [disabled]="isLoading()">
+          {{ isLoading() ? 'Loading...' : 'Show more Scholarships' }}
+        </button>
+      </div>
+
+      <div class="no-more" *ngIf="!hasMorePages() && results().length > 0">
+        <p>No more scholarships to show</p>
+      </div>
+
+      <div class="no-results" *ngIf="results().length === 0 && !isLoading()">
+        <p>No scholarships found. Try adjusting your filters.</p>
+      </div>
+    </section>
+  </section>
+</main>

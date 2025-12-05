@@ -66,7 +66,8 @@ class UniversityControllerTest {
 
         when(universityService.getUniversitiesByFilter(filter, pageable)).thenReturn(page);
 
-        ResponseEntity<Page<UniversityDTOLight>> response = universityController.getUniversitiesByFilter(filter, pageable);
+        ResponseEntity<Page<UniversityDTOLight>> response = universityController.getUniversitiesByFilter(filter,
+                pageable);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
@@ -77,7 +78,8 @@ class UniversityControllerTest {
     @Test
     void testGetUniversityById_FoundReturnsOk() {
         Long id = 5L;
-        UniversityDTO dto = new UniversityDTO(id, "Uni 5", "Desc", "Contact", "site", "addr", "logo", null, List.of());
+        UniversityDTO dto = new UniversityDTO(id, "Uni 5", "Desc", "Contact", "site", "addr", "logo", null, List.of(),
+                List.of());
         when(universityService.getUniversityDetailsById(id)).thenReturn(dto);
 
         ResponseEntity<UniversityDTO> response = universityController.getUniversityById(id);

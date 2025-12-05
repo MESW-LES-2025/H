@@ -6,6 +6,7 @@ import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.repository.CourseRepository;
+import com.lernia.auth.repository.ScholarshipRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ class UniversityServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+
+    @Mock
+    private ScholarshipRepository scholarshipRepository;
 
     @BeforeEach
     void setUp() {
@@ -157,6 +161,7 @@ class UniversityServiceTest {
         CourseEntity matchingCourse = createCourseEntity(1L, "Course A", "Bachelor", entity);
         CourseEntity otherCourse = createCourseEntity(2L, "Course B", "Master", createUniversityEntity(31L, null));
         when(courseRepository.findAll()).thenReturn(List.of(matchingCourse, otherCourse));
+        when(scholarshipRepository.findByUniversityId(30L)).thenReturn(Collections.emptyList());
 
         UniversityDTO result = universityService.getUniversityDetailsById(30L);
 
@@ -177,6 +182,7 @@ class UniversityServiceTest {
 
         CourseEntity course = createCourseEntity(10L, "Course X", "Bachelor", entity);
         when(courseRepository.findAll()).thenReturn(List.of(course));
+        when(scholarshipRepository.findByUniversityId(31L)).thenReturn(Collections.emptyList());
 
         UniversityDTO result = universityService.getUniversityDetailsById(31L);
 
@@ -194,6 +200,7 @@ class UniversityServiceTest {
 
         CourseEntity otherCourse = createCourseEntity(11L, "Course Y", "Master", createUniversityEntity(42L, location));
         when(courseRepository.findAll()).thenReturn(List.of(otherCourse));
+        when(scholarshipRepository.findByUniversityId(41L)).thenReturn(Collections.emptyList());
 
         UniversityDTO result = universityService.getUniversityDetailsById(41L);
 
