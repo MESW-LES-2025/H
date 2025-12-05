@@ -17,5 +17,7 @@ public class LocationEntity {
     private Long id;
     private String city;
     private String country;
-    private Integer cost_of_living;
+
+    @Column(name = "cost_of_living")
+    private Integer costOfLiving;
 }

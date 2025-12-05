@@ -1,115 +1,127 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { CollegeDTO, CollegeVM, toCollegeVM } from '../viewmodels/explore-viewmodel';
+import { Observable, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import {
+  UniversityDTO,
+  CollegeVM,
+  toCollegeVM,
+} from '../viewmodels/explore-viewmodel';
+import { Page, PageRequest } from '../../shared/viewmodels/pagination';
+
+export interface FavoritesResponse {
+  universities: { id: number }[];
+  courses: { id: number }[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class ExploreService {
+  private readonly baseUrl = environment.apiUrl;
 
-  private readonly data: CollegeDTO[] = [
-    {
-      id: '1',
-      name: 'Yale University',
-      blurb: 'Pellentesque aliquam blandit in dictumst at donec...',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-      accent: '#4BA28F',
-      country: 'USA',
-      field: 'Engineering',
-      degree: 'Bachelor',
-
-
-      costOfLiving: 'High',
-      hasScholarship: true,
-      language: 'English'
-    },
-    {
-      id: '2',
-      name: 'Cambridge University',
-      blurb: 'Vestibulum ante ipsum primis in faucibus orci luctus...',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-      accent: '#5AA593',
-      country: 'UK',
-      field: 'Science',
-      degree: 'Master',
-
-      costOfLiving: 'Medium',
-      hasScholarship: false,
-      language: 'French'
-    },
-    {
-      id: '3',
-      name: 'Harvard University',
-      blurb: 'Nulla facilisi. Ut commodo elit id pretium vehicula.',
-      photoUrl: 'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-      accent: '#3F907E',
-      country: 'USA',
-      field: 'Arts',
-      degree: 'PhD',
-
-      costOfLiving: 'Low',
-      hasScholarship: true,
-      language: 'Portuguese'
-    }
-  ];
+  constructor(private http: HttpClient) {}
 
   search(
     query: string,
     country: string,
-    cost: string,
+    costMax: number | null,
     scholarship: string,
-    language: string
-  ): Observable<CollegeVM[]> {
+    pageRequest: PageRequest
+  ): Observable<Page<CollegeVM>> {
+    let params = new HttpParams()
+      .set('page', pageRequest.page.toString())
+      .set('size', pageRequest.size.toString());
 
-    const q = query.toLowerCase();
-    const normalizedCountry = country.toLowerCase();
-    const normalizedCost = cost.toLowerCase();
-    const normalizedScholarship = scholarship.toLowerCase();
-    const normalizedLanguage = language.toLowerCase();
+    if (pageRequest.sort) {
+      params = params.set('sort', pageRequest.sort);
+    }
 
+    if (query && query.trim() !== '') {
+      params = params.set('name', query.trim());
+    }
 
-    const mapped = this.data
-      .filter(dto => {
-        // Search filter
-        const matchesQuery =
-          !q ||
-          dto.name.toLowerCase().includes(q) ||
-          dto.blurb.toLowerCase().includes(q);
+    if (country && country !== 'Any') {
+      params = params.append('countries', country);
+    }
 
-        // Country filter
-        const matchesCountry =
-          country === 'Any' ||
-          dto.country.toLowerCase() === normalizedCountry;
+    if (costMax !== null) {
+      params = params.set('costOfLivingMax', costMax.toString());
+    }
 
-        // Cost of living filter
-        const matchesCost =
-          cost === 'Any' ||
-          dto.costOfLiving.toLowerCase() === normalizedCost;
+    if (scholarship !== 'Any') {
+      const hasScholarship = scholarship === 'Yes';
+      params = params.set('hasScholarship', String(hasScholarship));
+    }
 
-        // Scholarship filter
-        let matchesScholarship = true;
-        if (scholarship !== 'Any') {
-          if (normalizedScholarship === 'yes') {
-            matchesScholarship = dto.hasScholarship === true;
-          } else if (normalizedScholarship === 'no') {
-            matchesScholarship = dto.hasScholarship === false;
-          }
-        }
+    return this.http
+      .get<Page<UniversityDTO>>(`${this.baseUrl}/api/university`, { params })
+      .pipe(
+        map(page => ({
+          content: page.content.map(toCollegeVM),
+          totalElements: page.totalElements,
+          totalPages: page.totalPages,
+          size: page.size,
+          number: page.number,
+        }))
+      );
+  }
 
-        // Language filter
-        const matchesLanguage =
-          language === 'Any' ||
-          dto.language.toLowerCase() === normalizedLanguage;
-          
-        return (
-          matchesQuery &&
-          matchesCountry &&
-          matchesCost &&
-          matchesScholarship
-          && matchesLanguage
-        );
-      })
-      .map(toCollegeVM);
+  addFavoriteUniversity(id: number): Observable<void> {
+    const storedId = localStorage.getItem('userId');
+    if (!storedId) {
+      return throwError(() => new Error('User not logged in'));
+    }
 
-    return of(mapped);
+    const params = new HttpParams().set('userId', storedId);
+
+    return this.http.post<void>(
+      `${this.baseUrl}/api/favorites/universities/${id}`,
+      {},
+      { params }
+    );
+  }
+
+  removeFavoriteUniversity(id: number): Observable<void> {
+    const storedId = localStorage.getItem('userId');
+    if (!storedId) {
+      return throwError(() => new Error('User not logged in'));
+    }
+
+    const params = new HttpParams().set('userId', storedId);
+
+    return this.http.delete<void>(
+      `${this.baseUrl}/api/favorites/universities/${id}`,
+      { params }
+    );
+  }
+
+  getFavorites(): Observable<FavoritesResponse> {
+    const storedId = localStorage.getItem('userId');
+    if (!storedId) {
+      return throwError(() => new Error('User not logged in'));
+    }
+
+    const params = new HttpParams().set('userId', storedId);
+
+    return this.http.get<FavoritesResponse>(
+      `${this.baseUrl}/api/favorites`,
+      { params }
+    );
+  }
+
+  getFavoriteUniversities(userId: number): Observable<number[]> {
+    const params = new HttpParams().set('userId', userId);
+
+    return this.http
+      .get<{ universities: { id: number }[] }>(
+        `${this.baseUrl}/api/favorites`,
+        { params }
+      )
+      .pipe(
+        map(response =>
+          response.universities.map(u => u.id)
+        )
+      );
   }
 
 }

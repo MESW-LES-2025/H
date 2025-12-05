@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from './auth.service';
+import { AuthService, LoginResponse } from './auth.service';
 import {DataService} from '../shared/services/data-service';
 
 @Component({
@@ -33,12 +33,22 @@ export class LoginComponent {
     this.errorMessage = null;
     this.loading = true;
     const { text, password } = this.form.value;
+
     this.auth.login({ text, password }).subscribe({
-      next: (res) => {
+      next: (res: LoginResponse) => {
         this.loading = false;
         console.log('Login OK', res);
-        if (res.status === 'success' && res.user?.id) {
+
+        if (res.status === 'success' && res.user?.id != null) {
           this.dataService.setUserAtual(res.user);
+          localStorage.setItem('userId', res.userId.toString());
+          if (res.username) {
+            localStorage.setItem('username', res.username);
+          }
+          if (res.role) {
+            localStorage.setItem('role', res.role);
+          }
+
           this.router.navigate(['/profile', res.user.id]);
         } else {
           this.errorMessage = res.message || 'Login failed';

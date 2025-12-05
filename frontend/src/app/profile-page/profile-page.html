@@ -6,6 +6,11 @@
       <div class="circle-decoration circle-1"></div>
       <div class="circle-decoration circle-2"></div>
       <div class="circle-decoration circle-3"></div>
+<!-- ======================================= -->
+<!-- PROFILE HEADER                          -->
+<!-- ======================================= -->
+<section class="profile-header" *ngIf="user as u">
+  <div class="profile-header-inner">
 
       <div class="card-body p-4 position-relative flex-grow-1">
         <div class="row align-items-start g-3">
@@ -45,37 +50,219 @@
               </button>
             </div>
           </div>
-        </div>
-        </div>
+    <div class="header-shape header-shape-left"></div>
+    <div class="header-shape header-shape-circle"></div>
+    <div class="header-shape header-shape-right"></div>
 
+    <div class="profile-main">
+      <div class="profile-avatar-wrapper">
+        <img
+          class="profile-avatar"
+          [src]="u.profileImage || '/images/default-avatar.png'"
+          [alt]="u.name || 'User picture'"
+        />
       </div>
 
-    <div class="card border-0 shadow">
-      <div class="card-body p-4">
-        <h3 class="h5 fw-bold mb-3">Education</h3>
+      <!-- NOME + LOCALIZAÇÃO + META -->
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <h1 class="profile-name">{{ u.name }}</h1>
+        </div>
 
-        @for (course of user.academicHistory; track course.id) {
-          <div class="academic-item d-flex gap-3 pb-3 mb-3 border-bottom">
-            <div class="flex-shrink-0">
-              <div class="university-icon bg-light rounded d-flex align-items-center justify-content-center"
-                   style="width: 48px; height: 48px;">
-                <img [src]="course.course.university.logo"
-                     alt="University Logo"
-                     style="max-width: 48px; max-height: 48px; object-fit: contain;">
-              </div>
-            </div>
+        <p class="profile-location" *ngIf="u.location">
+          {{ u.location }}
+        </p>
 
-            <div class="flex-grow-1">
-              <h5 class="fw-bold mb-0 fs-6">{{ course.course.university.name }}</h5>
-              <p class="mb-0 fw-semibold">{{ course.course.name }}</p>
-              <p class="text-muted mb-0 small">{{ course.course.area }}</p>
-              <p class="text-muted small mb-0">
-                {{ course.startDate | date:'MMM yyyy' }} - {{ course.endDate | date:'MMM yyyy' }}
-              </p>
-            </div>
-          </div>
-        }
+        <p class="profile-job" *ngIf="u.jobTitle">
+          {{ u.jobTitle }}
+        </p>
+
+        <div class="profile-meta">
+          <span class="meta-pill" *ngIf="u.age">
+            {{ u.age }} years
+          </span>
+          <span class="meta-pill" *ngIf="u.gender">
+            {{ u.gender }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
-}
+</section>
+
+
+<!-- ======================================= -->
+<!-- USER INFO BOX                           -->
+<!-- ======================================= -->
+<section class="user-info-box">
+  <div class="user-info-container">
+
+    <h2 class="user-info-title">User’s Info</h2>
+
+    <ng-container *ngIf="user as u; else noUserInfo">
+      <div class="user-info-grid">
+        <div class="user-info-column">
+          <p class="user-info-row">
+            <span class="label">Name</span>
+            <span class="value">{{ u.name }}</span>
+          </p>
+
+          <p class="user-info-row">
+            <span class="label">Location</span>
+            <span class="value">{{ u.location }}</span>
+          </p>
+        </div>
+
+        <div class="user-info-column">
+          <p class="user-info-row" *ngIf="u.jobTitle">
+            <span class="label">Job title</span>
+            <span class="value">{{ u.jobTitle }}</span>
+          </p>
+
+          <p class="user-info-row">
+            <span class="label">Profile</span>
+            <span class="value">
+              {{ u.age ? (u.age + ' years') : '' }}
+              <span *ngIf="u.age && u.gender">&nbsp;•&nbsp;</span>
+              {{ u.gender }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noUserInfo>
+      <p class="user-info-empty">
+        No user loaded yet. Please select a profile from the Explore page.
+      </p>
+    </ng-template>
+
+  </div>
+</section>
+
+<!-- ======================================= -->
+<!-- TABS                                    -->
+<!-- ======================================= -->
+<section class="tabs-container">
+
+  <button
+    class="tab-btn"
+    [class.active]="activeTab === 'universities'"
+    (click)="setTab('universities')"
+  >
+    University
+  </button>
+
+  <button
+    class="tab-btn"
+    [class.active]="activeTab === 'courses'"
+    (click)="setTab('courses')"
+  >
+    Courses
+  </button>
+
+  <button
+    class="tab-btn"
+    [class.active]="activeTab === 'countries'"
+    (click)="setTab('countries')"
+  >
+    Countries
+  </button>
+
+</section>
+
+<!-- ======================================= -->
+<!-- CARDS: UNIVERSITIES                     -->
+<!-- ======================================= -->
+<section *ngIf="activeTab === 'universities'" class="cards-grid">
+
+  <ng-container *ngIf="universities.length > 0; else noUniversities">
+    <article
+      class="uni-card"
+      *ngFor="let uni of universities; trackBy: trackById"
+    >
+      <div class="uni-image-wrapper">
+        <img [src]="uni.image" class="uni-image" alt="{{ uni.name }}" />
+      </div>
+
+      <div class="uni-card-body">
+        <h3 class="uni-title">{{ uni.name }}</h3>
+        <p class="uni-location">{{ uni.city }}, {{ uni.country }}</p>
+      </div>
+
+      <button
+        class="fav-btn"
+        aria-label="Remove favourite university"
+        (click)="removeFavoriteUniversity(uni.id)"
+      >
+        <span class="fav-icon">❤</span>
+      </button>
+    </article>
+  </ng-container>
+
+</section>
+
+<ng-template #noUniversities>
+  <section class="empty-tab">
+    <p>No favourite universities yet.</p>
+  </section>
+</ng-template>
+
+<!-- ======================================= -->
+<!-- CARDS: COURSES                          -->
+<!-- ======================================= -->
+<section *ngIf="activeTab === 'courses'" class="cards-grid">
+
+  <ng-container *ngIf="courses.length > 0; else noCourses">
+    <article class="uni-card" *ngFor="let course of courses; trackBy: trackById">
+      <div class="uni-card-body">
+        <h3 class="uni-title">{{ course.name }}</h3>
+        <p class="uni-location">{{ course.type }}</p>
+      </div>
+
+      <button
+        class="fav-btn"
+        aria-label="Toggle favourite"
+        (click)="toggleCourseFavorite(course); $event.stopPropagation()"
+      >
+    <span class="fav-icon"
+          [style.color]="course.isFavorite ? '#c92a2a' : '#999'">
+      {{ course.isFavorite ? '❤' : '♡' }}
+    </span>
+      </button>
+    </article>
+
+  </ng-container>
+
+</section>
+
+<ng-template #noCourses>
+  <section class="empty-tab">
+    <p>No favourite courses yet.</p>
+  </section>
+</ng-template>
+
+<!-- ======================================= -->
+<!-- EMPTY TAB FOR COUNTRIES    -->
+<!-- ======================================= -->
+<section *ngIf="activeTab === 'countries'" class="empty-tab">
+  <p>No items in this tab yet.</p>
+</section>
+<section class="delete-section" *ngIf="user">
+  <button class="delete-btn" (click)="confirmDelete()">
+    Delete Account
+  </button>
+</section>
+
+<!-- ======================================= -->
+<!-- FOOTER                                  -->
+<!-- ======================================= -->
+<footer class="mini-footer">
+  <span class="mini-footer-logo">Lernia.</span>
+  <span class="mini-footer-text">
+    Helping students make confident international education decisions.
+  </span>
+  <span class="mini-footer-copy">
+    © 2025 Lernia • All rights reserved
+  </span>
+</footer>

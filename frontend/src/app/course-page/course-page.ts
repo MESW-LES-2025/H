@@ -4,24 +4,51 @@ import { CourseViewmodel } from './viewmodels/course-viewmodel';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import { CourseReviewsComponent } from './reviews/course-reviews.component';
 
 @Component({
   selector: 'app-course-page',
   standalone: true,
-  imports: [CommonModule, NgbNavModule],
+  imports: [CommonModule, NgbNavModule, CourseReviewsComponent],
   templateUrl: './course-page.html',
-  styleUrl: './course-page.css',
+  styleUrls: ['./course-page.css'],
 })
 export class CoursePage implements OnInit {
-  private coursePageService: CoursePageService = inject(CoursePageService);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  protected course: CourseViewmodel | null = null;
-  active: number = 1;
+  private svc = inject(CoursePageService);
+  private route = inject(ActivatedRoute);
+
+  course: CourseViewmodel | null = null;
+  active = 1;
+  isFavorite = false;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.coursePageService.getCourseProfile(id)
-      .subscribe(data => this.course = data);
+    this.svc.getCourseProfile(id).subscribe(course => {
+      this.course = course;
+
+      // Load favorite courses for user
+      const stored = localStorage.getItem('userId');
+      if (!stored) return;
+
+      this.svc.getFavoriteCourses(Number(stored)).subscribe(ids => {
+        this.isFavorite = ids.includes(id);
+      });
+    });
+  }
+
+  toggleFavorite(): void {
+    if (!this.course) return;
+    const id = this.course.id;
+
+    if (this.isFavorite) {
+      this.svc.removeFavoriteCourse(id).subscribe(() => {
+        this.isFavorite = false;
+      });
+    } else {
+      this.svc.addFavoriteCourse(id).subscribe(() => {
+        this.isFavorite = true;
+      });
+    }
   }
 }

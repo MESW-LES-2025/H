@@ -1,6 +1,6 @@
 <header class="navbar">
   <!-- ESQUERDA: LOGO -->
-  <a class="navbar-logo" routerLink="/">
+  <a class="navbar-logo" routerLink="/home">
     <img src="/images/logo.png" alt="LERNIQ logo" />
   </a>
 
@@ -8,7 +8,7 @@
   <nav class="navbar-nav">
     <a
       class="nav-link"
-      routerLink="/"
+      routerLink="/home"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
@@ -34,16 +34,11 @@
 
   <!-- DIREITA: ÍCONES -->
   <div class="navbar-actions">
-    <button class="icon-btn" aria-label="Favourites">
-      <img src="/images/heart-outline.svg" alt="" />
-    </button>
-
     <button
       class="icon-btn"
       aria-label="Profile"
-      [routerLink]="['/profile', 'guest']">
+      (click)="goToProfile()">
       <img src="/images/profile-outline.svg" alt="" />
     </button>
   </div>
-
 </header>

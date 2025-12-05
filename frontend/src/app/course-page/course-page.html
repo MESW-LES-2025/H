@@ -5,15 +5,16 @@
     <!-- Banner Image -->
     <div class="course-banner-container">
       <img [src]="course.bannerImage" alt="Course Banner" class="course-banner"
-        onerror="this.src='images/placeholder-banner.jpg'">
+        onerror="this.src='images/oxford-university-banner.jpg'">
     </div>
 
     <div class="card-body p-4 position-relative flex-grow-1">
       <!-- Save Course Button -->
-      <button class="btn btn-save-course">
-        <i class="bi bi-heart-fill"></i>
-        Save Course
+      <button class="btn btn-save-course" (click)="toggleFavorite()">
+        <i class="bi" [ngClass]="isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
+        {{ isFavorite ? 'Saved' : 'Save Course' }}
       </button>
+
 
       <div class="row align-items-start g-3">
         <!-- Course Info -->
@@ -139,6 +140,17 @@
               } @else {
                 <p class="text-muted">No specific requirements</p>
               }
+            </div>
+          </ng-template>
+        </li>
+
+        <!-- NEW: Reviews Tab -->
+        <li [ngbNavItem]="4">
+          <button ngbNavLink>Reviews</button>
+          <ng-template ngbNavContent>
+            <div class="p-4">
+              <h3 class="h5 fw-bold mb-3">Student Reviews</h3>
+              <app-course-reviews [courseId]="course.id"></app-course-reviews>
             </div>
           </ng-template>
         </li>
