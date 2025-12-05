@@ -153,8 +153,10 @@ export class ProfilePage implements OnInit {
   protected trackById(index: number, item: any): number {
     return item.id;
   }
+  
   protected confirmDelete(): void {
-    if (!this.user) {
+    // Only owner may delete account
+    if (!this.user || !this.isOwner) {
       return;
     }
 

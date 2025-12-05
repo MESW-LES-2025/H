@@ -80,8 +80,15 @@ describe('ProfilePage', () => {
     mockProfileService.getOwnProfile.and.returnValue(of(mockUser));
     mockProfileService.getOwnFavorites.and.returnValue(of(mockFavorites));
 
+    // Clear localStorage before each test
+    localStorage.clear();
+
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it('should create', () => {
@@ -214,8 +221,14 @@ describe('ProfilePage', () => {
 
   describe('Edit Profile Modal', () => {
     beforeEach(() => {
+      // Set localStorage to mark user as owner
+      localStorage.setItem('userId', String(mockUser.id));
       fixture.detectChanges();
       component['user'] = mockUser;
+    });
+
+    afterEach(() => {
+      localStorage.clear();
     });
 
     it('should open edit modal and pre-fill form with user data', () => {
@@ -236,6 +249,13 @@ describe('ProfilePage', () => {
 
     it('should not open modal if user is null', () => {
       component['user'] = null;
+      component['openEditModal']();
+
+      expect(component['showEditModal']).toBeFalse();
+    });
+
+    it('should not open modal if not owner', () => {
+      localStorage.setItem('userId', '999'); // Different user
       component['openEditModal']();
 
       expect(component['showEditModal']).toBeFalse();
@@ -320,6 +340,8 @@ describe('ProfilePage', () => {
     });
 
     it('should keep modal open on update error', () => {
+      spyOn(console, 'error');
+      spyOn(window, 'alert');
       mockProfileService.updateProfile.and.returnValue(
         throwError(() => new Error('Update failed')),
       );
@@ -370,14 +392,29 @@ describe('ProfilePage', () => {
 
   describe('Delete Account', () => {
     beforeEach(() => {
+      localStorage.setItem('userId', String(mockUser.id));
       fixture.detectChanges();
       component['user'] = mockUser;
+    });
+
+    afterEach(() => {
+      localStorage.clear();
     });
 
     it('should not delete if user is null', () => {
       component['user'] = null;
       component['confirmDelete']();
 
+      expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
+    });
+
+    it('should not delete if not owner', () => {
+      localStorage.setItem('userId', '999'); // Different user
+      spyOn(window, 'confirm'); // Add this to prevent confirm dialog
+      
+      component['confirmDelete']();
+
+      expect(window.confirm).not.toHaveBeenCalled(); // Confirm should not even be called
       expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
     });
 
@@ -402,6 +439,7 @@ describe('ProfilePage', () => {
     it('should not clean up localStorage on delete error', () => {
       spyOn(console, 'error');
       spyOn(window, 'confirm').and.returnValue(true);
+      spyOn(window, 'alert');
       spyOn(localStorage, 'removeItem');
       mockProfileService.deleteAccount.and.returnValue(
         throwError(() => new Error('Delete failed')),
@@ -814,6 +852,40 @@ describe('ProfilePage', () => {
 
       expect(component['courses'].length).toBeGreaterThan(0);
       expect(component['courses'][0].name).toBe('Computer Science');
+    });
+  });
+
+  describe('isOwner getter', () => {
+    beforeEach(() => {
+      fixture.detectChanges();
+    });
+
+    it('should return true when localStorage userId matches user id', () => {
+      localStorage.setItem('userId', '1');
+      component['user'] = mockUser;
+
+      expect(component.isOwner).toBeTrue();
+    });
+
+    it('should return false when localStorage userId does not match', () => {
+      localStorage.setItem('userId', '999');
+      component['user'] = mockUser;
+
+      expect(component.isOwner).toBeFalse();
+    });
+
+    it('should return false when user is null', () => {
+      localStorage.setItem('userId', '1');
+      component['user'] = null;
+
+      expect(component.isOwner).toBeFalse();
+    });
+
+    it('should return false when userId is not in localStorage', () => {
+      localStorage.removeItem('userId');
+      component['user'] = mockUser;
+
+      expect(component.isOwner).toBeFalse();
     });
   });
 });

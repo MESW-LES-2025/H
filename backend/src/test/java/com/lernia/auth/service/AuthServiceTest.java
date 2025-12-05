@@ -160,7 +160,7 @@ class AuthServiceTest {
         assertNotNull(res);
         assertEquals("success", res.getStatus());
         assertEquals("Login successful", res.getMessage());
-        assertEquals(99L, res.getUserId());
+        assertEquals(99L, res.getUser().getId());
 
         ArgumentCaptor<SecurityContext> contextCaptor = ArgumentCaptor.forClass(SecurityContext.class);
         verify(securityContextRepository).saveContext(contextCaptor.capture(), eq(request), eq(response));
