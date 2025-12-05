@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,10 +13,11 @@ import { PageRequest } from '../shared/viewmodels/pagination';
   templateUrl: './scholarships.component.html',
   styleUrls: ['./scholarships.component.css'],
 })
-export class ScholarshipsComponent implements OnInit {
+export class ScholarshipsComponent implements OnInit, OnDestroy {
   constructor(private svc: ScholarshipService, private router: Router) {}
 
   q = signal<string>('');
+  private searchTimeout: any = null;
 
   // Course type filter
   courseType = signal<string>('Any');
@@ -37,6 +38,29 @@ export class ScholarshipsComponent implements OnInit {
   isLoading = signal<boolean>(false);
 
   ngOnInit(): void {
+    this.search();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+  }
+
+  onSearchInput(value: string): void {
+    this.q.set(value);
+
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.search();
+    }, 2000);
+  }
+
+  clearSearch(): void {
+    this.q.set('');
     this.search();
   }
 

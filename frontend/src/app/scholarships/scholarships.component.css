@@ -304,7 +304,7 @@
   border-radius: 20px;
 
   display: grid;
-  grid-template-columns: 70px 1fr 160px;
+  grid-template-columns: 70px 1fr auto;
   align-items: center;
 
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
@@ -358,6 +358,29 @@
 .search-input::placeholder {
   color: #5A3226;
   font-weight: 700;
+}
+
+.clear-search-btn {
+  height: 100%;
+  padding: 0 24px;
+  border: none;
+  border-left: 2px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  color: #5A3226;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-search-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 0.8;
+}
+
+.clear-search-btn:active {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* ================= SCHOLARSHIP CARDS ================= */
@@ -578,14 +601,6 @@
 
   .hero-copy h1 {
     font-size: 32px;
-  }
-
-  .searchbar.results-searchbar {
-    grid-template-columns: auto 1fr;
-  }
-
-  .search-btn {
-    display: none;
   }
 
   .scholarship-card .left {

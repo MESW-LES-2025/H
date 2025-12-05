@@ -80,9 +80,9 @@
         </div>
 
         <input class="search-input" type="search" placeholder="Search scholarships, universities..." [value]="q()"
-          (input)="q.set($any($event.target).value)" />
+          (input)="onSearchInput($any($event.target).value)" />
 
-        <button class="search-btn" (click)="search()">Search</button>
+        <button class="clear-search-btn" *ngIf="q()" (click)="clearSearch()">Clear</button>
       </div>
 
       <article class="scholarship-card" *ngFor="let s of results()">
