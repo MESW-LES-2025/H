@@ -43,7 +43,9 @@ export const routes: Routes = [
   {
     path: 'scholarships',
     loadComponent: () =>
-        import('./scholarships/scholarships.component').then(m => m.ScholarshipsComponent),
+      import('./scholarships/scholarships.component').then(
+        (m) => m.ScholarshipsComponent,
+      ),
   },
   {
     path: 'home',

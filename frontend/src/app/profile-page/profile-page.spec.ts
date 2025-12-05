@@ -411,7 +411,7 @@ describe('ProfilePage', () => {
     it('should not delete if not owner', () => {
       localStorage.setItem('userId', '999'); // Different user
       spyOn(window, 'confirm'); // Add this to prevent confirm dialog
-      
+
       component['confirmDelete']();
 
       expect(window.confirm).not.toHaveBeenCalled(); // Confirm should not even be called

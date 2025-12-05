@@ -38,7 +38,7 @@ export function toScholarshipVM(dto: ScholarshipDTO): ScholarshipVM {
     courseType: dto.courseType,
     universityId: dto.universityId.toString(),
     universityName: dto.universityName,
-    color: color
+    color: color,
   };
 }
 

@@ -7,7 +7,6 @@ import { UniversityViewmodel } from './viewmodels/university-viewmodel';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { ExploreService } from '../explore-page/services/explore-service';
 
-
 @Component({
   selector: 'app-university-page',
   standalone: true,

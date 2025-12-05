@@ -80,13 +80,13 @@ export class UniversityPageService {
             city: dto.location?.city || '',
             country: dto.location?.country || '',
           },
-          logo: dto.logo || null
-        }
+          logo: dto.logo || null,
+        },
       })),
       scholarships: dto.scholarships || [],
       address: dto.address || 'N/A',
       contactInfo: dto.contactInfo || 'N/A',
-      website: dto.website || 'N/A'
+      website: dto.website || 'N/A',
     };
   }
 }
