@@ -70,7 +70,8 @@ public class SecurityConfig {
             "/api/courses/search", 
             "/api/university/**", 
             "/api/area-of-study",
-            "/api/reviews/**"
+            "/api/reviews/**",
+            "/api/scholarship/**"
         ).permitAll()
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
         .anyRequest().authenticated()
