@@ -129,6 +129,16 @@ class ReviewControllerTest {
                 .andExpect(content().string("false"));
     }
 
+    @Test
+    void checkCourseEligibility_ShouldReturnFalse_WhenServiceReturnsFalse() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.canUserReviewCourse(1L, 1L)).thenReturn(false);
+
+        mockMvc.perform(get("/api/reviews/course/eligibility/1").principal(principal))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
+
     // --- Add Review Tests ---
 
     @Test
@@ -157,6 +167,33 @@ class ReviewControllerTest {
     }
 
     @Test
+    void addReview_ShouldReturnBadRequest_WhenServiceThrows() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.addReview(any(ReviewDTO.class))).thenThrow(new RuntimeException("Validation failed"));
+
+        mockMvc.perform(post("/api/reviews")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation failed"));
+    }
+
+    @Test
+    void addReview_ShouldReturnBadRequest_WhenUserNotFound() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/reviews")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(reviewService, never()).addReview(any());
+    }
+
+    @Test
     void addCourseReview_ShouldReturnOk_WhenAuthenticated() throws Exception {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
         when(reviewService.addCourseReview(any(ReviewDTO.class))).thenReturn(reviewDTO);
@@ -166,6 +203,42 @@ class ReviewControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(reviewDTO)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void addCourseReview_ShouldReturnUnauthorized_WhenPrincipalNull() throws Exception {
+        mockMvc.perform(post("/api/reviews/course")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("You must be logged in to post a review."));
+    }
+
+    @Test
+    void addCourseReview_ShouldReturnBadRequest_WhenServiceThrows() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.addCourseReview(any(ReviewDTO.class))).thenThrow(new RuntimeException("Course error"));
+
+        mockMvc.perform(post("/api/reviews/course")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Course error"));
+    }
+
+    @Test
+    void addCourseReview_ShouldReturnBadRequest_WhenUserNotFound() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/reviews/course")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(reviewService, never()).addCourseReview(any());
     }
 
     // --- Update Review Tests ---
@@ -194,6 +267,79 @@ class ReviewControllerTest {
                 .content(objectMapper.writeValueAsString(reviewDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Not authorized"));
+    }
+
+    @Test
+    void updateReview_ShouldReturnBadRequest_WhenUserNotFound() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/reviews/15")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(reviewService, never()).updateReview(anyLong(), any(), anyLong());
+    }
+
+    @Test
+    void updateCourseReview_ShouldReturnOk_WhenAuthorized() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.updateCourseReview(eq(12L), any(ReviewDTO.class), eq(1L))).thenReturn(reviewDTO);
+
+        mockMvc.perform(put("/api/reviews/course/12")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Great"));
+    }
+
+    @Test
+    void updateCourseReview_ShouldReturnBadRequest_WhenServiceThrows() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(reviewService.updateCourseReview(eq(12L), any(ReviewDTO.class), eq(1L)))
+                .thenThrow(new RuntimeException("Not allowed"));
+
+        mockMvc.perform(put("/api/reviews/course/12")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Not allowed"));
+    }
+
+    @Test
+    void updateCourseReview_ShouldReturnBadRequest_WhenUserNotFound() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/reviews/course/18")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(reviewService, never()).updateCourseReview(anyLong(), any(), anyLong());
+    }
+
+    @Test
+    void updateReview_ShouldReturnUnauthorized_WhenPrincipalIsNull() throws Exception {
+        mockMvc.perform(put("/api/reviews/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("You must be logged in."));
+    }
+
+    @Test
+    void updateCourseReview_ShouldReturnUnauthorized_WhenPrincipalNull() throws Exception {
+        mockMvc.perform(put("/api/reviews/course/12")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDTO)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("You must be logged in."));
     }
 
     // --- Delete Review Tests ---
@@ -225,6 +371,56 @@ class ReviewControllerTest {
                 .principal(principal))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Review deleted successfully"));
+    }
+
+    @Test
+    void deleteReview_ShouldReturnBadRequest_WhenServiceThrows() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        doThrow(new RuntimeException("Cannot delete")).when(reviewService).deleteReview(10L, 1L);
+
+        mockMvc.perform(delete("/api/reviews/10").principal(principal))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Cannot delete"));
+    }
+
+    @Test
+    void deleteCourseReview_ShouldReturnUnauthorized_WhenPrincipalNull() throws Exception {
+        mockMvc.perform(delete("/api/reviews/course/20"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("You must be logged in."));
+    }
+
+    @Test
+    void deleteCourseReview_ShouldReturnBadRequest_WhenServiceThrows() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        doThrow(new RuntimeException("Cannot remove"))
+                .when(reviewService).deleteCourseReview(20L, 1L);
+
+        mockMvc.perform(delete("/api/reviews/course/20").principal(principal))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Cannot remove"));
+    }
+
+    @Test
+    void deleteReview_ShouldReturnBadRequest_WhenUserNotFound() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/reviews/22").principal(principal))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(reviewService, never()).deleteReview(anyLong(), anyLong());
+    }
+
+    @Test
+    void deleteCourseReview_ShouldReturnBadRequest_WhenUserNotFound() throws Exception {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/reviews/course/25").principal(principal))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(reviewService, never()).deleteCourseReview(anyLong(), anyLong());
     }
 
 }

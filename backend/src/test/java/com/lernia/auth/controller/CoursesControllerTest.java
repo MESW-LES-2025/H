@@ -1,6 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.CourseDTO;
+import com.lernia.auth.dto.CourseFilter;
 import com.lernia.auth.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,5 +96,47 @@ class CoursesControllerTest {
         assertNull(response.getBody());
 
         verify(courseService, times(1)).getCourseById(id);
+    }
+
+    // ---------------------------------------------------------------------
+    // getCoursesByFilter
+    // ---------------------------------------------------------------------
+
+    @Test
+    void testGetCoursesByFilter_ReturnsOkWithContent() {
+        CourseFilter filter = new CourseFilter("software", List.of("Master"), null, null, null,
+                null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 5);
+
+        CourseDTO dto = mock(CourseDTO.class);
+        Page<CourseDTO> page = new PageImpl<>(List.of(dto));
+
+        when(courseService.getCourses(filter, pageable)).thenReturn(page);
+
+        ResponseEntity<Page<CourseDTO>> response = coursesController.getCoursesByFilter(filter, pageable);
+
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+        assertSame(page, response.getBody());
+
+        verify(courseService, times(1)).getCourses(filter, pageable);
+    }
+
+    @Test
+    void testGetCoursesByFilter_ReturnsOkWithEmptyPage() {
+        CourseFilter filter = new CourseFilter(null, null, null, null, null, null, null, null, null);
+        Pageable pageable = PageRequest.of(1, 10);
+
+        Page<CourseDTO> emptyPage = Page.empty(pageable);
+
+        when(courseService.getCourses(filter, pageable)).thenReturn(emptyPage);
+
+        ResponseEntity<Page<CourseDTO>> response = coursesController.getCoursesByFilter(filter, pageable);
+
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+        assertSame(emptyPage, response.getBody());
+
+        verify(courseService, times(1)).getCourses(filter, pageable);
     }
 }
