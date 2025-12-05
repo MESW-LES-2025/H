@@ -4,12 +4,9 @@ import com.lernia.auth.dto.EditProfileRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lernia.auth.dto.UserProfileRequest;
 import com.lernia.auth.dto.UserProfileResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;
-
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Service
@@ -50,6 +47,7 @@ public class UserProfileService {
         if (req.getLocation() != null) user.setLocation(req.getLocation());
         if (req.getJobTitle() != null) user.setJobTitle(req.getJobTitle());
         if (req.getGender() != null) user.setGender(req.getGender());
+        if (req.getAge() != null) user.setAge(req.getAge());
         userRepository.save(user);
         return map(user);
     }
