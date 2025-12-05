@@ -40,6 +40,11 @@ export const routes: Routes = [
         import('./courses/courses').then(m => m.Courses),
   },
   {
+    path: 'scholarships',
+    loadComponent: () =>
+        import('./scholarships/scholarships.component').then(m => m.ScholarshipsComponent),
+  },
+  {
     path: 'home',
     loadComponent: () =>
         import('./home/home.component').then(m => m.HomeComponent),
