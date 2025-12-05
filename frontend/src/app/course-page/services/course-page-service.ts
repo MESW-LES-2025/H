@@ -44,7 +44,6 @@ interface CourseDTO {
   areasOfStudy: AreaOfStudyDTO[];
 }
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -60,7 +59,7 @@ export class CoursePageService {
   public getCourseProfile(id: number): Observable<CourseViewmodel> {
     return this.http
       .get<CourseDTO>(`${this.baseUrl}/api/courses/${id}`)
-      .pipe(map(dto => this.mapToViewmodel(dto)));
+      .pipe(map((dto) => this.mapToViewmodel(dto)));
   }
 
   // -------------------------------------
@@ -70,11 +69,10 @@ export class CoursePageService {
     const params = new HttpParams().set('userId', userId);
 
     return this.http
-      .get<{ courses: { id: number }[] }>(
-        `${this.baseUrl}/api/favorites`,
-        { params }
-      )
-      .pipe(map(res => res.courses.map(c => c.id)));
+      .get<{
+        courses: { id: number }[];
+      }>(`${this.baseUrl}/api/favorites`, { params })
+      .pipe(map((res) => res.courses.map((c) => c.id)));
   }
 
   // -------------------------------------
@@ -82,14 +80,14 @@ export class CoursePageService {
   // -------------------------------------
   public addFavoriteCourse(courseId: number): Observable<void> {
     const storedId = localStorage.getItem('userId');
-    if (!storedId) throw new Error("User not logged in");
+    if (!storedId) throw new Error('User not logged in');
 
     const params = new HttpParams().set('userId', storedId);
 
     return this.http.post<void>(
       `${this.baseUrl}/api/favorites/courses/${courseId}`,
       {},
-      { params }
+      { params },
     );
   }
 
@@ -98,13 +96,13 @@ export class CoursePageService {
   // -------------------------------------
   public removeFavoriteCourse(courseId: number): Observable<void> {
     const storedId = localStorage.getItem('userId');
-    if (!storedId) throw new Error("User not logged in");
+    if (!storedId) throw new Error('User not logged in');
 
     const params = new HttpParams().set('userId', storedId);
 
     return this.http.delete<void>(
       `${this.baseUrl}/api/favorites/courses/${courseId}`,
-      { params }
+      { params },
     );
   }
 
@@ -134,17 +132,15 @@ export class CoursePageService {
           country: dto.university.location.country,
           costOfLiving: dto.university.location.costOfLiving,
         } as any,
-
       },
 
-      topics: dto.areasOfStudy.map(a => a.name),
+      topics: dto.areasOfStudy.map((a) => a.name),
 
       requirements: dto.minAdmissionGrade
         ? [`Minimum admission grade: ${dto.minAdmissionGrade}`]
         : [],
 
-      isFavorite: false
+      isFavorite: false,
     };
   }
-
 }

@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-
   links = [
     { label: 'Home', path: '/home' },
     { label: 'Explore', path: '/explore' },
@@ -26,7 +25,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.userId = user ? user.id : null;
     });
   }
@@ -39,7 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-  } 
+  }
 
   goToProfile(): void {
     if (this.userId) {

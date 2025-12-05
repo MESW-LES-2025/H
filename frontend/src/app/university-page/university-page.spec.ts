@@ -17,12 +17,12 @@ describe('UniversityPage', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => '1'
-              }
-            }
-          }
-        }
-      ]
+                get: () => '1',
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UniversityPage);
@@ -34,4 +34,3 @@ describe('UniversityPage', () => {
     expect(component).toBeTruthy();
   });
 });
-

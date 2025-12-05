@@ -64,9 +64,11 @@ public class SecurityConfig {
 
                         // Delete account
                         .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/profile/**").permitAll()
 
                         // Favoritos (GET/POST/DELETE)
                         .requestMatchers("/api/favorites/**").permitAll()
+                        .requestMatchers("/api/favorites").permitAll()
 
                         // Endpoint de sessão para o frontend
                         .requestMatchers("/api/auth/me").permitAll()
@@ -74,9 +76,10 @@ public class SecurityConfig {
                         // Endpoints GET públicos
                         .requestMatchers(HttpMethod.GET,
                                 "/api/profile/**",
+                                "/api/courses",
                                 "/api/courses/**",
-                                "/api/courses/search",
                                 "/api/university/**",
+                                "/api/university",
                                 "/api/area-of-study",
                                 "/api/reviews/**"
                         ).permitAll()

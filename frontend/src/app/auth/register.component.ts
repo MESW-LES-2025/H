@@ -9,7 +9,7 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
-  ReactiveFormsModule
+  ReactiveFormsModule,
 } from '@angular/forms';
 
 function matchPasswords(group: AbstractControl): ValidationErrors | null {
@@ -33,7 +33,7 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
   ) {
     this.form = this.fb.group(
       {
@@ -42,12 +42,16 @@ export class RegisterComponent {
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirm: ['', [Validators.required]],
       },
-      { validators: matchPasswords }
+      { validators: matchPasswords },
     );
   }
 
   onSubmit() {
-    console.log('Submit clicked. Form valid?', this.form.valid, this.form.value);
+    console.log(
+      'Submit clicked. Form valid?',
+      this.form.valid,
+      this.form.value,
+    );
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
@@ -72,7 +76,7 @@ export class RegisterComponent {
       error: (err) => {
         console.error('Register error', err);
         alert('Registration error');
-      }
+      },
     });
   }
 

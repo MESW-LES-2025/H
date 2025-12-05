@@ -1,4 +1,4 @@
-import {UserCourse} from '../../shared/viewmodels/user-course';
+import { UserCourse } from '../../shared/viewmodels/user-course';
 
 export interface UserViewmodel {
   id: number;
@@ -9,6 +9,7 @@ export interface UserViewmodel {
   profileImage: string;
   jobTitle: string;
   academicHistory: UserCourse[];
+  role: string;
 }
 
 export interface FavoriteUniversityDTO {
@@ -33,4 +34,3 @@ export interface FavoritesResponse {
   universities: FavoriteUniversityDTO[];
   courses: FavoriteCourseDTO[];
 }
-

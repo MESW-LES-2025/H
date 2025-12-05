@@ -10,7 +10,7 @@ export interface Location {
 export interface UniversityViewmodel {
   id: number;
   name: string;
-  location: string; 
+  location: string;
   logo: string;
   bannerImage: string;
   description: string;

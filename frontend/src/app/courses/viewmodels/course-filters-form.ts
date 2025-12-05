@@ -1,4 +1,4 @@
-import { FormControl } from "@angular/forms";
+import { FormControl } from '@angular/forms';
 
 export interface CourseFiltersForm {
   name: FormControl<string | null>;
@@ -9,5 +9,4 @@ export interface CourseFiltersForm {
   duration: FormControl<number | null>;
   languages: FormControl<string[]>;
   countries: FormControl<string[]>;
-
 }

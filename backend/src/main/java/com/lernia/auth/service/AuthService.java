@@ -13,12 +13,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
+import com.lernia.auth.dto.*;
 import org.springframework.stereotype.Service;
 
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
@@ -73,8 +70,10 @@ public class AuthService {
             return new LoginResponse("Invalid credentials", "error");
         }
 
+        UserProfileResponse profile = map(user);
+
         LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUserId(user.getId());
+        res.setUser(profile);
         return res;
     }*/
 
@@ -95,20 +94,19 @@ public class AuthService {
         // --- Create Session ---
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            user.getUsername(), 
-            null, 
+            user.getUsername(),
+            null,
             List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()))
         );
         context.setAuthentication(authToken);
         SecurityContextHolder.setContext(context);
-        
+
         securityContextRepository.saveContext(context, request, response);
-        // ----------------------
+
+        UserProfileResponse profile = map(user);
 
         LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUserId(user.getId());
-        res.setUsername(user.getUsername());
-        res.setRole(user.getUserRole().name());
+        res.setUser(profile);
         return res;
     }
 
@@ -127,4 +125,18 @@ public class AuthService {
         userRepository.deleteById(id);
     }
 
+
+    private UserProfileResponse map(UserEntity u) {
+        UserProfileResponse r = new UserProfileResponse();
+        r.setId(u.getId());
+        r.setUsername(u.getUsername());
+        r.setName(u.getName());
+        r.setEmail(u.getEmail());
+        r.setAge(u.getAge());
+        r.setGender(u.getGender() != null ? u.getGender() : null);
+        r.setLocation(u.getLocation());
+        r.setJobTitle(u.getJobTitle());
+        r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
+        return r;
+    }
 }

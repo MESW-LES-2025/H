@@ -1,6 +1,6 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.UserProfileRequest;
+import com.lernia.auth.dto.EditProfileRequest;
 import com.lernia.auth.dto.UserProfileResponse;
 import com.lernia.auth.service.UserProfileService;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,48 +32,6 @@ class UserProfileControllerTest {
     }
 
     @Test
-    void testGetOwnProfile_ReturnsOk() {
-        when(authentication.getName()).thenReturn("john");
-        UserProfileResponse profile = new UserProfileResponse();
-        profile.setUsername("john");
-
-        when(userProfileService.getProfileByUsername("john")).thenReturn(profile);
-
-        ResponseEntity<UserProfileResponse> response =
-                userProfileController.getOwnProfile(authentication);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertSame(profile, response.getBody());
-
-        verify(authentication, times(1)).getName();
-        verify(userProfileService, times(1)).getProfileByUsername("john");
-    }
-
-    @Test
-    void testUpdateOwnProfile_ReturnsUpdatedProfile() {
-        when(authentication.getName()).thenReturn("maria");
-
-        UserProfileRequest req = new UserProfileRequest();
-        req.setName("Updated");
-
-        UserProfileResponse updated = new UserProfileResponse();
-        updated.setName("Updated");
-        updated.setUsername("maria");
-
-        when(userProfileService.updateProfileByUsername("maria", req))
-                .thenReturn(updated);
-
-        ResponseEntity<UserProfileResponse> response =
-                userProfileController.updateOwnProfile(authentication, req);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertSame(updated, response.getBody());
-
-        verify(authentication).getName();
-        verify(userProfileService).updateProfileByUsername("maria", req);
-    }
-
-    @Test
     void testGetById_ReturnsProfile() {
         UserProfileResponse profile = new UserProfileResponse();
         profile.setId(10L);
@@ -90,24 +48,8 @@ class UserProfileControllerTest {
     }
 
     @Test
-    void testGetByUsername_ReturnsProfile() {
-        UserProfileResponse profile = new UserProfileResponse();
-        profile.setUsername("alice");
-
-        when(userProfileService.getProfileByUsername("alice")).thenReturn(profile);
-
-        ResponseEntity<UserProfileResponse> response =
-                userProfileController.getByUsername("alice");
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("alice", response.getBody().getUsername());
-
-        verify(userProfileService).getProfileByUsername("alice");
-    }
-
-    @Test
     void testUpdateById_ReturnsUpdatedProfile() {
-        UserProfileRequest req = new UserProfileRequest();
+        EditProfileRequest req = new EditProfileRequest(null, null, null, null, null, null);
         req.setName("Bob Updated");
 
         UserProfileResponse updated = new UserProfileResponse();
@@ -117,13 +59,13 @@ class UserProfileControllerTest {
         when(userProfileService.updateProfile(7L, req)).thenReturn(updated);
 
         ResponseEntity<UserProfileResponse> response =
-                userProfileController.update(7L, req);
+                userProfileController.updateProfile(7L, req);
 
         assertEquals(200, response.getStatusCodeValue());
         assertSame(updated, response.getBody());
 
         ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<UserProfileRequest> reqCaptor = ArgumentCaptor.forClass(UserProfileRequest.class);
+        ArgumentCaptor<EditProfileRequest> reqCaptor = ArgumentCaptor.forClass(EditProfileRequest.class);
 
         verify(userProfileService).updateProfile(idCaptor.capture(), reqCaptor.capture());
         assertEquals(7L, idCaptor.getValue());

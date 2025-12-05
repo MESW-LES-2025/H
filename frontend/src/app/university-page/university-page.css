@@ -178,7 +178,7 @@
     font-size: 0.9rem;
   }
 
-  .row > [class*='col-md-'] {
+  .row > [class*="col-md-"] {
     flex: 0 0 100% !important;
     max-width: 100% !important;
   }

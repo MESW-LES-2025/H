@@ -3,7 +3,7 @@ import { CoursePageService } from './services/course-page-service';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CourseReviewsComponent } from './reviews/course-reviews.component';
 
 @Component({
@@ -24,14 +24,14 @@ export class CoursePage implements OnInit {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.svc.getCourseProfile(id).subscribe(course => {
+    this.svc.getCourseProfile(id).subscribe((course) => {
       this.course = course;
 
       // Load favorite courses for user
       const stored = localStorage.getItem('userId');
       if (!stored) return;
 
-      this.svc.getFavoriteCourses(Number(stored)).subscribe(ids => {
+      this.svc.getFavoriteCourses(Number(stored)).subscribe((ids) => {
         this.isFavorite = ids.includes(id);
       });
     });

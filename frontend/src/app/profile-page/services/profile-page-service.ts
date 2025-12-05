@@ -1,11 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import {
-  UserViewmodel,
-  FavoritesResponse
-} from '../viewmodels/user-viewmodel';
+import { UserViewmodel, FavoritesResponse } from '../viewmodels/user-viewmodel';
 import { environment } from '../../../environments/environment';
+import { EditProfileRequest } from '../viewmodels/edit-profile-request';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +43,7 @@ export class ProfilePageService {
     if (!storedId) {
       return of({
         universities: [],
-        courses: []
+        courses: [],
       } as FavoritesResponse);
     }
 
@@ -73,7 +71,7 @@ export class ProfilePageService {
     return this.http.post<void>(
       `${this.apiUrl}/api/favorites/universities/${id}`,
       {},
-      { params, withCredentials: true }
+      { params, withCredentials: true },
     );
   }
 
@@ -88,7 +86,7 @@ export class ProfilePageService {
 
     return this.http.delete<void>(
       `${this.apiUrl}/api/favorites/universities/${id}`,
-      { params, withCredentials: true }
+      { params, withCredentials: true },
     );
   }
 
@@ -108,7 +106,7 @@ export class ProfilePageService {
     return this.http.post<void>(
       `${this.apiUrl}/api/favorites/courses/${id}`,
       {},
-      { params, withCredentials: true }
+      { params, withCredentials: true },
     );
   }
 
@@ -123,7 +121,15 @@ export class ProfilePageService {
 
     return this.http.delete<void>(
       `${this.apiUrl}/api/favorites/courses/${id}`,
-      { params, withCredentials: true }
+      { params, withCredentials: true },
+    );
+  }
+
+  public updateProfile(user: EditProfileRequest): Observable<UserViewmodel> {
+    const { id, ...userData } = user;
+    return this.http.put<UserViewmodel>(
+      `${this.apiUrl}/api/profile/${id}/update-profile`,
+      { id, ...userData },
     );
   }
 
@@ -134,7 +140,7 @@ export class ProfilePageService {
   public deleteAccount(userId: number): Observable<void> {
     return this.http.delete<void>(
       `${this.apiUrl}/api/profile/delete/${userId}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 }

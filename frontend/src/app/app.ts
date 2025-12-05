@@ -10,10 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    NavbarComponent,
-  ],
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -21,11 +18,16 @@ export class App implements OnInit, OnDestroy {
   showNavbar = true;
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private router: Router, private titleService: Title, private dataService: DataService) {
+  constructor(
+    private router: Router,
+    private titleService: Title,
+    private dataService: DataService,
+  ) {
     this.router.events
       .pipe(
-        filter(event => event instanceof NavigationEnd),
-        takeUntil(this.destroy$))
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$),
+      )
       .subscribe((event: NavigationEnd) => {
         const url = event.urlAfterRedirects || event.url;
 
