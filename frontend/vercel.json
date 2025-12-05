@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build -- --configuration production",
   "outputDirectory": "dist/frontend/browser",
   "devCommand": "npm start",
   "installCommand": "npm install",
