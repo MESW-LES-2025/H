@@ -45,7 +45,7 @@ public class SecurityConfig {
                                     .map(String::trim)
                                     .filter(s -> !s.isEmpty())
                                     .collect(Collectors.toList());
-                            configuration.setAllowedOrigins(origins);
+                            configuration.setAllowedOriginPatterns(origins);
                             configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                             configuration.setAllowedHeaders(List.of("*"));
                             configuration.setAllowCredentials(true);
