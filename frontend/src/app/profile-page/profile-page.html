@@ -44,13 +44,15 @@
               </span>
             </div>
 
-            <button
-              class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
-              (click)="openEditModal()"
-            >
-              <i class="bi bi-pencil-square me-2"></i>
-              Edit Profile
-            </button>
+            @if (isOwner) {
+              <button
+                class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
+                (click)="openEditModal()"
+              >
+                <i class="bi bi-pencil-square me-2"></i>
+                Edit Profile
+              </button>
+            }
           </div>
         </div>
       </div>

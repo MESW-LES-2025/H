@@ -65,6 +65,12 @@ export class ProfilePage implements OnInit {
     this.initForm();
   }
 
+  get isOwner(): boolean {
+    const stored = localStorage.getItem('userId');
+    if (!this.user || !stored) return false;
+    return Number(stored) === this.user.id;
+  }
+
   private initForm(): void {
     this.editProfileForm = this.fb.group({
       id: this.fb.control<number | null>(null, Validators.required),
@@ -77,9 +83,8 @@ export class ProfilePage implements OnInit {
   }
 
   protected openEditModal(): void {
-    if (!this.user) return;
+    if (!this.user || !this.isOwner) return;
 
-    // Pre-fill form with current user data
     this.editProfileForm.patchValue({
       id: this.user.id,
       name: this.user.name,
