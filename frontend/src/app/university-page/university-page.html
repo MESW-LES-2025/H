@@ -196,12 +196,12 @@
                     <p class="mb-1 text-muted small">{{ scholarship.description }}</p>
                     <div class="d-flex gap-3 align-items-center">
                       <span class="badge" [ngClass]="{
-                          'bg-info': scholarship.courseType?.toLowerCase() === 'bachelor',
-                          'bg-warning': scholarship.courseType?.toLowerCase() === 'master',
-                          'bg-danger': scholarship.courseType?.toLowerCase() === 'doctorate',
-                          'bg-secondary': scholarship.courseType?.toLowerCase() !== 'bachelor' &&
-                                         scholarship.courseType?.toLowerCase() !== 'master' &&
-                                         scholarship.courseType?.toLowerCase() !== 'doctorate'
+                          'bg-info': scholarship.courseType.toLowerCase() === 'bachelor',
+                          'bg-warning': scholarship.courseType.toLowerCase() === 'master',
+                          'bg-danger': scholarship.courseType.toLowerCase() === 'doctorate',
+                          'bg-secondary': scholarship.courseType.toLowerCase() !== 'bachelor' &&
+                                         scholarship.courseType.toLowerCase() !== 'master' &&
+                                         scholarship.courseType.toLowerCase() !== 'doctorate'
                         }">
                         {{ scholarship.courseType }}
                       </span>
