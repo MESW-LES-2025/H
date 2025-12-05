@@ -4,12 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { ProfilePageService } from './profile-page-service';
-import {
-  UserViewmodel,
-  FavoritesResponse,
-  FavoriteUniversityDTO,
-  FavoriteCourseDTO,
-} from '../viewmodels/user-viewmodel';
+import { UserViewmodel, FavoritesResponse } from '../viewmodels/user-viewmodel';
 import { EditProfileRequest } from '../viewmodels/edit-profile-request';
 import { environment } from '../../../environments/environment';
 

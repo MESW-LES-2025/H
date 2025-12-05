@@ -64,9 +64,8 @@ export class CoursesService {
       });
     }
 
-    return this.http.get<Page<CourseViewmodel>>(
-      `${this.baseUrl}/api/courses`,
-      { params },
-    );
+    return this.http.get<Page<CourseViewmodel>>(`${this.baseUrl}/api/courses`, {
+      params,
+    });
   }
 }

@@ -226,7 +226,9 @@ describe('ProfilePage', () => {
       expect(component['editProfileForm'].get('name')?.value).toBe('Test User');
       expect(component['editProfileForm'].get('age')?.value).toBe(25);
       expect(component['editProfileForm'].get('gender')?.value).toBe('MALE');
-      expect(component['editProfileForm'].get('location')?.value).toBe('Lisbon');
+      expect(component['editProfileForm'].get('location')?.value).toBe(
+        'Lisbon',
+      );
       expect(component['editProfileForm'].get('jobTitle')?.value).toBe(
         'Developer',
       );
@@ -409,7 +411,6 @@ describe('ProfilePage', () => {
 
       expect(localStorage.removeItem).not.toHaveBeenCalled();
     });
-
   });
 
   describe('University Favorites', () => {
@@ -754,7 +755,7 @@ describe('ProfilePage', () => {
   describe('Component State', () => {
     it('should initialize with showEditModal as false', () => {
       fixture.detectChanges();
-      
+
       expect(component['showEditModal']).toBeFalse();
     });
 
@@ -767,7 +768,7 @@ describe('ProfilePage', () => {
       mockProfileService.getOwnFavorites.and.returnValue(
         of({ universities: [], courses: [] }),
       );
-      
+
       // Create a fresh component instance
       const newFixture = TestBed.createComponent(ProfilePage);
       const newComponent = newFixture.componentInstance;
@@ -780,7 +781,7 @@ describe('ProfilePage', () => {
       mockProfileService.getOwnFavorites.and.returnValue(
         of({ universities: [], courses: [] }),
       );
-      
+
       // Create a fresh component instance
       const newFixture = TestBed.createComponent(ProfilePage);
       const newComponent = newFixture.componentInstance;
@@ -791,7 +792,7 @@ describe('ProfilePage', () => {
 
     it('should maintain state after tab changes', () => {
       fixture.detectChanges();
-      
+
       component['setTab']('courses');
       expect(component['activeTab']).toBe('courses');
 
@@ -803,14 +804,14 @@ describe('ProfilePage', () => {
 
     it('should load universities when favorites exist', () => {
       fixture.detectChanges();
-      
+
       expect(component['universities'].length).toBeGreaterThan(0);
       expect(component['universities'][0].name).toBe('Oxford University');
     });
 
     it('should load courses when favorites exist', () => {
       fixture.detectChanges();
-      
+
       expect(component['courses'].length).toBeGreaterThan(0);
       expect(component['courses'][0].name).toBe('Computer Science');
     });

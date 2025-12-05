@@ -48,7 +48,10 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {
     this.restoreSession();
   }
 
@@ -75,21 +78,21 @@ export class AuthService {
       headers = headers.set(this.csrfHeaderName, this.csrfToken);
     }
 
-    return this.http.post<LoginResponse>(
-      `${this.baseUrl}/login`,
-      body,
-      { withCredentials: true }
-    ).pipe(
-      tap(response => {
-        if (response.status === 'success') {
-          if (response.user) {
-            this.currentUserSubject.next({
-              id: response.user.id
-            });
-          }
-        }
+    return this.http
+      .post<LoginResponse>(`${this.baseUrl}/login`, body, {
+        withCredentials: true,
       })
-    );
+      .pipe(
+        tap((response) => {
+          if (response.status === 'success') {
+            if (response.user) {
+              this.currentUserSubject.next({
+                id: response.user.id,
+              });
+            }
+          }
+        }),
+      );
   }
 
   register(body: RegisterRequest): Observable<RegisterResponse> {
@@ -105,15 +108,17 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post(`${this.baseUrl}/api/auth/logout`, {}, { withCredentials: true }).subscribe({
-      next: () => {
-        this.currentUserSubject.next(null);
-        this.router.navigate(['/']);
-      },
-      error: () => {
-        this.currentUserSubject.next(null);
-        this.router.navigate(['/']);
-      }
-    });
+    this.http
+      .post(`${this.baseUrl}/api/auth/logout`, {}, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          this.currentUserSubject.next(null);
+          this.router.navigate(['/']);
+        },
+        error: () => {
+          this.currentUserSubject.next(null);
+          this.router.navigate(['/']);
+        },
+      });
   }
 }

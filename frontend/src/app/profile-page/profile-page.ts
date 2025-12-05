@@ -54,11 +54,11 @@ export class ProfilePage implements OnInit {
     if (!isNaN(id)) {
       this.profilePageService
         .getUserProfile(id)
-        .subscribe((user) => this.user = user);
+        .subscribe((user) => (this.user = user));
     } else {
       this.profilePageService
         .getOwnProfile()
-        .subscribe((user) => this.user = user);
+        .subscribe((user) => (this.user = user));
     }
 
     this.loadFavorites();
