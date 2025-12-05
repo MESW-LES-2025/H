@@ -419,4 +419,18 @@ class AuthServiceTest {
         verify(userRepository, times(1)).findByUsername("simpleuser");
         verify(userRepository, never()).findByEmail(anyString());
     }
+
+    @Test
+    void logout_ShouldClearSecurityContext() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        authService.logout(request, response);
+
+        ArgumentCaptor<SecurityContext> contextCaptor = ArgumentCaptor.forClass(SecurityContext.class);
+        verify(securityContextRepository).saveContext(contextCaptor.capture(), eq(request), eq(response));
+        
+        SecurityContext capturedContext = contextCaptor.getValue();
+        assertNull(capturedContext.getAuthentication(), "Authentication should be null after logout");
+    }
 }

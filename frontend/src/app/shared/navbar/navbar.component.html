@@ -40,5 +40,13 @@
       (click)="goToProfile()">
       <img src="/images/profile-outline.svg" alt="" />
     </button>
+
+    <!-- Logout Button -->
+    <button
+      *ngIf="userId"
+      class="btn-logout"
+      (click)="logout()">
+      Log Out
+    </button>
   </div>
 </header>
