@@ -1,9 +1,6 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
+import com.lernia.auth.dto.*;
 import com.lernia.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,7 +45,8 @@ class AuthControllerTest {
 
         LoginResponse serviceResponse =
                 new LoginResponse("Login successful", "success");
-        serviceResponse.setUserId(123L);
+        serviceResponse.setUser(new UserProfileResponse());
+        serviceResponse.getUser().setId(123L);
 
         when(authService.login(any(LoginRequest.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(serviceResponse);
@@ -58,7 +56,7 @@ class AuthControllerTest {
         assertNotNull(controllerResponse);
         assertEquals("Login successful", controllerResponse.getMessage());
         assertEquals("success", controllerResponse.getStatus());
-        assertEquals(123L, controllerResponse.getUserId());
+        assertEquals(123L, controllerResponse.getUser().getId());
 
         ArgumentCaptor<LoginRequest> captor = ArgumentCaptor.forClass(LoginRequest.class);
         verify(authService, times(1)).login(captor.capture(), eq(request), eq(response));

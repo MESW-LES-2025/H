@@ -1,107 +1,40 @@
 package com.lernia.auth.dto;
 
 import com.lernia.auth.entity.enums.Gender;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
 
 public class UserProfileResponse {
 
+    @Setter
+    @Getter
     private Long id;
+    @Setter
+    @Getter
     private String name;
+    @Setter
+    @Getter
     private String username;
+    @Setter
+    @Getter
     private String email;
+    @Setter
+    @Getter
     private Integer age;
+    @Setter
+    @Getter
     private Gender gender;
+    @Setter
+    @Getter
     private String location;
-    private String profilePicture;
+    @Setter
+    @Getter
     private String jobTitle;
-    private LocalDate creationDate;  
-    private String userRole;  
-    private LocalDate premiumStartDate;
+    @Setter
+    @Getter
+    private String userRole;
 
     public UserProfileResponse() {}
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
-
-    public LocalDate getPremiumStartDate() {
-        return premiumStartDate;
-    }
-    public void setPremiumStartDate(LocalDate premiumStartDate) {
-        this.premiumStartDate = premiumStartDate;
-    }
 }

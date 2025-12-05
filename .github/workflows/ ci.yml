@@ -27,7 +27,7 @@ jobs:
           cache: 'maven'
 
       - name: Run Unit Tests
-        run: mvn test -Dtest='**.*Test'
+        run: mvn test -Dtest='**.*Test' -U -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.count=3
         working-directory: ./backend
 
   backend-build:
@@ -92,6 +92,20 @@ jobs:
     name: Run Acceptance Tests
     runs-on: ubuntu-latest
     needs: [ backend-build, frontend ]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: lernia
+          POSTGRES_USER: lernia
+          POSTGRES_PASSWORD: lernia
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       HEADLESS: "true"
       APP_BASE_URL: "http://localhost:4200"
@@ -134,10 +148,27 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> $GITHUB_ENV
 
-      - name: Run backend acceptance tests (compile tests + run Failsafe)
-        run: mvn failsafe:integration-test failsafe:verify -DfailIfNoTests=false
+      - name: Download Backend Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: backend/target
+
+      - name: Start backend server in background
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5433/lernia
+          SPRING_DATASOURCE_USERNAME: lernia
+          SPRING_DATASOURCE_PASSWORD: lernia
+        run: |
+          java -jar target/*.jar &
+          npx wait-on --timeout 120000 tcp:8080
         working-directory: ./backend
 
-      - name: Stop frontend server
+      - name: Run acceptance tests
+        run: mvn test
+        working-directory: ./acceptance-tests
+
+      - name: Stop servers
         run: |
           lsof -ti :4200 | xargs kill -9 || true
+          lsof -ti :8080 | xargs kill -9 || true

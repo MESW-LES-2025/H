@@ -68,6 +68,7 @@ public class SecurityConfig {
 
                         // Favoritos (GET/POST/DELETE)
                         .requestMatchers("/api/favorites/**").permitAll()
+                        .requestMatchers("/api/favorites").permitAll()
 
                         // Endpoint de sessão para o frontend
                         .requestMatchers("/api/auth/me").permitAll()

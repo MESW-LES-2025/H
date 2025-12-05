@@ -3,7 +3,7 @@ package com.lernia.auth.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.lernia.auth.dto.UserProfileRequest;
+import com.lernia.auth.dto.EditProfileRequest;
 import com.lernia.auth.dto.UserProfileResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
@@ -59,13 +59,10 @@ class UserProfileServiceTest {
         assertEquals("User One", res.getName());
         assertEquals("u1@example.com", res.getEmail());
         assertEquals(30, res.getAge());
-        assertEquals("FEMALE", res.getGender());
+        assertEquals("FEMALE", res.getGender().toString());
         assertEquals("City", res.getLocation());
-        assertEquals("pic.png", res.getProfilePicture());
         assertEquals("Engineer", res.getJobTitle());
-        assertEquals(LocalDate.of(2020, 1, 1), res.getCreationDate());
         assertEquals("REGULAR", res.getUserRole());
-        assertEquals(LocalDate.of(2021, 6, 1), res.getPremiumStartDate());
     }
 
     @Test
@@ -209,7 +206,7 @@ class UserProfileServiceTest {
         when(userRepository.findById(20L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(UserEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UserProfileRequest req = new UserProfileRequest();
+        EditProfileRequest req = new EditProfileRequest(null, null,null, null,null, null);
         req.setLocation("NewCity");
 
         UserProfileResponse res = userProfileService.updateProfile(20L, req);
@@ -228,7 +225,7 @@ class UserProfileServiceTest {
         assertEquals(20L, res.getId());
         assertEquals("Original Name", res.getName());
         assertEquals("NewCity", res.getLocation());
-        assertEquals("FEMALE", res.getGender());
+        assertEquals("FEMALE", res.getGender().toString());
     }
 
     @Test
@@ -245,7 +242,7 @@ class UserProfileServiceTest {
         when(userRepository.findByUsername("emptyUpdateUser")).thenReturn(Optional.of(user));
         when(userRepository.save(any(UserEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UserProfileRequest req = new UserProfileRequest();
+        EditProfileRequest req = new EditProfileRequest(null, null,null, null,null, null);
 
         UserProfileResponse res = userProfileService.updateProfileByUsername("emptyUpdateUser", req);
 
@@ -264,7 +261,7 @@ class UserProfileServiceTest {
         assertEquals("emptyUpdateUser", res.getUsername());
         assertEquals("Existing Name", res.getName());
         assertEquals("ExistingCity", res.getLocation());
-        assertEquals("OTHER", res.getGender());
+        assertEquals("OTHER", res.getGender().toString());
     }
 
     @Test
@@ -277,5 +274,4 @@ class UserProfileServiceTest {
         );
     }
 
-    }
 }

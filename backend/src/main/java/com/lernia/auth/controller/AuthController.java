@@ -45,6 +45,12 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
     @DeleteMapping("/api/profile/delete/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         authService.deleteAccount(id);
