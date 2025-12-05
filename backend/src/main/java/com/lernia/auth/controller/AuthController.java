@@ -47,8 +47,6 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
-    @GetMapping("/me")
-
     @DeleteMapping("/api/profile/delete/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         authService.deleteAccount(id);

@@ -271,7 +271,7 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         loginPasswordField.sendKeys(password);
         loginButton.click();
 
-        wait.until(d -> !d.getCurrentUrl().contains("/profile"));
+        wait.until(d -> d.getCurrentUrl().contains("/profile"));
 
         WebElement logoutBtn = wait.until(d -> findAny(
                 By.cssSelector("button.btn-logout"),
