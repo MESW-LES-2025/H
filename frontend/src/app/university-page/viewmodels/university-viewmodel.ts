@@ -1,4 +1,5 @@
 import { Course } from '../../shared/viewmodels/course';
+import { Scholarship } from './scholarship';
 
 export interface Location {
   id: number;
@@ -17,4 +18,8 @@ export interface UniversityViewmodel {
   studentCount: number;
   foundedYear: number;
   courses: Course[];
+  scholarships: Scholarship[];
+  address: string;
+  contactInfo: string;
+  website: string;
 }
