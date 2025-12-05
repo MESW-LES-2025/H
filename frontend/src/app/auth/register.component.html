@@ -47,8 +47,10 @@
         <label>Password</label>
         <div class="field has-icon">
           <input
-            [type]="show1 ? 'text' : 'password'"
             formControlName="password"
+            id="password"
+            name="password"
+            [type]="show1 ? 'text' : 'password'"
             placeholder="Enter your password"
           />
           <button
