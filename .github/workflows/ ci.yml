@@ -161,7 +161,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: lernia
         run: |
           java -jar target/*.jar &
-          npx wait-on --timeout 120000 http://localhost:8080
+          npx wait-on --timeout 120000 tcp:8080
         working-directory: ./backend
 
       - name: Run acceptance tests
