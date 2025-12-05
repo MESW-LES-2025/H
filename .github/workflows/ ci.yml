@@ -27,7 +27,7 @@ jobs:
           cache: 'maven'
 
       - name: Run Unit Tests
-        run: mvn test -Dtest='**.*Test'
+        run: mvn test -Dtest='**.*Test' -U -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.count=3
         working-directory: ./backend
 
   backend-build:
