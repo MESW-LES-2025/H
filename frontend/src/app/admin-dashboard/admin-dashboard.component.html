@@ -1,0 +1,225 @@
+<div class="container-fluid py-5 bg-light">
+  <div class="row justify-content-center">
+    <div class="col-lg-11">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+          <h1 class="display-5 fw-bold text-dark mb-1">Admin Dashboard</h1>
+        </div>
+      </div>
+
+      @if (loading) {
+        <div class="text-center py-5">
+          <div
+            class="spinner-border text-primary"
+            style="width: 3rem; height: 3rem"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <h4 class="mt-3 text-muted">Loading dashboard data...</h4>
+        </div>
+      }
+
+      @if (error) {
+        <div class="alert alert-danger border-0 shadow-sm" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+        </div>
+      }
+
+      @if (!loading && !error) {
+        <!-- Stats Row - Clickable -->
+        <div class="row g-4 mb-5">
+          <div class="col-md-3">
+            <div
+              class="card border-0 shadow h-100 stat-card hover-lift"
+              [class.border-primary]="activeTab === 'users'"
+              (click)="setActiveTab('users')"
+            >
+              <div class="card-body text-center p-4">
+                <h3 class="fw-bold text-primary mb-1 stat-number">
+                  {{ users.length }}
+                </h3>
+                <p class="text-muted mb-0">Total Users</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div
+              class="card border-0 shadow h-100 stat-card hover-lift"
+              [class.border-success]="activeTab === 'universities'"
+              (click)="setActiveTab('universities')"
+            >
+              <div class="card-body text-center p-4">
+                <h3 class="fw-bold text-success mb-1 stat-number">
+                  {{ universities.length }}
+                </h3>
+                <p class="text-muted mb-0">Universities</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div
+              class="card border-0 shadow h-100 stat-card hover-lift"
+              [class.border-info]="activeTab === 'courses'"
+              (click)="setActiveTab('courses')"
+            >
+              <div class="card-body text-center p-4">
+                <h3 class="fw-bold text-info mb-1 stat-number">
+                  {{ courses.length }}
+                </h3>
+                <p class="text-muted mb-0">Courses</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Users Table -->
+          @if (activeTab === "users") {
+            <div class="card border-0 shadow-lg">
+              <div class="card-header bg-gradient-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4 class="mb-0 fw-bold">
+                    <i class="fas fa-users me-2"></i>Users Management
+                  </h4>
+                  <span class="badge bg-light text-dark fs-6 px-3 py-2">{{
+                    users.length
+                  }}</span>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive table-container">
+                  <table class="table table-hover mb-0 table-sticky-header">
+                    <thead class="table-dark">
+                      <tr>
+                        <th class="border-0 w-10">ID</th>
+                        <th class="border-0 w-20">Name</th>
+                        <th class="border-0 w-30">Email</th>
+                        <th class="border-0 w-25">Role</th>
+                        <th class="border-0 w-15 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (user of users; track user.id) {
+                        <tr class="table-row-hover">
+                          <td class="fw-medium w-10">{{ user.id }}</td>
+                          <td
+                            class="text-truncate w-20"
+                            style="max-width: 200px"
+                          >
+                            {{ user.name || user.fullName || user.username }}
+                          </td>
+                          <td class="w-30">{{ user.email }}</td>
+                          <td class="w-25">
+                            <span
+                              class="badge bg-info text-dark px-3 py-2 fs-6"
+                              >{{ user.userRole }}</span
+                            >
+                          </td>
+                          <td class="text-center py-2 w-15">
+                            @if (user.id !== currentUserId) {
+                              <button class="btn btn-sm btn-outline-danger p-1">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            }
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Universities Table -->
+          @if (activeTab === "universities") {
+            <div class="card border-0 shadow-lg">
+              <div class="card-header bg-gradient-success text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4 class="mb-0 fw-bold">
+                    <i class="fas fa-university me-2"></i>Universities
+                  </h4>
+                  <span class="badge bg-light text-dark fs-6 px-3 py-2">{{
+                    universities.length
+                  }}</span>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive table-container">
+                  <table class="table table-hover mb-0 table-sticky-header">
+                    <thead class="table-dark">
+                      <tr>
+                        <th class="border-0">ID</th>
+                        <th class="border-0">Name</th>
+                        <th class="border-0">Description</th>
+                        <th class="border-0">Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (uni of universities; track uni.id) {
+                        <tr class="table-row-hover">
+                          <td class="fw-medium">{{ uni.id }}</td>
+                          <td class="text-truncate" style="max-width: 250px">
+                            {{ uni.name }}
+                          </td>
+                          <td>{{ uni.description || "N/A" }}</td>
+                          <td>{{ uni.location?.city || "N/A" }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Courses Table -->
+          <!-- Courses Table -->
+          @if (activeTab === "courses") {
+            <div class="card border-0 shadow-lg">
+              <div class="card-header bg-gradient-info text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4 class="mb-0 fw-bold">
+                    <i class="fas fa-book me-2"></i>Courses
+                  </h4>
+                  <span class="badge bg-light text-dark fs-6 px-3 py-2">{{
+                    courses.length
+                  }}</span>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive table-container">
+                  <table class="table table-hover mb-0 table-sticky-header">
+                    <thead class="table-dark">
+                      <tr>
+                        <th class="border-0">ID</th>
+                        <th class="border-0">Title</th>
+                        <th class="border-0">Type</th>
+                        <th class="border-0">University</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (course of courses; track course.id) {
+                        <tr class="table-row-hover">
+                          <td class="fw-medium">{{ course.id }}</td>
+                          <td class="text-truncate" style="max-width: 250px">
+                            {{ course.title || course.name }}
+                          </td>
+                          <td>{{ course.courseType || "N/A" }}</td>
+                          <td>{{ course.universityName || "N/A" }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

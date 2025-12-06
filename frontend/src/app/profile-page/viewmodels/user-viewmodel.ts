@@ -9,7 +9,7 @@ export interface UserViewmodel {
   profileImage: string;
   jobTitle: string;
   academicHistory: UserCourse[];
-  role: string;
+  userRole: string;
 }
 
 export interface FavoriteUniversityDTO {

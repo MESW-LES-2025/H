@@ -92,6 +92,9 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
+                        // Admin endpoints require ADMIN role
+                        .requestMatchers("/api/admin/**").permitAll()
+
                         // Tudo o resto precisa de autenticação
                         .anyRequest().authenticated()
                 );

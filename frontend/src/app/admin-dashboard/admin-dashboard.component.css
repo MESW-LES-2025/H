@@ -1,0 +1,138 @@
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.bg-gradient-success {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+}
+.bg-gradient-info {
+  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+}
+.hover-lift {
+  transition: all 0.2s ease-in-out;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+.stat-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px) !important;
+}
+.stat-card:hover .stat-number {
+  transform: scale(1.1);
+}
+.table-row-hover:hover {
+  background-color: rgba(0, 123, 255, 0.075);
+}
+.stat-number {
+  transition: transform 0.2s ease;
+}
+.tab-content {
+  animation: fadeIn 0.3s ease-in;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scrollable-table-container {
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.scrollable-table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.scrollable-tbody {
+  max-height: 450px;
+  overflow-y: auto;
+  display: block;
+}
+
+.table-sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #212529;
+}
+
+.scrollable-tbody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-tbody::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scrollable-tbody::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.scrollable-tbody::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.table-container {
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.table-sticky-header {
+  position: relative;
+}
+
+.table-sticky-header thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #212529 !important;
+  border-bottom: 2px solid #495057;
+}
+
+.table-container .table {
+  margin-bottom: 0;
+}
+
+.table-container tbody {
+  display: block;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.table-container thead,
+.table-container tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-container th,
+.table-container td {
+  width: 20%; /* Equal width for all columns */
+}

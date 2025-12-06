@@ -22,7 +22,7 @@ describe('ProfilePageService', () => {
     profileImage: 'image.jpg',
     jobTitle: 'Developer',
     academicHistory: [],
-    role: 'USER',
+    userRole: 'USER',
   };
 
   beforeEach(() => {
@@ -71,7 +71,7 @@ describe('ProfilePageService', () => {
         profileImage: 'profile.jpg',
         jobTitle: 'Manager',
         academicHistory: [],
-        role: 'USER',
+        userRole: 'USER',
       };
 
       service.getUserProfile(456).subscribe((user) => {
@@ -327,7 +327,7 @@ describe('ProfilePageService', () => {
         profileImage: 'image.jpg',
         jobTitle: 'Senior Developer',
         academicHistory: [],
-        role: 'USER',
+        userRole: 'USER',
       };
 
       service.updateProfile(updateRequest).subscribe((user) => {

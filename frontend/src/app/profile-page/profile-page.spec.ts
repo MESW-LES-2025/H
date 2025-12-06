@@ -24,7 +24,7 @@ describe('ProfilePage', () => {
     jobTitle: 'Developer',
     profileImage: '/test-image.jpg',
     academicHistory: [],
-    role: 'USER',
+    userRole: 'USER',
   };
 
   const mockFavorites: FavoritesResponse = {

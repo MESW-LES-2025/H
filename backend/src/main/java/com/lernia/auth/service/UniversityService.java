@@ -101,7 +101,8 @@ public class UniversityService {
                             .map(course -> new CourseLightDTO(
                                     course.getId(),
                                     course.getName(),
-                                    course.getCourseType()))
+                                    course.getCourseType(),
+                                    course.getUniversity().getName()))
                             .collect(Collectors.toList());
 
                     List<ScholarshipEntity> scholarshipEntities = scholarshipRepository.findByUniversityId(id);

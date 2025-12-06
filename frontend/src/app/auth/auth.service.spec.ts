@@ -23,7 +23,7 @@ describe('AuthService', () => {
     profileImage: 'test.jpg',
     jobTitle: 'Developer',
     academicHistory: [],
-    role: 'USER',
+    userRole: 'USER',
   };
 
   beforeEach(() => {

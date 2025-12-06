@@ -120,7 +120,8 @@ public class FavoritesService {
         return new CourseLightDTO(
                 course.getId(),
                 course.getName(),
-                course.getCourseType()
+                course.getCourseType(),
+                course.getUniversity().getName()
         );
     }
 }

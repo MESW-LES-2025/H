@@ -57,8 +57,8 @@ export class LoginComponent {
           if (res.user.name) {
             localStorage.setItem('username', res.user.name);
           }
-          if (res.user.role) {
-            localStorage.setItem('role', res.user.role);
+          if (res.user.userRole) {
+            localStorage.setItem('userRole', res.user.userRole);
           }
 
           this.router.navigate(['/profile', res.user.id]);

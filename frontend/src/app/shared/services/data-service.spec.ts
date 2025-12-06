@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { DataService } from './data-service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { AreasOfStudy } from '../viewmodels/area-of-study';
 import { firstValueFrom } from 'rxjs';
 import { skip, take } from 'rxjs/operators';
@@ -29,17 +32,32 @@ describe('DataService', () => {
   });
 
   it('loadFilterLists should request areas, languages and countries and publish results', async () => {
-    const areasPromise = firstValueFrom(service.areasOfStudy$.pipe(skip(1), take(1)));
-    const langsPromise = firstValueFrom(service.languages$.pipe(skip(1), take(1)));
-    const countriesPromise = firstValueFrom(service.countries$.pipe(skip(1), take(1)));
+    const areasPromise = firstValueFrom(
+      service.areasOfStudy$.pipe(skip(1), take(1)),
+    );
+    const langsPromise = firstValueFrom(
+      service.languages$.pipe(skip(1), take(1)),
+    );
+    const countriesPromise = firstValueFrom(
+      service.countries$.pipe(skip(1), take(1)),
+    );
 
     service.loadFilterLists();
 
-    const reqAreas = httpMock.expectOne((req) => req.url.endsWith('/api/area-of-study'));
-    const reqLangs = httpMock.expectOne((req) => req.url.endsWith('/api/courses/languages'));
-    const reqCountries = httpMock.expectOne((req) => req.url.endsWith('/api/university/countries'));
+    const reqAreas = httpMock.expectOne((req) =>
+      req.url.endsWith('/api/area-of-study'),
+    );
+    const reqLangs = httpMock.expectOne((req) =>
+      req.url.endsWith('/api/courses/languages'),
+    );
+    const reqCountries = httpMock.expectOne((req) =>
+      req.url.endsWith('/api/university/countries'),
+    );
 
-    reqAreas.flush([{ name: 'Engineering' }, { name: 'Mathematics' }] as AreasOfStudy[]);
+    reqAreas.flush([
+      { name: 'Engineering' },
+      { name: 'Mathematics' },
+    ] as AreasOfStudy[]);
     reqLangs.flush(['English', 'Portuguese']);
     reqCountries.flush(['Brazil', 'Sweden']);
 
@@ -55,15 +73,27 @@ describe('DataService', () => {
   it('loadFilterLists should handle errors and publish empty arrays', async () => {
     spyOn(console, 'error');
 
-    const areasPromise = firstValueFrom(service.areasOfStudy$.pipe(skip(1), take(1)));
-    const langsPromise = firstValueFrom(service.languages$.pipe(skip(1), take(1)));
-    const countriesPromise = firstValueFrom(service.countries$.pipe(skip(1), take(1)));
+    const areasPromise = firstValueFrom(
+      service.areasOfStudy$.pipe(skip(1), take(1)),
+    );
+    const langsPromise = firstValueFrom(
+      service.languages$.pipe(skip(1), take(1)),
+    );
+    const countriesPromise = firstValueFrom(
+      service.countries$.pipe(skip(1), take(1)),
+    );
 
     service.loadFilterLists();
 
-    const reqAreas = httpMock.expectOne((req) => req.url.endsWith('/api/area-of-study'));
-    const reqLangs = httpMock.expectOne((req) => req.url.endsWith('/api/courses/languages'));
-    const reqCountries = httpMock.expectOne((req) => req.url.endsWith('/api/university/countries'));
+    const reqAreas = httpMock.expectOne((req) =>
+      req.url.endsWith('/api/area-of-study'),
+    );
+    const reqLangs = httpMock.expectOne((req) =>
+      req.url.endsWith('/api/courses/languages'),
+    );
+    const reqCountries = httpMock.expectOne((req) =>
+      req.url.endsWith('/api/university/countries'),
+    );
 
     // flush the non-errored requests first, then make one request fail to trigger catchError branch
     reqLangs.flush(['English']);
@@ -84,7 +114,11 @@ describe('DataService', () => {
     expect(service.getUserAtual()).toBeNull();
     expect(service.getUserAtualId()).toBeNull();
 
-    const user: UserViewmodel = { id: 42, displayName: 'Test', email: 'a@b.c' } as any;
+    const user: UserViewmodel = {
+      id: 42,
+      displayName: 'Test',
+      email: 'a@b.c',
+    } as any;
     service.setUserAtual(user);
 
     expect(service.getUserAtual()).toEqual(user);
