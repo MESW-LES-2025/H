@@ -476,6 +476,36 @@ describe('ProfilePageService', () => {
     });
   });
 
+  describe('changePassword', () => {
+    it('should change password successfully', () => {
+      const userId = 1;
+      const data = { currentPassword: 'old', newPassword: 'new' };
+
+      service.changePassword(userId, data).subscribe();
+
+      const req = httpMock.expectOne(`${apiUrl}/api/profile/${userId}/password`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(data);
+      expect(req.request.withCredentials).toBe(true);
+      req.flush(null);
+    });
+
+    it('should handle error when changing password', () => {
+      const userId = 1;
+      const data = { currentPassword: 'old', newPassword: 'new' };
+
+      service.changePassword(userId, data).subscribe({
+        next: () => fail('should have failed'),
+        error: (error) => {
+          expect(error.status).toBe(400);
+        },
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/api/profile/${userId}/password`);
+      req.flush('Bad Request', { status: 400, statusText: 'Bad Request' });
+    });
+  });
+
   describe('deleteAccount', () => {
     it('should delete account successfully', () => {
       service.deleteAccount(123).subscribe();
