@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CourseViewmodel } from '../viewmodels/course-viewmodel';
-import {Page, PageRequest} from "../../shared/viewmodels/pagination";
-import {CourseFilters} from "../viewmodels/course-filters";
+import { Page, PageRequest } from '../../shared/viewmodels/pagination';
+import { CourseFilters } from '../viewmodels/course-filters';
 
 @Injectable({ providedIn: 'root' })
 export class CoursesService {
@@ -12,10 +12,13 @@ export class CoursesService {
 
   constructor(private http: HttpClient) {}
 
-  getCourses(filters: CourseFilters, pageRequest: PageRequest): Observable<Page<CourseViewmodel>> {
+  getCourses(
+    filters: CourseFilters,
+    pageRequest: PageRequest,
+  ): Observable<Page<CourseViewmodel>> {
     let params = new HttpParams()
-        .set('page', pageRequest.page.toString())
-        .set('size', pageRequest.size.toString());
+      .set('page', pageRequest.page.toString())
+      .set('size', pageRequest.size.toString());
 
     if (pageRequest.sort) {
       params = params.set('sort', pageRequest.sort);
@@ -26,7 +29,7 @@ export class CoursesService {
     }
 
     if (filters.courseTypes && filters.courseTypes.length > 0) {
-      filters.courseTypes.forEach(type => {
+      filters.courseTypes.forEach((type) => {
         params = params.append('courseTypes', type);
       });
     }
@@ -44,24 +47,25 @@ export class CoursesService {
     }
 
     if (filters.languages && filters.languages.length > 0) {
-      filters.languages.forEach(lang => {
+      filters.languages.forEach((lang) => {
         params = params.append('languages', lang);
       });
     }
 
     if (filters.countries && filters.countries.length > 0) {
-      filters.countries.forEach(country => {
+      filters.countries.forEach((country) => {
         params = params.append('countries', country);
       });
     }
 
     if (filters.areasOfStudy && filters.areasOfStudy.length > 0) {
-      filters.areasOfStudy.forEach(area => {
+      filters.areasOfStudy.forEach((area) => {
         params = params.append('areasOfStudy', area);
       });
     }
 
-    return this.http.get<Page<CourseViewmodel>>(`${this.baseUrl}/api/courses`, { params });
+    return this.http.get<Page<CourseViewmodel>>(`${this.baseUrl}/api/courses`, {
+      params,
+    });
   }
-
 }

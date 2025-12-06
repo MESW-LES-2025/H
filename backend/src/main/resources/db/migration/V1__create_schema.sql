@@ -137,6 +137,5 @@ CREATE TABLE lernia.user_courses (
      user_id BIGINT NOT NULL REFERENCES lernia.users(id) ON DELETE CASCADE,
      course_id BIGINT NOT NULL REFERENCES lernia.courses(id) ON DELETE CASCADE,
      start_date DATE,
-     end_date DATE,
-     is_finished BOOLEAN
+     end_date DATE
 );

@@ -13,4 +13,6 @@ export interface CourseViewmodel {
   university: UniversityLight;
   topics: string[];
   requirements: string[];
+
+  isFavorite?: boolean;
 }

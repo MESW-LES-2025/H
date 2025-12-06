@@ -1,60 +1,32 @@
-.profile-card {
-  background: linear-gradient(135deg, #6ba598 0%, #7ab5a5 100%);
-  border-radius: 20px;
-  overflow: hidden;
+.nav-link {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: all 0.3s ease;
 }
 
-.profile-image {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+.nav-link:hover {
+  background-color: rgba(13, 110, 253, 0.1);
 }
 
-.btn-light:hover {
-  transform: translateY(-2px);
-  transition: all 0.2s;
+.nav-link.active {
+  background-color: white;
+  border-bottom: 3px solid #0d6efd;
 }
 
-.circle-decoration {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+.transition-hover {
+  transition: all 0.3s ease;
 }
 
-.circle-1 {
-  width: 200px;
-  height: 200px;
-  top: -100px;
-  left: -50px;
+.transition-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
-.circle-2 {
-  width: 150px;
-  height: 150px;
-  bottom: -75px;
-  right: 10%;
+.transition-scale {
+  transition: transform 0.2s ease;
 }
 
-.circle-3 {
-  width: 100px;
-  height: 100px;
-  top: 20%;
-  right: -30px;
-}
-
-.university-icon {
-  width: 84px;
-  height: 84px;
-}
-
-.academic-item:last-child {
-  border-bottom: none !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.university-logo {
-  max-width: 60px;
-  max-height: 60px;
-  object-fit: contain;
+.transition-scale:hover {
+  transform: scale(1.1);
 }

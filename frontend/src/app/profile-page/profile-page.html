@@ -1,77 +1,424 @@
+<router-outlet></router-outlet>
+
 @if (user) {
-  <div class="container" style="max-width: 900px;">
-    <div class="card profile-card border-0 shadow position-relative my-4 d-flex flex-column">
-      <div class="circle-decoration circle-1"></div>
-      <div class="circle-decoration circle-2"></div>
-      <div class="circle-decoration circle-3"></div>
-
-      <div class="card-body p-4 position-relative flex-grow-1">
-        <div class="row align-items-start g-3">
-          <div class="col-2">
-            <img [src]="user.profileImage"
-                 alt="User Profile Picture"
-                 class="rounded-circle border border-4 border-white"
-                 style="width: 120px; height: 120px; object-fit: cover;">
+  <div class="container" style="max-width: 1100px">
+    <div class="card border-0 shadow-sm position-relative my-4">
+      <!-- Profile Header -->
+      <div class="card-body p-4 bg-light rounded">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+          <!-- Avatar -->
+          <div class="position-relative">
+            <img
+              class="rounded-circle shadow-sm"
+              style="
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border: 4px solid white;
+              "
+              [src]="user.profileImage || '/images/default-avatar.png'"
+              [alt]="user.name || 'User picture'"
+            />
           </div>
-          <div class="col-10">
-            <div class="row">
-              <div class="col-6">
-                <h2 class="h2 fw-bold text-white mb-1">{{ user.name }}</h2>
-                <p class="text-white mb-0">{{ user.location }}</p>
-                <p class="text-white mb-0">{{ user.jobTitle }}</p>
-              </div>
-              @if (user.academicHistory && user.academicHistory.length > 0) {
-                <div class="col-6">
-                  <div class="mt-3">
-                    @let latestCourse = user.academicHistory[user.academicHistory.length - 1];
-                    <p class="text-white small mb-1">
-                      <strong>{{ latestCourse.course.university.name }}</strong>
-                    </p>
-                    <p class="text-white small mb-0">{{ latestCourse.course.name }}</p>
-                  </div>
-                </div>
-              }
+
+          <!-- Profile Info -->
+          <div class="flex-grow-1">
+            <h1 class="h3 fw-bold mb-2">{{ user.name }}</h1>
+            <p class="text-muted mb-1">
+              <i class="bi bi-geo-alt-fill me-1"></i>
+              {{ user.location ? user.location : "Location not set" }}
+            </p>
+            <p class="text-secondary mb-3">
+              <i class="bi bi-briefcase-fill me-1"></i>
+              {{ user.jobTitle ? user.jobTitle : "Job title not set" }}
+            </p>
+
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+              <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                <i class="bi bi-calendar3 me-1"></i>
+                {{ user.age ? user.age + " years" : "Age not set" }}
+              </span>
+              <span class="badge bg-info text-dark px-3 py-2 rounded-pill">
+                <i class="bi bi-person-fill me-1"></i>
+                {{ user.gender ? user.gender : "Gender not set" }}
+              </span>
             </div>
-            <div class="d-flex gap-2 w-50 mt-3">
-              <button class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1">
-                Add Friend
+
+            @if (isOwner) {
+              <button
+                class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
+                (click)="openEditModal()"
+              >
+                <i class="bi bi-pencil-square me-2"></i>
+                Edit Profile
               </button>
-              <button class="btn btn-light rounded-pill px-3 py-1 fw-semibold btn-sm flex-grow-1">
-                Message
-              </button>
-            </div>
+            }
           </div>
         </div>
-        </div>
-
       </div>
+    </div>
+  </div>
 
-    <div class="card border-0 shadow">
-      <div class="card-body p-4">
-        <h3 class="h5 fw-bold mb-3">Education</h3>
+  <!-- Tabs -->
+  <div class="container" style="max-width: 1100px">
+    <ul class="nav nav-tabs border-bottom-0 mb-4">
+      <li class="nav-item">
+        <button
+          class="nav-link px-4 py-2 rounded-top"
+          [class.active]="activeTab === 'universities'"
+          [class.fw-semibold]="activeTab === 'universities'"
+          (click)="setTab('universities')"
+        >
+          <i class="bi bi-building me-2"></i>
+          Universities
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class="nav-link px-4 py-2 rounded-top"
+          [class.active]="activeTab === 'courses'"
+          [class.fw-semibold]="activeTab === 'courses'"
+          (click)="setTab('courses')"
+        >
+          <i class="bi bi-book me-2"></i>
+          Courses
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class="nav-link px-4 py-2 rounded-top"
+          [class.active]="activeTab === 'countries'"
+          [class.fw-semibold]="activeTab === 'countries'"
+          (click)="setTab('countries')"
+        >
+          <i class="bi bi-globe2 me-2"></i>
+          Countries
+        </button>
+      </li>
+    </ul>
 
-        @for (course of user.academicHistory; track course.id) {
-          <div class="academic-item d-flex gap-3 pb-3 mb-3 border-bottom">
-            <div class="flex-shrink-0">
-              <div class="university-icon bg-light rounded d-flex align-items-center justify-content-center"
-                   style="width: 48px; height: 48px;">
-                <img [src]="course.course.university.logo"
-                     alt="University Logo"
-                     style="max-width: 48px; max-height: 48px; object-fit: contain;">
+    <!-- Universities Tab -->
+    @if (activeTab === "universities") {
+      <div class="row g-4 mb-5">
+        @if (universities.length > 0) {
+          @for (uni of universities; track uni.id) {
+            <div class="col-12 col-md-6 col-lg-4">
+              <div
+                class="card h-100 shadow-sm border-0 position-relative transition-hover"
+              >
+                <div
+                  style="
+                    height: 190px;
+                    overflow: hidden;
+                    background: linear-gradient(
+                      135deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                  "
+                >
+                  <img
+                    [src]="uni.image"
+                    class="card-img-top w-100 h-100"
+                    style="object-fit: cover; opacity: 0.9"
+                    alt="{{ uni.name }}"
+                    onerror="this.style.display = 'none'"
+                  />
+                </div>
+                <div class="card-body pb-5 pt-3">
+                  <h5
+                    class="card-title fw-semibold mb-2"
+                    style="color: #2c3e50"
+                  >
+                    {{ uni.name }}
+                  </h5>
+                  <p class="card-text text-muted small mb-0">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    {{ uni.city }}, {{ uni.country }}
+                  </p>
+                </div>
+                <button
+                  class="btn btn-light rounded-circle shadow-sm position-absolute transition-scale"
+                  style="
+                    width: 42px;
+                    height: 42px;
+                    bottom: 12px;
+                    right: 12px;
+                    border: 2px solid rgba(201, 42, 42, 0.2);
+                  "
+                  aria-label="Remove favourite university"
+                  (click)="removeFavoriteUniversity(uni.id)"
+                >
+                  <i
+                    class="bi bi-heart-fill"
+                    style="color: #c92a2a; font-size: 1.1rem"
+                  ></i>
+                </button>
               </div>
             </div>
-
-            <div class="flex-grow-1">
-              <h5 class="fw-bold mb-0 fs-6">{{ course.course.university.name }}</h5>
-              <p class="mb-0 fw-semibold">{{ course.course.name }}</p>
-              <p class="text-muted mb-0 small">{{ course.course.area }}</p>
-              <p class="text-muted small mb-0">
-                {{ course.startDate | date:'MMM yyyy' }} - {{ course.endDate | date:'MMM yyyy' }}
+          }
+        } @else {
+          <div class="col-12">
+            <div
+              class="alert alert-light text-center border-0 shadow-sm py-5"
+              role="alert"
+            >
+              <i
+                class="bi bi-building"
+                style="font-size: 3rem; color: #dee2e6"
+              ></i>
+              <p class="mt-3 mb-0 text-muted">No favourite universities yet.</p>
+              <p class="small text-muted">
+                Start exploring universities to add them to your favourites!
               </p>
             </div>
           </div>
         }
       </div>
+    }
+
+    <!-- Courses Tab -->
+    @if (activeTab === "courses") {
+      <div class="row g-4 mb-5">
+        @if (courses.length > 0) {
+          @for (course of courses; track course.id) {
+            <div class="col-12 col-md-6 col-lg-4">
+              <div
+                class="card h-100 shadow-sm border-0 position-relative transition-hover"
+              >
+                <div class="card-body pb-5 pt-4">
+                  <div class="d-flex align-items-start mb-3">
+                    <div
+                      class="bg-primary bg-opacity-10 rounded-circle p-3 me-3"
+                    >
+                      <i
+                        class="bi bi-journal-text text-primary"
+                        style="font-size: 1.5rem"
+                      ></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5
+                        class="card-title fw-semibold mb-1"
+                        style="color: #2c3e50"
+                      >
+                        {{ course.name }}
+                      </h5>
+                      <p class="card-text text-muted small mb-0">
+                        <i class="bi bi-tag me-1"></i>
+                        {{ course.type }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="btn btn-light rounded-circle shadow-sm position-absolute transition-scale"
+                  style="width: 42px; height: 42px; bottom: 12px; right: 12px"
+                  [style.border]="
+                    course.isFavorite
+                      ? '2px solid rgba(201, 42, 42, 0.2)'
+                      : '2px solid rgba(153, 153, 153, 0.2)'
+                  "
+                  aria-label="Toggle favourite"
+                  (click)="
+                    toggleCourseFavorite(course); $event.stopPropagation()
+                  "
+                >
+                  <i
+                    [class]="
+                      course.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'
+                    "
+                    [style.color]="course.isFavorite ? '#c92a2a' : '#999'"
+                    style="font-size: 1.1rem"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="col-12">
+            <div
+              class="alert alert-light text-center border-0 shadow-sm py-5"
+              role="alert"
+            >
+              <i class="bi bi-book" style="font-size: 3rem; color: #dee2e6"></i>
+              <p class="mt-3 mb-0 text-muted">No favourite courses yet.</p>
+              <p class="small text-muted">
+                Discover courses that match your interests!
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Countries Tab -->
+    @if (activeTab === "countries") {
+      <div
+        class="alert alert-light text-center border-0 shadow-sm py-5 mb-5"
+        role="alert"
+      >
+        <i class="bi bi-globe2" style="font-size: 3rem; color: #dee2e6"></i>
+        <p class="mt-3 mb-0 text-muted">No items in this tab yet.</p>
+        <p class="small text-muted">This feature is coming soon!</p>
+      </div>
+    }
+
+    <!-- Delete Account -->
+    <div class="text-end mb-5">
+      <button
+        class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm"
+        (click)="confirmDelete()"
+      >
+        <i class="bi bi-trash3 me-2"></i>
+        Delete Account
+      </button>
     </div>
   </div>
 }
+
+<!-- Edit Profile Modal -->
+@if (showEditModal) {
+  <div class="modal-backdrop fade show" (click)="closeEditModal()"></div>
+  <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-person-circle me-2"></i>
+            Edit Profile
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeEditModal()"
+          ></button>
+        </div>
+        <div class="modal-body pt-2">
+          <form [formGroup]="editProfileForm" (ngSubmit)="onSubmitEdit()">
+            <input formControlName="id" type="hidden" />
+
+            <div class="mb-3">
+              <label for="name" class="form-label fw-semibold">Name *</label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [class.is-invalid]="
+                  editProfileForm.get('name')?.invalid &&
+                  editProfileForm.get('name')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editProfileForm.get('name')?.invalid &&
+                  editProfileForm.get('name')?.touched
+                "
+              >
+                Name is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="age" class="form-label fw-semibold">Age</label>
+              <input
+                id="age"
+                type="number"
+                class="form-control"
+                formControlName="age"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="gender" class="form-label fw-semibold"
+                >Gender *</label
+              >
+              <select
+                id="gender"
+                class="form-select"
+                formControlName="gender"
+                [class.is-invalid]="
+                  editProfileForm.get('gender')?.invalid &&
+                  editProfileForm.get('gender')?.touched
+                "
+              >
+                <option value="">-- Select --</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editProfileForm.get('gender')?.invalid &&
+                  editProfileForm.get('gender')?.touched
+                "
+              >
+                Gender is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="location" class="form-label fw-semibold"
+                >Location</label
+              >
+              <input
+                id="location"
+                type="text"
+                class="form-control"
+                formControlName="location"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="jobTitle" class="form-label fw-semibold"
+                >Job Title</label
+              >
+              <input
+                id="jobTitle"
+                type="text"
+                class="form-control"
+                formControlName="jobTitle"
+              />
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+              <button
+                type="button"
+                class="btn btn-light rounded-pill px-4"
+                (click)="closeEditModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary rounded-pill px-4"
+                [disabled]="editProfileForm.invalid"
+              >
+                <i class="bi bi-check-lg me-2"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Footer -->
+<footer class="bg-light border-top py-4 mt-5">
+  <div class="container text-center">
+    <div class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.25rem">
+      Lernia.
+    </div>
+    <p class="text-muted small mb-2">
+      <i class="bi bi-mortarboard-fill me-1"></i>
+      Helping students make confident international education decisions.
+    </p>
+    <p class="text-muted mb-0" style="font-size: 0.75rem">
+      © 2025 Lernia • All rights reserved
+    </p>
+  </div>
+</footer>

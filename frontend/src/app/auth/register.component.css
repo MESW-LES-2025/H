@@ -1,2 +1,4 @@
-@import url('./login.component.css');
-.welcome{ color:#5f9486; }
+@import url("./login.component.css");
+.welcome {
+  color: #5f9486;
+}
