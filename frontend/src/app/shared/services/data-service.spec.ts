@@ -8,6 +8,7 @@ import { AreasOfStudy } from '../viewmodels/area-of-study';
 import { firstValueFrom } from 'rxjs';
 import { skip, take } from 'rxjs/operators';
 import { UserViewmodel } from '../../profile-page/viewmodels/user-viewmodel';
+import { environment } from '../../../environments/environment';
 
 describe('DataService', () => {
   let service: DataService;
@@ -21,6 +22,10 @@ describe('DataService', () => {
 
     service = TestBed.inject(DataService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    // Handle the AuthService restoreSession call
+    const authReq = httpMock.expectOne(`${environment.apiUrl}/api/auth/me`);
+    authReq.flush(null);
   });
 
   afterEach(() => {

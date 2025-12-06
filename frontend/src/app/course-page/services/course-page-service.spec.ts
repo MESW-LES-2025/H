@@ -5,10 +5,12 @@ import {
 } from '@angular/common/http/testing';
 import { CoursePageService } from './course-page-service';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../auth/auth.service';
 
 describe('CoursePageService', () => {
   let service: CoursePageService;
   let httpMock: HttpTestingController;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   const mockCourseDTO = {
     id: 1,
@@ -43,13 +45,19 @@ describe('CoursePageService', () => {
   };
 
   beforeEach(() => {
+    const authSpy = jasmine.createSpyObj('AuthService', ['getCurrentUserId']);
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CoursePageService],
+      providers: [
+        CoursePageService,
+        { provide: AuthService, useValue: authSpy },
+      ],
     });
 
     service = TestBed.inject(CoursePageService);
     httpMock = TestBed.inject(HttpTestingController);
+    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
   });
 
   afterEach(() => {
@@ -218,7 +226,7 @@ describe('CoursePageService', () => {
   describe('addFavoriteCourse', () => {
     it('should add course to favorites', (done) => {
       const courseId = 123;
-      spyOn(localStorage, 'getItem').and.returnValue('1');
+      authServiceSpy.getCurrentUserId.and.returnValue(1);
 
       service.addFavoriteCourse(courseId).subscribe(() => {
         expect(true).toBe(true);
@@ -235,7 +243,7 @@ describe('CoursePageService', () => {
     });
 
     it('should throw error when user not logged in', () => {
-      spyOn(localStorage, 'getItem').and.returnValue(null);
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
 
       expect(() => service.addFavoriteCourse(123)).toThrowError(
         'User not logged in',
@@ -246,7 +254,7 @@ describe('CoursePageService', () => {
   describe('removeFavoriteCourse', () => {
     it('should remove course from favorites', (done) => {
       const courseId = 123;
-      spyOn(localStorage, 'getItem').and.returnValue('1');
+      authServiceSpy.getCurrentUserId.and.returnValue(1);
 
       service.removeFavoriteCourse(courseId).subscribe(() => {
         expect(true).toBe(true);
@@ -262,7 +270,7 @@ describe('CoursePageService', () => {
     });
 
     it('should throw error when user not logged in', () => {
-      spyOn(localStorage, 'getItem').and.returnValue(null);
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
 
       expect(() => service.removeFavoriteCourse(123)).toThrowError(
         'User not logged in',

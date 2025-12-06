@@ -8,11 +8,13 @@ import { of, throwError } from 'rxjs';
 import { UserViewmodel, FavoritesResponse } from './viewmodels/user-viewmodel';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth/auth.service';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
   let fixture: ComponentFixture<ProfilePage>;
   let mockProfileService: jasmine.SpyObj<ProfilePageService>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockActivatedRoute: any;
 
   const mockUser: UserViewmodel = {
@@ -59,6 +61,11 @@ describe('ProfilePage', () => {
       'removeFavoriteCourse',
     ]);
 
+    mockAuthService = jasmine.createSpyObj('AuthService', [
+      'getCurrentUserId',
+      'logout',
+    ]);
+
     mockActivatedRoute = {
       snapshot: {
         paramMap: {
@@ -73,6 +80,7 @@ describe('ProfilePage', () => {
         provideHttpClient(),
         provideRouter([]),
         { provide: ProfilePageService, useValue: mockProfileService },
+        { provide: AuthService, useValue: mockAuthService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
@@ -222,8 +230,8 @@ describe('ProfilePage', () => {
 
   describe('Edit Profile Modal', () => {
     beforeEach(() => {
-      // Set localStorage to mark user as owner
-      localStorage.setItem('userId', String(mockUser.id));
+      // Set authService to mark user as owner
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
       fixture.detectChanges();
       component['user'] = mockUser;
     });
@@ -256,7 +264,7 @@ describe('ProfilePage', () => {
     });
 
     it('should not open modal if not owner', () => {
-      localStorage.setItem('userId', '999'); // Different user
+      mockAuthService.getCurrentUserId.and.returnValue(999); // Different user
       component['openEditModal']();
 
       expect(component['showEditModal']).toBeFalse();
@@ -393,7 +401,7 @@ describe('ProfilePage', () => {
 
   describe('Delete Account', () => {
     beforeEach(() => {
-      localStorage.setItem('userId', String(mockUser.id));
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
       fixture.detectChanges();
       component['user'] = mockUser;
     });
@@ -410,7 +418,7 @@ describe('ProfilePage', () => {
     });
 
     it('should not delete if not owner', () => {
-      localStorage.setItem('userId', '999'); // Different user
+      mockAuthService.getCurrentUserId.and.returnValue(999); // Different user
       spyOn(window, 'confirm'); // Add this to prevent confirm dialog
 
       component['confirmDelete']();
@@ -862,21 +870,21 @@ describe('ProfilePage', () => {
     });
 
     it('should return true when localStorage userId matches user id', () => {
-      localStorage.setItem('userId', '1');
+      mockAuthService.getCurrentUserId.and.returnValue(1);
       component['user'] = mockUser;
 
       expect(component.isOwner).toBeTrue();
     });
 
     it('should return false when localStorage userId does not match', () => {
-      localStorage.setItem('userId', '999');
+      mockAuthService.getCurrentUserId.and.returnValue(999);
       component['user'] = mockUser;
 
       expect(component.isOwner).toBeFalse();
     });
 
     it('should return false when user is null', () => {
-      localStorage.setItem('userId', '1');
+      mockAuthService.getCurrentUserId.and.returnValue(1);
       component['user'] = null;
 
       expect(component.isOwner).toBeFalse();

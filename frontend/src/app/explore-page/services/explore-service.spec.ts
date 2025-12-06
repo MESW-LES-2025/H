@@ -7,10 +7,12 @@ import { ExploreService } from './explore-service';
 import { environment } from '../../../environments/environment';
 import { UniversityDTO } from '../viewmodels/explore-viewmodel';
 import { Page } from '../../shared/viewmodels/pagination';
+import { AuthService } from '../../auth/auth.service';
 
 describe('ExploreService', () => {
   let service: ExploreService;
   let httpMock: HttpTestingController;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   const mockUniversityDTO: UniversityDTO = {
     id: 1,
@@ -33,13 +35,16 @@ describe('ExploreService', () => {
   };
 
   beforeEach(() => {
+    const authSpy = jasmine.createSpyObj('AuthService', ['getCurrentUserId']);
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ExploreService],
+      providers: [ExploreService, { provide: AuthService, useValue: authSpy }],
     });
 
     service = TestBed.inject(ExploreService);
     httpMock = TestBed.inject(HttpTestingController);
+    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
   });
 
   afterEach(() => {
@@ -332,7 +337,7 @@ describe('ExploreService', () => {
 
   describe('addFavoriteUniversity', () => {
     it('should add university to favorites', (done) => {
-      spyOn(localStorage, 'getItem').and.returnValue('1');
+      authServiceSpy.getCurrentUserId.and.returnValue(1);
 
       service.addFavoriteUniversity(123).subscribe(() => {
         done();
@@ -348,7 +353,7 @@ describe('ExploreService', () => {
     });
 
     it('should throw error when user not logged in', (done) => {
-      spyOn(localStorage, 'getItem').and.returnValue(null);
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
 
       service.addFavoriteUniversity(123).subscribe({
         next: () => fail('should have failed'),
@@ -362,7 +367,7 @@ describe('ExploreService', () => {
 
   describe('removeFavoriteUniversity', () => {
     it('should remove university from favorites', (done) => {
-      spyOn(localStorage, 'getItem').and.returnValue('1');
+      authServiceSpy.getCurrentUserId.and.returnValue(1);
 
       service.removeFavoriteUniversity(123).subscribe(() => {
         done();
@@ -377,7 +382,7 @@ describe('ExploreService', () => {
     });
 
     it('should throw error when user not logged in', (done) => {
-      spyOn(localStorage, 'getItem').and.returnValue(null);
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
 
       service.removeFavoriteUniversity(123).subscribe({
         next: () => fail('should have failed'),
@@ -391,7 +396,7 @@ describe('ExploreService', () => {
 
   describe('getFavorites', () => {
     it('should get user favorites', (done) => {
-      spyOn(localStorage, 'getItem').and.returnValue('1');
+      authServiceSpy.getCurrentUserId.and.returnValue(1);
       const mockFavorites = {
         universities: [{ id: 1 }, { id: 2 }],
         courses: [{ id: 3 }],
@@ -412,7 +417,7 @@ describe('ExploreService', () => {
     });
 
     it('should throw error when user not logged in', (done) => {
-      spyOn(localStorage, 'getItem').and.returnValue(null);
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
 
       service.getFavorites().subscribe({
         next: () => fail('should have failed'),

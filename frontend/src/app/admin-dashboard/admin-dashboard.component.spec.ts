@@ -5,22 +5,39 @@ import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AdminService } from './admin.service';
 import { of, throwError } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environments/environment';
 
 describe('AdminDashboardComponent', () => {
   let component: AdminDashboardComponent;
   let fixture: ComponentFixture<AdminDashboardComponent>;
   let adminServiceSpy: jasmine.SpyObj<AdminService>;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
   let modalStub: any;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     const spy = jasmine.createSpyObj('AdminService', ['deleteUser', 'getAll']);
+    const authSpy = jasmine.createSpyObj('AuthService', [
+      'isAdmin',
+      'getCurrentUserId',
+    ]);
     modalStub = jasmine.createSpyObj('NgbModal', ['open']);
     modalStub.open.and.returnValue({ result: Promise.resolve('confirm') });
 
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, AdminDashboardComponent],
+      imports: [
+        RouterTestingModule,
+        AdminDashboardComponent,
+        HttpClientTestingModule,
+      ],
       providers: [
         { provide: AdminService, useValue: spy },
+        { provide: AuthService, useValue: authSpy },
         { provide: NgbModal, useValue: modalStub },
       ],
     }).compileComponents();
@@ -28,16 +45,22 @@ describe('AdminDashboardComponent', () => {
     adminServiceSpy = TestBed.inject(
       AdminService,
     ) as jasmine.SpyObj<AdminService>;
+    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(AdminDashboardComponent);
     component = fixture.componentInstance;
     // do not call detectChanges here — tests will call lifecycle methods explicitly when needed
   });
 
+  afterEach(() => {
+    httpMock.verify();
+  });
+
   it('ngOnInit should read userId from localStorage and call loadAll when role is ADMIN', (done) => {
     // prepare
     spyOn(component, 'loadAll').and.callThrough();
-    localStorage.setItem('userRole', 'ADMIN');
-    localStorage.setItem('userId', '42');
+    authServiceSpy.isAdmin.and.returnValue(true);
+    authServiceSpy.getCurrentUserId.and.returnValue(42);
     adminServiceSpy.getAll.and.returnValue(
       of({ users: [], universities: [], courses: [] }),
     );
@@ -46,14 +69,11 @@ describe('AdminDashboardComponent', () => {
 
     expect(component.currentUserId).toBe(42);
     expect(component.loadAll).toHaveBeenCalled();
-    // cleanup
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userId');
     done();
   });
 
   it('ngOnInit should redirect non-admin users to root', () => {
-    localStorage.setItem('userRole', 'REGULAR');
+    authServiceSpy.isAdmin.and.returnValue(false);
     const router = TestBed.inject(Router);
     const navSpy = spyOn(router, 'navigate').and.returnValue(
       Promise.resolve(true),
@@ -62,8 +82,6 @@ describe('AdminDashboardComponent', () => {
     component.ngOnInit();
 
     expect(navSpy).toHaveBeenCalledWith(['/']);
-
-    localStorage.removeItem('userRole');
   });
 
   it('loadAll should populate arrays on success', (done) => {

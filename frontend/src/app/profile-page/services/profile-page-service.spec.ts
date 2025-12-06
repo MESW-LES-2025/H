@@ -7,10 +7,12 @@ import { ProfilePageService } from './profile-page-service';
 import { UserViewmodel, FavoritesResponse } from '../viewmodels/user-viewmodel';
 import { EditProfileRequest } from '../viewmodels/edit-profile-request';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../auth/auth.service';
 
 describe('ProfilePageService', () => {
   let service: ProfilePageService;
   let httpMock: HttpTestingController;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
   const apiUrl = environment.apiUrl;
 
   const mockUser: UserViewmodel = {
@@ -27,13 +29,19 @@ describe('ProfilePageService', () => {
   };
 
   beforeEach(() => {
+    const authSpy = jasmine.createSpyObj('AuthService', ['getCurrentUserId']);
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProfilePageService],
+      providers: [
+        ProfilePageService,
+        { provide: AuthService, useValue: authSpy },
+      ],
     });
 
     service = TestBed.inject(ProfilePageService);
     httpMock = TestBed.inject(HttpTestingController);
+    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
 
     // Clear localStorage before each test
     localStorage.clear();
@@ -138,7 +146,7 @@ describe('ProfilePageService', () => {
 
   describe('getOwnFavorites', () => {
     it('should retrieve favorites when userId exists in localStorage', () => {
-      localStorage.setItem('userId', '123');
+      authServiceSpy.getCurrentUserId.and.returnValue(123);
 
       const mockFavorites: FavoritesResponse = {
         universities: [
@@ -180,6 +188,8 @@ describe('ProfilePageService', () => {
     });
 
     it('should return empty favorites when userId is not in localStorage', (done) => {
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
+
       service.getOwnFavorites().subscribe((favorites) => {
         expect(favorites.universities).toEqual([]);
         expect(favorites.courses).toEqual([]);
@@ -190,7 +200,7 @@ describe('ProfilePageService', () => {
     });
 
     it('should handle error when retrieving favorites', () => {
-      localStorage.setItem('userId', '123');
+      authServiceSpy.getCurrentUserId.and.returnValue(123);
 
       service.getOwnFavorites().subscribe({
         next: () => fail('should have failed with 500 error'),
@@ -211,7 +221,7 @@ describe('ProfilePageService', () => {
 
   describe('addFavoriteUniversity', () => {
     it('should add favorite university when userId exists', () => {
-      localStorage.setItem('userId', '123');
+      authServiceSpy.getCurrentUserId.and.returnValue(123);
 
       service.addFavoriteUniversity(1).subscribe();
 
@@ -226,6 +236,8 @@ describe('ProfilePageService', () => {
     });
 
     it('should not make request when userId is not in localStorage', (done) => {
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
+
       service.addFavoriteUniversity(1).subscribe(() => {
         done();
       });
@@ -236,7 +248,7 @@ describe('ProfilePageService', () => {
 
   describe('removeFavoriteUniversity', () => {
     it('should remove favorite university when userId exists', () => {
-      localStorage.setItem('userId', '123');
+      authServiceSpy.getCurrentUserId.and.returnValue(123);
 
       service.removeFavoriteUniversity(1).subscribe();
 
@@ -251,6 +263,8 @@ describe('ProfilePageService', () => {
     });
 
     it('should not make request when userId is not in localStorage', (done) => {
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
+
       service.removeFavoriteUniversity(1).subscribe(() => {
         done();
       });
@@ -261,7 +275,7 @@ describe('ProfilePageService', () => {
 
   describe('addFavoriteCourse', () => {
     it('should add favorite course when userId exists', () => {
-      localStorage.setItem('userId', '123');
+      authServiceSpy.getCurrentUserId.and.returnValue(123);
 
       service.addFavoriteCourse(1).subscribe();
 
@@ -276,6 +290,8 @@ describe('ProfilePageService', () => {
     });
 
     it('should not make request when userId is not in localStorage', (done) => {
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
+
       service.addFavoriteCourse(1).subscribe(() => {
         done();
       });
@@ -286,7 +302,7 @@ describe('ProfilePageService', () => {
 
   describe('removeFavoriteCourse', () => {
     it('should remove favorite course when userId exists', () => {
-      localStorage.setItem('userId', '123');
+      authServiceSpy.getCurrentUserId.and.returnValue(123);
 
       service.removeFavoriteCourse(1).subscribe();
 
@@ -301,6 +317,8 @@ describe('ProfilePageService', () => {
     });
 
     it('should not make request when userId is not in localStorage', (done) => {
+      authServiceSpy.getCurrentUserId.and.returnValue(null);
+
       service.removeFavoriteCourse(1).subscribe(() => {
         done();
       });

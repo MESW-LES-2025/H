@@ -66,7 +66,7 @@ describe('AuthService', () => {
       req.flush({ id: 1 });
 
       newService.currentUser$.subscribe((user) => {
-        expect(user).toEqual({ id: 1 });
+        expect(user).toEqual(jasmine.objectContaining({ id: 1 }));
       });
     });
 
@@ -113,7 +113,7 @@ describe('AuthService', () => {
         expect(response.status).toBe('success');
 
         service.currentUser$.subscribe((user) => {
-          expect(user).toEqual({ id: mockUser.id });
+          expect(user).toEqual(jasmine.objectContaining({ id: mockUser.id }));
           done();
         });
       });
@@ -175,7 +175,7 @@ describe('AuthService', () => {
 
         // Current user should remain unchanged
         service.currentUser$.subscribe((user) => {
-          expect(user).toEqual({ id: 999 });
+          expect(user).toEqual(jasmine.objectContaining({ id: 999 }));
           done();
         });
       });
