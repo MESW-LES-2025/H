@@ -88,6 +88,41 @@
                     users.length
                   }}</span>
                 </div>
+
+                <!-- Confirmation Modal Template -->
+                <ng-template #confirmModal let-modal>
+                  <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      aria-label="Close"
+                      (click)="modal.dismiss()"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>
+                      Are you sure you want to delete this user? This action
+                      cannot be undone.
+                    </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      (click)="modal.dismiss()"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="modal.close('confirm')"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </ng-template>
               </div>
               <div class="card-body p-0">
                 <div class="table-responsive table-container">
@@ -120,7 +155,10 @@
                           </td>
                           <td class="text-center py-2 w-15">
                             @if (user.id !== currentUserId) {
-                              <button class="btn btn-sm btn-outline-danger p-1">
+                              <button
+                                class="btn btn-sm btn-outline-danger p-1"
+                                (click)="confirmDelete(user.id)"
+                              >
                                 <i class="fas fa-trash"></i>
                               </button>
                             }

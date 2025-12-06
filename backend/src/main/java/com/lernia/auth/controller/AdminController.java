@@ -4,15 +4,14 @@ import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.dto.UserProfileResponse;
-import com.lernia.auth.entity.CourseEntity;
-import com.lernia.auth.entity.UniversityEntity;
-import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -72,6 +71,15 @@ public class AdminController {
                 .map(course -> new CourseLightDTO(course.getId(), course.getName(), course.getCourseType(), course.getUniversity().getName()))
                 .toList();
         return ResponseEntity.ok(list);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        if (!userRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

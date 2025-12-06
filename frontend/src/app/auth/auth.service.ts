@@ -81,6 +81,7 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(`${this.baseUrl}/login`, body, {
         withCredentials: true,
+        headers,
       })
       .pipe(
         tap((response) => {

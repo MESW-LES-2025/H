@@ -27,6 +27,10 @@ export class AdminService {
     return this.http.get<CourseLight[]>(`${this.base}/api/admin/courses`);
   }
 
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/api/admin/users/${id}`);
+  }
+
   getAll(): Observable<{
     users: UserViewmodel[];
     universities: UniversityLight[];

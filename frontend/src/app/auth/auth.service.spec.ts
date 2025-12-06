@@ -125,6 +125,35 @@ describe('AuthService', () => {
       req.flush(loginResponse);
     });
 
+    it('should include CSRF header when set', (done) => {
+      const loginRequest: LoginRequest = {
+        text: 'testuser',
+        password: 'password123',
+      };
+
+      const loginResponse = {
+        message: 'Login successful',
+        status: 'success',
+        user: mockUser,
+      };
+
+      // set CSRF header values
+      service.csrfToken = 'abc-123';
+      service.csrfHeaderName = 'X-CSRF-TOKEN';
+
+      service.login(loginRequest).subscribe((response) => {
+        expect(response.status).toBe('success');
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/login`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('X-CSRF-TOKEN')).toBe('abc-123');
+      expect(req.request.withCredentials).toBe(true);
+
+      req.flush(loginResponse);
+    });
+
     it('should not update currentUser on failed login', (done) => {
       const loginRequest: LoginRequest = {
         text: 'testuser',

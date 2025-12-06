@@ -164,6 +164,21 @@ describe('UniversityPage', () => {
     expect((component as any).isFavorite).toBeTrue();
   }));
 
+  it('onToggleFavorite should log error when addFavoriteUniversity errors', fakeAsync(() => {
+    (component as any).university = sampleUni;
+    (component as any).isFavorite = false;
+    spyOn(console, 'error');
+    exploreService.addFavoriteUniversity.and.returnValue(
+      throwError(() => new Error('add-fail')),
+    );
+
+    component.onToggleFavorite();
+    tick();
+
+    expect(console.error).toHaveBeenCalled();
+    expect((component as any).isFavorite).toBeFalse();
+  }));
+
   it('onToggleFavorite should remove favorite when already favorite', fakeAsync(() => {
     (component as any).university = sampleUni;
     (component as any).isFavorite = true;
@@ -174,6 +189,21 @@ describe('UniversityPage', () => {
 
     expect(exploreService.removeFavoriteUniversity).toHaveBeenCalledWith(10);
     expect((component as any).isFavorite).toBeFalse();
+  }));
+
+  it('onToggleFavorite should log error when removeFavoriteUniversity errors', fakeAsync(() => {
+    (component as any).university = sampleUni;
+    (component as any).isFavorite = true;
+    spyOn(console, 'error');
+    exploreService.removeFavoriteUniversity.and.returnValue(
+      throwError(() => new Error('remove-fail')),
+    );
+
+    component.onToggleFavorite();
+    tick();
+
+    expect(console.error).toHaveBeenCalled();
+    expect((component as any).isFavorite).toBeTrue();
   }));
 
   it('goToCourse should navigate to course route', () => {

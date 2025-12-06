@@ -1,4 +1,4 @@
-import { LocationDTO } from "../../explore-page/viewmodels/explore-viewmodel";
+import { LocationDTO } from '../../explore-page/viewmodels/explore-viewmodel';
 
 export interface UniversityLight {
   id: number;
