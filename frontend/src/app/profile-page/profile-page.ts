@@ -9,8 +9,16 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
+
+function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const newPass = control.get('newPassword')?.value;
+  const confirmPass = control.get('confirmPassword')?.value;
+  return newPass === confirmPass ? null : { mismatch: true };
+}
 
 @Component({
   selector: 'app-profile-page',
@@ -26,7 +34,9 @@ export class ProfilePage implements OnInit {
 
   protected user: UserViewmodel | null = null;
   protected showEditModal = false;
+  protected showPasswordModal = false; // New state
   protected editProfileForm: FormGroup = undefined as any;
+  protected changePasswordForm: FormGroup = undefined as any; // New form
 
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' =
     'universities';
@@ -80,6 +90,15 @@ export class ProfilePage implements OnInit {
       location: this.fb.control<string | null>(null),
       jobTitle: this.fb.control<string | null>(null),
     });
+
+    this.changePasswordForm = this.fb.group(
+      {
+        currentPassword: ['', Validators.required],
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: passwordMatchValidator }
+    );
   }
 
   protected openEditModal(): void {
@@ -121,6 +140,39 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  // --- Password Modal Logic ---
+
+  protected openPasswordModal(): void {
+    if (!this.user || !this.isOwner) return;
+    this.showPasswordModal = true;
+  }
+
+  protected closePasswordModal(): void {
+    this.showPasswordModal = false;
+    this.changePasswordForm.reset();
+  }
+
+  protected onSubmitPassword(): void {
+    if (this.changePasswordForm.valid && this.user) {
+      const { currentPassword, newPassword } = this.changePasswordForm.value;
+
+      this.profilePageService
+        .changePassword(this.user.id, { currentPassword, newPassword })
+        .subscribe({
+          next: () => {
+            alert('Password changed successfully.');
+            this.closePasswordModal();
+          },
+          error: (err) => {
+            console.error(err);
+            alert('Failed to change password. Please check your current password.');
+          },
+        });
+    } else {
+      this.changePasswordForm.markAllAsTouched();
+    }
+  }
+
   private loadFavorites(): void {
     this.profilePageService.getOwnFavorites().subscribe({
       next: (favs: FavoritesResponse) => {
@@ -155,7 +207,6 @@ export class ProfilePage implements OnInit {
   }
 
   protected confirmDelete(): void {
-    // Only owner may delete account
     if (!this.user || !this.isOwner) {
       return;
     }

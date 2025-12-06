@@ -125,6 +125,17 @@ public class AuthService {
         userRepository.deleteById(id);
     }
 
+    public void changePassword(Long userId, ChangePasswordRequest req) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Incorrect current password");
+        }
+
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        userRepository.save(user);
+    }
 
     private UserProfileResponse map(UserEntity u) {
         UserProfileResponse r = new UserProfileResponse();

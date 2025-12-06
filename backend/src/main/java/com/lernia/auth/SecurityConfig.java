@@ -46,7 +46,7 @@ public class SecurityConfig {
                                     .filter(s -> !s.isEmpty())
                                     .collect(Collectors.toList());
                             configuration.setAllowedOriginPatterns(origins);
-                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                             configuration.setAllowedHeaders(List.of("*"));
                             configuration.setAllowCredentials(true);
                             return configuration;
@@ -54,11 +54,12 @@ public class SecurityConfig {
                 )
 
                 .csrf(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)  
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
                         // Login / Register públicos
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
                         // Preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
