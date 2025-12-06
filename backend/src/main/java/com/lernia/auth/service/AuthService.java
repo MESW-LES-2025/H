@@ -110,6 +110,12 @@ public class AuthService {
         return res;
     }
 
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
+    }
+
     public void deleteAccount(Long id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found");
