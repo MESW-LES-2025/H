@@ -54,6 +54,7 @@ describe('ProfilePage', () => {
       'getOwnProfile',
       'getOwnFavorites',
       'updateProfile',
+      'changePassword',
       'deleteAccount',
       'addFavoriteUniversity',
       'removeFavoriteUniversity',
@@ -457,6 +458,109 @@ describe('ProfilePage', () => {
       component['confirmDelete']();
 
       expect(localStorage.removeItem).not.toHaveBeenCalled();
+    });
+
+    it('should alert and logout on successful delete', () => {
+      spyOn(window, 'confirm').and.returnValue(true);
+      spyOn(window, 'alert');
+
+      mockProfileService.deleteAccount.and.returnValue(of(void 0));
+
+      component['confirmDelete']();
+
+      expect(mockProfileService.deleteAccount).toHaveBeenCalled();
+      expect(window.alert).toHaveBeenCalledWith(
+        'Account deleted successfully.',
+      );
+      expect(mockAuthService.logout).toHaveBeenCalled();
+    });
+  });
+
+  describe('Change Password Modal', () => {
+    beforeEach(() => {
+      // make current user the owner and initialize component
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      fixture.detectChanges();
+      component['user'] = mockUser;
+    });
+
+    it('should not open password modal if user is null', () => {
+      component['user'] = null;
+      component['openPasswordModal']();
+      expect(component['showPasswordModal']).toBeFalse();
+    });
+
+    it('should not open password modal if not owner', () => {
+      mockAuthService.getCurrentUserId.and.returnValue(999);
+      component['user'] = mockUser;
+      component['openPasswordModal']();
+      expect(component['showPasswordModal']).toBeFalse();
+    });
+
+    it('should open and initialize password modal for owner', () => {
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      component['user'] = mockUser;
+      component['openPasswordModal']();
+
+      expect(component['showPasswordModal']).toBeTrue();
+      expect(component['passwordFeedback']).toBeNull();
+      expect(component['showCurrentPassword']).toBeFalse();
+      expect(component['showNewPassword']).toBeFalse();
+      expect(component['showConfirmPassword']).toBeFalse();
+    });
+
+    it('should close password modal and reset form', () => {
+      fixture.detectChanges();
+      component['showPasswordModal'] = true;
+      component['changePasswordForm'].patchValue({
+        currentPassword: 'a',
+        newPassword: 'b',
+        confirmPassword: 'b',
+      });
+
+      component['closePasswordModal']();
+
+      expect(component['showPasswordModal']).toBeFalse();
+      expect(
+        component['changePasswordForm'].get('currentPassword')?.value,
+      ).toBeNull();
+      expect(component['passwordFeedback']).toBeNull();
+    });
+
+    it('should call service and set success feedback on password change', () => {
+      mockProfileService.changePassword.and.returnValue(of(void 0));
+      component['changePasswordForm'].patchValue({
+        currentPassword: 'old',
+        newPassword: 'newpass',
+        confirmPassword: 'newpass',
+      });
+
+      component['onSubmitPassword']();
+
+      expect(mockProfileService.changePassword).toHaveBeenCalledWith(
+        mockUser.id,
+        { currentPassword: 'old', newPassword: 'newpass' },
+      );
+      expect(component['passwordFeedback']).toEqual(
+        jasmine.objectContaining({ type: 'success' }),
+      );
+    });
+
+    it('should show error feedback when password change fails', () => {
+      mockProfileService.changePassword.and.returnValue(
+        throwError(() => new Error('Bad current password')),
+      );
+      component['changePasswordForm'].patchValue({
+        currentPassword: 'wrong',
+        newPassword: 'newpass',
+        confirmPassword: 'newpass',
+      });
+
+      component['onSubmitPassword']();
+
+      expect(component['passwordFeedback']).toEqual(
+        jasmine.objectContaining({ type: 'error' }),
+      );
     });
   });
 
