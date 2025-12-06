@@ -36,6 +36,7 @@ describe('AdminService', () => {
       {
         id: 1,
         name: 'Alice',
+        email: 'john.doe@example.com',
         age: 25,
         gender: 'FEMALE',
         location: 'City A',
@@ -47,6 +48,7 @@ describe('AdminService', () => {
       {
         id: 2,
         name: 'Bob',
+        email: 'bob@example.com',
         age: 30,
         gender: 'MALE',
         location: 'City B',
@@ -136,6 +138,7 @@ describe('AdminService', () => {
       {
         id: 1,
         name: 'Alice',
+        email: 'john.doe@example.com',
         age: 25,
         gender: 'FEMALE',
         location: 'City A',

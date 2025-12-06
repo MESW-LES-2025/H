@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AreasOfStudy } from '../viewmodels/area-of-study';
 import { UserViewmodel } from '../../profile-page/viewmodels/user-viewmodel';
+import { AuthService } from '../../auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -26,7 +27,10 @@ export class DataService {
   languages$: Observable<string[]> = this.languagesSubject.asObservable();
   countries$: Observable<string[]> = this.countriesSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   loadFilterLists(): void {
     forkJoin({
@@ -54,6 +58,11 @@ export class DataService {
   }
 
   public getUserAtualId(): number | null {
+    // Use AuthService as source of truth for user ID
+    const authUserId = this.authService.getCurrentUserId();
+    if (authUserId !== null) {
+      return authUserId;
+    }
     return this.userAtual === null ? null : this.userAtual.id;
   }
 

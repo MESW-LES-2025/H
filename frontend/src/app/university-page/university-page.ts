@@ -6,6 +6,7 @@ import { UniversityPageService } from './services/university-page-service';
 import { UniversityViewmodel } from './viewmodels/university-viewmodel';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { ExploreService } from '../explore-page/services/explore-service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-university-page',
@@ -19,6 +20,7 @@ export class UniversityPage implements OnInit {
   private exploreService = inject(ExploreService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   protected university: UniversityViewmodel | null = null;
   protected isFavorite: boolean = false;
@@ -36,16 +38,14 @@ export class UniversityPage implements OnInit {
   }
 
   // ---------------------------------------
-  // 1. Carregar estado de favorito do backend
+  // 1. Load favorite state from backend
   // ---------------------------------------
   private loadFavoriteState(): void {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId || !this.university) {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId || !this.university) {
       this.isFavorite = false;
       return;
     }
-
-    const userId = Number(storedId);
 
     this.exploreService.getFavoriteUniversities(userId).subscribe({
       next: (ids) => {

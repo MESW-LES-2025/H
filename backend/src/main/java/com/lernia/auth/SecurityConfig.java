@@ -56,22 +56,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
-                        // Login / Register públicos
-                        .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                        // Login / Register / Logout públicos
+                        .requestMatchers(HttpMethod.POST, "/login", "/register", "/logout").permitAll()
 
                         // Preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Delete account
-                        .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/profile/**").permitAll()
-
-                        // Favoritos (GET/POST/DELETE)
-                        .requestMatchers("/api/favorites/**").permitAll()
-                        .requestMatchers("/api/favorites").permitAll()
-
-                        // Endpoint de sessão para o frontend
-                        .requestMatchers("/api/auth/me").permitAll()
+                        // Endpoint de sessão e logout para o frontend
+                        .requestMatchers("/api/auth/me", "/api/auth/logout").permitAll()
 
                         // Endpoints GET públicos
                         .requestMatchers(HttpMethod.GET,

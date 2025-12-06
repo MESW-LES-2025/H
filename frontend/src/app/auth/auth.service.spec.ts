@@ -17,6 +17,7 @@ describe('AuthService', () => {
   const mockUser: UserViewmodel = {
     id: 1,
     name: 'Test User',
+    email: 'john.doe@example.com',
     age: 25,
     gender: 'Male',
     location: 'Test City',

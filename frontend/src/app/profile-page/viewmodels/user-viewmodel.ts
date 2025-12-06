@@ -3,6 +3,7 @@ import { UserCourse } from '../../shared/viewmodels/user-course';
 export interface UserViewmodel {
   id: number;
   name: string;
+  email: string;
   age: number;
   gender: string;
   location: string;

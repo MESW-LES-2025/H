@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { CourseViewmodel } from '../viewmodels/course-viewmodel';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../auth/auth.service';
 
 interface LocationDTO {
   id: number;
@@ -48,7 +49,10 @@ interface CourseDTO {
 export class CoursePageService {
   private readonly baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   // -------------------------------------
   // GET COURSE PROFILE
@@ -77,10 +81,10 @@ export class CoursePageService {
   // ADD FAVORITE COURSE
   // -------------------------------------
   public addFavoriteCourse(courseId: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) throw new Error('User not logged in');
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) throw new Error('User not logged in');
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.post<void>(
       `${this.baseUrl}/api/favorites/courses/${courseId}`,
@@ -93,10 +97,10 @@ export class CoursePageService {
   // REMOVE FAVORITE COURSE
   // -------------------------------------
   public removeFavoriteCourse(courseId: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) throw new Error('User not logged in');
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) throw new Error('User not logged in');
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.delete<void>(
       `${this.baseUrl}/api/favorites/courses/${courseId}`,

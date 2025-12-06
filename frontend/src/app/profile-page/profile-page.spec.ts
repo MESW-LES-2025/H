@@ -18,6 +18,7 @@ describe('ProfilePage', () => {
   const mockUser: UserViewmodel = {
     id: 1,
     name: 'Test User',
+    email: 'mail@test.com',
     age: 25,
     gender: 'MALE',
     location: 'Lisbon',

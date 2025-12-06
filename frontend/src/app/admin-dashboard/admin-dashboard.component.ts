@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -24,15 +25,15 @@ export class AdminDashboardComponent implements OnInit {
     private router: Router,
     private adminService: AdminService,
     private modalService: NgbModal,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
-    const role = localStorage.getItem('userRole');
-    if (role !== 'ADMIN') {
+    if (!this.authService.isAdmin()) {
       this.router.navigate(['/']);
       return;
     }
-    this.currentUserId = Number(localStorage.getItem('userId'));
+    this.currentUserId = this.authService.getCurrentUserId();
     this.loadAll();
   }
 

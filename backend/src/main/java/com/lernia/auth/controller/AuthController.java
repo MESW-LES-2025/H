@@ -45,7 +45,7 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/api/auth/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
@@ -68,7 +68,10 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
-                "username", user.getUsername()
+                "username", user.getUsername(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "userRole", user.getUserRole().name()
         ));
     }
 }

@@ -16,6 +16,7 @@ describe('ProfilePageService', () => {
   const mockUser: UserViewmodel = {
     id: 123,
     name: 'John Doe',
+    email: 'john.doe@example.com',
     age: 30,
     gender: 'MALE',
     location: 'New York',
@@ -65,6 +66,7 @@ describe('ProfilePageService', () => {
       const anotherUser: UserViewmodel = {
         id: 456,
         name: 'Jane Smith',
+        email: 'john.doe@example.com',
         age: 25,
         gender: 'FEMALE',
         location: 'Paris',
@@ -321,6 +323,7 @@ describe('ProfilePageService', () => {
       const mockResponse: UserViewmodel = {
         id: 123,
         name: 'Updated Name',
+        email: 'john.doe@example.com',
         age: 31,
         gender: 'MALE',
         location: 'Boston',
