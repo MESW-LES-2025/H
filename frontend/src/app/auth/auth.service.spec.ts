@@ -349,7 +349,7 @@ describe('AuthService', () => {
 
       service.logout();
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/logout`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/logout`);
       expect(req.request.method).toBe('POST');
       expect(req.request.withCredentials).toBe(true);
 
@@ -368,7 +368,7 @@ describe('AuthService', () => {
 
       service.logout();
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/logout`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/logout`);
       req.error(new ProgressEvent('error'));
 
       service.currentUser$.subscribe((user) => {

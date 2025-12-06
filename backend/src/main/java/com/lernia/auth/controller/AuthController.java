@@ -2,10 +2,6 @@ package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.RegisterRequest;
 import com.lernia.auth.dto.RegisterResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.lernia.auth.dto.LoginRequest;
 import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.service.AuthService;
@@ -60,7 +56,7 @@ public class AuthController {
     @GetMapping("/api/auth/me")
     public ResponseEntity<?> getCurrentUser(Principal principal) {
         if (principal == null) {
-            return ResponseEntity.status(401).body(Map.of("message", "Not authenticated"));
+            return ResponseEntity.ok(null);
         }
 
         UserEntity user = userRepository.findByUsername(principal.getName())

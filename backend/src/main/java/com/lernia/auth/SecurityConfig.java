@@ -1,5 +1,6 @@
 package com.lernia.auth;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +47,7 @@ public class SecurityConfig {
                                     .filter(s -> !s.isEmpty())
                                     .collect(Collectors.toList());
                             configuration.setAllowedOriginPatterns(origins);
-                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                             configuration.setAllowedHeaders(List.of("*"));
                             configuration.setAllowCredentials(true);
                             return configuration;
@@ -54,6 +55,17 @@ public class SecurityConfig {
                 )
 
                 .csrf(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\": \"Logged out successfully\"}");
+                        })
+                )
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
                         // Login / Register / Logout públicos

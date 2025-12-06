@@ -116,7 +116,7 @@ export class AuthService {
 
   logout(): void {
     this.http
-      .post(`${this.baseUrl}/api/auth/logout`, {}, { withCredentials: true })
+      .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
       .subscribe({
         next: () => {
           this.currentUserSubject.next(null);

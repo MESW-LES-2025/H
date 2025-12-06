@@ -9,9 +9,17 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
 import { AuthService } from '../auth/auth.service';
+
+function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const newPass = control.get('newPassword')?.value;
+  const confirmPass = control.get('confirmPassword')?.value;
+  return newPass === confirmPass ? null : { mismatch: true };
+}
 
 @Component({
   selector: 'app-profile-page',
@@ -28,7 +36,15 @@ export class ProfilePage implements OnInit {
 
   protected user: UserViewmodel | null = null;
   protected showEditModal = false;
+  protected showPasswordModal = false;
   protected editProfileForm: FormGroup = undefined as any;
+  protected changePasswordForm: FormGroup = undefined as any;
+
+  protected passwordFeedback: { type: 'success' | 'error'; message: string } | null = null;
+
+  protected showCurrentPassword = false;
+  protected showNewPassword = false;
+  protected showConfirmPassword = false;
 
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' =
     'universities';
@@ -82,6 +98,15 @@ export class ProfilePage implements OnInit {
       location: this.fb.control<string | null>(null),
       jobTitle: this.fb.control<string | null>(null),
     });
+
+    this.changePasswordForm = this.fb.group(
+      {
+        currentPassword: ['', Validators.required],
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: passwordMatchValidator }
+    );
   }
 
   protected openEditModal(): void {
@@ -123,6 +148,60 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  // --- Password Modal Logic ---
+
+  protected openPasswordModal(): void {
+    if (!this.user || !this.isOwner) return;
+    this.showPasswordModal = true;
+    this.passwordFeedback = null;
+    this.resetPasswordVisibility();
+  }
+
+  protected closePasswordModal(): void {
+    this.showPasswordModal = false;
+    this.changePasswordForm.reset();
+    this.passwordFeedback = null;
+    this.resetPasswordVisibility();
+  }
+
+  private resetPasswordVisibility(): void {
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  protected onSubmitPassword(): void {
+    if (this.changePasswordForm.valid && this.user) {
+      const { currentPassword, newPassword } = this.changePasswordForm.value;
+
+      this.passwordFeedback = null;
+
+      this.profilePageService
+        .changePassword(this.user.id, { currentPassword, newPassword })
+        .subscribe({
+          next: () => {
+            this.passwordFeedback = { 
+              type: 'success', 
+              message: 'Password changed successfully!' 
+            };
+            
+            setTimeout(() => {
+              this.closePasswordModal();
+            }, 1500);
+          },
+          error: (err) => {
+            console.error(err);
+            this.passwordFeedback = { 
+              type: 'error', 
+              message: 'Incorrect current password. Please try again.' 
+            };
+          },
+        });
+    } else {
+      this.changePasswordForm.markAllAsTouched();
+    }
+  }
+
   private loadFavorites(): void {
     this.profilePageService.getOwnFavorites().subscribe({
       next: (favs: FavoritesResponse) => {
@@ -157,7 +236,6 @@ export class ProfilePage implements OnInit {
   }
 
   protected confirmDelete(): void {
-    // Only owner may delete account
     if (!this.user || !this.isOwner) {
       return;
     }

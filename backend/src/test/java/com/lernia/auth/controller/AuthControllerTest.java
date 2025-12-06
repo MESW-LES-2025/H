@@ -150,15 +150,6 @@ class AuthControllerTest {
     }
 
     @Test
-    void testLogout_ReturnsOkAndDelegates() {
-        ResponseEntity<?> responseEntity = authController.logout(request, response);
-
-        assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("message", "Logged out successfully"), responseEntity.getBody());
-        verify(authService).logout(request, response);
-    }
-
-    @Test
     void testDeleteAccount_ReturnsNoContent() {
         ResponseEntity<Void> responseEntity = authController.deleteAccount(88L);
 
@@ -171,8 +162,8 @@ class AuthControllerTest {
     void testGetCurrentUser_NotAuthenticated() {
         ResponseEntity<?> responseEntity = authController.getCurrentUser(null);
 
-        assertEquals(401, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("message", "Not authenticated"), responseEntity.getBody());
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertNull(responseEntity.getBody());
         verifyNoInteractions(userRepository);
     }
 

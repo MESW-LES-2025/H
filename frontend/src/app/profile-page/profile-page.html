@@ -45,13 +45,22 @@
             </div>
 
             @if (isOwner) {
-              <button
-                class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
-                (click)="openEditModal()"
-              >
-                <i class="bi bi-pencil-square me-2"></i>
-                Edit Profile
-              </button>
+              <div class="d-flex gap-2">
+                <button
+                  class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm"
+                  (click)="openEditModal()"
+                >
+                  <i class="bi bi-pencil-square me-2"></i>
+                  Edit Profile
+                </button>
+                <button
+                  class="btn btn-outline-secondary btn-sm rounded-pill px-4 shadow-sm"
+                  (click)="openPasswordModal()"
+                >
+                  <i class="bi bi-shield-lock me-2"></i>
+                  Change Password
+                </button>
+              </div>
             }
           </div>
         </div>
@@ -398,6 +407,151 @@
               >
                 <i class="bi bi-check-lg me-2"></i>
                 Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Change Password Modal -->
+@if (showPasswordModal) {
+  <div class="modal-backdrop fade show" (click)="closePasswordModal()"></div>
+  <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-shield-lock me-2"></i>
+            Change Password
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closePasswordModal()"
+          ></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitPassword()">
+            
+            @if (passwordFeedback) {
+              <div 
+                class="alert mb-3 d-flex align-items-center" 
+                [class.alert-success]="passwordFeedback.type === 'success'"
+                [class.alert-danger]="passwordFeedback.type === 'error'"
+                role="alert"
+              >
+                @if (passwordFeedback.type === 'success') {
+                  <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                } @else {
+                  <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                }
+                <div>{{ passwordFeedback.message }}</div>
+              </div>
+            }
+
+            <!-- Current Password -->
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label fw-semibold">Current Password</label>
+              <div class="input-group">
+                <input
+                  id="currentPassword"
+                  [type]="showCurrentPassword ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="currentPassword"
+                  [class.is-invalid]="
+                    changePasswordForm.get('currentPassword')?.invalid &&
+                    changePasswordForm.get('currentPassword')?.touched
+                  "
+                />
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="showCurrentPassword = !showCurrentPassword"
+                  aria-label="Toggle current password visibility" 
+                >
+                  <i class="bi" [class.bi-eye]="!showCurrentPassword" [class.bi-eye-slash]="showCurrentPassword"></i>
+                </button>
+                <div class="invalid-feedback">Current password is required</div>
+              </div>
+            </div>
+
+            <!-- New Password -->
+            <div class="mb-3">
+              <label for="newPassword" class="form-label fw-semibold">New Password</label>
+              <div class="input-group">
+                <input
+                  id="newPassword"
+                  [type]="showNewPassword ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="newPassword"
+                  [class.is-invalid]="
+                    changePasswordForm.get('newPassword')?.invalid &&
+                    changePasswordForm.get('newPassword')?.touched
+                  "
+                />
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="showNewPassword = !showNewPassword"
+                  aria-label="Toggle new password visibility"
+                >
+                  <i class="bi" [class.bi-eye]="!showNewPassword" [class.bi-eye-slash]="showNewPassword"></i>
+                </button>
+                <div class="invalid-feedback">
+                  Password is required (min 6 characters)
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label fw-semibold">Confirm New Password</label>
+              <div class="input-group">
+                <input
+                  id="confirmPassword"
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="confirmPassword"
+                  [class.is-invalid]="
+                    (changePasswordForm.get('confirmPassword')?.invalid || changePasswordForm.errors?.['mismatch']) &&
+                    changePasswordForm.get('confirmPassword')?.touched
+                  "
+                />
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="showConfirmPassword = !showConfirmPassword"
+                  aria-label="Toggle confirm password visibility"
+                >
+                  <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                </button>
+                <div class="invalid-feedback">
+                  @if (changePasswordForm.errors?.['mismatch']) {
+                    Passwords do not match
+                  } @else {
+                    Please confirm your password
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end mt-4">
+              <button
+                type="button"
+                class="btn btn-light rounded-pill px-4"
+                (click)="closePasswordModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary rounded-pill px-4"
+                [disabled]="changePasswordForm.invalid"
+              >
+                Update Password
               </button>
             </div>
           </form>
