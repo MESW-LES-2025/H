@@ -398,6 +398,37 @@ describe('AuthService', () => {
     });
   });
 
+  describe('getCurrentUserRole and isAdmin', () => {
+    it('should return current user role and correctly detect admin status', () => {
+      // Admin case
+      service['currentUserSubject'].next({ id: 1, userRole: 'ADMIN' } as any);
+      expect(service.getCurrentUserRole()).toBe('ADMIN');
+      expect(service.isAdmin()).toBeTrue();
+
+      // Non-admin case
+      service['currentUserSubject'].next({ id: 2, userRole: 'USER' } as any);
+      expect(service.getCurrentUserRole()).toBe('USER');
+      expect(service.isAdmin()).toBeFalse();
+
+      // Null / logged-out case
+      service['currentUserSubject'].next(null);
+      expect(service.getCurrentUserRole()).toBeNull();
+      expect(service.isAdmin()).toBeFalse();
+    });
+  });
+
+  describe('getCurrentUserId', () => {
+    it('should return the current user id or null', () => {
+      // populated user case
+      service['currentUserSubject'].next({ id: 42 } as any);
+      expect(service.getCurrentUserId()).toBe(42);
+
+      // logged-out / null case
+      service['currentUserSubject'].next(null);
+      expect(service.getCurrentUserId()).toBeNull();
+    });
+  });
+
   describe('CSRF Token Management', () => {
     it('should allow setting CSRF token', () => {
       service.csrfToken = 'new-token';
