@@ -110,13 +110,6 @@ public class AuthService {
         return res;
     }
 
-
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        SecurityContextHolder.setContext(context);
-        securityContextRepository.saveContext(context, request, response);
-    }
-
     public void deleteAccount(Long id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found");
@@ -128,6 +121,16 @@ public class AuthService {
     public void changePassword(Long userId, ChangePasswordRequest req) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 1. Validate inputs are not null or empty
+        if (req.getCurrentPassword() == null || req.getCurrentPassword().trim().isEmpty() ||
+            req.getNewPassword() == null || req.getNewPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Passwords cannot be empty");
+        }
+
+        if (req.getCurrentPassword().equals(req.getNewPassword())) {
+            throw new IllegalArgumentException("New password cannot be the same as the current password");
+        }
 
         if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
             throw new RuntimeException("Incorrect current password");

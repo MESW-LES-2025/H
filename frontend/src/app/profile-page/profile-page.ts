@@ -152,17 +152,17 @@ export class ProfilePage implements OnInit {
     if (!this.user || !this.isOwner) return;
     this.showPasswordModal = true;
     this.passwordFeedback = null;
-    
-    this.showCurrentPassword = false;
-    this.showNewPassword = false;
-    this.showConfirmPassword = false;
+    this.resetPasswordVisibility();
   }
 
   protected closePasswordModal(): void {
     this.showPasswordModal = false;
     this.changePasswordForm.reset();
     this.passwordFeedback = null;
-    
+    this.resetPasswordVisibility();
+  }
+
+  private resetPasswordVisibility(): void {
     this.showCurrentPassword = false;
     this.showNewPassword = false;
     this.showConfirmPassword = false;

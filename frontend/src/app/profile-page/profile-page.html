@@ -470,6 +470,7 @@
                   class="btn btn-outline-secondary" 
                   type="button"
                   (click)="showCurrentPassword = !showCurrentPassword"
+                  aria-label="Toggle current password visibility" 
                 >
                   <i class="bi" [class.bi-eye]="!showCurrentPassword" [class.bi-eye-slash]="showCurrentPassword"></i>
                 </button>
@@ -495,6 +496,7 @@
                   class="btn btn-outline-secondary" 
                   type="button"
                   (click)="showNewPassword = !showNewPassword"
+                  aria-label="Toggle new password visibility"
                 >
                   <i class="bi" [class.bi-eye]="!showNewPassword" [class.bi-eye-slash]="showNewPassword"></i>
                 </button>
@@ -522,6 +524,7 @@
                   class="btn btn-outline-secondary" 
                   type="button"
                   (click)="showConfirmPassword = !showConfirmPassword"
+                  aria-label="Toggle confirm password visibility"
                 >
                   <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
                 </button>
