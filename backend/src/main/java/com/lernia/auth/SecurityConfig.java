@@ -59,6 +59,13 @@ public class SecurityConfig {
                         // Login / Register / Logout públicos
                         .requestMatchers(HttpMethod.POST, "/login", "/register", "/logout").permitAll()
 
+                        .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/profile/**").permitAll()
+
+                        // Favoritos (GET/POST/DELETE)
+                        .requestMatchers("/api/favorites/**").permitAll()
+                        .requestMatchers("/api/favorites").permitAll()
+
                         // Preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
