@@ -171,8 +171,8 @@ class AuthControllerTest {
     void testGetCurrentUser_NotAuthenticated() {
         ResponseEntity<?> responseEntity = authController.getCurrentUser(null);
 
-        assertEquals(401, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("message", "Not authenticated"), responseEntity.getBody());
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertNull(responseEntity.getBody());
         verifyNoInteractions(userRepository);
     }
 

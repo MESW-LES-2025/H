@@ -1,7 +1,9 @@
 package com.lernia.auth.controller;
 
+import com.lernia.auth.dto.ChangePasswordRequest;
 import com.lernia.auth.dto.EditProfileRequest;
 import com.lernia.auth.dto.UserProfileResponse;
+import com.lernia.auth.service.AuthService;
 import com.lernia.auth.service.UserProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ class UserProfileControllerTest {
 
     @Mock
     private UserProfileService userProfileService;
+
+    @Mock
+    private AuthService authService;
 
     @Mock
     private Authentication authentication;
@@ -70,5 +75,20 @@ class UserProfileControllerTest {
         verify(userProfileService).updateProfile(idCaptor.capture(), reqCaptor.capture());
         assertEquals(7L, idCaptor.getValue());
         assertSame(req, reqCaptor.getValue());
+    }
+
+    @Test
+    void testChangePassword_ReturnsOk() {
+        Long userId = 1L;
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("oldPass");
+        req.setNewPassword("newPass");
+
+        doNothing().when(authService).changePassword(userId, req);
+
+        ResponseEntity<Void> response = userProfileController.changePassword(userId, req);
+
+        assertEquals(200, response.getStatusCodeValue());
+        verify(authService, times(1)).changePassword(userId, req);
     }
 }
