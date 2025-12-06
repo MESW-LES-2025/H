@@ -13,21 +13,30 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   getUsers(): Observable<UserViewmodel[]> {
-    return this.http.get<UserViewmodel[]>(`${this.base}/api/admin/users`);
+    return this.http.get<UserViewmodel[]>(`${this.base}/api/admin/users`, {
+      withCredentials: true,
+    });
   }
 
   getUniversities(): Observable<UniversityLight[]> {
     return this.http.get<UniversityLight[]>(
       `${this.base}/api/admin/universities`,
+      {
+        withCredentials: true,
+      },
     );
   }
 
   getCourses(): Observable<CourseLight[]> {
-    return this.http.get<CourseLight[]>(`${this.base}/api/admin/courses`);
+    return this.http.get<CourseLight[]>(`${this.base}/api/admin/courses`, {
+      withCredentials: true,
+    });
   }
 
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.base}/api/admin/users/${id}`);
+    return this.http.delete<void>(`${this.base}/api/admin/users/${id}`, {
+      withCredentials: true,
+    });
   }
 
   getAll(): Observable<{
