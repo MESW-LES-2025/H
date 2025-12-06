@@ -504,7 +504,9 @@ describe('ProfilePageService', () => {
 
       service.changePassword(userId, data).subscribe();
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/${userId}/password`);
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/${userId}/password`,
+      );
       expect(req.request.method).toBe('PATCH');
       expect(req.request.body).toEqual(data);
       expect(req.request.withCredentials).toBe(true);
@@ -522,7 +524,9 @@ describe('ProfilePageService', () => {
         },
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/${userId}/password`);
+      const req = httpMock.expectOne(
+        `${apiUrl}/api/profile/${userId}/password`,
+      );
       req.flush('Bad Request', { status: 400, statusText: 'Bad Request' });
     });
   });

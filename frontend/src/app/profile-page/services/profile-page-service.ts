@@ -140,7 +140,7 @@ export class ProfilePageService {
     return this.http.patch<void>(
       `${this.apiUrl}/api/profile/${userId}/password`,
       data,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 

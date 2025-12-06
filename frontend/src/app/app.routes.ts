@@ -63,6 +63,7 @@ export const routes: Routes = [
   // Admin dashboard (only accessible to ADMIN role; component checks localStorage)
   {
     path: 'admin',
+    // TODO: canActivate: [AdminGuard],
     loadComponent: () =>
       import('./admin-dashboard/admin-dashboard.component').then(
         (m) => m.AdminDashboardComponent,

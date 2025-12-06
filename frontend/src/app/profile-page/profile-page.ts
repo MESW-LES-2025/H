@@ -15,7 +15,9 @@ import {
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
 import { AuthService } from '../auth/auth.service';
 
-function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+function passwordMatchValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
   const newPass = control.get('newPassword')?.value;
   const confirmPass = control.get('confirmPassword')?.value;
   return newPass === confirmPass ? null : { mismatch: true };
@@ -40,7 +42,10 @@ export class ProfilePage implements OnInit {
   protected editProfileForm: FormGroup = undefined as any;
   protected changePasswordForm: FormGroup = undefined as any;
 
-  protected passwordFeedback: { type: 'success' | 'error'; message: string } | null = null;
+  protected passwordFeedback: {
+    type: 'success' | 'error';
+    message: string;
+  } | null = null;
 
   protected showCurrentPassword = false;
   protected showNewPassword = false;
@@ -105,7 +110,7 @@ export class ProfilePage implements OnInit {
         newPassword: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
       },
-      { validators: passwordMatchValidator }
+      { validators: passwordMatchValidator },
     );
   }
 
@@ -180,20 +185,20 @@ export class ProfilePage implements OnInit {
         .changePassword(this.user.id, { currentPassword, newPassword })
         .subscribe({
           next: () => {
-            this.passwordFeedback = { 
-              type: 'success', 
-              message: 'Password changed successfully!' 
+            this.passwordFeedback = {
+              type: 'success',
+              message: 'Password changed successfully!',
             };
-            
+
             setTimeout(() => {
               this.closePasswordModal();
             }, 1500);
           },
           error: (err) => {
             console.error(err);
-            this.passwordFeedback = { 
-              type: 'error', 
-              message: 'Incorrect current password. Please try again.' 
+            this.passwordFeedback = {
+              type: 'error',
+              message: 'Incorrect current password. Please try again.',
             };
           },
         });

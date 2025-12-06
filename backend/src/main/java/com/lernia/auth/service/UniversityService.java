@@ -1,7 +1,5 @@
 package com.lernia.auth.service;
 
-import com.lernia.auth.dto.LocationDTO;
-import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.dto.*;
 import com.lernia.auth.entity.CourseEntity;
@@ -102,7 +100,7 @@ public class UniversityService {
                                     course.getId(),
                                     course.getName(),
                                     course.getCourseType(),
-                                    course.getUniversity().getName()))
+                                    course.getUniversity() != null ? course.getUniversity().getName() : null))
                             .collect(Collectors.toList());
 
                     List<ScholarshipEntity> scholarshipEntities = scholarshipRepository.findByUniversityId(id);

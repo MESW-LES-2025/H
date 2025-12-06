@@ -72,7 +72,11 @@ public class AdminController {
     @GetMapping("/courses")
     public ResponseEntity<List<CourseLightDTO>> getAllCourses() {
         List<CourseLightDTO> list = courseRepository.findAll().stream()
-                .map(course -> new CourseLightDTO(course.getId(), course.getName(), course.getCourseType(), course.getUniversity().getName()))
+                .map(course -> new CourseLightDTO(
+                    course.getId(), 
+                    course.getName(), 
+                    course.getCourseType(), 
+                    course.getUniversity() != null ? course.getUniversity().getName() : null))
                 .toList();
         return ResponseEntity.ok(list);
     }

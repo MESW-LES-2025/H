@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
+  standalone: true,
   styleUrls: ['./admin-dashboard.component.css'],
 })
 export class AdminDashboardComponent implements OnInit {
@@ -73,13 +74,11 @@ export class AdminDashboardComponent implements OnInit {
         }
       },
       () => {
-        // dismissed
         this.pendingDeleteId = null;
       },
     );
   }
 
-  // separated for easier testing
   performDelete(id: number): void {
     this.adminService.deleteUser(id).subscribe({
       next: () => {
