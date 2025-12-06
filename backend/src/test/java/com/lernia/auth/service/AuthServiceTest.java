@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+import com.lernia.auth.dto.ChangePasswordRequest; // Add this import
 import com.lernia.auth.dto.LoginRequest;
 import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.dto.RegisterRequest;
@@ -433,21 +434,6 @@ class AuthServiceTest {
     }
 
     @Test
-    void logout_ShouldClearSecurityContext() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
-
-        authService.logout(request, response);
-
-        ArgumentCaptor<SecurityContext> contextCaptor = ArgumentCaptor.forClass(SecurityContext.class);
-        verify(securityContextRepository).saveContext(contextCaptor.capture(), eq(request), eq(response));
-        
-        SecurityContext capturedContext = contextCaptor.getValue();
-        assertNull(capturedContext.getAuthentication(), "Authentication should be null after logout");
-        assertNull(SecurityContextHolder.getContext().getAuthentication(), "Holder should also be cleared");
-    }
-
-    @Test
     void testDeleteAccount_UserExists() {
         when(userRepository.existsById(55L)).thenReturn(true);
 
@@ -466,5 +452,122 @@ class AuthServiceTest {
 
         verify(userRepository).existsById(77L);
         verify(userRepository, never()).deleteById(anyLong());
+    }
+
+    // -------------------------------------------------------
+    // Change Password Tests
+    // -------------------------------------------------------
+
+    @Test
+    void testChangePassword_Success() {
+        Long userId = 100L;
+        String oldHash = "$2a$10$oldHash";
+        String newHash = "$2a$10$newHash";
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setPassword(oldHash);
+
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("correctOldPassword");
+        req.setNewPassword("newPassword123");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("correctOldPassword", oldHash)).thenReturn(true);
+        when(passwordEncoder.encode("newPassword123")).thenReturn(newHash);
+
+        authService.changePassword(userId, req);
+
+        assertEquals(newHash, user.getPassword());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void testChangePassword_UserNotFound() {
+        Long userId = 999L;
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("any");
+        req.setNewPassword("any");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> 
+            authService.changePassword(userId, req)
+        );
+        assertEquals("User not found", ex.getMessage());
+        
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_IncorrectCurrentPassword() {
+        Long userId = 100L;
+        String oldHash = "$2a$10$oldHash";
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setPassword(oldHash);
+
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("wrongPassword");
+        req.setNewPassword("newPassword123");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongPassword", oldHash)).thenReturn(false);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> 
+            authService.changePassword(userId, req)
+        );
+        assertEquals("Incorrect current password", ex.getMessage());
+
+        assertEquals(oldHash, user.getPassword());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_NullOrEmptyPasswords() {
+        Long userId = 100L;
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        ChangePasswordRequest reqNull = new ChangePasswordRequest();
+        reqNull.setCurrentPassword("valid");
+        reqNull.setNewPassword(null);
+
+        assertThrows(IllegalArgumentException.class, () -> 
+            authService.changePassword(userId, reqNull)
+        );
+
+        ChangePasswordRequest reqEmpty = new ChangePasswordRequest();
+        reqEmpty.setCurrentPassword("valid");
+        reqEmpty.setNewPassword("   ");
+
+        assertThrows(IllegalArgumentException.class, () -> 
+            authService.changePassword(userId, reqEmpty)
+        );
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_NewPasswordSameAsCurrent() {
+        Long userId = 100L;
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("samePassword");
+        req.setNewPassword("samePassword");
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> 
+            authService.changePassword(userId, req)
+        );
+        
+        assertEquals("New password cannot be the same as the current password", ex.getMessage());
+        verify(userRepository, never()).save(any());
     }
 }

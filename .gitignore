@@ -62,3 +62,4 @@ backend/mvnw.cmd
 *.log
 
 frontend/coverage
+acceptance-tests/target/

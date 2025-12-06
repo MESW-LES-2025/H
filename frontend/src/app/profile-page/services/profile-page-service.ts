@@ -133,6 +133,14 @@ export class ProfilePageService {
     );
   }
 
+  public changePassword(userId: number, data: any): Observable<void> {
+    return this.http.patch<void>(
+      `${this.apiUrl}/api/profile/${userId}/password`,
+      data,
+      { withCredentials: true }
+    );
+  }
+
   // ----------------------------
   // DELETE ACCOUNT
   // ----------------------------
