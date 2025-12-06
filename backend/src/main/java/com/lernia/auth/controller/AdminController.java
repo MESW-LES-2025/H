@@ -9,6 +9,9 @@ import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -36,7 +40,7 @@ public class AdminController {
             r.setName(u.getName());
             r.setEmail(u.getEmail());
             r.setAge(u.getAge());
-            r.setGender(u.getGender() != null ? u.getGender() : null);
+            r.setGender(u.getGender());
             r.setLocation(u.getLocation());
             r.setJobTitle(u.getJobTitle());
             r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
@@ -75,9 +79,25 @@ public class AdminController {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        if (id == null || id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String currentUsername = authentication.getName();
+            if (currentUsername != null) {
+                Optional<com.lernia.auth.entity.UserEntity> currentUser = userRepository.findByUsername(currentUsername);
+                if (currentUser.isPresent() && currentUser.get().getId().equals(id)) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                }
+            }
+        }
+
         if (!userRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }

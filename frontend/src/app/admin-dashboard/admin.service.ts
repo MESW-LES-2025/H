@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UserViewmodel } from '../profile-page/viewmodels/user-viewmodel';
 import { UniversityLight } from '../universities/viewmodels/university-light';
-import { Course } from '../shared/viewmodels/course';
 import { CourseLight } from '../shared/viewmodels/course-light';
 
 @Injectable({ providedIn: 'root' })

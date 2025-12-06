@@ -10,7 +10,6 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { AuthService } from '../auth/auth.service';
-import { environment } from '../../environments/environment';
 
 describe('AdminDashboardComponent', () => {
   let component: AdminDashboardComponent;
