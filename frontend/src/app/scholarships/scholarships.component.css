@@ -1,6 +1,6 @@
 :root {
   --beige: #fff7ee;
-  --ink: #5A3226;
+  --ink: #5a3226;
   --accent: #c8d99b;
   --accent-deep: #4d9476;
   --line: #d9ccb5;
@@ -22,7 +22,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   color: var(--ink);
 }
 
@@ -80,7 +85,7 @@
   max-width: 790px;
   font-size: 14px;
   line-height: 1.6;
-  color: #5A3226;
+  color: #5a3226;
   font-weight: 700;
 }
 
@@ -92,7 +97,7 @@
   height: 78px;
   margin-top: 32px;
 
-  background: #CEDCA7;
+  background: #cedca7;
   border-radius: 26px;
 
   display: grid;
@@ -125,11 +130,11 @@
   padding-left: 10px;
   font-size: 15px;
   font-weight: 700;
-  color: #5A3226;
+  color: #5a3226;
 }
 
 .hero-input::placeholder {
-  color: #5A3226;
+  color: #5a3226;
   font-weight: 700;
 }
 
@@ -137,11 +142,11 @@
   height: 100%;
   width: 100%;
 
-  background: #F3E6BC;
+  background: #f3e6bc;
   border: none;
-  border-left: 3px solid rgba(0,0,0,0.07);
+  border-left: 3px solid rgba(0, 0, 0, 0.07);
 
-  color: #5A3226;
+  color: #5a3226;
   font-size: 22px;
   font-weight: 800;
   cursor: pointer;
@@ -300,7 +305,7 @@
   height: 64px;
   margin-bottom: 28px;
 
-  background: #CEDCA7;
+  background: #cedca7;
   border-radius: 20px;
 
   display: grid;
@@ -319,7 +324,7 @@
   height: 64px;
   margin-bottom: 28px;
 
-  background: #CEDCA7;
+  background: #cedca7;
   border-radius: 20px;
 
   display: grid;
@@ -352,11 +357,11 @@
   padding-left: 10px;
   font-size: 14px;
   font-weight: 700;
-  color: #5A3226;
+  color: #5a3226;
 }
 
 .search-input::placeholder {
-  color: #5A3226;
+  color: #5a3226;
   font-weight: 700;
 }
 
@@ -366,11 +371,13 @@
   border: none;
   border-left: 2px solid rgba(0, 0, 0, 0.08);
   background: transparent;
-  color: #5A3226;
+  color: #5a3226;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
   white-space: nowrap;
 }
 
@@ -397,7 +404,9 @@
   background: #fdf4e7;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 22px 45px rgba(0, 0, 0, 0.12);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .scholarship-card:hover {
@@ -518,7 +527,10 @@
   font-size: 14px;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
   margin-top: 20px;
 }
 
@@ -552,7 +564,10 @@
   font-size: 14px;
   cursor: pointer;
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.22);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .more:hover {

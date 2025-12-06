@@ -14,7 +14,10 @@ import { PageRequest } from '../shared/viewmodels/pagination';
   styleUrls: ['./scholarships.component.css'],
 })
 export class ScholarshipsComponent implements OnInit, OnDestroy {
-  constructor(private svc: ScholarshipService, private router: Router) {}
+  constructor(
+    private svc: ScholarshipService,
+    private router: Router,
+  ) {}
 
   q = signal<string>('');
   private searchTimeout: any = null;
@@ -72,8 +75,10 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   search(): void {
     this.pageRequest.page = 0;
     this.isLoading.set(true);
-    const maxAmountValue = this.maxAmount() >= this.maxAmountLimit ? null : this.maxAmount();
-    const minAmountValue = this.minAmount() <= this.minAmountLimit ? null : this.minAmount();
+    const maxAmountValue =
+      this.maxAmount() >= this.maxAmountLimit ? null : this.maxAmount();
+    const minAmountValue =
+      this.minAmount() <= this.minAmountLimit ? null : this.minAmount();
 
     this.svc
       .search(
@@ -81,9 +86,9 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
         this.courseType(),
         minAmountValue,
         maxAmountValue,
-        this.pageRequest
+        this.pageRequest,
       )
-      .subscribe(page => {
+      .subscribe((page) => {
         this.results.set(page.content);
         this.hasMorePages.set(page.number + 1 < page.totalPages);
         this.isLoading.set(false);
@@ -115,8 +120,10 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
 
     this.isLoading.set(true);
     this.pageRequest.page++;
-    const maxAmountValue = this.maxAmount() >= this.maxAmountLimit ? null : this.maxAmount();
-    const minAmountValue = this.minAmount() <= this.minAmountLimit ? null : this.minAmount();
+    const maxAmountValue =
+      this.maxAmount() >= this.maxAmountLimit ? null : this.maxAmount();
+    const minAmountValue =
+      this.minAmount() <= this.minAmountLimit ? null : this.minAmount();
 
     this.svc
       .search(
@@ -124,9 +131,9 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
         this.courseType(),
         minAmountValue,
         maxAmountValue,
-        this.pageRequest
+        this.pageRequest,
       )
-      .subscribe(page => {
+      .subscribe((page) => {
         this.results.set([...this.results(), ...page.content]);
         this.hasMorePages.set(page.number + 1 < page.totalPages);
         this.isLoading.set(false);
