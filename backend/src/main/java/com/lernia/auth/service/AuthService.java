@@ -93,10 +93,11 @@ public class AuthService {
 
         // --- Create Session ---
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+        String roleName = (user.getUserRole() != null) ? user.getUserRole().name() : UserRole.REGULAR.name();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
             user.getUsername(),
             null,
-            List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()))
+            List.of(new SimpleGrantedAuthority("ROLE_" + roleName))
         );
         context.setAuthentication(authToken);
         SecurityContextHolder.setContext(context);
