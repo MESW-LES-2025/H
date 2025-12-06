@@ -179,6 +179,25 @@ describe('Courses', () => {
 
       expect(component.filterCoursesForm.get('courseTypes')?.value).toEqual(['Bachelor']);
     });
+
+    it('should handle missing control (use fallback empty array) without throwing', () => {
+      const event = { target: { checked: true, value: 'X' } } as any;
+
+      expect(() => component.onCheckboxChange(event, 'nonexistent')).not.toThrow();
+      expect(component.filterCoursesForm.get('nonexistent')).toBeNull();
+    });
+
+    it('should use fallback [] when control value is falsy and set new values', () => {
+      // set name control to empty string (falsy) so `|| []` branch triggers
+      component.filterCoursesForm.get('name')?.setValue('');
+
+      const event = { target: { checked: true, value: 'newVal' } } as any;
+
+      component.onCheckboxChange(event, 'name');
+
+      // the control will receive the new array value via setValue
+      expect(component.filterCoursesForm.get('name')?.value).toEqual(['newVal']);
+    });
   });
 
   describe('getFilters', () => {
@@ -204,6 +223,35 @@ describe('Courses', () => {
       expect(filters.name).toBeNull();
       expect(filters.courseTypes).toEqual([]);
       expect(filters.onlyRemote).toBe(false);
+    });
+
+    it('should return defaults when controls are undefined', () => {
+      // set each control explicitly to undefined
+      const controls = [
+        'name',
+        'courseTypes',
+        'areasOfStudy',
+        'onlyRemote',
+        'costMax',
+        'duration',
+        'languages',
+        'countries',
+      ];
+
+      controls.forEach((c) => {
+        component.filterCoursesForm.get(c as any)?.setValue(undefined as any);
+      });
+
+      const filters = component.getFilters();
+
+      expect(filters.name).toBeNull();
+      expect(filters.courseTypes).toEqual([]);
+      expect(filters.areasOfStudy).toEqual([]);
+      expect(filters.onlyRemote).toBeFalse();
+      expect(filters.costMax).toBeNull();
+      expect(filters.duration).toBeNull();
+      expect(filters.languages).toEqual([]);
+      expect(filters.countries).toEqual([]);
     });
   });
 
