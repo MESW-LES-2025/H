@@ -1,7 +1,6 @@
 <main class="page">
   <!-- HERO -->
   <section class="hero">
-
     <div class="hero-copy">
       <img class="hero-arrow" src="/images/arrow.png" alt="arrow" />
 
@@ -11,14 +10,13 @@
       </h1>
 
       <p class="hero-subtitle">
-        Explore courses and universities that align with your ambitions.
-        From local institutions to international opportunities, uncover the
-        options that truly match who you are and where you want to go.
+        Explore courses and universities that align with your ambitions. From
+        local institutions to international opportunities, uncover the options
+        that truly match who you are and where you want to go.
       </p>
     </div>
 
     <div class="hero-photo">
-
       <div class="searchbar hero-searchbar">
         <div class="icon">
           <img src="/images/lupa.png" alt="Search icon" />
@@ -27,19 +25,16 @@
         <input
           class="hero-input"
           type="search"
-          placeholder="Search for a course, university, or area of study..."
+          placeholder="Search for a university..."
           [value]="q()"
           (input)="q.set($any($event.target).value)"
         />
-
 
         <button class="search-btn" (click)="search()">Search</button>
       </div>
 
       <img class="hero-image" src="/images/studentss.jpg" alt="Students" />
-
     </div>
-
   </section>
 
   <!-- GRID: placeholder dos filtros -->
@@ -47,11 +42,7 @@
     <aside class="filters-card">
       <div class="filters-head">
         <h3>Filters</h3>
-        <button
-          type="button"
-          class="clear-link"
-          (click)="clearFilters()"
-        >
+        <button type="button" class="clear-link" (click)="clearFilters()">
           Clear
         </button>
       </div>
@@ -65,25 +56,12 @@
             [value]="country()"
             (change)="onCountryChange($any($event.target).value)"
           >
-            <option *ngFor="let c of countries" [value]="c">
-              {{ c === 'Any' ? 'Any country' : c }}
+            <option *ngFor="let c of countries()" [value]="c">
+              {{ c === "Any" ? "Any country" : c }}
             </option>
           </select>
         </label>
 
-        <!-- Cost of living -->
-        <label class="filter-field">
-          <span class="filter-label">Cost of living</span>
-          <select
-            class="filter-select"
-            [value]="cost()"
-            (change)="onCostChange($any($event.target).value)"
-          >
-            <option *ngFor="let opt of costOptions" [value]="opt">
-              {{ opt === 'Any' ? 'Any cost' : opt }}
-            </option>
-          </select>
-        </label>
         <!-- Scholarships -->
         <label class="filter-field">
           <span class="filter-label">Scholarships</span>
@@ -93,60 +71,87 @@
             (change)="onScholarshipChange($any($event.target).value)"
           >
             <option *ngFor="let opt of scholarshipOptions" [value]="opt">
-              {{ opt === 'Any' ? 'Any scholarship option' : opt }}
+              {{ opt === "Any" ? "Any scholarship option" : opt }}
             </option>
           </select>
         </label>
-        <!-- Language -->
+
+        <!-- Cost of living -->
         <label class="filter-field">
-          <span class="filter-label">Language</span>
-          <select
-
-            class="filter-select"
-            [value]="language()"
-            (change)="onLanguageChange($any($event.target).value)"
-          >
-            <option *ngFor="let lang of languageOptions" [value]="lang">
-              {{ lang === 'Any' ? 'Any language' : lang }}
-            </option>
-          </select>
+          <span class="filter-label"
+            >Max Cost of Living:
+            <strong>{{
+              cost() >= maxCost ? "Any" : "$" + cost() + "/month"
+            }}</strong>
+          </span>
+          <input
+            type="range"
+            class="filter-slider"
+            [min]="500"
+            [max]="maxCost"
+            [step]="100"
+            [value]="cost()"
+            (input)="onCostChange(+$any($event.target).value)"
+          />
+          <div class="slider-labels">
+            <span>$500</span>
+            <span>Any</span>
+          </div>
         </label>
 
-
-        <p class="muted small-note">
-          More filters will be added soon.
-        </p>
+        <p class="muted small-note">More filters will be added soon.</p>
       </div>
     </aside>
-
-
 
     <!-- RESULTADOS -->
     <section class="results">
       <div class="results-head">
         <div>
-          <h2>Explore Colleges</h2>
-          <p>Use the search to find schools that are a good fit for you.</p>
-        </div>
-        <div class="views">
-          <button class="view active">Grid View</button>
-          <button class="view" disabled>Map View</button>
+          <h2>Explore Universities</h2>
+          <p>
+            Use the filters to find universities that are a good fit for you.
+          </p>
         </div>
       </div>
 
-      <article class="college-card" *ngFor="let c of results()">
+      <article
+        class="college-card"
+        *ngFor="let c of results()"
+        (click)="goToUniversity(c.id)"
+        style="cursor: pointer"
+      >
         <div class="left" [style.backgroundColor]="c.color">
           <h3>{{ c.title }}</h3>
           <p>{{ c.blurb }}</p>
+          <div class="meta">
+            <span>📍 {{ c.city }}, {{ c.country }}</span>
+            <span *ngIf="c.costOfLiving > 0"
+              >💰 ${{ c.costOfLiving }}/month</span
+            >
+          </div>
         </div>
+
         <div class="right">
           <img [src]="c.photo" [alt]="c.title" />
-          <button class="fav" aria-label="Save">♡</button>
+          <button
+            class="fav"
+            aria-label="Save"
+            (click)="onFavoriteUniversityClick(c, $event)"
+            [class.fav-active]="c.isFavorite"
+          >
+            {{ c.isFavorite ? "❤" : "♡" }}
+          </button>
         </div>
       </article>
 
-      <div class="load-more">
-        <button class="more">Show more Colleges</button>
+      <div class="load-more" *ngIf="hasMorePages()">
+        <button class="more" (click)="loadMore()" [disabled]="isLoading()">
+          {{ isLoading() ? "Loading..." : "Show more Universities" }}
+        </button>
+      </div>
+
+      <div class="no-more" *ngIf="!hasMorePages() && results().length > 0">
+        <p>No more universities to show</p>
       </div>
     </section>
   </section>

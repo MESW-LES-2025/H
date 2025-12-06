@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from './auth.service';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { AuthService, LoginResponse } from './auth.service';
+import { DataService } from '../shared/services/data-service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +23,12 @@ export class LoginComponent {
   loading = false;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private auth: AuthService,
+    private dataService: DataService,
+  ) {
     this.form = this.fb.group({
       text: ['', Validators.required],
       password: ['', Validators.required],
@@ -25,19 +36,32 @@ export class LoginComponent {
     });
   }
 
-  toggle() { this.show = !this.show; }
+  toggle() {
+    this.show = !this.show;
+  }
 
   onSubmit() {
     if (this.form.invalid) return;
     this.errorMessage = null;
     this.loading = true;
     const { text, password } = this.form.value;
+
     this.auth.login({ text, password }).subscribe({
-      next: (res) => {
+      next: (res: LoginResponse) => {
         this.loading = false;
         console.log('Login OK', res);
-        if (res.status === 'success' && res.userId) {
-          this.router.navigate(['/profile', res.userId]);
+
+        if (res.status === 'success' && res.user?.id != null) {
+          this.dataService.setUserAtual(res.user);
+          localStorage.setItem('userId', res.user.id.toString());
+          if (res.user.name) {
+            localStorage.setItem('username', res.user.name);
+          }
+          if (res.user.role) {
+            localStorage.setItem('role', res.user.role);
+          }
+
+          this.router.navigate(['/profile', res.user.id]);
         } else {
           this.errorMessage = res.message || 'Login failed';
         }
@@ -46,7 +70,7 @@ export class LoginComponent {
         this.loading = false;
         console.error('Login error', err);
         this.errorMessage = 'Login error';
-      }
+      },
     });
   }
 

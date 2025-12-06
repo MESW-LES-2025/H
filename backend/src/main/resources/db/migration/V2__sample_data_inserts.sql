@@ -1,7 +1,7 @@
 -- 5 Users
 -- TODO: Fix Passwords
 INSERT INTO lernia.users (name, username, email, password, age, gender, location, profile_picture, job_title, creation_date, user_role, premium_start_date) VALUES
-    ('Alice Smith', 'asmith', 'alice@example.com', 'pass1', 21, 'FEMALE', 'Lisbon', 'asmith.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
+    ('Alice Smith', 'asmith', 'alice@example.com', '$2y$10$5TkGtbvc64nU7P7UcZdtveIJ4CR8p9V094f/b4ckSZw0BaqQ/QsJe', 21, 'FEMALE', 'Lisbon', 'asmith.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
     ('Bob Johnson', 'bjohnson', 'bob@example.com', 'pass2', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
     ('Claire Lee', 'clee', 'claire@example.com', 'pass3', 30, 'FEMALE', 'Berlin', 'clee.png', 'Researcher', CURRENT_DATE, 'STUDENT', NULL),
     ('David Wilson', 'dwilson', 'david@example.com', 'pass4', 22, 'MALE', 'Lisbon', 'dwilson.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
@@ -213,14 +213,14 @@ INSERT INTO lernia.user_bookmarked_courses (user_id, course_id) VALUES (1, 1), (
 
 INSERT INTO lernia.user_bookmarked_universities (user_id, university_id) VALUES (1, 1), (2, 2);
 
-INSERT INTO lernia.user_courses (user_id, course_id, start_date, end_date, is_finished) VALUES
-    (1, 1, '2023-09-01', NULL, false),
-    (1, 2, '2024-02-01', NULL, false),
-    (2, 2, '2023-10-01', '2024-03-01', true),
-    (3, 3, '2023-09-15', NULL, false),
-    (4, 1, '2024-01-10', '2024-05-20', true),
-    (5, 2, '2024-03-01', NULL, false),
-    (5, 3, '2024-01-01', NULL, false);
+INSERT INTO lernia.user_courses (user_id, course_id, start_date, end_date) VALUES
+    (1, 1, '2023-09-01', NULL),
+    (1, 2, '2024-02-01', NULL),
+    (2, 2, '2023-10-01', '2024-03-01'),
+    (3, 3, '2023-09-15', NULL),
+    (4, 1, '2024-01-10', '2024-05-20'),
+    (5, 2, '2024-03-01', NULL),
+    (5, 3, '2024-01-01', NULL);
 
 INSERT INTO lernia.reviews (id, rating, title, description, review_date, user_id, dtype) VALUES
     (1, 4.5, 'Great course', 'Very informative.', CURRENT_DATE, 1, 'CourseReviewEntity'),

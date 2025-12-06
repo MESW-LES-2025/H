@@ -27,4 +27,7 @@ public class UniversityEntity {
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CampusEntity> campuses = new ArrayList<>();
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScholarshipEntity> scholarships = new ArrayList<>();
+
 }
