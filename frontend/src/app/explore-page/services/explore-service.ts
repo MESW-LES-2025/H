@@ -53,7 +53,7 @@ export class ExploreService {
       .get<Page<UniversityDTO>>(`${this.baseUrl}/api/university`, { params })
       .pipe(
         map((page) => ({
-          content: page.content.map(this.toCollegeVM),
+          content: page.content.map((dto) => this.toCollegeVM(dto)),
           totalElements: page.totalElements,
           totalPages: page.totalPages,
           size: page.size,

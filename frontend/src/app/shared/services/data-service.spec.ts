@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DataService } from './data-service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { environment } from '../../../environments/environment';
 import { AreasOfStudy } from '../viewmodels/area-of-study';
 import { firstValueFrom } from 'rxjs';
 import { skip, take } from 'rxjs/operators';
