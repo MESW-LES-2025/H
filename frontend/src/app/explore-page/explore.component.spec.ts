@@ -3,7 +3,7 @@ import { ExploreComponent } from './explore.component';
 import { ExploreService } from './services/explore-service';
 import { DataService } from '../shared/services/data-service';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, throwError, delay } from 'rxjs';
 import { Page } from '../shared/viewmodels/pagination';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
 
@@ -166,17 +166,18 @@ describe('ExploreComponent', () => {
     });
 
     it('should set isLoading to true then false after search completes', (done) => {
-      let isLoadingDuringSearch = false;
+      exploreService.search.and.returnValue(of(mockPage).pipe(delay(10)));
 
-      // Check isLoading immediately after calling search
+      expect(component.isLoading()).toBe(false);
+      
       component.search();
-      isLoadingDuringSearch = component.isLoading();
+      
+      expect(component.isLoading()).toBe(true);
 
       setTimeout(() => {
-        expect(isLoadingDuringSearch).toBe(true);
         expect(component.isLoading()).toBe(false);
         done();
-      }, 100);
+      }, 50);
     });
 
     it('should pass null for cost when at maxCost', (done) => {
