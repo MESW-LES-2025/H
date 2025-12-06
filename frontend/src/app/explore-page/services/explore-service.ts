@@ -5,8 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {
   UniversityDTO,
-  CollegeVM,
-  toCollegeVM,
+  CollegeVM
 } from '../viewmodels/explore-viewmodel';
 import { Page, PageRequest } from '../../shared/viewmodels/pagination';
 
@@ -57,13 +56,28 @@ export class ExploreService {
       .get<Page<UniversityDTO>>(`${this.baseUrl}/api/university`, { params })
       .pipe(
         map((page) => ({
-          content: page.content.map(toCollegeVM),
+          content: page.content.map(this.toCollegeVM),
           totalElements: page.totalElements,
           totalPages: page.totalPages,
           size: page.size,
           number: page.number,
         })),
       );
+  }
+
+  toCollegeVM(dto: UniversityDTO): CollegeVM {
+    return {
+      id: dto.id.toString(),
+      title: dto.name,
+      blurb: dto.description || 'No description available',
+      photo:
+        'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
+      color: '#7DB19F',
+      country: dto.location?.country || 'Unknown',
+      city: dto.location?.city || 'Unknown',
+      costOfLiving: dto.location?.costOfLiving || 0,
+      isFavorite: false,
+    };
   }
 
   addFavoriteUniversity(id: number): Observable<void> {
