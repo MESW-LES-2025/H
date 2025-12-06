@@ -34,9 +34,15 @@ export class ProfilePage implements OnInit {
 
   protected user: UserViewmodel | null = null;
   protected showEditModal = false;
-  protected showPasswordModal = false; // New state
+  protected showPasswordModal = false;
   protected editProfileForm: FormGroup = undefined as any;
-  protected changePasswordForm: FormGroup = undefined as any; // New form
+  protected changePasswordForm: FormGroup = undefined as any;
+
+  protected passwordFeedback: { type: 'success' | 'error'; message: string } | null = null;
+
+  protected showCurrentPassword = false;
+  protected showNewPassword = false;
+  protected showConfirmPassword = false;
 
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' =
     'universities';
@@ -145,27 +151,48 @@ export class ProfilePage implements OnInit {
   protected openPasswordModal(): void {
     if (!this.user || !this.isOwner) return;
     this.showPasswordModal = true;
+    this.passwordFeedback = null;
+    
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
   }
 
   protected closePasswordModal(): void {
     this.showPasswordModal = false;
     this.changePasswordForm.reset();
+    this.passwordFeedback = null;
+    
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
   }
 
   protected onSubmitPassword(): void {
     if (this.changePasswordForm.valid && this.user) {
       const { currentPassword, newPassword } = this.changePasswordForm.value;
 
+      this.passwordFeedback = null;
+
       this.profilePageService
         .changePassword(this.user.id, { currentPassword, newPassword })
         .subscribe({
           next: () => {
-            alert('Password changed successfully.');
-            this.closePasswordModal();
+            this.passwordFeedback = { 
+              type: 'success', 
+              message: 'Password changed successfully!' 
+            };
+            
+            setTimeout(() => {
+              this.closePasswordModal();
+            }, 1500);
           },
           error: (err) => {
             console.error(err);
-            alert('Failed to change password. Please check your current password.');
+            this.passwordFeedback = { 
+              type: 'error', 
+              message: 'Incorrect current password. Please try again.' 
+            };
           },
         });
     } else {
