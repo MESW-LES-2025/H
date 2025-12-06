@@ -3,10 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import {
-  UniversityDTO,
-  CollegeVM
-} from '../viewmodels/explore-viewmodel';
+import { UniversityDTO, CollegeVM } from '../viewmodels/explore-viewmodel';
 import { Page, PageRequest } from '../../shared/viewmodels/pagination';
 
 export interface FavoritesResponse {

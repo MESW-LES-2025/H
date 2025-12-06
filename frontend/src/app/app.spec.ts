@@ -59,12 +59,8 @@ describe('App', () => {
 
   describe('Navigation handling', () => {
     it('should hide navbar on login route', (done) => {
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/login',
-        '/login',
-      );
-      
+      const navigationEnd = new NavigationEnd(1, '/login', '/login');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -74,12 +70,8 @@ describe('App', () => {
     });
 
     it('should hide navbar on register route', (done) => {
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/register',
-        '/register',
-      );
-      
+      const navigationEnd = new NavigationEnd(1, '/register', '/register');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -89,12 +81,8 @@ describe('App', () => {
     });
 
     it('should show navbar on other routes', (done) => {
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/home',
-        '/home',
-      );
-      
+      const navigationEnd = new NavigationEnd(1, '/home', '/home');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -105,13 +93,9 @@ describe('App', () => {
 
     it('should set title to "Login" on login route', (done) => {
       spyOn(titleService, 'setTitle');
-      
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/login',
-        '/login',
-      );
-      
+
+      const navigationEnd = new NavigationEnd(1, '/login', '/login');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -122,13 +106,9 @@ describe('App', () => {
 
     it('should set title to "Register" on register route', (done) => {
       spyOn(titleService, 'setTitle');
-      
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/register',
-        '/register',
-      );
-      
+
+      const navigationEnd = new NavigationEnd(1, '/register', '/register');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -139,13 +119,9 @@ describe('App', () => {
 
     it('should set default title "Lernia" for unmapped routes', (done) => {
       spyOn(titleService, 'setTitle');
-      
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/courses',
-        '/courses',
-      );
-      
+
+      const navigationEnd = new NavigationEnd(1, '/courses', '/courses');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -156,13 +132,9 @@ describe('App', () => {
 
     it('should use urlAfterRedirects when available', (done) => {
       spyOn(titleService, 'setTitle');
-      
-      const navigationEnd = new NavigationEnd(
-        1,
-        '/old-login',
-        '/login',
-      );
-      
+
+      const navigationEnd = new NavigationEnd(1, '/old-login', '/login');
+
       routerEventsSubject.next(navigationEnd);
 
       setTimeout(() => {
@@ -176,7 +148,7 @@ describe('App', () => {
   describe('Lifecycle hooks', () => {
     it('should complete destroy$ subject on destroy', () => {
       const destroySpy = spyOn(component['destroy$'], 'complete');
-      
+
       component.ngOnDestroy();
 
       expect(destroySpy).toHaveBeenCalled();
@@ -184,7 +156,7 @@ describe('App', () => {
 
     it('should emit on destroy$ subject on destroy', () => {
       const destroySpy = spyOn(component['destroy$'], 'next');
-      
+
       component.ngOnDestroy();
 
       expect(destroySpy).toHaveBeenCalled();
@@ -192,10 +164,10 @@ describe('App', () => {
 
     it('should unsubscribe from router events on destroy', () => {
       fixture.detectChanges();
-      
+
       const subscription = component['destroy$'];
       const completeSpy = spyOn(subscription, 'complete').and.callThrough();
-      
+
       component.ngOnDestroy();
 
       expect(completeSpy).toHaveBeenCalled();

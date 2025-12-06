@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { UniversityPageService } from './university-page-service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -36,12 +39,25 @@ describe('UniversityPageService', () => {
       website: 'https://example.edu',
       address: '123 Example St',
       logo: 'https://logo.example/1.png',
-      location: { id: 2, city: 'CityX', country: 'CountryY', costOfLiving: 1000 },
+      location: {
+        id: 2,
+        city: 'CityX',
+        country: 'CountryY',
+        costOfLiving: 1000,
+      },
       courses: [
         { id: 11, name: 'Course A', courseType: 'Bachelor' },
         { id: 12, name: 'Course B', courseType: 'Master' },
       ],
-      scholarships: [{ id: 1, name: 'S1', description: 'd', amount: 1000, courseType: 'Bachelor' }],
+      scholarships: [
+        {
+          id: 1,
+          name: 'S1',
+          description: 'd',
+          amount: 1000,
+          courseType: 'Bachelor',
+        },
+      ],
     } as any;
 
     const resultPromise = firstValueFrom(service.getUniversityProfile(5));
@@ -74,9 +90,7 @@ describe('UniversityPageService', () => {
       address: null,
       logo: '',
       location: null,
-      courses: [
-        { id: 21, name: 'Course X', courseType: '' },
-      ],
+      courses: [{ id: 21, name: 'Course X', courseType: '' }],
       scholarships: null,
     } as any;
 

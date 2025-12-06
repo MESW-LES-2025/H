@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { Courses } from './courses';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -53,12 +58,18 @@ describe('Courses', () => {
   };
 
   beforeEach(async () => {
-    const coursesServiceSpy = jasmine.createSpyObj('CoursesService', ['getCourses']);
-    const dataServiceSpy = jasmine.createSpyObj('DataService', ['loadFilterLists'], {
-      areasOfStudy$: of([]),
-      languages$: of([]),
-      countries$: of([]),
-    });
+    const coursesServiceSpy = jasmine.createSpyObj('CoursesService', [
+      'getCourses',
+    ]);
+    const dataServiceSpy = jasmine.createSpyObj(
+      'DataService',
+      ['loadFilterLists'],
+      {
+        areasOfStudy$: of([]),
+        languages$: of([]),
+        countries$: of([]),
+      },
+    );
 
     await TestBed.configureTestingModule({
       imports: [Courses],
@@ -70,7 +81,9 @@ describe('Courses', () => {
       ],
     }).compileComponents();
 
-    coursesService = TestBed.inject(CoursesService) as jasmine.SpyObj<CoursesService>;
+    coursesService = TestBed.inject(
+      CoursesService,
+    ) as jasmine.SpyObj<CoursesService>;
     dataService = TestBed.inject(DataService) as jasmine.SpyObj<DataService>;
     coursesService.getCourses.and.returnValue(of(mockPage));
 
@@ -122,13 +135,15 @@ describe('Courses', () => {
 
       expect(coursesService.getCourses).toHaveBeenCalledWith(
         jasmine.objectContaining({ name: 'Computer' }),
-        jasmine.objectContaining({ page: 1, size: 10, sort: 'name,asc' })
+        jasmine.objectContaining({ page: 1, size: 10, sort: 'name,asc' }),
       );
     });
 
     it('should handle error when loading courses', () => {
       spyOn(console, 'error');
-      coursesService.getCourses.and.returnValue(throwError(() => new Error('Failed')));
+      coursesService.getCourses.and.returnValue(
+        throwError(() => new Error('Failed')),
+      );
 
       component.loadCourses();
 
@@ -153,11 +168,15 @@ describe('Courses', () => {
 
       component.onCheckboxChange(event, 'courseTypes');
 
-      expect(component.filterCoursesForm.get('courseTypes')?.value).toContain('Bachelor');
+      expect(component.filterCoursesForm.get('courseTypes')?.value).toContain(
+        'Bachelor',
+      );
     });
 
     it('should remove value when checkbox is unchecked', () => {
-      component.filterCoursesForm.patchValue({ courseTypes: ['Bachelor', 'Master'] });
+      component.filterCoursesForm.patchValue({
+        courseTypes: ['Bachelor', 'Master'],
+      });
 
       const event = {
         target: { checked: false, value: 'Bachelor' },
@@ -165,7 +184,9 @@ describe('Courses', () => {
 
       component.onCheckboxChange(event, 'courseTypes');
 
-      expect(component.filterCoursesForm.get('courseTypes')?.value).toEqual(['Master']);
+      expect(component.filterCoursesForm.get('courseTypes')?.value).toEqual([
+        'Master',
+      ]);
     });
 
     it('should not duplicate values', () => {
@@ -177,13 +198,17 @@ describe('Courses', () => {
 
       component.onCheckboxChange(event, 'courseTypes');
 
-      expect(component.filterCoursesForm.get('courseTypes')?.value).toEqual(['Bachelor']);
+      expect(component.filterCoursesForm.get('courseTypes')?.value).toEqual([
+        'Bachelor',
+      ]);
     });
 
     it('should handle missing control (use fallback empty array) without throwing', () => {
       const event = { target: { checked: true, value: 'X' } } as any;
 
-      expect(() => component.onCheckboxChange(event, 'nonexistent')).not.toThrow();
+      expect(() =>
+        component.onCheckboxChange(event, 'nonexistent'),
+      ).not.toThrow();
       expect(component.filterCoursesForm.get('nonexistent')).toBeNull();
     });
 
@@ -196,7 +221,9 @@ describe('Courses', () => {
       component.onCheckboxChange(event, 'name');
 
       // the control will receive the new array value via setValue
-      expect(component.filterCoursesForm.get('name')?.value).toEqual(['newVal']);
+      expect(component.filterCoursesForm.get('name')?.value).toEqual([
+        'newVal',
+      ]);
     });
   });
 
@@ -376,7 +403,9 @@ describe('Courses', () => {
 
   describe('isValueSelected', () => {
     it('should return true if value is selected', () => {
-      component.filterCoursesForm.patchValue({ courseTypes: ['Bachelor', 'Master'] });
+      component.filterCoursesForm.patchValue({
+        courseTypes: ['Bachelor', 'Master'],
+      });
 
       expect(component.isValueSelected('courseTypes', 'Bachelor')).toBe(true);
     });

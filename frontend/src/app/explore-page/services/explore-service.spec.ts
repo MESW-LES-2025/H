@@ -94,9 +94,11 @@ describe('ExploreService', () => {
     it('should include query parameter when provided', (done) => {
       const pageRequest = { page: 0, size: 3 };
 
-      service.search('Harvard', 'Any', null, 'Any', pageRequest).subscribe(() => {
-        done();
-      });
+      service
+        .search('Harvard', 'Any', null, 'Any', pageRequest)
+        .subscribe(() => {
+          done();
+        });
 
       const req = httpMock.expectOne((request) => {
         return (
@@ -111,9 +113,11 @@ describe('ExploreService', () => {
     it('should trim query parameter', (done) => {
       const pageRequest = { page: 0, size: 3 };
 
-      service.search('  Harvard  ', 'Any', null, 'Any', pageRequest).subscribe(() => {
-        done();
-      });
+      service
+        .search('  Harvard  ', 'Any', null, 'Any', pageRequest)
+        .subscribe(() => {
+          done();
+        });
 
       const req = httpMock.expectOne((request) => {
         return (
@@ -264,9 +268,11 @@ describe('ExploreService', () => {
     it('should include all parameters when provided', (done) => {
       const pageRequest = { page: 1, size: 5, sort: 'name,desc' };
 
-      service.search('Harvard', 'USA', 3000, 'Yes', pageRequest).subscribe(() => {
-        done();
-      });
+      service
+        .search('Harvard', 'USA', 3000, 'Yes', pageRequest)
+        .subscribe(() => {
+          done();
+        });
 
       const req = httpMock.expectOne((request) => {
         return (
@@ -333,7 +339,7 @@ describe('ExploreService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites/universities/123?userId=1`
+        `${environment.apiUrl}/api/favorites/universities/123?userId=1`,
       );
       expect(req.request.method).toBe('POST');
       expect(req.request.params.get('userId')).toBe('1');
@@ -363,7 +369,7 @@ describe('ExploreService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites/universities/123?userId=1`
+        `${environment.apiUrl}/api/favorites/universities/123?userId=1`,
       );
       expect(req.request.method).toBe('DELETE');
       expect(req.request.params.get('userId')).toBe('1');
@@ -398,7 +404,7 @@ describe('ExploreService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites?userId=1`
+        `${environment.apiUrl}/api/favorites?userId=1`,
       );
       expect(req.request.method).toBe('GET');
       expect(req.request.params.get('userId')).toBe('1');
@@ -430,7 +436,7 @@ describe('ExploreService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites?userId=1`
+        `${environment.apiUrl}/api/favorites?userId=1`,
       );
       expect(req.request.method).toBe('GET');
       expect(req.request.params.get('userId')).toBe('1');
@@ -448,7 +454,7 @@ describe('ExploreService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites?userId=1`
+        `${environment.apiUrl}/api/favorites?userId=1`,
       );
       req.flush(mockResponse);
     });

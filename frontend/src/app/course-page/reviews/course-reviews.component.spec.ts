@@ -66,7 +66,9 @@ describe('CourseReviewsComponent', () => {
 
     fixture = TestBed.createComponent(CourseReviewsComponent);
     component = fixture.componentInstance;
-    reviewService = TestBed.inject(ReviewService) as jasmine.SpyObj<ReviewService>;
+    reviewService = TestBed.inject(
+      ReviewService,
+    ) as jasmine.SpyObj<ReviewService>;
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     modalService = TestBed.inject(NgbModal) as jasmine.SpyObj<NgbModal>;
 
@@ -145,7 +147,10 @@ describe('CourseReviewsComponent', () => {
   describe('ngOnDestroy', () => {
     it('should unsubscribe from user subscription', () => {
       component.ngOnInit();
-      const unsubscribeSpy = spyOn(component['userSubscription']!, 'unsubscribe');
+      const unsubscribeSpy = spyOn(
+        component['userSubscription']!,
+        'unsubscribe',
+      );
 
       component.ngOnDestroy();
 
@@ -236,7 +241,9 @@ describe('CourseReviewsComponent', () => {
 
       component.submitReview();
 
-      expect(window.alert).toHaveBeenCalledWith('Failed to post review: Failed to submit');
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to post review: Failed to submit',
+      );
     });
 
     it('should handle error with default message when no error message provided', () => {
@@ -246,7 +253,7 @@ describe('CourseReviewsComponent', () => {
       component.submitReview();
 
       expect(window.alert).toHaveBeenCalledWith(
-        'Failed to post review: An unexpected error occurred.'
+        'Failed to post review: An unexpected error occurred.',
       );
     });
   });
@@ -276,7 +283,9 @@ describe('CourseReviewsComponent', () => {
 
       component.deleteReview(1);
 
-      expect(window.alert).toHaveBeenCalledWith('Failed to delete review: Failed to delete');
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to delete review: Failed to delete',
+      );
     });
   });
 
@@ -373,7 +382,10 @@ describe('CourseReviewsComponent', () => {
       component.saveEditedReview();
 
       setTimeout(() => {
-        expect(reviewService.updateCourseReview).toHaveBeenCalledWith(1, component.editingReview);
+        expect(reviewService.updateCourseReview).toHaveBeenCalledWith(
+          1,
+          component.editingReview,
+        );
         expect(component.reviews[0].title).toBe('Updated Title');
         done();
       }, 100);
@@ -386,7 +398,9 @@ describe('CourseReviewsComponent', () => {
 
       component.saveEditedReview();
 
-      expect(window.alert).toHaveBeenCalledWith('Failed to update review: Failed to update');
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to update review: Failed to update',
+      );
     });
 
     it('should not update if editingReview has no id', () => {

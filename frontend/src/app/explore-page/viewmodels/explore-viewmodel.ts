@@ -22,4 +22,4 @@ export interface CollegeVM {
   city: string;
   costOfLiving: number;
   isFavorite?: boolean;
-} 
+}

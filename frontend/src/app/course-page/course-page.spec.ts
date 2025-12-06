@@ -3,7 +3,7 @@ import { CoursePage } from './course-page';
 import { CoursePageService } from './services/course-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
 
 describe('CoursePage', () => {

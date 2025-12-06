@@ -10,7 +10,6 @@ import { UserViewmodel } from '../../profile-page/viewmodels/user-viewmodel';
 describe('DataService', () => {
   let service: DataService;
   let httpMock: HttpTestingController;
-  const baseUrl = environment.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

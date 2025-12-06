@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { UniversityPage } from './university-page';
 import { UniversityPageService } from './services/university-page-service';
 import { ExploreService } from '../explore-page/services/explore-service';
@@ -29,22 +34,35 @@ describe('UniversityPage', () => {
   } as any;
 
   beforeEach(async () => {
-    const uniServiceSpy = jasmine.createSpyObj('UniversityPageService', ['getUniversityProfile']);
-    const exploreSpy = jasmine.createSpyObj('ExploreService', ['getFavoriteUniversities', 'addFavoriteUniversity', 'removeFavoriteUniversity']);
+    const uniServiceSpy = jasmine.createSpyObj('UniversityPageService', [
+      'getUniversityProfile',
+    ]);
+    const exploreSpy = jasmine.createSpyObj('ExploreService', [
+      'getFavoriteUniversities',
+      'addFavoriteUniversity',
+      'removeFavoriteUniversity',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [UniversityPage, RouterTestingModule.withRoutes([])],
       providers: [
         { provide: UniversityPageService, useValue: uniServiceSpy },
         { provide: ExploreService, useValue: exploreSpy },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: (_: string) => '10' } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: (_: string) => '10' } } },
+        },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UniversityPage);
     component = fixture.componentInstance;
-    uniService = TestBed.inject(UniversityPageService) as jasmine.SpyObj<UniversityPageService>;
-    exploreService = TestBed.inject(ExploreService) as jasmine.SpyObj<ExploreService>;
+    uniService = TestBed.inject(
+      UniversityPageService,
+    ) as jasmine.SpyObj<UniversityPageService>;
+    exploreService = TestBed.inject(
+      ExploreService,
+    ) as jasmine.SpyObj<ExploreService>;
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
@@ -124,7 +142,9 @@ describe('UniversityPage', () => {
     (component as any).university = sampleUni;
     localStorage.setItem('userId', '5');
     spyOn(console, 'error');
-    exploreService.getFavoriteUniversities.and.returnValue(throwError(() => new Error('fail')));
+    exploreService.getFavoriteUniversities.and.returnValue(
+      throwError(() => new Error('fail')),
+    );
 
     (component as any).loadFavoriteState();
     tick();

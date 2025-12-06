@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { ReviewService } from './review-service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { environment } from '../../../environments/environment';
 
 describe('ReviewService', () => {
@@ -67,7 +70,9 @@ describe('ReviewService', () => {
   });
 
   it('checkCourseEligibility should GET with credentials', () => {
-    service.checkCourseEligibility(44).subscribe((res) => expect(res).toBeFalse());
+    service
+      .checkCourseEligibility(44)
+      .subscribe((res) => expect(res).toBeFalse());
 
     const req = httpMock.expectOne(`${base}/course/eligibility/44`);
     expect(req.request.method).toBe('GET');
@@ -77,7 +82,9 @@ describe('ReviewService', () => {
 
   it('addCourseReview should POST to /course with credentials', () => {
     const review = { id: 3, text: 'c' } as any;
-    service.addCourseReview(review).subscribe((res) => expect(res).toEqual(review));
+    service
+      .addCourseReview(review)
+      .subscribe((res) => expect(res).toEqual(review));
 
     const req = httpMock.expectOne(`${base}/course`);
     expect(req.request.method).toBe('POST');
@@ -88,7 +95,9 @@ describe('ReviewService', () => {
 
   it('updateReview should PUT to /:id with credentials', () => {
     const review = { id: 4, text: 'u' } as any;
-    service.updateReview(4, review).subscribe((res) => expect(res).toEqual(review));
+    service
+      .updateReview(4, review)
+      .subscribe((res) => expect(res).toEqual(review));
 
     const req = httpMock.expectOne(`${base}/4`);
     expect(req.request.method).toBe('PUT');
@@ -99,7 +108,9 @@ describe('ReviewService', () => {
 
   it('updateCourseReview should PUT to /course/:id with credentials', () => {
     const review = { id: 5, text: 'uc' } as any;
-    service.updateCourseReview(5, review).subscribe((res) => expect(res).toEqual(review));
+    service
+      .updateCourseReview(5, review)
+      .subscribe((res) => expect(res).toEqual(review));
 
     const req = httpMock.expectOne(`${base}/course/5`);
     expect(req.request.method).toBe('PUT');

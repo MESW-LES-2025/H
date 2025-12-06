@@ -75,13 +75,18 @@ describe('CoursePageService', () => {
         expect(course.language).toBe('English');
         expect(course.credits).toBe(180);
         expect(course.university.name).toBe('Test University');
-        expect(course.topics).toEqual(['Computer Science', 'Software Engineering']);
+        expect(course.topics).toEqual([
+          'Computer Science',
+          'Software Engineering',
+        ]);
         expect(course.requirements).toEqual(['Minimum admission grade: 85']);
         expect(course.isFavorite).toBe(false);
         done();
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/courses/${courseId}`);
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/api/courses/${courseId}`,
+      );
       expect(req.request.method).toBe('GET');
       req.flush(mockCourseDTO);
     });
@@ -185,7 +190,7 @@ describe('CoursePageService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites?userId=${userId}`
+        `${environment.apiUrl}/api/favorites?userId=${userId}`,
       );
       expect(req.request.method).toBe('GET');
       expect(req.request.params.get('userId')).toBe(userId.toString());
@@ -204,7 +209,7 @@ describe('CoursePageService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites?userId=${userId}`
+        `${environment.apiUrl}/api/favorites?userId=${userId}`,
       );
       req.flush(mockResponse);
     });
@@ -221,7 +226,7 @@ describe('CoursePageService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites/courses/${courseId}?userId=1`
+        `${environment.apiUrl}/api/favorites/courses/${courseId}?userId=1`,
       );
       expect(req.request.method).toBe('POST');
       expect(req.request.params.get('userId')).toBe('1');
@@ -232,7 +237,9 @@ describe('CoursePageService', () => {
     it('should throw error when user not logged in', () => {
       spyOn(localStorage, 'getItem').and.returnValue(null);
 
-      expect(() => service.addFavoriteCourse(123)).toThrowError('User not logged in');
+      expect(() => service.addFavoriteCourse(123)).toThrowError(
+        'User not logged in',
+      );
     });
   });
 
@@ -247,7 +254,7 @@ describe('CoursePageService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/favorites/courses/${courseId}?userId=1`
+        `${environment.apiUrl}/api/favorites/courses/${courseId}?userId=1`,
       );
       expect(req.request.method).toBe('DELETE');
       expect(req.request.params.get('userId')).toBe('1');
@@ -257,7 +264,9 @@ describe('CoursePageService', () => {
     it('should throw error when user not logged in', () => {
       spyOn(localStorage, 'getItem').and.returnValue(null);
 
-      expect(() => service.removeFavoriteCourse(123)).toThrowError('User not logged in');
+      expect(() => service.removeFavoriteCourse(123)).toThrowError(
+        'User not logged in',
+      );
     });
   });
 });

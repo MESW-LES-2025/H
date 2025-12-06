@@ -39,9 +39,7 @@ describe('AuthService', () => {
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
     // Handle the restoreSession call made in constructor
-    const restoreReq = httpMock.expectOne(
-      `${environment.apiUrl}/api/auth/me`,
-    );
+    const restoreReq = httpMock.expectOne(`${environment.apiUrl}/api/auth/me`);
     expect(restoreReq.request.method).toBe('GET');
     restoreReq.flush(null);
   });
@@ -245,7 +243,9 @@ describe('AuthService', () => {
         done();
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/users/${userId}`);
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/api/users/${userId}`,
+      );
       expect(req.request.method).toBe('GET');
 
       req.flush(mockUser);
@@ -262,7 +262,9 @@ describe('AuthService', () => {
         },
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/users/${userId}`);
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/api/users/${userId}`,
+      );
       req.error(new ProgressEvent('error'), { status: 404 });
     });
   });
@@ -282,7 +284,9 @@ describe('AuthService', () => {
         done();
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/users/${userId}`);
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/api/users/${userId}`,
+      );
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(userData);
 
@@ -301,7 +305,9 @@ describe('AuthService', () => {
         },
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/users/${userId}`);
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/api/users/${userId}`,
+      );
       req.error(new ProgressEvent('error'), { status: 400 });
     });
   });

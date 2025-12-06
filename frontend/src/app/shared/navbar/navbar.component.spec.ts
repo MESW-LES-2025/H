@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from './navbar.component';
 import { AuthService } from '../../auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs';
 
 describe('NavbarComponent', () => {
@@ -27,7 +28,7 @@ describe('NavbarComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [NavbarComponent, (await import('@angular/router/testing')).RouterTestingModule.withRoutes([])],
+      imports: [NavbarComponent, RouterTestingModule.withRoutes([])],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -94,7 +95,10 @@ describe('NavbarComponent', () => {
   describe('ngOnDestroy', () => {
     it('should unsubscribe from userSubscription', () => {
       fixture.detectChanges();
-      const unsubscribeSpy = spyOn(component['userSubscription']!, 'unsubscribe');
+      const unsubscribeSpy = spyOn(
+        component['userSubscription']!,
+        'unsubscribe',
+      );
 
       component.ngOnDestroy();
 
@@ -131,7 +135,10 @@ describe('NavbarComponent', () => {
       expect(component.links).toBeDefined();
       expect(component.links.length).toBe(3);
       expect(component.links[0]).toEqual({ label: 'Home', path: '/home' });
-      expect(component.links[1]).toEqual({ label: 'Explore', path: '/explore' });
+      expect(component.links[1]).toEqual({
+        label: 'Explore',
+        path: '/explore',
+      });
       expect(component.links[2]).toEqual({ label: 'About Us', path: '/about' });
     });
 

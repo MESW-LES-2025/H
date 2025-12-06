@@ -70,13 +70,15 @@ describe('ExploreComponent', () => {
       ],
     }).compileComponents();
 
-    exploreService = TestBed.inject(ExploreService) as jasmine.SpyObj<ExploreService>;
+    exploreService = TestBed.inject(
+      ExploreService,
+    ) as jasmine.SpyObj<ExploreService>;
     dataService = TestBed.inject(DataService) as jasmine.SpyObj<DataService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
     exploreService.search.and.returnValue(of(mockPage));
     exploreService.getFavorites.and.returnValue(
-      of({ universities: [{ id: 2 }], courses: [] })
+      of({ universities: [{ id: 2 }], courses: [] }),
     );
 
     fixture = TestBed.createComponent(ExploreComponent);
@@ -127,7 +129,7 @@ describe('ExploreComponent', () => {
       spyOn(localStorage, 'getItem').and.returnValue('1');
       spyOn(console, 'error');
       exploreService.getFavorites.and.returnValue(
-        throwError(() => new Error('Failed'))
+        throwError(() => new Error('Failed')),
       );
 
       fixture.detectChanges();
@@ -169,9 +171,9 @@ describe('ExploreComponent', () => {
       exploreService.search.and.returnValue(of(mockPage).pipe(delay(10)));
 
       expect(component.isLoading()).toBe(false);
-      
+
       component.search();
-      
+
       expect(component.isLoading()).toBe(true);
 
       setTimeout(() => {
@@ -378,7 +380,7 @@ describe('ExploreComponent', () => {
       const mockEvent = { stopPropagation: jasmine.createSpy() } as any;
       spyOn(console, 'error');
       exploreService.addFavoriteUniversity.and.returnValue(
-        throwError(() => new Error('Failed'))
+        throwError(() => new Error('Failed')),
       );
 
       component.onFavoriteUniversityClick(college, mockEvent);
@@ -394,7 +396,7 @@ describe('ExploreComponent', () => {
       const mockEvent = { stopPropagation: jasmine.createSpy() } as any;
       spyOn(console, 'error');
       exploreService.removeFavoriteUniversity.and.returnValue(
-        throwError(() => new Error('Failed'))
+        throwError(() => new Error('Failed')),
       );
 
       component.onFavoriteUniversityClick(college, mockEvent);
