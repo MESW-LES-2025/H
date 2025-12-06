@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { UserViewmodel, FavoritesResponse } from '../viewmodels/user-viewmodel';
 import { environment } from '../../../environments/environment';
 import { EditProfileRequest } from '../viewmodels/edit-profile-request';
+import { AuthService } from '../../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,10 @@ import { EditProfileRequest } from '../viewmodels/edit-profile-request';
 export class ProfilePageService {
   private readonly apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   // ----------------------------
   // USER PROFILE
@@ -34,20 +38,19 @@ export class ProfilePageService {
   // ----------------------------
 
   /**
-   * Se não houver userId em localStorage, devolvemos favoritos vazios.
-   * Isto evita erros em testes e em sessões não autenticadas.
+   * Load favorites for the authenticated user from the server.
    */
   public getOwnFavorites(): Observable<FavoritesResponse> {
-    const storedId = localStorage.getItem('userId');
+    const userId = this.authService.getCurrentUserId();
 
-    if (!storedId) {
+    if (!userId) {
       return of({
         universities: [],
         courses: [],
       } as FavoritesResponse);
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.get<FavoritesResponse>(`${this.apiUrl}/api/favorites`, {
       params,
@@ -60,13 +63,13 @@ export class ProfilePageService {
   // ----------------------------
 
   public addFavoriteUniversity(id: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
+    const userId = this.authService.getCurrentUserId();
 
-    if (!storedId) {
+    if (!userId) {
       return of(undefined as void);
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.post<void>(
       `${this.apiUrl}/api/favorites/universities/${id}`,
@@ -76,13 +79,13 @@ export class ProfilePageService {
   }
 
   public removeFavoriteUniversity(id: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
+    const userId = this.authService.getCurrentUserId();
 
-    if (!storedId) {
+    if (!userId) {
       return of(undefined as void);
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.delete<void>(
       `${this.apiUrl}/api/favorites/universities/${id}`,
@@ -95,13 +98,13 @@ export class ProfilePageService {
   // ----------------------------
 
   public addFavoriteCourse(id: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
+    const userId = this.authService.getCurrentUserId();
 
-    if (!storedId) {
+    if (!userId) {
       return of(undefined as void);
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.post<void>(
       `${this.apiUrl}/api/favorites/courses/${id}`,
@@ -111,13 +114,13 @@ export class ProfilePageService {
   }
 
   public removeFavoriteCourse(id: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
+    const userId = this.authService.getCurrentUserId();
 
-    if (!storedId) {
+    if (!userId) {
       return of(undefined as void);
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.delete<void>(
       `${this.apiUrl}/api/favorites/courses/${id}`,
@@ -137,7 +140,7 @@ export class ProfilePageService {
     return this.http.patch<void>(
       `${this.apiUrl}/api/profile/${userId}/password`,
       data,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 

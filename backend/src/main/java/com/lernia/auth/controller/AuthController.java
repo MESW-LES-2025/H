@@ -41,6 +41,12 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
+    @PostMapping("/api/auth/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
     @DeleteMapping("/api/profile/delete/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         authService.deleteAccount(id);
@@ -50,15 +56,26 @@ public class AuthController {
     @GetMapping("/api/auth/me")
     public ResponseEntity<?> getCurrentUser(Principal principal) {
         if (principal == null) {
-            return ResponseEntity.ok(null); 
+            return ResponseEntity.ok(null);
         }
 
         UserEntity user = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ResponseEntity.ok(Map.of(
-                "id", user.getId(),
-                "username", user.getUsername()
-        ));
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        result.put("id", user.getId());
+        result.put("username", user.getUsername());
+
+        if (user.getName() != null) {
+            result.put("name", user.getName());
+        }
+        if (user.getEmail() != null) {
+            result.put("email", user.getEmail());
+        }
+        if (user.getUserRole() != null) {
+            result.put("userRole", user.getUserRole().name());
+        }
+
+        return ResponseEntity.ok(result);
     }
 }

@@ -3,13 +3,14 @@ import { UserCourse } from '../../shared/viewmodels/user-course';
 export interface UserViewmodel {
   id: number;
   name: string;
+  email: string;
   age: number;
   gender: string;
   location: string;
   profileImage: string;
   jobTitle: string;
   academicHistory: UserCourse[];
-  role: string;
+  userRole: string;
 }
 
 export interface FavoriteUniversityDTO {

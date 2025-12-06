@@ -53,14 +53,6 @@ export class LoginComponent {
 
         if (res.status === 'success' && res.user?.id != null) {
           this.dataService.setUserAtual(res.user);
-          localStorage.setItem('userId', res.user.id.toString());
-          if (res.user.name) {
-            localStorage.setItem('username', res.user.name);
-          }
-          if (res.user.role) {
-            localStorage.setItem('role', res.user.role);
-          }
-
           this.router.navigate(['/profile', res.user.id]);
         } else {
           this.errorMessage = res.message || 'Login failed';

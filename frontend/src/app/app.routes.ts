@@ -60,6 +60,16 @@ export const routes: Routes = [
       import('./about/about.component').then((m) => m.AboutComponent),
   },
 
+  // Admin dashboard (only accessible to ADMIN role; component checks localStorage)
+  {
+    path: 'admin',
+    // TODO: canActivate: [AdminGuard],
+    loadComponent: () =>
+      import('./admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent,
+      ),
+  },
+
   // wildcard (opcional)
   { path: '**', redirectTo: 'home' },
 ];

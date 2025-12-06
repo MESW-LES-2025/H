@@ -117,10 +117,16 @@ public class FavoritesService {
     }
 
     private CourseLightDTO toCourseLight(CourseEntity course) {
+        String universityName = null;
+        if (course.getUniversity() != null) {
+            universityName = course.getUniversity().getName();
+        }
+
         return new CourseLightDTO(
                 course.getId(),
                 course.getName(),
-                course.getCourseType()
+                course.getCourseType(),
+                universityName
         );
     }
 }

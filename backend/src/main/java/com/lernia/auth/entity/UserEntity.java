@@ -41,7 +41,7 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false, columnDefinition = "user_role")
-    private UserRole userRole = UserRole.REGULAR;
+    private UserRole userRole;
     private LocalDate premiumStartDate;
 
     @ManyToMany
