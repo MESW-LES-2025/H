@@ -4,8 +4,6 @@ import { CourseViewmodel } from '../viewmodels/course-viewmodel';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-import { Location as LocationModel } from '../../shared/viewmodels/location';
-
 interface LocationDTO {
   id: number;
   city: string;
