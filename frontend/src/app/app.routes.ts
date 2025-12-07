@@ -53,13 +53,11 @@ export const routes: Routes = [
       import('./home/home.component').then((m) => m.HomeComponent),
   },
 
-  // 🔥 NOVO: rota About Us
   {
     path: 'about',
     loadComponent: () =>
       import('./about/about.component').then((m) => m.AboutComponent),
   },
 
-  // wildcard (opcional)
   { path: '**', redirectTo: 'home' },
 ];
