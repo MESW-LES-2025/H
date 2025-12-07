@@ -1,10 +1,10 @@
 package com.lernia.auth.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.List;
-
-import lombok.Data;
-import lombok.AllArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +24,6 @@ public class CourseDTO {
     private String website;
     private String contactEmail;
     private UniversityDTOLight university;
-    private List<AreaOfStudyDTO> areasOfStudy;
+    private List<AreaOfStudyDTO> areaOfStudy;
 }
 

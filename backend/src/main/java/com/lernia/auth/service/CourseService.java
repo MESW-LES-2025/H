@@ -40,7 +40,7 @@ public class CourseService {
     private CourseDTO convertToDTO(CourseEntity course) {
         UniversityDTOLight universityDTOLight = getUniversityDTOLight(course);
 
-        List<AreaOfStudyDTO> areasOfStudy = course.getAreaOfStudies().stream()
+        List<AreaOfStudyDTO> areasOfStudy = course.getAreaOfStudy().stream()
                 .map(this::getAreaOfStudyDTO).toList();
 
         return new CourseDTO(

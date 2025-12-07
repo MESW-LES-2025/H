@@ -1,6 +1,7 @@
 package com.lernia.auth.repository;
 
 import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.entity.AreaOfStudyEntity;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.ScholarshipEntity;
@@ -19,7 +20,7 @@ public class CourseSpecification {
         return Specification.where(hasName(req.getName()))
                 .and(hasTypes(req.getCourseTypes()))
                 .and(isRemote(req.getOnlyRemote()))
-                .and(maxCost(req.getMaxCost()))
+                .and(maxCourseCost(req.getMaxCourseCost()))
                 .and(duration(req.getDuration()))
                 .and(hasLanguages(req.getLanguages()))
                 .and(hasCountries(req.getCountries()))
@@ -29,12 +30,16 @@ public class CourseSpecification {
 
     private static Specification<CourseEntity> hasName(String name) {
         return (root, query, cb) ->
-                name == null ? cb.conjunction() : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+                name == null || name.isBlank()
+                        ? cb.conjunction()
+                        : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     private static Specification<CourseEntity> hasTypes(List<String> types) {
         return (root, query, cb) ->
-                types == null || types.isEmpty() ? cb.conjunction() : root.get("courseType").in(types);
+                types == null || types.isEmpty()
+                        ? cb.conjunction()
+                        : root.get("courseType").in(types);
     }
 
     private static Specification<CourseEntity> isRemote(Boolean remote) {
@@ -42,10 +47,24 @@ public class CourseSpecification {
                 remote == null ? cb.conjunction() : cb.equal(root.get("isRemote"), remote);
     }
 
-    private static Specification<CourseEntity> maxCost(Integer cost) {
+    private static Specification<CourseEntity> maxCourseCost(Integer cost) {
         return (root, query, cb) ->
                 cost == null ? cb.conjunction() : cb.lessThanOrEqualTo(root.get("cost"), cost);
     }
+
+    private static Specification<CourseEntity> maxCostOfLiving(Integer maxCost) {
+    return (root, query, cb) -> {
+        if (maxCost == null) return cb.conjunction();
+
+        Join<CourseEntity, UniversityEntity> uniJoin =
+                root.join("university", JoinType.INNER);
+
+        Join<UniversityEntity, LocationEntity> locJoin =
+                uniJoin.join("location", JoinType.INNER);
+
+        return cb.lessThanOrEqualTo(locJoin.get("costOfLiving"), maxCost);
+    };
+}
 
     private static Specification<CourseEntity> duration(Integer duration) {
         return (root, query, cb) ->
@@ -60,31 +79,39 @@ public class CourseSpecification {
     private static Specification<CourseEntity> hasCountries(List<String> countries) {
         return (root, query, cb) -> {
             if (countries == null || countries.isEmpty()) return cb.conjunction();
-            // Join university -> location -> country
-            Join<CourseEntity, UniversityEntity> universityJoin = root.join("university");
-            Join<UniversityEntity, LocationEntity> locationJoin = universityJoin.join("location");
-            return locationJoin.get("country").in(countries);
+
+            // Join only when filter is active
+            Join<CourseEntity, UniversityEntity> uniJoin = root.join("university", JoinType.INNER);
+            Join<UniversityEntity, LocationEntity> locJoin = uniJoin.join("location", JoinType.INNER);
+
+            return locJoin.get("country").in(countries);
         };
     }
 
     private static Specification<CourseEntity> hasAreasOfStudy(List<String> areas) {
         return (root, query, cb) -> {
             if (areas == null || areas.isEmpty()) return cb.conjunction();
-            return root.join("areaOfStudies").get("name").in(areas);
+
+            // Many-to-many → join only when needed
+            Join<CourseEntity, AreaOfStudyEntity> join =
+                    root.join("areaOfStudies", JoinType.INNER);
+
+            return join.get("name").in(areas);
         };
     }
 
     private static Specification<CourseEntity> hasScholarship(Boolean has) {
         return (root, query, cb) -> {
             if (has == null) return cb.conjunction();
-            // Join course -> university -> scholarships
-            Join<CourseEntity, UniversityEntity> universityJoin = root.join("university");
-            Join<UniversityEntity, ScholarshipEntity> scholarshipJoin = universityJoin.join("scholarships", JoinType.LEFT);
-            if (has) {
-                return cb.isNotNull(scholarshipJoin.get("id"));
-            } else {
-                return cb.isNull(scholarshipJoin.get("id"));
-            }
+
+            // Only join when filtering for scholarships
+            Join<CourseEntity, UniversityEntity> uniJoin = root.join("university", JoinType.INNER);
+            Join<UniversityEntity, ScholarshipEntity> schJoin =
+                    uniJoin.join("scholarships", JoinType.LEFT);
+
+            return has
+                    ? cb.isNotNull(schJoin.get("id"))
+                    : cb.isNull(schJoin.get("id"));
         };
     }
 }
