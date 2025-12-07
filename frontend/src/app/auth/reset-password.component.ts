@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService, ResetPasswordPayload } from './auth.service';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css'],
 })
@@ -16,6 +16,7 @@ export class ResetPasswordComponent {
   loading = false;
   success?: string;
   error?: string;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +34,10 @@ export class ResetPasswordComponent {
     }
   }
 
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
   submit() {
     if (this.form.invalid || this.loading) return;
 
@@ -42,11 +47,11 @@ export class ResetPasswordComponent {
 
     this.authService.resetPassword(this.form.value as ResetPasswordPayload).subscribe({
       next: () => {
-        this.success = 'Password updated. You can now sign in.';
+        this.success = 'Password updated successfully. You can now sign in.';
         this.loading = false;
       },
       error: () => {
-        this.error = 'Invalid or expired token.';
+        this.error = 'Invalid or expired token. Please request a new one.';
         this.loading = false;
       },
     });
