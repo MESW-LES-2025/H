@@ -39,6 +39,17 @@ export interface User {
   id: number;
 }
 
+export interface PasswordResetTokenResponse {
+  message: string;
+  token?: string | null;
+  expiresAt?: string | null;
+}
+
+export interface ResetPasswordPayload {
+  token: string;
+  newPassword: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = environment.apiUrl;
@@ -120,5 +131,19 @@ export class AuthService {
           this.router.navigate(['/']);
         },
       });
+  }
+
+  forgotPassword(email: string) {
+    return this.http.post<PasswordResetTokenResponse>(
+      `${this.baseUrl}/api/auth/password/forgot`,
+      { email }
+    );
+  }
+
+  resetPassword(payload: ResetPasswordPayload) {
+    return this.http.post<void>(
+      `${this.baseUrl}/api/auth/password/reset`,
+      payload
+    );
   }
 }
