@@ -32,9 +32,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityContextRepository securityContextRepository;
     private final PasswordResetTokenService passwordResetTokenService;
-
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     @Value("${app.frontend.url}")
     private String frontendUrl;
@@ -42,11 +40,13 @@ public class AuthService {
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        SecurityContextRepository securityContextRepository,
-                       PasswordResetTokenService passwordResetTokenService) {
+                       PasswordResetTokenService passwordResetTokenService,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.securityContextRepository = securityContextRepository;
         this.passwordResetTokenService = passwordResetTokenService;
+        this.emailService = emailService;
     }
 
     public RegisterResponse register(RegisterRequest req) {

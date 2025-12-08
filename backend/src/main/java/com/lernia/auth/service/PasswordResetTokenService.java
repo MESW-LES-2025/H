@@ -64,7 +64,7 @@ public class PasswordResetTokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private String hashToken(String rawToken) {
+    String hashToken(String rawToken) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
