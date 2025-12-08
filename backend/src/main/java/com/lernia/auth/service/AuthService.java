@@ -4,6 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.lernia.auth.dto.request.ChangePasswordRequest;
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.response.RegisterResponse;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -13,7 +19,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import com.lernia.auth.dto.*;
 import org.springframework.stereotype.Service;
 
 import com.lernia.auth.entity.UserEntity;

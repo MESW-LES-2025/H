@@ -1,7 +1,7 @@
 package com.lernia.auth.service;
 
 import com.lernia.auth.dto.UniversityDTO;
-import com.lernia.auth.dto.UniversityFilter;
+import com.lernia.auth.dto.filter.UniversityFilter;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
@@ -114,7 +114,7 @@ class UniversityServiceTest {
         UniversityFilter filter = mock(UniversityFilter.class);
         when(filter.getName()).thenReturn("Tech");
         when(filter.getCountries()).thenReturn(List.of("Portugal"));
-        when(filter.getCostOfLivingMax()).thenReturn(1500);
+        when(filter.getMaxCostOfLiving()).thenReturn(1500);
         when(filter.getHasScholarship()).thenReturn(true);
 
         Pageable pageable = PageRequest.of(0, 5);

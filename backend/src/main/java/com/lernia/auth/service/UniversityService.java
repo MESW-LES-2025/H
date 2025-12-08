@@ -5,9 +5,10 @@ import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.ScholarshipDTO;
 import com.lernia.auth.dto.UniversityDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
-import com.lernia.auth.dto.UniversityFilter;
+import com.lernia.auth.dto.filter.UniversityFilter;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.ScholarshipEntity;
+import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.mapper.UniversityMapper;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.ScholarshipRepository;
@@ -39,7 +40,7 @@ public class UniversityService {
     }
 
     public Page<UniversityDTOLight> getUniversitiesByFilter(UniversityFilter filter, Pageable pageable) {
-        Specification<com.lernia.auth.entity.UniversityEntity> spec = UniversitySpecification.filter(filter);
+        Specification<UniversityEntity> spec = UniversitySpecification.filter(filter);
 
         return universityRepository.findAll(spec, pageable)
                 .map(university -> new UniversityDTOLight(

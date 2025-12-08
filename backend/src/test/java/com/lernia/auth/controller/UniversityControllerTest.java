@@ -2,7 +2,7 @@ package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.UniversityDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
-import com.lernia.auth.dto.UniversityFilter;
+import com.lernia.auth.dto.filter.UniversityFilter;
 import com.lernia.auth.service.UniversityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

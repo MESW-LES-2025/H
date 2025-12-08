@@ -1,8 +1,8 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.ChangePasswordRequest;
-import com.lernia.auth.dto.EditProfileRequest;
-import com.lernia.auth.dto.UserProfileResponse;
+import com.lernia.auth.dto.request.ChangePasswordRequest;
+import com.lernia.auth.dto.request.EditProfileRequest;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.service.AuthService;
 import com.lernia.auth.service.UserProfileService;
 import org.junit.jupiter.api.BeforeEach;

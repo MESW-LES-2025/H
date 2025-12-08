@@ -6,11 +6,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import com.lernia.auth.dto.ChangePasswordRequest; // Add this import
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
+import com.lernia.auth.dto.request.ChangePasswordRequest; // Add this import
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.response.RegisterResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;

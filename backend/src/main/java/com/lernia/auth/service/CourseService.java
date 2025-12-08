@@ -2,7 +2,7 @@ package com.lernia.auth.service;
 
 import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.dto.filter.CourseFilter;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.AreaOfStudyEntity;
@@ -40,7 +40,7 @@ public class CourseService {
     private CourseDTO convertToDTO(CourseEntity course) {
         UniversityDTOLight universityDTOLight = getUniversityDTOLight(course);
 
-        List<AreaOfStudyDTO> areasOfStudy = course.getAreaOfStudy().stream()
+        List<AreaOfStudyDTO> areasOfStudy = course.getAreasOfStudy().stream()
                 .map(this::getAreaOfStudyDTO).toList();
 
         return new CourseDTO(

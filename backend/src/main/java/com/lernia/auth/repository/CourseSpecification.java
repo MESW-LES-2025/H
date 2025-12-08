@@ -1,6 +1,6 @@
 package com.lernia.auth.repository;
 
-import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.dto.filter.CourseFilter;
 import com.lernia.auth.entity.AreaOfStudyEntity;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
@@ -20,7 +20,7 @@ public class CourseSpecification {
         return Specification.where(hasName(req.getName()))
                 .and(hasTypes(req.getCourseTypes()))
                 .and(isRemote(req.getOnlyRemote()))
-                .and(maxCourseCost(req.getMaxCourseCost()))
+                .and(maxCourseCost(req.getMaxCost()))
                 .and(duration(req.getDuration()))
                 .and(hasLanguages(req.getLanguages()))
                 .and(hasCountries(req.getCountries()))
@@ -51,20 +51,6 @@ public class CourseSpecification {
         return (root, query, cb) ->
                 cost == null ? cb.conjunction() : cb.lessThanOrEqualTo(root.get("cost"), cost);
     }
-
-    private static Specification<CourseEntity> maxCostOfLiving(Integer maxCost) {
-    return (root, query, cb) -> {
-        if (maxCost == null) return cb.conjunction();
-
-        Join<CourseEntity, UniversityEntity> uniJoin =
-                root.join("university", JoinType.INNER);
-
-        Join<UniversityEntity, LocationEntity> locJoin =
-                uniJoin.join("location", JoinType.INNER);
-
-        return cb.lessThanOrEqualTo(locJoin.get("costOfLiving"), maxCost);
-    };
-}
 
     private static Specification<CourseEntity> duration(Integer duration) {
         return (root, query, cb) ->

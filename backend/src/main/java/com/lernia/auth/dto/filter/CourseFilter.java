@@ -1,4 +1,4 @@
-package com.lernia.auth.dto;
+package com.lernia.auth.dto.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ public class CourseFilter {
     private String name;
     private List<String> courseTypes;
     private Boolean onlyRemote;
-    private Integer maxCourseCost;
+    private Integer maxCost;
     private Integer duration;
     private List<String> languages;
     private List<String> countries;

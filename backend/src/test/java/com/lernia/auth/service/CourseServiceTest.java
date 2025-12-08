@@ -2,7 +2,7 @@ package com.lernia.auth.service;
 
 import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.dto.filter.CourseFilter;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.AreaOfStudyEntity;
@@ -138,7 +138,7 @@ class CourseServiceTest {
     @Test
     void testGetCourseById_MapsEmptyAreasOfStudyList() {
         CourseEntity course = buildFullCourseEntity(7L);
-        course.setAreaOfStudy(new ArrayList<>());
+        course.setAreaOfStudies(new ArrayList<>());
 
         when(courseRepository.findById(7L)).thenReturn(Optional.of(course));
 
@@ -256,7 +256,7 @@ class CourseServiceTest {
         course.setName("Software Engineering");
         course.setDescription("SE description");
         course.setUniversity(university);
-        course.setAreaOfStudy(areas);
+        course.setAreaOfStudies(areas);
 
         return course;
     }
