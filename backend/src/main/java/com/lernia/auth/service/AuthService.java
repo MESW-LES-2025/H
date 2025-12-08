@@ -20,10 +20,6 @@ import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
 import com.lernia.auth.repository.UserRepository;
-
-import com.lernia.auth.dto.PasswordResetTokenResponse;
-import com.lernia.auth.dto.ForgotPasswordRequest;
-import com.lernia.auth.dto.ResetPasswordRequest;
 import com.lernia.auth.entity.PasswordResetTokenEntity;
 import com.lernia.auth.service.PasswordResetTokenService.GeneratedToken;
 
@@ -130,14 +126,23 @@ public class AuthService {
     }
 
     public PasswordResetTokenResponse requestPasswordReset(ForgotPasswordRequest req) {
-        String message = "If an account exists for that email, you will receive reset instructions.";
-        return userRepository.findByEmail(req.getEmail())
-                .map(user -> {
-                    GeneratedToken generated = passwordResetTokenService.createToken(user);
-                    return new PasswordResetTokenResponse(message, generated.token(), generated.expiresAt());
-                })
-                .orElseGet(() -> new PasswordResetTokenResponse(message, null, null));
+        String message = "If an account exists for that email, we have sent reset instructions.";
+
+        userRepository.findByEmail(req.getEmail()).ifPresent(user -> {
+            GeneratedToken generated = passwordResetTokenService.createToken(user);
+            
+            String resetLink = "https://yourapp.com/reset-password?token=" + generated.token();
+            
+            System.out.println("------------ EMAIL SIMULATION ------------");
+            System.out.println("To: " + user.getEmail());
+            System.out.println("Subject: Password Reset");
+            System.out.println("Link: " + resetLink); 
+            System.out.println("------------------------------------------");
+        });
+
+        return new PasswordResetTokenResponse(message);
     }
+
 
     public void resetPassword(ResetPasswordRequest req) {
         PasswordResetTokenEntity token = passwordResetTokenService.validate(req.getToken())

@@ -4,6 +4,8 @@ import com.lernia.auth.entity.PasswordResetTokenEntity;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.PasswordResetTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; 
+
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -27,6 +29,7 @@ public class PasswordResetTokenService {
         this.tokenRepository = tokenRepository;
     }
 
+    @Transactional
     public GeneratedToken createToken(UserEntity user) {
         tokenRepository.deleteByUser(user);
 
