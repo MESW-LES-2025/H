@@ -7,6 +7,8 @@ import java.util.Optional;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,6 +32,12 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityContextRepository securityContextRepository;
     private final PasswordResetTokenService passwordResetTokenService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
@@ -130,14 +138,8 @@ public class AuthService {
 
         userRepository.findByEmail(req.getEmail()).ifPresent(user -> {
             GeneratedToken generated = passwordResetTokenService.createToken(user);
-            
-            String resetLink = "https://yourapp.com/reset-password?token=" + generated.token();
-            
-            System.out.println("------------ EMAIL SIMULATION ------------");
-            System.out.println("To: " + user.getEmail());
-            System.out.println("Subject: Password Reset");
-            System.out.println("Link: " + resetLink); 
-            System.out.println("------------------------------------------");
+            String resetLink = frontendUrl + "/reset-password?token=" + generated.token();
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
         });
 
         return new PasswordResetTokenResponse(message);
