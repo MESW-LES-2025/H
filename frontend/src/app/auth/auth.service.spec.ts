@@ -388,4 +388,78 @@ describe('AuthService', () => {
       expect(service.csrfHeaderName).toBeNull();
     });
   });
+
+  describe('forgotPassword', () => {
+    it('should send forgot password request and return success message', (done) => {
+      const email = 'test@example.com';
+      const response = {
+        message: 'If an account exists for that email, we have sent reset instructions.',
+      };
+
+      service.forgotPassword(email).subscribe((res) => {
+        expect(res).toEqual(response);
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/forgot`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ email });
+      req.flush(response);
+    });
+
+    it('should handle forgot password error', (done) => {
+      const email = 'test@example.com';
+
+      service.forgotPassword(email).subscribe({
+        next: () => fail('should have failed'),
+        error: (err) => {
+          expect(err).toBeTruthy();
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/forgot`);
+      req.error(new ProgressEvent('error'), { status: 500 });
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('should send reset password request and complete', (done) => {
+      const payload = {
+        token: 'sometoken',
+        newPassword: 'newpassword123',
+      };
+
+      service.resetPassword(payload).subscribe({
+        next: (res) => {
+          expect(res).toBeNull(); 
+          done();
+        },
+        error: () => fail('should not error'),
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/reset`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      req.flush(null); 
+    });
+
+    it('should handle reset password error', (done) => {
+      const payload = {
+        token: 'badtoken',
+        newPassword: 'newpassword123',
+      };
+
+      service.resetPassword(payload).subscribe({
+        next: () => fail('should have failed'),
+        error: (err) => {
+          expect(err).toBeTruthy();
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/reset`);
+      req.error(new ProgressEvent('error'), { status: 400 });
+    });
+  });
 });
