@@ -138,7 +138,7 @@ class CourseServiceTest {
     @Test
     void testGetCourseById_MapsEmptyAreasOfStudyList() {
         CourseEntity course = buildFullCourseEntity(7L);
-        course.setAreaOfStudies(new ArrayList<>());
+        course.setAreasOfStudy(new ArrayList<>());
 
         when(courseRepository.findById(7L)).thenReturn(Optional.of(course));
 
@@ -256,7 +256,7 @@ class CourseServiceTest {
         course.setName("Software Engineering");
         course.setDescription("SE description");
         course.setUniversity(university);
-        course.setAreaOfStudies(areas);
+        course.setAreasOfStudy(areas);
 
         return course;
     }
