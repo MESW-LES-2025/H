@@ -52,14 +52,18 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./home/home.component').then((m) => m.HomeComponent),
   },
-
-  // 🔥 NOVO: rota About Us
   {
     path: 'about',
     loadComponent: () =>
       import('./about/about.component').then((m) => m.AboutComponent),
   },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./auth/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
+  },
 
-  // wildcard (opcional)
   { path: '**', redirectTo: 'home' },
 ];

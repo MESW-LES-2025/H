@@ -1,12 +1,8 @@
 package com.lernia.auth.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
-import com.lernia.auth.dto.ChangePasswordRequest; // Add this import
+import com.lernia.auth.dto.ForgotPasswordRequest;
+import com.lernia.auth.dto.PasswordResetTokenResponse;
+import com.lernia.auth.dto.ChangePasswordRequest; 
 import com.lernia.auth.dto.LoginRequest;
 import com.lernia.auth.dto.LoginResponse;
 import com.lernia.auth.dto.RegisterRequest;
@@ -34,6 +30,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 class AuthServiceTest {
 
     @InjectMocks
@@ -57,19 +57,22 @@ class AuthServiceTest {
     @Mock
     private SecurityContextRepository securityContextRepository; 
 
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private PasswordResetTokenService passwordResetTokenService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         SecurityContextHolder.clearContext();
-        
+
         when(request.getSession(true)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
-        
         when(passwordEncoder.encode(anyString())).thenReturn("encoded_password_placeholder");
-
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-
         doNothing().when(securityContextRepository)
             .saveContext(any(SecurityContext.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
@@ -569,5 +572,38 @@ class AuthServiceTest {
         
         assertEquals("New password cannot be the same as the current password", ex.getMessage());
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void requestPasswordReset_sendsEmailIfUserExists() {
+        String email = "test@example.com";
+        UserEntity user = new UserEntity();
+        user.setEmail(email);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(passwordResetTokenService.createToken(user))
+                .thenReturn(new PasswordResetTokenService.GeneratedToken("token123", null));
+
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail(email);
+
+        PasswordResetTokenResponse response = authService.requestPasswordReset(request);
+
+        assertThat(response.getMessage()).contains("we have sent reset instructions");
+        verify(emailService).sendPasswordResetEmail(eq(email), contains("token123"));
+    }
+
+    @Test
+    void requestPasswordReset_noEmailIfUserNotExists() {
+        String email = "notfound@example.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail(email);
+
+        PasswordResetTokenResponse response = authService.requestPasswordReset(request);
+
+        assertThat(response.getMessage()).contains("we have sent reset instructions");
+        verify(emailService, never()).sendPasswordResetEmail(anyString(), anyString());
     }
 }
