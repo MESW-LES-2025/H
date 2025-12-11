@@ -80,7 +80,7 @@ public class CourseSpecification {
 
             // Many-to-many → join only when needed
             Join<CourseEntity, AreaOfStudyEntity> join =
-                    root.join("areaOfStudies", JoinType.INNER);
+                    root.join("areasOfStudy", JoinType.INNER);
 
             return join.get("name").in(areas);
         };

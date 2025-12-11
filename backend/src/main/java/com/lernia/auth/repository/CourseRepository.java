@@ -15,7 +15,7 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long>, Jpa
     @EntityGraph(attributePaths = {
             "university",
             "university.location",
-            "areaOfStudies"
+            "areasOfStudy"
     })
     @Override
     @NonNull
