@@ -71,7 +71,7 @@
             <input type="checkbox" formControlName="remember" />
             <span>Remember me</span>
           </label>
-          <a class="link" href="#">Forgot Password</a>
+          <a class="forgot" (click)="openForgotPassword()">Forgot Password?</a>
         </div>
 
         <div class="alert error" *ngIf="errorMessage">{{ errorMessage }}</div>
@@ -114,6 +114,44 @@
       <a routerLink="/explore" class="guest"
         >Continue as guest <span class="arrow">→</span></a
       >
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" *ngIf="showForgotPasswordModal" (click)="closeForgotPassword()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button type="button" class="modal-close" (click)="closeForgotPassword()" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <h2 class="modal-title">Forgot Password</h2>
+        <p class="modal-subtitle">
+          Enter your email address and we'll send you instructions to reset your password.
+        </p>
+
+        <form [formGroup]="forgotPasswordForm" class="modal-form" (ngSubmit)="submitForgotPassword()">
+          <label>Email Address</label>
+          <div class="field" [class.invalid]="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched">
+            <input
+              formControlName="email"
+              type="email"
+              placeholder="Enter your email address"
+            />
+          </div>
+          <small class="error-hint" *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched">
+            Please provide a valid email address.
+          </small>
+
+          <div class="alert success" *ngIf="forgotPasswordFeedback">{{ forgotPasswordFeedback }}</div>
+          <div class="alert error" *ngIf="forgotPasswordError">{{ forgotPasswordError }}</div>
+
+          <button class="primary ripple" type="submit" [disabled]="forgotPasswordForm.invalid || forgotPasswordLoading">
+            {{ forgotPasswordLoading ? 'Sending…' : 'Send Reset Link' }}
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>

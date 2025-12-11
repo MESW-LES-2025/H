@@ -13,6 +13,8 @@ import com.lernia.auth.dto.response.UserProfileResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,6 +27,8 @@ import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
 import com.lernia.auth.repository.UserRepository;
+import com.lernia.auth.entity.PasswordResetTokenEntity;
+import com.lernia.auth.service.PasswordResetTokenService.GeneratedToken;
 
 @Service
 public class AuthService {
@@ -32,11 +36,22 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final SecurityContextRepository securityContextRepository;
+    private final PasswordResetTokenService passwordResetTokenService;
+    private final EmailService emailService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, SecurityContextRepository securityContextRepository) {
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       SecurityContextRepository securityContextRepository,
+                       PasswordResetTokenService passwordResetTokenService,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.securityContextRepository = securityContextRepository;
+        this.passwordResetTokenService = passwordResetTokenService;
+        this.emailService = emailService;
     }
 
     public RegisterResponse register(RegisterRequest req) {
@@ -60,27 +75,6 @@ public class AuthService {
         userRepository.save(user);
         return new RegisterResponse("User registered", "success");
     }
-/*
-    public LoginResponse login(LoginRequest req) {
-        String text = req.getText();
-        Optional<UserEntity> userOpt = userRepository.findByUsername(text);
-        if (userOpt.isEmpty()) userOpt = userRepository.findByEmail(text);
-        if (userOpt.isEmpty()) {
-            return new LoginResponse("Invalid credentials", "error");
-        }
-
-        UserEntity user = userOpt.get();
-
-        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
-            return new LoginResponse("Invalid credentials", "error");
-        }
-
-        UserProfileResponse profile = map(user);
-
-        LoginResponse res = new LoginResponse("Login successful", "success");
-        res.setUser(profile);
-        return res;
-    }*/
 
     public LoginResponse login(LoginRequest req, HttpServletRequest request, HttpServletResponse response) {
         String text = req.getText();
@@ -127,7 +121,6 @@ public class AuthService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 1. Validate inputs are not null or empty
         if (req.getCurrentPassword() == null || req.getCurrentPassword().trim().isEmpty() ||
             req.getNewPassword() == null || req.getNewPassword().trim().isEmpty()) {
             throw new IllegalArgumentException("Passwords cannot be empty");
@@ -143,6 +136,28 @@ public class AuthService {
 
         user.setPassword(passwordEncoder.encode(req.getNewPassword()));
         userRepository.save(user);
+    }
+
+    public PasswordResetTokenResponse requestPasswordReset(ForgotPasswordRequest req) {
+        String message = "If an account exists for that email, we have sent reset instructions.";
+
+        userRepository.findByEmail(req.getEmail()).ifPresent(user -> {
+            GeneratedToken generated = passwordResetTokenService.createToken(user);
+            String resetLink = frontendUrl + "/reset-password?token=" + generated.token();
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+        });
+
+        return new PasswordResetTokenResponse(message);
+    }
+
+
+    public void resetPassword(ResetPasswordRequest req) {
+        PasswordResetTokenEntity token = passwordResetTokenService.validate(req.getToken())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
+        UserEntity user = token.getUser();
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        userRepository.save(user);
+        passwordResetTokenService.consume(token);
     }
 
     private UserProfileResponse map(UserEntity u) {
