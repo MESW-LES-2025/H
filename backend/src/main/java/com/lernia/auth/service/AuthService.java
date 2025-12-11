@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.lernia.auth.dto.request.ChangePasswordRequest;
+import com.lernia.auth.dto.request.ForgotPasswordRequest;
+import com.lernia.auth.dto.request.ResetPasswordRequest;
+import com.lernia.auth.dto.response.PasswordResetTokenResponse;
 import com.lernia.auth.dto.request.LoginRequest;
 import com.lernia.auth.dto.request.RegisterRequest;
 import com.lernia.auth.dto.response.LoginResponse;
