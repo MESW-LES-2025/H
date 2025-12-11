@@ -55,6 +55,6 @@ public class CourseEntity {
     @JoinTable(name = "course_area_of_study",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "area_of_study_id"))
-    private List<AreaOfStudyEntity> areaOfStudies = new ArrayList<>();
+    private List<AreaOfStudyEntity> areasOfStudy = new ArrayList<>();
 }
 

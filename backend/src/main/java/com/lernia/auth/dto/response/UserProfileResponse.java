@@ -1,4 +1,4 @@
-package com.lernia.auth.dto;
+package com.lernia.auth.dto.response;
 
 import com.lernia.auth.entity.enums.Gender;
 import lombok.Getter;

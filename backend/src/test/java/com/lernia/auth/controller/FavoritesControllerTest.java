@@ -1,7 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.CourseLightDTO;
-import com.lernia.auth.dto.FavoritesResponse;
+import com.lernia.auth.dto.response.FavoritesResponse;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.service.FavoritesService;
 import org.junit.jupiter.api.BeforeEach;

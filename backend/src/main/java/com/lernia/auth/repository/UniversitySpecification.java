@@ -1,6 +1,6 @@
 package com.lernia.auth.repository;
 
-import com.lernia.auth.dto.UniversityFilter;
+import com.lernia.auth.dto.filter.UniversityFilter;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.ScholarshipEntity;
 import com.lernia.auth.entity.UniversityEntity;
@@ -18,7 +18,7 @@ public class UniversitySpecification {
     public static Specification<UniversityEntity> filter(UniversityFilter req) {
         return Specification.where(hasName(req.getName()))
                 .and(hasCountries(req.getCountries()))
-                .and(maxCostOfLiving(req.getCostOfLivingMax()))
+                .and(maxCostOfLiving(req.getMaxCostOfLiving()))
                 .and(hasScholarship(req.getHasScholarship()));
     }
 
@@ -41,7 +41,7 @@ public class UniversitySpecification {
             if (costOfLiving == null)
                 return cb.conjunction();
             Join<UniversityEntity, LocationEntity> locationJoin = root.join("location");
-            return cb.lessThanOrEqualTo(locationJoin.get("cost_of_living"), costOfLiving);
+            return cb.lessThanOrEqualTo(locationJoin.get("costOfLiving"), costOfLiving);
         };
     }
 

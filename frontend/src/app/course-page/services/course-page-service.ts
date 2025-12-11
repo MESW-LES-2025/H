@@ -108,10 +108,12 @@ export class CoursePageService {
   // MAPPER
   // -------------------------------------
   private mapToViewmodel(dto: CourseDTO): CourseViewmodel {
+    const areas = dto.areasOfStudy ?? []; // Default to empty array if undefined
+
     return {
       id: dto.id,
       name: dto.name,
-      area: dto.areasOfStudy.length > 0 ? dto.areasOfStudy[0].name : 'General',
+      area: areas.length > 0 ? areas[0].name : 'General',
       description: dto.description || 'No description available',
       duration: dto.duration ? `${dto.duration} months` : 'N/A',
       level: dto.courseType || 'General',
@@ -132,7 +134,7 @@ export class CoursePageService {
         } as any,
       },
 
-      topics: dto.areasOfStudy.map((a) => a.name),
+      topics: areas.map((a) => a.name),
 
       requirements: dto.minAdmissionGrade
         ? [`Minimum admission grade: ${dto.minAdmissionGrade}`]

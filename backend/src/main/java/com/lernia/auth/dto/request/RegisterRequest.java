@@ -1,4 +1,4 @@
-package com.lernia.auth.dto;
+package com.lernia.auth.dto.request;
 
 public class RegisterRequest {
     private String name;

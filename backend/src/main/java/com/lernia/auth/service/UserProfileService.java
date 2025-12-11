@@ -1,10 +1,10 @@
 package com.lernia.auth.service;
 
-import com.lernia.auth.dto.EditProfileRequest;
+import com.lernia.auth.dto.request.EditProfileRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lernia.auth.dto.UserProfileResponse;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;
 

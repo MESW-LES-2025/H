@@ -3,8 +3,8 @@ package com.lernia.auth.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.lernia.auth.dto.EditProfileRequest;
-import com.lernia.auth.dto.UserProfileResponse;
+import com.lernia.auth.dto.request.EditProfileRequest;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;

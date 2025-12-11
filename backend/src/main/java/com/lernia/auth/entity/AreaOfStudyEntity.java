@@ -16,6 +16,6 @@ public class AreaOfStudyEntity {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "areaOfStudies")
+    @ManyToMany(mappedBy = "areasOfStudy")
     private List<CourseEntity> courses = new ArrayList<>();
 }

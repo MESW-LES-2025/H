@@ -1,10 +1,13 @@
 package com.lernia.auth.service;
 
+import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTO;
-import com.lernia.auth.dto.UniversityFilter;
+import com.lernia.auth.dto.UniversityDTOLight;
+import com.lernia.auth.dto.filter.UniversityFilter;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
+import com.lernia.auth.mapper.UniversityMapper;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.ScholarshipRepository;
 import com.lernia.auth.repository.UniversityRepository;
@@ -23,12 +26,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class UniversityServiceTest {
 
+    public static final String CITY = "City";
+    public static final String COUNTRY = "Country";
+    public static final int COST_OF_LIVING = 1200;
+    public static final String UNIVERSITY = "University ";
+    public static final String SAMPLE_DESCRIPTION = "Sample description";
     @InjectMocks
     private UniversityService universityService;
 
@@ -40,6 +56,9 @@ class UniversityServiceTest {
 
     @Mock
     private ScholarshipRepository scholarshipRepository;
+
+    @Mock
+    private UniversityMapper universityMapper;
 
     @BeforeEach
     void setUp() {
@@ -71,15 +90,17 @@ class UniversityServiceTest {
 
     @Test
     void testGetUniversityById_ReturnsPopulatedDto() {
+        Long universityId = 10L;
+        String universityName = "University 10";
         LocationEntity location = createLocationEntity(1L);
-        UniversityEntity entity = createUniversityEntity(10L, location);
-        when(universityRepository.findById(10L)).thenReturn(java.util.Optional.of(entity));
-
-        var result = universityService.getUniversityById(10L);
+        UniversityEntity entity = createUniversityEntity(universityId, location);
+        when(universityRepository.findById(universityId)).thenReturn(java.util.Optional.of(entity));
+        when(universityMapper.toDTOLight(entity)).thenReturn(createUniversityDTOLight(universityId));
+        var result = universityService.getUniversityById(universityId);
 
         assertNotNull(result);
-        assertEquals(10L, result.getId());
-        assertEquals("University 10", result.getName());
+        assertEquals(universityId, result.getId());
+        assertEquals(universityName, result.getName());
         assertEquals("Sample description", result.getDescription());
         assertNotNull(result.getLocation());
         assertEquals("City", result.getLocation().getCity());
@@ -87,15 +108,19 @@ class UniversityServiceTest {
         assertEquals(Integer.valueOf(1990), result.getFoundedYear());
         assertNotNull(result.getCourses());
         assertTrue(result.getCourses().isEmpty());
-        verify(universityRepository, times(1)).findById(10L);
+        verify(universityRepository, times(1)).findById(universityId);
     }
 
     @Test
     void testGetUniversityById_WithoutLocationSetsNull() {
-        UniversityEntity entity = createUniversityEntity(11L, null);
-        when(universityRepository.findById(11L)).thenReturn(java.util.Optional.of(entity));
+        Long universityId = 11L;
+        UniversityDTOLight universityDTOLight = createUniversityDTOLight(universityId);
+        universityDTOLight.setLocation(null);
+        UniversityEntity entity = createUniversityEntity(universityId, null);
+        when(universityRepository.findById(universityId)).thenReturn(java.util.Optional.of(entity));
+        when(universityMapper.toDTOLight(entity)).thenReturn(universityDTOLight);
 
-        var result = universityService.getUniversityById(11L);
+        var result = universityService.getUniversityById(universityId);
 
         assertNotNull(result);
         assertNull(result.getLocation());
@@ -114,7 +139,7 @@ class UniversityServiceTest {
         UniversityFilter filter = mock(UniversityFilter.class);
         when(filter.getName()).thenReturn("Tech");
         when(filter.getCountries()).thenReturn(List.of("Portugal"));
-        when(filter.getCostOfLivingMax()).thenReturn(1500);
+        when(filter.getMaxCostOfLiving()).thenReturn(1500);
         when(filter.getHasScholarship()).thenReturn(true);
 
         Pageable pageable = PageRequest.of(0, 5);
@@ -130,7 +155,7 @@ class UniversityServiceTest {
         assertEquals(20L, dto.getId());
         assertEquals("University 20", dto.getName());
         assertNotNull(dto.getLocation());
-        assertEquals("City", dto.getLocation().getCity());
+        assertEquals(CITY, dto.getLocation().getCity());
         verify(universityRepository, times(1)).findAll(any(Specification.class), eq(pageable));
     }
 
@@ -169,7 +194,7 @@ class UniversityServiceTest {
         assertEquals(30L, result.getId());
         assertEquals("University 30", result.getName());
         assertNotNull(result.getLocation());
-        assertEquals("City", result.getLocation().getCity());
+        assertEquals(CITY, result.getLocation().getCity());
         assertEquals(1, result.getCourses().size());
         assertEquals("Course A", result.getCourses().getFirst().getName());
         verify(courseRepository, times(1)).findAll();
@@ -212,8 +237,8 @@ class UniversityServiceTest {
     private UniversityEntity createUniversityEntity(Long id, LocationEntity location) {
         UniversityEntity entity = new UniversityEntity();
         entity.setId(id);
-        entity.setName("University " + id);
-        entity.setDescription("Sample description");
+        entity.setName(UNIVERSITY + id);
+        entity.setDescription(SAMPLE_DESCRIPTION);
         entity.setContactInfo("contact@university.com");
         entity.setWebsite("http://university.com");
         entity.setAddress("123 Main St");
@@ -226,9 +251,9 @@ class UniversityServiceTest {
     private LocationEntity createLocationEntity(Long id) {
         LocationEntity location = new LocationEntity();
         location.setId(id);
-        location.setCity("City");
-        location.setCountry("Country");
-        location.setCostOfLiving(1200);
+        location.setCity(CITY);
+        location.setCountry(COUNTRY);
+        location.setCostOfLiving(COST_OF_LIVING);
         return location;
     }
 
@@ -239,5 +264,21 @@ class UniversityServiceTest {
         course.setCourseType(type);
         course.setUniversity(university);
         return course;
+    }
+
+    private UniversityDTOLight createUniversityDTOLight(Long id) {
+        UniversityDTOLight universityDTOLight = new UniversityDTOLight();
+        universityDTOLight.setId(id);
+        universityDTOLight.setName(UNIVERSITY + id);
+        universityDTOLight.setDescription(SAMPLE_DESCRIPTION);
+        universityDTOLight.setLocation(buildLocationDTO());
+        universityDTOLight.setStudentCount(5000);
+        universityDTOLight.setFoundedYear(1990);
+        universityDTOLight.setCourses(new ArrayList<>());
+        return universityDTOLight;
+    }
+
+    private LocationDTO buildLocationDTO() {
+        return new LocationDTO(1L, CITY, COUNTRY, COST_OF_LIVING);
     }
 }

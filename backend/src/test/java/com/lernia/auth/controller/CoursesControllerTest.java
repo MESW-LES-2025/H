@@ -1,7 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.dto.filter.CourseFilter;
 import com.lernia.auth.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
