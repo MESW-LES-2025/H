@@ -34,8 +34,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest,
-                               HttpServletRequest request,
-                               HttpServletResponse response) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
         return authService.login(loginRequest, request, response);
     }
 
@@ -53,7 +53,7 @@ public class AuthController {
     @GetMapping("/api/auth/me")
     public ResponseEntity<?> getCurrentUser(Principal principal) {
         if (principal == null) {
-            return ResponseEntity.ok(null); 
+            return ResponseEntity.ok(null);
         }
 
         UserEntity user = userRepository.findByUsername(principal.getName())
@@ -61,8 +61,8 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
-                "username", user.getUsername()
-        ));
+                "username", user.getUsername(),
+                "provider", user.getProvider() != null ? user.getProvider().name() : "LOCAL"));
     }
 
     @PostMapping("/api/auth/password/forgot")

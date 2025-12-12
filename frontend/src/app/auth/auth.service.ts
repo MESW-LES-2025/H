@@ -113,11 +113,11 @@ export class AuthService {
   }
 
   getUserById(userId: number): Observable<UserViewmodel> {
-    return this.http.get<UserViewmodel>(`${this.baseUrl}/api/users/${userId}`);
+    return this.http.get<UserViewmodel>(`${this.baseUrl}/api/profile/${userId}`, { withCredentials: true });
   }
 
   updateUser(userId: number, userData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/api/users/${userId}`, userData);
+    return this.http.put(`${this.baseUrl}/api/profile/${userId}/update-profile`, userData, { withCredentials: true });
   }
 
   logout(): void {

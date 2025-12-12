@@ -9,6 +9,7 @@ import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 @Service
 @Transactional
 public class UserProfileService {
@@ -20,34 +21,39 @@ public class UserProfileService {
 
     public UserProfileResponse getProfileById(Long id) {
         UserEntity user = userRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return map(user);
     }
 
     public UserProfileResponse getProfileByUsername(String username) {
         UserEntity user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return map(user);
     }
 
     public UserProfileResponse updateProfile(Long id, EditProfileRequest req) {
         UserEntity user = userRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return updateUserProfile(user, req);
     }
 
     public UserProfileResponse updateProfileByUsername(String username, EditProfileRequest req) {
         UserEntity user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return updateUserProfile(user, req);
     }
 
     private UserProfileResponse updateUserProfile(UserEntity user, EditProfileRequest req) {
-        if (req.getName() != null) user.setName(req.getName());
-        if (req.getLocation() != null) user.setLocation(req.getLocation());
-        if (req.getJobTitle() != null) user.setJobTitle(req.getJobTitle());
-        if (req.getGender() != null) user.setGender(req.getGender());
-        if (req.getAge() != null) user.setAge(req.getAge());
+        if (req.getName() != null)
+            user.setName(req.getName());
+        if (req.getLocation() != null)
+            user.setLocation(req.getLocation());
+        if (req.getJobTitle() != null)
+            user.setJobTitle(req.getJobTitle());
+        if (req.getGender() != null)
+            user.setGender(req.getGender());
+        if (req.getAge() != null)
+            user.setAge(req.getAge());
         userRepository.save(user);
         return map(user);
     }
@@ -63,6 +69,7 @@ public class UserProfileService {
         r.setLocation(u.getLocation());
         r.setJobTitle(u.getJobTitle());
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
+        r.setProvider(u.getProvider() != null ? u.getProvider().name() : null);
         return r;
     }
 }

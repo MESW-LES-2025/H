@@ -10,6 +10,7 @@ export interface UserViewmodel {
   jobTitle: string;
   academicHistory: UserCourse[];
   role: string;
+  provider?: string;
 }
 
 export interface FavoriteUniversityDTO {

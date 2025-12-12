@@ -74,6 +74,20 @@ public class SecurityConfig {
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
                                                 .successHandler(oauth2AuthenticationSuccessHandler))
+                                .exceptionHandling(exceptions -> exceptions
+                                                .authenticationEntryPoint((request, response, authException) -> {
+                                                        // For API requests, return 401 instead of redirecting to OAuth
+                                                        String requestUri = request.getRequestURI();
+                                                        if (requestUri.startsWith("/api/")) {
+                                                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                                                response.setContentType("application/json");
+                                                                response.getWriter().write(
+                                                                                "{\"error\": \"Unauthorized\", \"message\": \"Please log in first\"}");
+                                                        } else {
+                                                                // For non-API requests, allow default OAuth redirect
+                                                                response.sendRedirect("/oauth2/authorization/google");
+                                                        }
+                                                }))
                                 .securityContext(
                                                 context -> context.securityContextRepository(securityContextRepository))
                                 .authorizeHttpRequests(auth -> auth
@@ -90,10 +104,13 @@ public class SecurityConfig {
                                                 // OAuth2 endpoints
                                                 .requestMatchers("/oauth2/**", "/login/oauth2/code/**").permitAll()
 
-                                                // Delete account
+                                                // Delete account (requires auth)
                                                 .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**")
-                                                .permitAll()
-                                                .requestMatchers(HttpMethod.PUT, "/api/profile/**").permitAll()
+                                                .authenticated()
+
+                                                // Profile updates (requires auth)
+                                                .requestMatchers(HttpMethod.PUT, "/api/profile/**").authenticated()
+                                                .requestMatchers(HttpMethod.PATCH, "/api/profile/**").authenticated()
 
                                                 // Favoritos (GET/POST/DELETE)
                                                 .requestMatchers("/api/favorites/**").permitAll()
