@@ -63,24 +63,26 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
   ) {
-    this.restoreSession();
+    this.restoreSession().subscribe();
   }
 
-  private restoreSession(): void {
-    this.http
+  // Public method to restore session (used by OAuth callback)
+  restoreSession(): Observable<User> {
+    return this.http
       .get<User>(`${this.baseUrl}/api/auth/me`, { withCredentials: true })
-      .subscribe({
-        next: (user) => {
+      .pipe(
+        tap((user) => {
           if (user && user.id) {
             this.currentUserSubject.next(user);
           } else {
             this.currentUserSubject.next(null);
           }
-        },
-        error: () => {
-          this.currentUserSubject.next(null);
-        },
-      });
+        })
+      );
+  }
+
+  loginWithGoogle(): void {
+    window.location.href = `${this.baseUrl}/oauth2/authorization/google`;
   }
 
   login(body: LoginRequest): Observable<LoginResponse> {
@@ -124,10 +126,18 @@ export class AuthService {
       .subscribe({
         next: () => {
           this.currentUserSubject.next(null);
+          // Clear localStorage on logout
+          localStorage.removeItem('userId');
+          localStorage.removeItem('username');
+          localStorage.removeItem('role');
           this.router.navigate(['/']);
         },
         error: () => {
           this.currentUserSubject.next(null);
+          // Clear localStorage even on error
+          localStorage.removeItem('userId');
+          localStorage.removeItem('username');
+          localStorage.removeItem('role');
           this.router.navigate(['/']);
         },
       });

@@ -64,6 +64,13 @@ export const routes: Routes = [
         (m) => m.ResetPasswordComponent,
       ),
   },
+  {
+    path: 'oauth/callback',
+    loadComponent: () =>
+      import('./oauth-callback/oauth-callback.component').then(
+        (m) => m.OAuthCallbackComponent,
+      ),
+  },
 
   { path: '**', redirectTo: 'home' },
 ];

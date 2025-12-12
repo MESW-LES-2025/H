@@ -27,6 +27,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import com.lernia.auth.entity.UserEntity;
+import com.lernia.auth.entity.enums.AuthProvider;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
 import com.lernia.auth.repository.UserRepository;
@@ -71,6 +72,8 @@ public class AuthService {
         user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setPassword(hash);
+        user.setProvider(AuthProvider.LOCAL);
+        user.setProviderId(null);
         user.setGender(Gender.OTHER);
         user.setUserRole(UserRole.REGULAR);
         user.setCreationDate(LocalDate.now());
