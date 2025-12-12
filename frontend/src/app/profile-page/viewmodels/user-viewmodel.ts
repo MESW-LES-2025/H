@@ -6,7 +6,7 @@ export interface UserViewmodel {
   age: number;
   gender: string;
   location: string;
-  profileImage: string;
+  profilePicture: string;
   jobTitle: string;
   academicHistory: UserCourse[];
   role: string;

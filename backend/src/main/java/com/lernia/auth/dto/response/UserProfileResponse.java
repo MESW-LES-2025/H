@@ -36,6 +36,9 @@ public class UserProfileResponse {
     @Setter
     @Getter
     private String provider;
+    @Setter
+    @Getter
+    private String profilePicture;
 
     public UserProfileResponse() {
     }

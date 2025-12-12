@@ -66,6 +66,7 @@ public class UserProfileService {
         r.setEmail(u.getEmail());
         r.setAge(u.getAge());
         r.setGender(u.getGender() != null ? u.getGender() : null);
+        r.setProfilePicture(u.getProfilePicture());
         r.setLocation(u.getLocation());
         r.setJobTitle(u.getJobTitle());
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
