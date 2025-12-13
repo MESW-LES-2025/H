@@ -16,12 +16,13 @@ import { Page } from '../shared/viewmodels/pagination';
 import { CourseTypeEnum } from '../shared/enums/course-type-enum';
 import { DataService } from '../shared/services/data-service';
 import { integerValidator } from '../shared/validators/integer-validator';
-import { RouterLink } from '@angular/router'; // ✅ add
+
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [DatePipe, ReactiveFormsModule, AsyncPipe, RouterLink], // ✅ add
+  imports: [DatePipe, ReactiveFormsModule, AsyncPipe, RouterModule],
   templateUrl: './courses.html',
   styleUrls: ['./courses.css'],
 })

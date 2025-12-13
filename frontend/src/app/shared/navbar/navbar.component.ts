@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   links = [
+    { label: 'Explore', path: '/explore' },
     { label: 'Home', path: '/home' },
     { label: 'About Us', path: '/about' },
   ];
