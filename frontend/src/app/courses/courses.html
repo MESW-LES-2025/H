@@ -234,10 +234,11 @@
                 Website
               </a>
 
-              <button class="btn-primary" type="button">
+              <a class="btn-primary" [routerLink]="['/course', course.id]">
                 View details
                 <i class="bi bi-arrow-right"></i>
-              </button>
+              </a>
+
             </div>
           </article>
         } @empty {

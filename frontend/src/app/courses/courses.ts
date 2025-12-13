@@ -16,11 +16,12 @@ import { Page } from '../shared/viewmodels/pagination';
 import { CourseTypeEnum } from '../shared/enums/course-type-enum';
 import { DataService } from '../shared/services/data-service';
 import { integerValidator } from '../shared/validators/integer-validator';
+import { RouterLink } from '@angular/router'; // ✅ add
 
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [DatePipe, ReactiveFormsModule, AsyncPipe],
+  imports: [DatePipe, ReactiveFormsModule, AsyncPipe, RouterLink], // ✅ add
   templateUrl: './courses.html',
   styleUrls: ['./courses.css'],
 })
@@ -39,15 +40,9 @@ export class Courses implements OnInit, OnDestroy {
 
   filterCoursesForm: FormGroup = new FormGroup<CourseFiltersForm>({
     name: new FormControl<string | null>(null),
-    courseTypes: new FormControl<string[]>([], {
-      nonNullable: true,
-    }),
-    areasOfStudy: new FormControl<string[]>([], {
-      nonNullable: true,
-    }),
-    onlyRemote: new FormControl<boolean>(false, {
-      nonNullable: true,
-    }),
+    courseTypes: new FormControl<string[]>([], { nonNullable: true }),
+    areasOfStudy: new FormControl<string[]>([], { nonNullable: true }),
+    onlyRemote: new FormControl<boolean>(false, { nonNullable: true }),
     costMax: new FormControl<number | null>(null, [
       Validators.min(1),
       integerValidator,
@@ -56,23 +51,15 @@ export class Courses implements OnInit, OnDestroy {
       Validators.min(1),
       integerValidator,
     ]),
-    languages: new FormControl<string[]>([], {
-      nonNullable: true,
-    }),
-    countries: new FormControl<string[]>([], {
-      nonNullable: true,
-    }),
+    languages: new FormControl<string[]>([], { nonNullable: true }),
+    countries: new FormControl<string[]>([], { nonNullable: true }),
   });
 
   ngOnInit(): void {
     this.loadCourses();
 
     this.filterCoursesForm.valueChanges
-      .pipe(
-        debounceTime(2500),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$),
-      )
+      .pipe(debounceTime(2500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.currentPage = 0;
         this.loadCourses();
@@ -82,11 +69,8 @@ export class Courses implements OnInit, OnDestroy {
   loadCourses(): void {
     if (this.filterCoursesForm.valid) {
       const filters = this.getFilters();
-      const pageRequest = {
-        page: this.currentPage,
-        size: this.pageSize,
-        sort: 'name,asc',
-      };
+      const pageRequest = { page: this.currentPage, size: this.pageSize, sort: 'name,asc' };
+
       this.courseService
         .getCourses(filters, pageRequest)
         .pipe(takeUntil(this.destroy$))
@@ -95,7 +79,7 @@ export class Courses implements OnInit, OnDestroy {
             this.pagedCourses = pagedResponse;
             this.courses = pagedResponse.content;
           },
-          error: (err) => console.error(err), // TODO: Notifications
+          error: (err) => console.error(err),
         });
     }
   }
