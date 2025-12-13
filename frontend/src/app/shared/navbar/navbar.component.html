@@ -15,9 +15,31 @@
       Home
     </a>
 
-    <a class="nav-link" routerLink="/explore" routerLinkActive="active">
+  <div class="nav-dropdown" routerLinkActive="active">
+    <button class="nav-link dropdown-trigger" type="button">
       Explore
-    </a>
+      <span class="caret">⌄</span>
+    </button>
+
+    <div class="dropdown-menu">
+      <a
+        class="dropdown-item"
+        routerLink="/explore"
+        routerLinkActive="active"
+      >
+        Explore Universities
+      </a>
+
+      <a
+        class="dropdown-item"
+        routerLink="/courses"
+        routerLinkActive="active"
+      >
+        Explore Courses
+      </a>
+    </div>
+  </div>
+
 
     <a class="nav-link" routerLink="/faqs" routerLinkActive="active">
       FAQs
