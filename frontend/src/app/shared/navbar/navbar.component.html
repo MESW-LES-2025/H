@@ -15,9 +15,33 @@
       Home
     </a>
 
-    <a class="nav-link" routerLink="/explore" routerLinkActive="active">
+  <div
+    class="nav-dropdown"
+    [class.open]="exploreOpen"
+    (keydown.escape)="exploreOpen = false"
+  >
+    <button
+      class="nav-link dropdown-trigger"
+      type="button"
+      (click)="toggleExplore($event)"
+      aria-haspopup="menu"
+      [attr.aria-expanded]="exploreOpen"
+    >
       Explore
-    </a>
+      <span class="caret" [class.open]="exploreOpen">⌄</span>
+    </button>
+
+    <div class="dropdown-menu" role="menu">
+      <a class="dropdown-item" role="menuitem" routerLink="/explore" (click)="closeExplore()">
+        Explore Universities
+      </a>
+      <a class="dropdown-item" role="menuitem" routerLink="/courses" (click)="closeExplore()">
+        Explore Courses
+      </a>
+    </div>
+  </div>
+
+
 
     <a class="nav-link" routerLink="/faqs" routerLinkActive="active">
       FAQs

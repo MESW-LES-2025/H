@@ -12,6 +12,7 @@ import { DataService } from '../shared/services/data-service';
 import { of, throwError } from 'rxjs';
 import { Page } from '../shared/viewmodels/pagination';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
+import { provideRouter } from '@angular/router';
 
 describe('Courses', () => {
   let component: Courses;
@@ -76,10 +77,12 @@ describe('Courses', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
         { provide: CoursesService, useValue: coursesServiceSpy },
         { provide: DataService, useValue: dataServiceSpy },
       ],
     }).compileComponents();
+
 
     coursesService = TestBed.inject(
       CoursesService,
