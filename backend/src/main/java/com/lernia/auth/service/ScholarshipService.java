@@ -1,7 +1,7 @@
 package com.lernia.auth.service;
 
 import com.lernia.auth.dto.ScholarshipDTOLight;
-import com.lernia.auth.dto.ScholarshipFilter;
+import com.lernia.auth.dto.filter.ScholarshipFilter;
 import com.lernia.auth.repository.ScholarshipRepository;
 import com.lernia.auth.repository.ScholarshipSpecification;
 import lombok.RequiredArgsConstructor;

@@ -39,6 +39,7 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration configuration = new CorsConfiguration();
@@ -68,8 +69,14 @@ public class SecurityConfig {
                 )
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
-                        // Login / Register / Logout públicos
+                        // Preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Login / Register públicos
                         .requestMatchers(HttpMethod.POST, "/login", "/register", "/logout").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/auth/password/forgot", "api/auth/password/reset").permitAll()
+                        // Login / Register / Logout públicos
 
                         .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/profile/**").permitAll()

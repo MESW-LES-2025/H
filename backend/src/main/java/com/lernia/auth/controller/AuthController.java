@@ -1,9 +1,12 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.request.ResetPasswordRequest;
+import com.lernia.auth.dto.response.RegisterResponse;
+import com.lernia.auth.dto.request.ForgotPasswordRequest;
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.response.PasswordResetTokenResponse;
 import com.lernia.auth.service.AuthService;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;
@@ -77,5 +80,16 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/api/auth/password/forgot")
+    public ResponseEntity<PasswordResetTokenResponse> requestPasswordReset(@RequestBody ForgotPasswordRequest request) {
+        return ResponseEntity.ok(authService.requestPasswordReset(request));
+    }
+
+    @PostMapping("/api/auth/password/reset")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 }

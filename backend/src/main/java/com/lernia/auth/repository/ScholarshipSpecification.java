@@ -1,6 +1,6 @@
 package com.lernia.auth.repository;
 
-import com.lernia.auth.dto.ScholarshipFilter;
+import com.lernia.auth.dto.filter.ScholarshipFilter;
 import com.lernia.auth.entity.ScholarshipEntity;
 import com.lernia.auth.entity.UniversityEntity;
 import jakarta.persistence.criteria.Join;

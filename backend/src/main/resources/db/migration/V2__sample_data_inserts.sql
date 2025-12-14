@@ -2,10 +2,10 @@
 -- TODO: Fix Passwords
 INSERT INTO lernia.users (name, username, email, password, age, gender, location, profile_picture, job_title, creation_date, user_role, premium_start_date) VALUES
     ('Alice Smith', 'asmith', 'alice@example.com', '$2y$10$5TkGtbvc64nU7P7UcZdtveIJ4CR8p9V094f/b4ckSZw0BaqQ/QsJe', 21, 'FEMALE', 'Lisbon', 'asmith.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
-    ('Bob Johnson', 'bjohnson', 'bob@example.com', 'pass2', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
-    ('Claire Lee', 'clee', 'claire@example.com', 'pass3', 30, 'FEMALE', 'Berlin', 'clee.png', 'Researcher', CURRENT_DATE, 'STUDENT', NULL),
-    ('David Wilson', 'dwilson', 'david@example.com', 'pass4', 22, 'MALE', 'Lisbon', 'dwilson.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
-    ('Eva Brown', 'ebrown', 'eva@example.com', 'pass5', 27, 'FEMALE', 'Madrid', 'ebrown.png', 'Manager', CURRENT_DATE, 'ADMIN', NULL);
+    ('Bob Johnson', 'bjohnson', 'bob@example.com', '$2b$12$.HjQtPJpu0i3cT6Po3rF8uSAmdLg90tT4qiCKjhERR0gb5c0tSEte', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
+    ('Claire Lee', 'clee', 'claire@example.com', '$2b$12$tCOrNtDr/ty3ahzyvnc64.Ui1R7dskG7YqFo.hLSkk78k56k0OXLC', 30, 'FEMALE', 'Berlin', 'clee.png', 'Researcher', CURRENT_DATE, 'STUDENT', NULL),
+    ('David Wilson', 'dwilson', 'david@example.com', '$2b$12$bB96yRt1MTiHTAvdI3XhQeCPAb4JnZ3aSHlcCmzZzmN8tA7QJ5Dka', 22, 'MALE', 'Lisbon', 'dwilson.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
+    ('Eva Brown', 'ebrown', 'eva@example.com', '$2b$12$eFTGu92X36qBRZW8r0xRIOyJUr3Pq6WPjSehsLA9SmwvgkYlFVYzG', 27, 'FEMALE', 'Madrid', 'ebrown.png', 'Manager', CURRENT_DATE, 'ADMIN', NULL);
 
 INSERT INTO lernia.locations(city, country, cost_of_living) VALUES
     ('London', 'United Kingdom', 1500),

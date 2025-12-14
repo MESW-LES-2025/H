@@ -1,7 +1,7 @@
 package com.lernia.auth.service;
 
 import com.lernia.auth.dto.CourseLightDTO;
-import com.lernia.auth.dto.FavoritesResponse;
+import com.lernia.auth.dto.response.FavoritesResponse;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.CourseEntity;

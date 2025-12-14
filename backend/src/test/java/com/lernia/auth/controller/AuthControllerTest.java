@@ -1,6 +1,10 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.*;
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.response.RegisterResponse;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.service.AuthService;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;

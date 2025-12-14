@@ -1,4 +1,4 @@
-package com.lernia.auth.dto;
+package com.lernia.auth.dto.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +12,6 @@ import java.util.List;
 public class UniversityFilter {
     private String name;
     private List<String> countries;
-    private Integer costOfLivingMax;
+    private Integer maxCostOfLiving;
     private Boolean hasScholarship;
 }

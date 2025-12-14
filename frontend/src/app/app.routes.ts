@@ -52,15 +52,23 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./home/home.component').then((m) => m.HomeComponent),
   },
-
-  // 🔥 NOVO: rota About Us
   {
     path: 'about',
     loadComponent: () =>
       import('./about/about.component').then((m) => m.AboutComponent),
   },
-
-  // Admin dashboard (only accessible to ADMIN role; component checks localStorage)
+  {
+    path: 'faqs',
+    loadComponent: () =>
+      import('./faq/faq.component').then((m) => m.FaqComponent),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./auth/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
+  },
   {
     path: 'admin',
     // TODO: canActivate: [AdminGuard],
