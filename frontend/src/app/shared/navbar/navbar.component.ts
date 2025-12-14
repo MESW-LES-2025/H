@@ -12,11 +12,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+
   links = [
-    { label: 'Explore', path: '/explore' },
     { label: 'Home', path: '/home' },
+    { label: 'Explore', path: '/explore' },
     { label: 'About Us', path: '/about' },
   ];
+
 
   protected userId: number | null = null;
   private userSubscription: Subscription | null = null;
