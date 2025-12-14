@@ -3,7 +3,7 @@ package com.lernia.auth.controller;
 import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
-import com.lernia.auth.dto.UserProfileResponse;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
