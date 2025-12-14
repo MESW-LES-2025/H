@@ -69,6 +69,15 @@ export const routes: Routes = [
         (m) => m.ResetPasswordComponent,
       ),
   },
+  {
+    path: 'admin',
+    // TODO: canActivate: [AdminGuard],
+    loadComponent: () =>
+      import('./admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent,
+      ),
+  },
 
+  // wildcard (opcional)
   { path: '**', redirectTo: 'home' },
 ];

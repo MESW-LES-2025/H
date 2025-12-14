@@ -13,8 +13,11 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
+import { AuthService } from '../auth/auth.service';
 
-function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+function passwordMatchValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
   const newPass = control.get('newPassword')?.value;
   const confirmPass = control.get('confirmPassword')?.value;
   return newPass === confirmPass ? null : { mismatch: true };
@@ -31,6 +34,7 @@ export class ProfilePage implements OnInit {
   private profilePageService = inject(ProfilePageService);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
 
   protected user: UserViewmodel | null = null;
   protected showEditModal = false;
@@ -38,7 +42,10 @@ export class ProfilePage implements OnInit {
   protected editProfileForm: FormGroup = undefined as any;
   protected changePasswordForm: FormGroup = undefined as any;
 
-  protected passwordFeedback: { type: 'success' | 'error'; message: string } | null = null;
+  protected passwordFeedback: {
+    type: 'success' | 'error';
+    message: string;
+  } | null = null;
 
   protected showCurrentPassword = false;
   protected showNewPassword = false;
@@ -82,9 +89,9 @@ export class ProfilePage implements OnInit {
   }
 
   get isOwner(): boolean {
-    const stored = localStorage.getItem('userId');
-    if (!this.user || !stored) return false;
-    return Number(stored) === this.user.id;
+    const currentUserId = this.authService.getCurrentUserId();
+    if (!this.user || currentUserId === null) return false;
+    return currentUserId === this.user.id;
   }
 
   private initForm(): void {
@@ -103,7 +110,7 @@ export class ProfilePage implements OnInit {
         newPassword: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
       },
-      { validators: passwordMatchValidator }
+      { validators: passwordMatchValidator },
     );
   }
 
@@ -178,20 +185,20 @@ export class ProfilePage implements OnInit {
         .changePassword(this.user.id, { currentPassword, newPassword })
         .subscribe({
           next: () => {
-            this.passwordFeedback = { 
-              type: 'success', 
-              message: 'Password changed successfully!' 
+            this.passwordFeedback = {
+              type: 'success',
+              message: 'Password changed successfully!',
             };
-            
+
             setTimeout(() => {
               this.closePasswordModal();
             }, 1500);
           },
           error: (err) => {
             console.error(err);
-            this.passwordFeedback = { 
-              type: 'error', 
-              message: 'Incorrect current password. Please try again.' 
+            this.passwordFeedback = {
+              type: 'error',
+              message: 'Incorrect current password. Please try again.',
             };
           },
         });
@@ -246,8 +253,8 @@ export class ProfilePage implements OnInit {
     this.profilePageService.deleteAccount(this.user.id).subscribe({
       next: () => {
         alert('Account deleted successfully.');
-        localStorage.removeItem('userId');
-        window.location.href = '/home';
+        // Use AuthService logout to clear session properly
+        this.authService.logout();
       },
       error: (err) => {
         console.error('Error deleting account', err);

@@ -434,16 +434,18 @@
           ></button>
         </div>
         <div class="modal-body pt-3">
-          <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitPassword()">
-            
+          <form
+            [formGroup]="changePasswordForm"
+            (ngSubmit)="onSubmitPassword()"
+          >
             @if (passwordFeedback) {
-              <div 
-                class="alert mb-3 d-flex align-items-center" 
+              <div
+                class="alert mb-3 d-flex align-items-center"
                 [class.alert-success]="passwordFeedback.type === 'success'"
                 [class.alert-danger]="passwordFeedback.type === 'error'"
                 role="alert"
               >
-                @if (passwordFeedback.type === 'success') {
+                @if (passwordFeedback.type === "success") {
                   <i class="bi bi-check-circle-fill me-2 fs-5"></i>
                 } @else {
                   <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
@@ -454,7 +456,9 @@
 
             <!-- Current Password -->
             <div class="mb-3">
-              <label for="currentPassword" class="form-label fw-semibold">Current Password</label>
+              <label for="currentPassword" class="form-label fw-semibold"
+                >Current Password</label
+              >
               <div class="input-group">
                 <input
                   id="currentPassword"
@@ -466,13 +470,17 @@
                     changePasswordForm.get('currentPassword')?.touched
                   "
                 />
-                <button 
-                  class="btn btn-outline-secondary" 
+                <button
+                  class="btn btn-outline-secondary"
                   type="button"
                   (click)="showCurrentPassword = !showCurrentPassword"
-                  aria-label="Toggle current password visibility" 
+                  aria-label="Toggle current password visibility"
                 >
-                  <i class="bi" [class.bi-eye]="!showCurrentPassword" [class.bi-eye-slash]="showCurrentPassword"></i>
+                  <i
+                    class="bi"
+                    [class.bi-eye]="!showCurrentPassword"
+                    [class.bi-eye-slash]="showCurrentPassword"
+                  ></i>
                 </button>
                 <div class="invalid-feedback">Current password is required</div>
               </div>
@@ -480,7 +488,9 @@
 
             <!-- New Password -->
             <div class="mb-3">
-              <label for="newPassword" class="form-label fw-semibold">New Password</label>
+              <label for="newPassword" class="form-label fw-semibold"
+                >New Password</label
+              >
               <div class="input-group">
                 <input
                   id="newPassword"
@@ -492,13 +502,17 @@
                     changePasswordForm.get('newPassword')?.touched
                   "
                 />
-                <button 
-                  class="btn btn-outline-secondary" 
+                <button
+                  class="btn btn-outline-secondary"
                   type="button"
                   (click)="showNewPassword = !showNewPassword"
                   aria-label="Toggle new password visibility"
                 >
-                  <i class="bi" [class.bi-eye]="!showNewPassword" [class.bi-eye-slash]="showNewPassword"></i>
+                  <i
+                    class="bi"
+                    [class.bi-eye]="!showNewPassword"
+                    [class.bi-eye-slash]="showNewPassword"
+                  ></i>
                 </button>
                 <div class="invalid-feedback">
                   Password is required (min 6 characters)
@@ -508,7 +522,9 @@
 
             <!-- Confirm Password -->
             <div class="mb-3">
-              <label for="confirmPassword" class="form-label fw-semibold">Confirm New Password</label>
+              <label for="confirmPassword" class="form-label fw-semibold"
+                >Confirm New Password</label
+              >
               <div class="input-group">
                 <input
                   id="confirmPassword"
@@ -516,20 +532,25 @@
                   class="form-control"
                   formControlName="confirmPassword"
                   [class.is-invalid]="
-                    (changePasswordForm.get('confirmPassword')?.invalid || changePasswordForm.errors?.['mismatch']) &&
+                    (changePasswordForm.get('confirmPassword')?.invalid ||
+                      changePasswordForm.errors?.['mismatch']) &&
                     changePasswordForm.get('confirmPassword')?.touched
                   "
                 />
-                <button 
-                  class="btn btn-outline-secondary" 
+                <button
+                  class="btn btn-outline-secondary"
                   type="button"
                   (click)="showConfirmPassword = !showConfirmPassword"
                   aria-label="Toggle confirm password visibility"
                 >
-                  <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                  <i
+                    class="bi"
+                    [class.bi-eye]="!showConfirmPassword"
+                    [class.bi-eye-slash]="showConfirmPassword"
+                  ></i>
                 </button>
                 <div class="invalid-feedback">
-                  @if (changePasswordForm.errors?.['mismatch']) {
+                  @if (changePasswordForm.errors?.["mismatch"]) {
                     Passwords do not match
                   } @else {
                     Please confirm your password

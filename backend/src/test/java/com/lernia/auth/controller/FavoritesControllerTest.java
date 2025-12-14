@@ -33,7 +33,7 @@ class FavoritesControllerTest {
     void getOwnFavorites_ReturnsOkResponse() {
         FavoritesResponse response = new FavoritesResponse(
                 List.of(new UniversityDTOLight(1L, "Uni", "Desc", null)),
-                List.of(new CourseLightDTO(5L, "Course", "Type"))
+                List.of(new CourseLightDTO(5L, "Course", "Type", "UniName"))
         );
         when(favoritesService.getFavoritesForUser(10L)).thenReturn(response);
 
