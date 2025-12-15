@@ -1,5 +1,6 @@
 package com.lernia.auth.controller;
 
+import com.lernia.auth.dto.AnalyticsDTO;
 import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
@@ -8,6 +9,7 @@ import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
 import com.lernia.auth.service.AuthService;
+import com.lernia.auth.service.AnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,7 @@ public class AdminController {
     private final UniversityRepository universityRepository;
     private final CourseRepository courseRepository;
     private final AuthService authService;
+    private final AnalyticsService analyticsService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserProfileResponse>> getAllUsers() {
@@ -125,6 +128,11 @@ public class AdminController {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<AnalyticsDTO> getAnalytics() {
+        return ResponseEntity.ok(analyticsService.getAnalytics());
     }
 
 }

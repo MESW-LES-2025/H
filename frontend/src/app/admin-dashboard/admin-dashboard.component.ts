@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { AdminService } from './admin.service';
+import { AdminService, Analytics } from './admin.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../auth/auth.service';
 
@@ -22,8 +22,9 @@ export class AdminDashboardComponent implements OnInit {
   users: any[] = [];
   universities: any[] = [];
   courses: any[] = [];
+  analytics: Analytics | null = null;
 
-  activeTab: 'users' | 'universities' | 'courses' = 'users';
+  activeTab: 'users' | 'universities' | 'courses' | 'analytics' = 'users';
 
   constructor(
     private router: Router,
@@ -59,8 +60,22 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'users' | 'universities' | 'courses'): void {
+  setActiveTab(tab: 'users' | 'universities' | 'courses' | 'analytics'): void {
     this.activeTab = tab;
+    if (tab === 'analytics' && !this.analytics) {
+      this.loadAnalytics();
+    }
+  }
+
+  loadAnalytics(): void {
+    this.adminService.getAnalytics().subscribe({
+      next: (data) => {
+        this.analytics = data;
+      },
+      error: (err) => {
+        console.error('Failed to load analytics', err);
+      },
+    });
   }
 
   @ViewChild('confirmModal') confirmModal!: TemplateRef<any>;

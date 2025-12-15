@@ -6,6 +6,23 @@ import { UserViewmodel } from '../profile-page/viewmodels/user-viewmodel';
 import { UniversityLight } from '../universities/viewmodels/university-light';
 import { CourseLight } from '../shared/viewmodels/course-light';
 
+export interface PopularItem {
+  id: number;
+  name: string;
+  favoriteCount: number;
+}
+
+export interface Analytics {
+  totalUsers: number;
+  totalCourses: number;
+  totalUniversities: number;
+  totalCourseReviews: number;
+  totalUniversityReviews: number;
+  totalScholarships: number;
+  popularCourses: PopularItem[];
+  popularUniversities: PopularItem[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private base = environment.apiUrl;
@@ -35,6 +52,12 @@ export class AdminService {
 
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/api/admin/users/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  getAnalytics(): Observable<Analytics> {
+    return this.http.get<Analytics>(`${this.base}/api/admin/analytics`, {
       withCredentials: true,
     });
   }
