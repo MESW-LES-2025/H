@@ -1,5 +1,6 @@
 package com.lernia.auth.controller;
 
+import com.lernia.auth.dto.AnalyticsDTO;
 import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
@@ -7,6 +8,7 @@ import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
+import com.lernia.auth.service.AnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
     private final CourseRepository courseRepository;
+    private final AnalyticsService analyticsService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserProfileResponse>> getAllUsers() {
@@ -60,23 +63,20 @@ public class AdminController {
                                 university.getLocation().getId(),
                                 university.getLocation().getCity(),
                                 university.getLocation().getCountry(),
-                                university.getLocation().getCostOfLiving()
-                        ) : null
-                ))
+                                university.getLocation().getCostOfLiving()) : null))
                 .toList();
 
         return ResponseEntity.ok(list);
     }
 
-
     @GetMapping("/courses")
     public ResponseEntity<List<CourseLightDTO>> getAllCourses() {
         List<CourseLightDTO> list = courseRepository.findAll().stream()
                 .map(course -> new CourseLightDTO(
-                    course.getId(), 
-                    course.getName(), 
-                    course.getCourseType(), 
-                    course.getUniversity() != null ? course.getUniversity().getName() : null))
+                        course.getId(),
+                        course.getName(),
+                        course.getCourseType(),
+                        course.getUniversity() != null ? course.getUniversity().getName() : null))
                 .toList();
         return ResponseEntity.ok(list);
     }
@@ -91,7 +91,8 @@ public class AdminController {
         if (authentication != null && authentication.isAuthenticated()) {
             String currentUsername = authentication.getName();
             if (currentUsername != null) {
-                Optional<com.lernia.auth.entity.UserEntity> currentUser = userRepository.findByUsername(currentUsername);
+                Optional<com.lernia.auth.entity.UserEntity> currentUser = userRepository
+                        .findByUsername(currentUsername);
                 if (currentUser.isPresent() && currentUser.get().getId().equals(id)) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
@@ -104,6 +105,11 @@ public class AdminController {
 
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<AnalyticsDTO> getAnalytics() {
+        return ResponseEntity.ok(analyticsService.getAnalytics());
     }
 
 }
