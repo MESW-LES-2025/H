@@ -62,6 +62,14 @@ export class AdminService {
     });
   }
 
+  resetUserPassword(id: number): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.base}/api/admin/users/${id}/reset-password`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
   getAll(): Observable<{
     users: UserViewmodel[];
     universities: UniversityLight[];

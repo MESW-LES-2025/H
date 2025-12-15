@@ -15,6 +15,9 @@ export class AdminDashboardComponent implements OnInit {
   error: string | null = null;
   currentUserId: number | null = null;
   pendingDeleteId: number | null = null;
+  pendingResetId: number | null = null;
+  resetSuccessMessage: string | null = null;
+  resetErrorMessage: string | null = null;
 
   users: any[] = [];
   universities: any[] = [];
@@ -76,6 +79,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   @ViewChild('confirmModal') confirmModal!: TemplateRef<any>;
+  @ViewChild('resetPasswordModal') resetPasswordModal!: TemplateRef<any>;
 
   confirmDelete(id: number): void {
     this.pendingDeleteId = id;
@@ -104,6 +108,45 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Failed to delete user', err);
         alert('Failed to delete user');
         this.pendingDeleteId = null;
+      },
+    });
+  }
+
+  confirmResetPassword(id: number): void {
+    this.pendingResetId = id;
+    this.resetSuccessMessage = null;
+    this.resetErrorMessage = null;
+    const modalRef: NgbModalRef = this.modalService.open(this.resetPasswordModal, {
+      centered: true,
+    });
+    modalRef.result.then(
+      (res) => {
+        if (res === 'confirm' && this.pendingResetId != null) {
+          this.performResetPassword(this.pendingResetId);
+        }
+      },
+      () => {
+        this.pendingResetId = null;
+      },
+    );
+  }
+
+  performResetPassword(id: number): void {
+    this.adminService.resetUserPassword(id).subscribe({
+      next: (res) => {
+        this.resetSuccessMessage = res.message || 'Password reset email sent successfully';
+        this.pendingResetId = null;
+        setTimeout(() => {
+          this.resetSuccessMessage = null;
+        }, 5000);
+      },
+      error: (err) => {
+        console.error('Failed to reset password', err);
+        this.resetErrorMessage = err.error?.message || 'Failed to reset password';
+        this.pendingResetId = null;
+        setTimeout(() => {
+          this.resetErrorMessage = null;
+        }, 5000);
       },
     });
   }
