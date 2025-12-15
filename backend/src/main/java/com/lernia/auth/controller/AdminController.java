@@ -7,6 +7,7 @@ import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
+import com.lernia.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -14,11 +15,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
@@ -30,6 +33,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
     private final CourseRepository courseRepository;
+    private final AuthService authService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserProfileResponse>> getAllUsers() {
@@ -60,23 +64,20 @@ public class AdminController {
                                 university.getLocation().getId(),
                                 university.getLocation().getCity(),
                                 university.getLocation().getCountry(),
-                                university.getLocation().getCostOfLiving()
-                        ) : null
-                ))
+                                university.getLocation().getCostOfLiving()) : null))
                 .toList();
 
         return ResponseEntity.ok(list);
     }
 
-
     @GetMapping("/courses")
     public ResponseEntity<List<CourseLightDTO>> getAllCourses() {
         List<CourseLightDTO> list = courseRepository.findAll().stream()
                 .map(course -> new CourseLightDTO(
-                    course.getId(), 
-                    course.getName(), 
-                    course.getCourseType(), 
-                    course.getUniversity() != null ? course.getUniversity().getName() : null))
+                        course.getId(),
+                        course.getName(),
+                        course.getCourseType(),
+                        course.getUniversity() != null ? course.getUniversity().getName() : null))
                 .toList();
         return ResponseEntity.ok(list);
     }
@@ -91,7 +92,8 @@ public class AdminController {
         if (authentication != null && authentication.isAuthenticated()) {
             String currentUsername = authentication.getName();
             if (currentUsername != null) {
-                Optional<com.lernia.auth.entity.UserEntity> currentUser = userRepository.findByUsername(currentUsername);
+                Optional<com.lernia.auth.entity.UserEntity> currentUser = userRepository
+                        .findByUsername(currentUsername);
                 if (currentUser.isPresent() && currentUser.get().getId().equals(id)) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
@@ -104,6 +106,25 @@ public class AdminController {
 
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/users/{id}/reset-password")
+    public ResponseEntity<Map<String, String>> resetUserPassword(@PathVariable Long id) {
+        if (id == null || id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!userRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            authService.adminResetPassword(id);
+            return ResponseEntity.ok(Map.of("message", "Password reset email sent successfully"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
+        }
     }
 
 }
