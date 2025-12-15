@@ -46,10 +46,10 @@ public class AuthService {
     private String frontendUrl;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       SecurityContextRepository securityContextRepository,
-                       PasswordResetTokenService passwordResetTokenService,
-                       EmailService emailService) {
+            PasswordEncoder passwordEncoder,
+            SecurityContextRepository securityContextRepository,
+            PasswordResetTokenService passwordResetTokenService,
+            EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.securityContextRepository = securityContextRepository;
@@ -82,7 +82,8 @@ public class AuthService {
     public LoginResponse login(LoginRequest req, HttpServletRequest request, HttpServletResponse response) {
         String text = req.getText();
         Optional<UserEntity> userOpt = userRepository.findByUsername(text);
-        if (userOpt.isEmpty()) userOpt = userRepository.findByEmail(text);
+        if (userOpt.isEmpty())
+            userOpt = userRepository.findByEmail(text);
         if (userOpt.isEmpty()) {
             return new LoginResponse("Invalid credentials", "error");
         }
@@ -97,10 +98,9 @@ public class AuthService {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         String roleName = (user.getUserRole() != null) ? user.getUserRole().name() : UserRole.REGULAR.name();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            user.getUsername(),
-            null,
-            List.of(new SimpleGrantedAuthority("ROLE_" + roleName))
-        );
+                user.getUsername(),
+                null,
+                List.of(new SimpleGrantedAuthority("ROLE_" + roleName)));
         context.setAuthentication(authToken);
         SecurityContextHolder.setContext(context);
 
@@ -132,7 +132,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (req.getCurrentPassword() == null || req.getCurrentPassword().trim().isEmpty() ||
-            req.getNewPassword() == null || req.getNewPassword().trim().isEmpty()) {
+                req.getNewPassword() == null || req.getNewPassword().trim().isEmpty()) {
             throw new IllegalArgumentException("Passwords cannot be empty");
         }
 
@@ -160,7 +160,6 @@ public class AuthService {
         return new PasswordResetTokenResponse(message);
     }
 
-
     public void resetPassword(ResetPasswordRequest req) {
         PasswordResetTokenEntity token = passwordResetTokenService.validate(req.getToken())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
@@ -182,5 +181,18 @@ public class AuthService {
         r.setJobTitle(u.getJobTitle());
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
         return r;
+    }
+
+    public void adminResetPassword(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new IllegalStateException("User does not have an email address");
+        }
+
+        GeneratedToken generated = passwordResetTokenService.createToken(user);
+        String resetLink = frontendUrl + "/reset-password?token=" + generated.token();
+        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
     }
 }

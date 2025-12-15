@@ -10,7 +10,7 @@ import { CourseLight } from '../shared/viewmodels/course-light';
 export class AdminService {
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getUsers(): Observable<UserViewmodel[]> {
     return this.http.get<UserViewmodel[]>(`${this.base}/api/admin/users`, {
@@ -37,6 +37,14 @@ export class AdminService {
     return this.http.delete<void>(`${this.base}/api/admin/users/${id}`, {
       withCredentials: true,
     });
+  }
+
+  resetUserPassword(id: number): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.base}/api/admin/users/${id}/reset-password`,
+      {},
+      { withCredentials: true }
+    );
   }
 
   getAll(): Observable<{
