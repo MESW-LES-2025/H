@@ -1,4 +1,4 @@
-package com.lernia.auth.acceptance;
+package com.lernia.auth;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class BaseAcceptanceIT {
+public class BaseAcceptanceTest {
 
     protected WebDriver driver;
     protected WebDriverWait wait;

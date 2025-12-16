@@ -1,4 +1,4 @@
-package com.lernia.auth.acceptance;
+package com.lernia.auth;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class RegisterAcceptanceIT extends BaseAcceptanceIT {
+public class RegisterAcceptanceTest extends BaseAcceptanceTest {
 
 
     @Test

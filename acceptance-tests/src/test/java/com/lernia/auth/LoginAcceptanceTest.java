@@ -1,5 +1,4 @@
-package com.lernia.auth.acceptance;
-
+package com.lernia.auth;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,7 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class LoginAcceptanceIT extends BaseAcceptanceIT {
+public class LoginAcceptanceTest extends BaseAcceptanceTest {
 
 
     @Test
@@ -161,7 +160,7 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         Assertions.assertEquals(originalType, passwordField.getAttribute("type"), "Password field type should toggle back");
     }
 
-    /*@Test
+    @Test
     public void testForgotPasswordLink() {
         driver.get(baseUrl + "/login");
 
@@ -174,7 +173,7 @@ public class LoginAcceptanceIT extends BaseAcceptanceIT {
         wait.until(d -> !d.getCurrentUrl().contains("/login"));
 
         Assertions.assertTrue(driver.getCurrentUrl().toLowerCase().contains("forgot"));
-    }*/
+    }
 
     @Test
     public void testGuestContinueLink() {
