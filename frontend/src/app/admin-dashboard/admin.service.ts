@@ -24,6 +24,17 @@ export interface Analytics {
   popularUniversities: PopularItem[];
 }
 
+export interface UniversityUpsert {
+  id?: number;
+  name: string;
+  description?: string;
+  contactInfo?: string;
+  website?: string;
+  address?: string;
+  logo?: string;
+  location?: { id: number } | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private base = environment.apiUrl;
@@ -95,5 +106,31 @@ export class AdminService {
       courses: this.getCourses(),
       reviews: this.getReviews(),
     });
+  }
+
+  // create university
+  createUniversity(payload: UniversityUpsert): Observable<UniversityLight> {
+    return this.http.post<UniversityLight>(
+      `${this.base}/api/admin/universities`,
+      payload,
+      { withCredentials: true },
+    );
+  }
+
+  // update university
+  updateUniversity(id: number, payload: UniversityUpsert): Observable<UniversityLight> {
+    return this.http.put<UniversityLight>(
+      `${this.base}/api/admin/universities/${id}`,
+      payload,
+      { withCredentials: true },
+    );
+  }
+
+  // delete university
+  deleteUniversity(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.base}/api/admin/universities/${id}`,
+      { withCredentials: true },
+    );
   }
 }
