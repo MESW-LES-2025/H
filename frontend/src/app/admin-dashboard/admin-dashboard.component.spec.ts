@@ -169,7 +169,7 @@ describe('AdminDashboardComponent', () => {
     ];
     adminServiceSpy.deleteUser.and.returnValue(of(void 0));
 
-    component.performDelete(2);
+    (component as any).performDelete(2);
 
     setTimeout(() => {
       expect(adminServiceSpy.deleteUser).toHaveBeenCalledWith(2);

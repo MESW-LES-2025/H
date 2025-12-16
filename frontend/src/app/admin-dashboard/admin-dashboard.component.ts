@@ -122,7 +122,7 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
-  private performDelete(id: number): void {
+  performDelete(id: number): void {
     this.adminService.deleteUser(id).subscribe({
       next: () => {
         this.users = this.users.filter((u) => u.id !== id);
@@ -157,7 +157,7 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
-  private performResetPassword(id: number): void {
+  performResetPassword(id: number): void {
     this.adminService.resetUserPassword(id).subscribe({
       next: (res: any) => {
         this.resetSuccessMessage = res?.message ?? 'Password reset email sent successfully';
