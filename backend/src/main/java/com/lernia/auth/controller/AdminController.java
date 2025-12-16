@@ -1,6 +1,5 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.AdminReviewDTO;
 import com.lernia.auth.dto.AnalyticsDTO;
 import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
