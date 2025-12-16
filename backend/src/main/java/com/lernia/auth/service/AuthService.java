@@ -99,10 +99,11 @@ public class AuthService {
 
         // --- Create Session ---
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+        String roleName = (user.getUserRole() != null) ? user.getUserRole().name() : UserRole.REGULAR.name();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 user.getUsername(),
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name())));
+                List.of(new SimpleGrantedAuthority("ROLE_" + roleName)));
         context.setAuthentication(authToken);
         SecurityContextHolder.setContext(context);
 
@@ -113,6 +114,12 @@ public class AuthService {
         LoginResponse res = new LoginResponse("Login successful", "success");
         res.setUser(profile);
         return res;
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
     }
 
     public void deleteAccount(Long id) {
@@ -178,5 +185,18 @@ public class AuthService {
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
         r.setProvider(u.getProvider() != null ? u.getProvider().name() : null);
         return r;
+    }
+
+    public void adminResetPassword(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new IllegalStateException("User does not have an email address");
+        }
+
+        GeneratedToken generated = passwordResetTokenService.createToken(user);
+        String resetLink = frontendUrl + "/reset-password?token=" + generated.token();
+        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
     }
 }

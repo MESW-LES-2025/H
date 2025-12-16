@@ -25,7 +25,7 @@ export class ResetPasswordComponent {
   ) {
     this.form = this.fb.group({
       token: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
     });
 
     const tokenFromUrl = this.route.snapshot.queryParamMap.get('token');

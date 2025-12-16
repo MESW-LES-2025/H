@@ -306,11 +306,10 @@
       </div>
       <div class="modal-body pt-3">
         <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitPassword()">
-
           @if (passwordFeedback) {
           <div class="alert mb-3 d-flex align-items-center" [class.alert-success]="passwordFeedback.type === 'success'"
             [class.alert-danger]="passwordFeedback.type === 'error'" role="alert">
-            @if (passwordFeedback.type === 'success') {
+            @if (passwordFeedback.type === "success") {
             <i class="bi bi-check-circle-fill me-2 fs-5"></i>
             } @else {
             <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
@@ -361,7 +360,8 @@
             <div class="input-group">
               <input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
                 formControlName="confirmPassword" [class.is-invalid]="
-                    (changePasswordForm.get('confirmPassword')?.invalid || changePasswordForm.errors?.['mismatch']) &&
+                    (changePasswordForm.get('confirmPassword')?.invalid ||
+                      changePasswordForm.errors?.['mismatch']) &&
                     changePasswordForm.get('confirmPassword')?.touched
                   " />
               <button class="btn btn-outline-secondary" type="button"
@@ -369,7 +369,7 @@
                 <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
               </button>
               <div class="invalid-feedback">
-                @if (changePasswordForm.errors?.['mismatch']) {
+                @if (changePasswordForm.errors?.["mismatch"]) {
                 Passwords do not match
                 } @else {
                 Please confirm your password

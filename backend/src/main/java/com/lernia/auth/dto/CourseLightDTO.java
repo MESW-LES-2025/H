@@ -9,4 +9,5 @@ public class CourseLightDTO {
   private Long id;
   private String name;
   private String courseType;
+  private String universityName;
 }

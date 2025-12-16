@@ -58,6 +58,11 @@ export const routes: Routes = [
       import('./about/about.component').then((m) => m.AboutComponent),
   },
   {
+    path: 'faqs',
+    loadComponent: () =>
+      import('./faq/faq.component').then((m) => m.FaqComponent),
+  },
+  {
     path: 'reset-password',
     loadComponent: () =>
       import('./auth/reset-password.component').then(
@@ -71,6 +76,15 @@ export const routes: Routes = [
         (m) => m.OAuthCallbackComponent,
       ),
   },
+  {
+    path: 'admin',
+    // TODO: canActivate: [AdminGuard],
+    loadComponent: () =>
+      import('./admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent,
+      ),
+  },
 
+  // wildcard (opcional)
   { path: '**', redirectTo: 'home' },
 ];

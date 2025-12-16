@@ -6,9 +6,10 @@ import com.lernia.auth.dto.ScholarshipDTO;
 import com.lernia.auth.dto.UniversityDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.dto.filter.UniversityFilter;
+import com.lernia.auth.entity.UniversityEntity;
+import com.lernia.auth.dto.*;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.ScholarshipEntity;
-import com.lernia.auth.entity.UniversityEntity;
 import com.lernia.auth.mapper.UniversityMapper;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.ScholarshipRepository;
@@ -66,7 +67,8 @@ public class UniversityService {
                             .map(course -> new CourseLightDTO(
                                     course.getId(),
                                     course.getName(),
-                                    course.getCourseType()))
+                                    course.getCourseType(),
+                                    course.getUniversity() != null ? course.getUniversity().getName() : null))
                             .toList();
 
                     List<ScholarshipEntity> scholarshipEntities = scholarshipRepository.findByUniversityId(id);

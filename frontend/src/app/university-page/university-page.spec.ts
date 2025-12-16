@@ -10,12 +10,15 @@ import { ExploreService } from '../explore-page/services/explore-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AuthService } from '../auth/auth.service';
 
 describe('UniversityPage', () => {
   let component: UniversityPage;
   let fixture: ComponentFixture<UniversityPage>;
   let uniService: jasmine.SpyObj<UniversityPageService>;
   let exploreService: jasmine.SpyObj<ExploreService>;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
   let router: Router;
 
   const sampleUni = {
@@ -42,12 +45,18 @@ describe('UniversityPage', () => {
       'addFavoriteUniversity',
       'removeFavoriteUniversity',
     ]);
+    const authSpy = jasmine.createSpyObj('AuthService', ['getCurrentUserId']);
 
     await TestBed.configureTestingModule({
-      imports: [UniversityPage, RouterTestingModule.withRoutes([])],
+      imports: [
+        UniversityPage,
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule,
+      ],
       providers: [
         { provide: UniversityPageService, useValue: uniServiceSpy },
         { provide: ExploreService, useValue: exploreSpy },
+        { provide: AuthService, useValue: authSpy },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: { get: (_: string) => '10' } } },
@@ -63,6 +72,7 @@ describe('UniversityPage', () => {
     exploreService = TestBed.inject(
       ExploreService,
     ) as jasmine.SpyObj<ExploreService>;
+    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
@@ -80,6 +90,7 @@ describe('UniversityPage', () => {
 
   it('ngOnInit should load university and set isFavorite false when no user', (done) => {
     uniService.getUniversityProfile.and.returnValue(of(sampleUni));
+    authServiceSpy.getCurrentUserId.and.returnValue(null);
 
     fixture.detectChanges(); // runs ngOnInit
 
@@ -94,8 +105,7 @@ describe('UniversityPage', () => {
   it('ngOnInit should load favorite state when userId present', (done) => {
     uniService.getUniversityProfile.and.returnValue(of(sampleUni));
     exploreService.getFavoriteUniversities.and.returnValue(of([10]));
-
-    localStorage.setItem('userId', '5');
+    authServiceSpy.getCurrentUserId.and.returnValue(5);
 
     fixture.detectChanges();
 
@@ -117,7 +127,7 @@ describe('UniversityPage', () => {
 
   it('loadFavoriteState should set isFavorite false when favorites do not include uni', fakeAsync(() => {
     (component as any).university = sampleUni;
-    localStorage.setItem('userId', '5');
+    authServiceSpy.getCurrentUserId.and.returnValue(5);
     exploreService.getFavoriteUniversities.and.returnValue(of([1, 2, 3]));
 
     (component as any).loadFavoriteState();
@@ -129,7 +139,7 @@ describe('UniversityPage', () => {
 
   it('loadFavoriteState should early return and set isFavorite false when university is null even if userId exists', () => {
     (component as any).university = null;
-    localStorage.setItem('userId', '5');
+    authServiceSpy.getCurrentUserId.and.returnValue(5);
     (component as any).isFavorite = true;
 
     (component as any).loadFavoriteState();
@@ -140,7 +150,7 @@ describe('UniversityPage', () => {
 
   it('loadFavoriteState should log error when getFavoriteUniversities errors', fakeAsync(() => {
     (component as any).university = sampleUni;
-    localStorage.setItem('userId', '5');
+    authServiceSpy.getCurrentUserId.and.returnValue(5);
     spyOn(console, 'error');
     exploreService.getFavoriteUniversities.and.returnValue(
       throwError(() => new Error('fail')),
@@ -164,6 +174,21 @@ describe('UniversityPage', () => {
     expect((component as any).isFavorite).toBeTrue();
   }));
 
+  it('onToggleFavorite should log error when addFavoriteUniversity errors', fakeAsync(() => {
+    (component as any).university = sampleUni;
+    (component as any).isFavorite = false;
+    spyOn(console, 'error');
+    exploreService.addFavoriteUniversity.and.returnValue(
+      throwError(() => new Error('add-fail')),
+    );
+
+    component.onToggleFavorite();
+    tick();
+
+    expect(console.error).toHaveBeenCalled();
+    expect((component as any).isFavorite).toBeFalse();
+  }));
+
   it('onToggleFavorite should remove favorite when already favorite', fakeAsync(() => {
     (component as any).university = sampleUni;
     (component as any).isFavorite = true;
@@ -174,6 +199,21 @@ describe('UniversityPage', () => {
 
     expect(exploreService.removeFavoriteUniversity).toHaveBeenCalledWith(10);
     expect((component as any).isFavorite).toBeFalse();
+  }));
+
+  it('onToggleFavorite should log error when removeFavoriteUniversity errors', fakeAsync(() => {
+    (component as any).university = sampleUni;
+    (component as any).isFavorite = true;
+    spyOn(console, 'error');
+    exploreService.removeFavoriteUniversity.and.returnValue(
+      throwError(() => new Error('remove-fail')),
+    );
+
+    component.onToggleFavorite();
+    tick();
+
+    expect(console.error).toHaveBeenCalled();
+    expect((component as any).isFavorite).toBeTrue();
   }));
 
   it('goToCourse should navigate to course route', () => {

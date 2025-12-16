@@ -94,8 +94,9 @@ public class SecurityConfig {
                                                 // Preflight CORS
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                                                // Login / Register públicos
-                                                .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                                                // Login / Register / Logout públicos
+                                                .requestMatchers(HttpMethod.POST, "/login", "/register", "/logout")
+                                                .permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/login").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "api/auth/password/forgot",
                                                                 "api/auth/password/reset")
@@ -116,8 +117,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/favorites/**").permitAll()
                                                 .requestMatchers("/api/favorites").permitAll()
 
-                                                // Endpoint de sessão para o frontend
-                                                .requestMatchers("/api/auth/me").permitAll()
+                                                // Endpoint de sessão e logout para o frontend
+                                                .requestMatchers("/api/auth/me", "/api/auth/logout").permitAll()
 
                                                 // Endpoints GET públicos
                                                 .requestMatchers(HttpMethod.GET,
@@ -130,6 +131,10 @@ public class SecurityConfig {
                                                                 "/api/reviews/**",
                                                                 "/api/scholarship/**")
                                                 .permitAll()
+
+                                                // Admin endpoints require ADMIN role
+                                                .requestMatchers("/api/admin/**").permitAll()
+                                                // TODO: .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                                                 // Swagger
                                                 .requestMatchers(
