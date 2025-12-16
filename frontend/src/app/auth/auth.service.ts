@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { UserViewmodel } from '../profile-page/viewmodels/user-viewmodel';
@@ -80,6 +80,10 @@ export class AuthService {
           } else {
             this.currentUserSubject.next(null);
           }
+        }),
+        catchError(() => {
+          this.currentUserSubject.next(null);
+          return of({} as User);
         })
       );
   }

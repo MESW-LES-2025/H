@@ -33,6 +33,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     String email = oauth2User.getAttribute("email");
     String name = oauth2User.getAttribute("name");
     String profilePicture = oauth2User.getAttribute("picture");
+     // Modify Google profile picture URL to avoid rate limiting
+    if (profilePicture != null && profilePicture.contains("googleusercontent.com")) {
+      // Remove size parameter and add s=200 for consistent sizing, and remove authentication
+      profilePicture = profilePicture.replaceAll("=s\\d+-c", "=s200-c");
+      if (!profilePicture.contains("=s")) {
+        profilePicture = profilePicture + "=s200-c";
+      }
+    }
 
     // Find or create user
     UserEntity user = findOrCreateUser(provider, providerId, email, name, profilePicture);

@@ -21,7 +21,7 @@ describe('AuthService', () => {
     age: 25,
     gender: 'Male',
     location: 'Test City',
-    profileImage: 'test.jpg',
+    profilePicture: 'test.jpg',
     jobTitle: 'Developer',
     academicHistory: [],
     userRole: 'USER',
@@ -274,7 +274,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/users/${userId}`,
+        `${environment.apiUrl}/api/profile/${userId}`,
       );
       expect(req.request.method).toBe('GET');
 
@@ -293,7 +293,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/users/${userId}`,
+        `${environment.apiUrl}/api/profile/${userId}`,
       );
       req.error(new ProgressEvent('error'), { status: 404 });
     });
@@ -315,7 +315,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/users/${userId}`,
+        `${environment.apiUrl}/api/profile/${userId}/update-profile`,
       );
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(userData);
@@ -336,7 +336,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/users/${userId}`,
+        `${environment.apiUrl}/api/profile/${userId}/update-profile`,
       );
       req.error(new ProgressEvent('error'), { status: 400 });
     });
@@ -493,7 +493,7 @@ describe('AuthService', () => {
 
       service.resetPassword(payload).subscribe({
         next: (res) => {
-          expect(res).toBeNull(); 
+          expect(res).toBeNull();
           done();
         },
         error: () => fail('should not error'),
@@ -502,7 +502,7 @@ describe('AuthService', () => {
       const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/reset`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(payload);
-      req.flush(null); 
+      req.flush(null);
     });
 
     it('should handle reset password error', (done) => {

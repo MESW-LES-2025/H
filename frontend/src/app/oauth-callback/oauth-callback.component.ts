@@ -42,8 +42,8 @@ export class OAuthCallbackComponent implements OnInit {
                 if (userProfile.name) {
                   localStorage.setItem('username', userProfile.name);
                 }
-                if (userProfile.role) {
-                  localStorage.setItem('role', userProfile.role);
+                if (userProfile.userRole) {
+                  localStorage.setItem('role', userProfile.userRole);
                 }
                 // Redirect to user profile
                 this.router.navigate(['/profile', userProfile.id]);
