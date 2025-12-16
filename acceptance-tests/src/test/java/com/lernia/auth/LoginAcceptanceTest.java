@@ -164,15 +164,20 @@ public class LoginAcceptanceTest extends BaseAcceptanceTest {
     public void testForgotPasswordLink() {
         driver.get(baseUrl + "/login");
 
-        WebElement forgotLink = findAny(By.linkText("Forgot Password"), By.cssSelector("a.link[href*='forgot']"));
+        // Find the "Forgot Password?" clickable element
+        WebElement forgotLink = findAny(By.className("forgot"), By.linkText("Forgot Password"));
 
         Assertions.assertNotNull(forgotLink, "Forgot Password link not found");
 
         forgotLink.click();
 
-        wait.until(d -> !d.getCurrentUrl().contains("/login"));
+        WebElement modal = wait.until(d -> findAny(
+            By.cssSelector(".modal-overlay"),
+            By.cssSelector(".modal-title"),
+            By.xpath("//*[contains(text(),'Forgot Password')]")
+        ));
 
-        Assertions.assertTrue(driver.getCurrentUrl().toLowerCase().contains("forgot"));
+        Assertions.assertNotNull(modal, "Forgot Password modal did not appear after clicking the link");
     }
 
     @Test
