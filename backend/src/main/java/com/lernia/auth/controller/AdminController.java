@@ -4,10 +4,14 @@ import com.lernia.auth.dto.AnalyticsDTO;
 import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
+import com.lernia.auth.dto.UniversityDTO;
 import com.lernia.auth.dto.response.UserProfileResponse;
+import com.lernia.auth.entity.UniversityEntity;
+import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.UniversityRepository;
 import com.lernia.auth.repository.UserRepository;
+import com.lernia.auth.repository.LocationRepository;
 import com.lernia.auth.service.AuthService;
 import com.lernia.auth.service.AnalyticsService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +22,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,6 +41,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
     private final CourseRepository courseRepository;
+    private final LocationRepository locationRepository;
     private final AuthService authService;
     private final AnalyticsService analyticsService;
 
@@ -71,6 +78,116 @@ public class AdminController {
                 .toList();
 
         return ResponseEntity.ok(list);
+    }
+
+    // Create University
+    @PostMapping("/universities")
+    public ResponseEntity<?> createUniversity(@RequestBody UniversityDTO dto) {
+        if (dto == null || dto.getName() == null || dto.getName().isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "University name is required"));
+        }
+
+        UniversityEntity entity = new UniversityEntity();
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setContactInfo(dto.getContactInfo());
+        entity.setWebsite(dto.getWebsite());
+        entity.setAddress(dto.getAddress());
+        entity.setLogo(dto.getLogo());
+
+        if (dto.getLocation() != null && dto.getLocation().getId() != null) {
+            Optional<LocationEntity> loc = locationRepository.findById(dto.getLocation().getId());
+            loc.ifPresent(entity::setLocation);
+        } else {
+            entity.setLocation(null);
+        }
+
+        UniversityEntity saved = universityRepository.save(entity);
+
+        UniversityDTOLight res = new UniversityDTOLight(
+                saved.getId(),
+                saved.getName(),
+                saved.getDescription(),
+                saved.getLocation() != null ? new LocationDTO(
+                        saved.getLocation().getId(),
+                        saved.getLocation().getCity(),
+                        saved.getLocation().getCountry(),
+                        saved.getLocation().getCostOfLiving()) : null
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    // Update University
+    @PutMapping("/universities/{id}")
+    public ResponseEntity<?> updateUniversity(@PathVariable Long id, @RequestBody UniversityDTO dto) {
+        if (id == null || id <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Invalid university id"));
+        }
+
+        Optional<UniversityEntity> opt = universityRepository.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "University not found"));
+        }
+
+        UniversityEntity entity = opt.get();
+        if (dto.getName() != null && !dto.getName().isBlank()) entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setContactInfo(dto.getContactInfo());
+        entity.setWebsite(dto.getWebsite());
+        entity.setAddress(dto.getAddress());
+        entity.setLogo(dto.getLogo());
+
+        if (dto.getLocation() != null) {
+            if (dto.getLocation().getId() != null) {
+                locationRepository.findById(dto.getLocation().getId())
+                        .ifPresent(entity::setLocation);
+            } else {
+                entity.setLocation(null);
+            }
+        }
+
+        UniversityEntity saved = universityRepository.save(entity);
+
+        UniversityDTOLight res = new UniversityDTOLight(
+                saved.getId(),
+                saved.getName(),
+                saved.getDescription(),
+                saved.getLocation() != null ? new LocationDTO(
+                        saved.getLocation().getId(),
+                        saved.getLocation().getCity(),
+                        saved.getLocation().getCountry(),
+                        saved.getLocation().getCostOfLiving()) : null
+        );
+        return ResponseEntity.ok(res);
+    }
+
+    // Delete University
+    @DeleteMapping("/universities/{id}")
+    public ResponseEntity<?> deleteUniversity(@PathVariable Long id) {
+        if (id == null || id <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Invalid university id"));
+        }
+
+        Optional<UniversityEntity> opt = universityRepository.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "University not found"));
+        }
+
+        // prevent deletion if there are courses referencing this university (FK constraint)
+        boolean hasCourses = courseRepository.findAll().stream()
+                .anyMatch(c -> c.getUniversity() != null && id.equals(c.getUniversity().getId()));
+        if (hasCourses) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "Cannot delete university with associated courses"));
+        }
+
+        universityRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/courses")

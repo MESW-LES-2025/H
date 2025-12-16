@@ -96,7 +96,8 @@ public class UniversityService {
                                     university.getLocation().getCountry(),
                                     university.getLocation().getCostOfLiving()) : null,
                             courses,
-                            scholarships);
+                            scholarships
+                    );
                 })
                 .orElse(null);
     }
