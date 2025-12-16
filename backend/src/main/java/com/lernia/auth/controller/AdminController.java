@@ -1,12 +1,18 @@
 package com.lernia.auth.controller;
 
+import com.lernia.auth.dto.AdminReviewDTO;
 import com.lernia.auth.dto.AnalyticsDTO;
 import com.lernia.auth.dto.CourseLightDTO;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
+import com.lernia.auth.dto.ReviewDTO;
 import com.lernia.auth.dto.response.UserProfileResponse;
+import com.lernia.auth.entity.CourseReviewEntity;
+import com.lernia.auth.entity.UniversityReviewEntity;
 import com.lernia.auth.repository.CourseRepository;
+import com.lernia.auth.repository.CourseReviewRepository;
 import com.lernia.auth.repository.UniversityRepository;
+import com.lernia.auth.repository.UniversityReviewRepository;
 import com.lernia.auth.repository.UserRepository;
 import com.lernia.auth.service.AuthService;
 import com.lernia.auth.service.AnalyticsService;
@@ -15,17 +21,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -37,6 +44,8 @@ public class AdminController {
     private final CourseRepository courseRepository;
     private final AuthService authService;
     private final AnalyticsService analyticsService;
+    private final CourseReviewRepository courseReviewRepository;
+    private final UniversityReviewRepository universityReviewRepository;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserProfileResponse>> getAllUsers() {
@@ -135,4 +144,40 @@ public class AdminController {
         return ResponseEntity.ok(analyticsService.getAnalytics());
     }
 
+    @GetMapping("/reviews")
+    public List<ReviewDTO> getAllReviews() {
+        List<ReviewDTO> result = new ArrayList<>();
+
+        // Course reviews
+        for (CourseReviewEntity cr : courseReviewRepository.findAll()) {
+            ReviewDTO dto = new ReviewDTO();
+            dto.setId(cr.getId());
+            dto.setUserId(cr.getUser().getId());
+            dto.setUserName(cr.getUser().getName());
+            dto.setCourseId(cr.getCourse().getId());
+            dto.setUniversityId(null);
+            dto.setRating(cr.getRating());
+            dto.setTitle(cr.getTitle());
+            dto.setDescription(cr.getDescription());
+            dto.setReviewDate(cr.getReviewDate());
+            result.add(dto);
+        }
+
+        // University reviews
+        for (UniversityReviewEntity ur : universityReviewRepository.findAll()) {
+            ReviewDTO dto = new ReviewDTO();
+            dto.setId(ur.getId());
+            dto.setUserId(ur.getUser().getId());
+            dto.setUserName(ur.getUser().getName());
+            dto.setCourseId(null);
+            dto.setUniversityId(ur.getUniversity().getId());
+            dto.setRating(ur.getRating());
+            dto.setTitle(ur.getTitle());
+            dto.setDescription(ur.getDescription());
+            dto.setReviewDate(ur.getReviewDate());
+            result.add(dto);
+        }
+
+        return result;
+    }
 }

@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { UserViewmodel } from '../profile-page/viewmodels/user-viewmodel';
 import { UniversityLight } from '../universities/viewmodels/university-light';
 import { CourseLight } from '../shared/viewmodels/course-light';
+import { Review } from '../university-page/viewmodels/review';
 
 export interface PopularItem {
   id: number;
@@ -70,15 +71,29 @@ export class AdminService {
     );
   }
 
+  getReviews(): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.base}/api/admin/reviews`, {
+      withCredentials: true,
+    });
+  }
+
+  deleteReview(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/api/admin/reviews/${id}`, {
+      withCredentials: true,
+    });
+  }
+
   getAll(): Observable<{
     users: UserViewmodel[];
     universities: UniversityLight[];
     courses: CourseLight[];
+    reviews: Review[];
   }> {
     return forkJoin({
       users: this.getUsers(),
       universities: this.getUniversities(),
       courses: this.getCourses(),
+      reviews: this.getReviews(),
     });
   }
 }

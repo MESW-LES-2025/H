@@ -61,6 +61,17 @@
         </div>
         <div class="col-md-3">
           <div class="card border-0 shadow h-100 stat-card hover-lift"
+            [class.border-danger]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-danger mb-1 stat-number">
+                {{ reviews.length }}
+              </h3>
+              <p class="text-muted mb-0">Reviews</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift"
             [class.border-warning]="activeTab === 'analytics'" (click)="setActiveTab('analytics')">
             <div class="card-body text-center p-4">
               <h3 class="fw-bold text-warning mb-1 stat-number">
@@ -263,6 +274,66 @@
                     </td>
                     <td>{{ course.courseType || "N/A" }}</td>
                     <td>{{ course.universityName || "N/A" }}</td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Reviews Table -->
+        @if (activeTab === "reviews") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-danger text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 fw-bold">
+                <i class="fas fa-comments me-2"></i>Reviews Management
+              </h4>
+              <span class="badge bg-light text-dark fs-6 px-3 py-2">{{ reviews.length }}</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive table-container">
+              <table class="table table-hover mb-0 table-sticky-header">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="border-0">ID</th>
+                    <th class="border-0">User</th>
+                    <th class="border-0">Type</th>
+                    <th class="border-0">Course</th>
+                    <th class="border-0">University</th>
+                    <th class="border-0">Rating</th>
+                    <th class="border-0">Title</th>
+                    <th class="border-0">Comment</th>
+                    <th class="border-0">Date</th>
+                    <th class="border-0 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (review of reviews; track review.id) {
+                  <tr>
+                    <td>{{ review.id }}</td>
+                    <td>{{ review.userName }}</td>
+                    <td>
+                      {{ review.courseId ? 'Course' : 'University' }}
+                    </td>
+                    <td>
+                      {{ review.courseId ? getCourseName(review.courseId) : '-' }}
+                    </td>
+                    <td>
+                      {{ review.universityId ? getUniversityName(review.universityId) : '-' }}
+                    </td>
+                    <td>{{ review.rating }}</td>
+                    <td>{{ review.title }}</td>
+                    <td>{{ review.description }}</td>
+                    <td>{{ review.reviewDate | date }}</td>
+                    <td class="text-center">
+                      <button class="btn btn-sm btn-outline-danger" (click)="deleteReview(review.id)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
                   </tr>
                   }
                 </tbody>

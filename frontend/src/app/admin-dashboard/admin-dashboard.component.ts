@@ -3,12 +3,15 @@ import { Router } from '@angular/router';
 import { AdminService, Analytics } from './admin.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../auth/auth.service';
+import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   standalone: true,
   styleUrls: ['./admin-dashboard.component.css'],
+  imports: [DatePipe],
 })
 export class AdminDashboardComponent implements OnInit {
   loading = true;
@@ -22,9 +25,10 @@ export class AdminDashboardComponent implements OnInit {
   users: any[] = [];
   universities: any[] = [];
   courses: any[] = [];
+  reviews: any[] = [];
   analytics: Analytics | null = null;
 
-  activeTab: 'users' | 'universities' | 'courses' | 'analytics' = 'users';
+  activeTab: 'users' | 'universities' | 'courses' | 'reviews' | 'analytics' = 'users';
 
   constructor(
     private router: Router,
@@ -50,6 +54,7 @@ export class AdminDashboardComponent implements OnInit {
         this.users = res.users || [];
         this.universities = res.universities || [];
         this.courses = res.courses || [];
+        this.reviews = res.reviews || [];
         this.loading = false;
       },
       error: (err) => {
@@ -60,7 +65,7 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'users' | 'universities' | 'courses' | 'analytics'): void {
+  setActiveTab(tab: 'users' | 'universities' | 'courses' | 'reviews' | 'analytics'): void {
     this.activeTab = tab;
     if (tab === 'analytics' && !this.analytics) {
       this.loadAnalytics();
@@ -149,5 +154,23 @@ export class AdminDashboardComponent implements OnInit {
         }, 5000);
       },
     });
+  }
+
+  deleteReview(id: number): void {
+    if (confirm('Are you sure you want to delete this review?')) {
+      this.adminService.deleteReview(id).subscribe(() => {
+        this.reviews = this.reviews.filter(r => r.id !== id);
+      });
+    }
+  }
+
+  getCourseName(courseId: number): string {
+    const course = this.courses.find(c => c.id === courseId);
+    return course ? course.name || course.title : courseId?.toString() || '-';
+  }
+
+  getUniversityName(universityId: number): string {
+    const uni = this.universities.find(u => u.id === universityId);
+    return uni ? uni.name : universityId?.toString() || '-';
   }
 }
