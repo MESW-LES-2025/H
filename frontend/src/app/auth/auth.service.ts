@@ -37,6 +37,9 @@ export interface CsrfResponse {
 
 export interface User {
   id: number;
+  name?: string;
+  email?: string;
+  userRole?: string;
 }
 
 export interface PasswordResetTokenResponse {
@@ -92,6 +95,7 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(`${this.baseUrl}/login`, body, {
         withCredentials: true,
+        headers,
       })
       .pipe(
         tap((response) => {
@@ -99,6 +103,9 @@ export class AuthService {
             if (response.user) {
               this.currentUserSubject.next({
                 id: response.user.id,
+                name: response.user.name,
+                email: response.user.email,
+                userRole: response.user.userRole,
               });
             }
           }
@@ -145,5 +152,19 @@ export class AuthService {
       `${this.baseUrl}/api/auth/password/reset`,
       payload
     );
+  }
+
+  getCurrentUserId(): number | null {
+    const user = this.currentUserSubject.value;
+    return user ? user.id : null;
+  }
+
+  getCurrentUserRole(): string | null {
+    const user = this.currentUserSubject.value;
+    return user?.userRole || null;
+  }
+
+  isAdmin(): boolean {
+    return this.getCurrentUserRole() === 'ADMIN';
   }
 }

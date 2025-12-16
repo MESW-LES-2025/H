@@ -66,7 +66,9 @@ describe('CoursePage', () => {
 
     fixture = TestBed.createComponent(CoursePage);
     component = fixture.componentInstance;
-    service = TestBed.inject(CoursePageService) as jasmine.SpyObj<CoursePageService>;
+    service = TestBed.inject(
+      CoursePageService,
+    ) as jasmine.SpyObj<CoursePageService>;
     activatedRoute = TestBed.inject(ActivatedRoute);
   });
 
@@ -78,7 +80,7 @@ describe('CoursePage', () => {
     it('should load course data on init', (done) => {
       service.getCourseProfile.and.returnValue(of(mockCourse));
       service.getFavoriteCourses.and.returnValue(of([201, 202]));
-      
+
       spyOn(localStorage, 'getItem').and.returnValue('1');
 
       component.ngOnInit();
@@ -93,7 +95,7 @@ describe('CoursePage', () => {
 
     it('should load course without checking favorites when user not logged in', (done) => {
       service.getCourseProfile.and.returnValue(of(mockCourse));
-      
+
       spyOn(localStorage, 'getItem').and.returnValue(null);
 
       component.ngOnInit();
@@ -110,7 +112,7 @@ describe('CoursePage', () => {
     it('should set isFavorite to false when course is not in favorites', (done) => {
       service.getCourseProfile.and.returnValue(of(mockCourse));
       service.getFavoriteCourses.and.returnValue(of([100, 150]));
-      
+
       spyOn(localStorage, 'getItem').and.returnValue('1');
 
       component.ngOnInit();
@@ -207,7 +209,9 @@ describe('CoursePage', () => {
       setTimeout(() => {
         expect(component.course).not.toBeNull();
         expect(component.course?.id).toBe(201);
-        expect(component.course?.name).toBe('Bachelor of Science in Computer Science');
+        expect(component.course?.name).toBe(
+          'Bachelor of Science in Computer Science',
+        );
         done();
       }, 100);
     });

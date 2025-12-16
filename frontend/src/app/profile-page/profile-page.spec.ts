@@ -8,23 +8,26 @@ import { of, throwError } from 'rxjs';
 import { UserViewmodel, FavoritesResponse } from './viewmodels/user-viewmodel';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth/auth.service';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
   let fixture: ComponentFixture<ProfilePage>;
   let mockProfileService: jasmine.SpyObj<ProfilePageService>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockActivatedRoute: any;
 
   const mockUser: UserViewmodel = {
     id: 1,
     name: 'Test User',
+    email: 'mail@test.com',
     age: 25,
     gender: 'MALE',
     location: 'Lisbon',
     jobTitle: 'Developer',
     profileImage: '/test-image.jpg',
     academicHistory: [],
-    role: 'USER',
+    userRole: 'USER',
   };
 
   const mockFavorites: FavoritesResponse = {
@@ -51,11 +54,17 @@ describe('ProfilePage', () => {
       'getOwnProfile',
       'getOwnFavorites',
       'updateProfile',
+      'changePassword',
       'deleteAccount',
       'addFavoriteUniversity',
       'removeFavoriteUniversity',
       'addFavoriteCourse',
       'removeFavoriteCourse',
+    ]);
+
+    mockAuthService = jasmine.createSpyObj('AuthService', [
+      'getCurrentUserId',
+      'logout',
     ]);
 
     mockActivatedRoute = {
@@ -72,6 +81,7 @@ describe('ProfilePage', () => {
         provideHttpClient(),
         provideRouter([]),
         { provide: ProfilePageService, useValue: mockProfileService },
+        { provide: AuthService, useValue: mockAuthService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
@@ -221,8 +231,8 @@ describe('ProfilePage', () => {
 
   describe('Edit Profile Modal', () => {
     beforeEach(() => {
-      // Set localStorage to mark user as owner
-      localStorage.setItem('userId', String(mockUser.id));
+      // Set authService to mark user as owner
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
       fixture.detectChanges();
       component['user'] = mockUser;
     });
@@ -255,7 +265,7 @@ describe('ProfilePage', () => {
     });
 
     it('should not open modal if not owner', () => {
-      localStorage.setItem('userId', '999'); // Different user
+      mockAuthService.getCurrentUserId.and.returnValue(999); // Different user
       component['openEditModal']();
 
       expect(component['showEditModal']).toBeFalse();
@@ -392,7 +402,7 @@ describe('ProfilePage', () => {
 
   describe('Delete Account', () => {
     beforeEach(() => {
-      localStorage.setItem('userId', String(mockUser.id));
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
       fixture.detectChanges();
       component['user'] = mockUser;
     });
@@ -409,7 +419,7 @@ describe('ProfilePage', () => {
     });
 
     it('should not delete if not owner', () => {
-      localStorage.setItem('userId', '999'); // Different user
+      mockAuthService.getCurrentUserId.and.returnValue(999); // Different user
       spyOn(window, 'confirm'); // Add this to prevent confirm dialog
 
       component['confirmDelete']();
@@ -448,6 +458,109 @@ describe('ProfilePage', () => {
       component['confirmDelete']();
 
       expect(localStorage.removeItem).not.toHaveBeenCalled();
+    });
+
+    it('should alert and logout on successful delete', () => {
+      spyOn(window, 'confirm').and.returnValue(true);
+      spyOn(window, 'alert');
+
+      mockProfileService.deleteAccount.and.returnValue(of(void 0));
+
+      component['confirmDelete']();
+
+      expect(mockProfileService.deleteAccount).toHaveBeenCalled();
+      expect(window.alert).toHaveBeenCalledWith(
+        'Account deleted successfully.',
+      );
+      expect(mockAuthService.logout).toHaveBeenCalled();
+    });
+  });
+
+  describe('Change Password Modal', () => {
+    beforeEach(() => {
+      // make current user the owner and initialize component
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      fixture.detectChanges();
+      component['user'] = mockUser;
+    });
+
+    it('should not open password modal if user is null', () => {
+      component['user'] = null;
+      component['openPasswordModal']();
+      expect(component['showPasswordModal']).toBeFalse();
+    });
+
+    it('should not open password modal if not owner', () => {
+      mockAuthService.getCurrentUserId.and.returnValue(999);
+      component['user'] = mockUser;
+      component['openPasswordModal']();
+      expect(component['showPasswordModal']).toBeFalse();
+    });
+
+    it('should open and initialize password modal for owner', () => {
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      component['user'] = mockUser;
+      component['openPasswordModal']();
+
+      expect(component['showPasswordModal']).toBeTrue();
+      expect(component['passwordFeedback']).toBeNull();
+      expect(component['showCurrentPassword']).toBeFalse();
+      expect(component['showNewPassword']).toBeFalse();
+      expect(component['showConfirmPassword']).toBeFalse();
+    });
+
+    it('should close password modal and reset form', () => {
+      fixture.detectChanges();
+      component['showPasswordModal'] = true;
+      component['changePasswordForm'].patchValue({
+        currentPassword: 'a',
+        newPassword: 'b',
+        confirmPassword: 'b',
+      });
+
+      component['closePasswordModal']();
+
+      expect(component['showPasswordModal']).toBeFalse();
+      expect(
+        component['changePasswordForm'].get('currentPassword')?.value,
+      ).toBeNull();
+      expect(component['passwordFeedback']).toBeNull();
+    });
+
+    it('should call service and set success feedback on password change', () => {
+      mockProfileService.changePassword.and.returnValue(of(void 0));
+      component['changePasswordForm'].patchValue({
+        currentPassword: 'old',
+        newPassword: 'newpass',
+        confirmPassword: 'newpass',
+      });
+
+      component['onSubmitPassword']();
+
+      expect(mockProfileService.changePassword).toHaveBeenCalledWith(
+        mockUser.id,
+        { currentPassword: 'old', newPassword: 'newpass' },
+      );
+      expect(component['passwordFeedback']).toEqual(
+        jasmine.objectContaining({ type: 'success' }),
+      );
+    });
+
+    it('should show error feedback when password change fails', () => {
+      mockProfileService.changePassword.and.returnValue(
+        throwError(() => new Error('Bad current password')),
+      );
+      component['changePasswordForm'].patchValue({
+        currentPassword: 'wrong',
+        newPassword: 'newpass',
+        confirmPassword: 'newpass',
+      });
+
+      component['onSubmitPassword']();
+
+      expect(component['passwordFeedback']).toEqual(
+        jasmine.objectContaining({ type: 'error' }),
+      );
     });
   });
 
@@ -861,21 +974,21 @@ describe('ProfilePage', () => {
     });
 
     it('should return true when localStorage userId matches user id', () => {
-      localStorage.setItem('userId', '1');
+      mockAuthService.getCurrentUserId.and.returnValue(1);
       component['user'] = mockUser;
 
       expect(component.isOwner).toBeTrue();
     });
 
     it('should return false when localStorage userId does not match', () => {
-      localStorage.setItem('userId', '999');
+      mockAuthService.getCurrentUserId.and.returnValue(999);
       component['user'] = mockUser;
 
       expect(component.isOwner).toBeFalse();
     });
 
     it('should return false when user is null', () => {
-      localStorage.setItem('userId', '1');
+      mockAuthService.getCurrentUserId.and.returnValue(1);
       component['user'] = null;
 
       expect(component.isOwner).toBeFalse();
