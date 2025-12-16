@@ -61,7 +61,7 @@ describe('AdminDashboardComponent', () => {
     authServiceSpy.isAdmin.and.returnValue(true);
     authServiceSpy.getCurrentUserId.and.returnValue(42);
     adminServiceSpy.getAll.and.returnValue(
-      of({ users: [], universities: [], courses: [] }),
+      of({ users: [], universities: [], reviews: [], courses: [] }),
     );
 
     component.ngOnInit();

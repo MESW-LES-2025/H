@@ -3,16 +3,17 @@ import { Router } from '@angular/router';
 import { AdminService, Analytics, UniversityUpsert } from './admin.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../auth/auth.service';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   standalone: true,
   styleUrls: ['./admin-dashboard.component.css'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePipe],
 })
+
 export class AdminDashboardComponent implements OnInit {
   loading = true;
   error: string | null = null;
@@ -21,17 +22,19 @@ export class AdminDashboardComponent implements OnInit {
   pendingResetId: number | null = null;
   resetSuccessMessage: string | null = null;
   resetErrorMessage: string | null = null;
+  pendingDeleteReviewId: number | null = null;
 
   users: any[] = [];
   universities: any[] = [];
   courses: any[] = [];
+  reviews: any[] = [];
   analytics: Analytics | null = null;
 
   editing: boolean = false;
   uniForm: UniversityUpsert = { name: '', description: '', contactInfo: '', website: '', address: '', logo: '', location: null };
   selectedUniversityId: number | null = null;
 
-  activeTab: 'users' | 'universities' | 'courses' | 'analytics' = 'users';
+  activeTab: 'users' | 'universities' | 'courses' | 'reviews' | 'analytics' = 'users';
 
   constructor(
     private router: Router,
@@ -57,6 +60,7 @@ export class AdminDashboardComponent implements OnInit {
         this.users = res.users || [];
         this.universities = res.universities || [];
         this.courses = res.courses || [];
+        this.reviews = res.reviews || [];
         this.loading = false;
       },
       error: (err) => {
@@ -67,7 +71,7 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'users' | 'universities' | 'courses' | 'analytics'): void {
+  setActiveTab(tab: 'users' | 'universities' | 'courses' | 'reviews' | 'analytics'): void {
     this.activeTab = tab;
     if (tab === 'analytics' && !this.analytics) {
       this.loadAnalytics();
@@ -246,5 +250,33 @@ export class AdminDashboardComponent implements OnInit {
       next: (list) => this.universities = list || [],
       error: (err) => console.error('Failed to reload universities', err),
     });
+  openDeleteReviewModal(reviewId: number, modalTemplate: TemplateRef<any>) {
+    this.pendingDeleteReviewId = reviewId;
+    this.modalService.open(modalTemplate, { centered: true }).result.then(result => {
+      if (result === 'confirm') {
+        this.deleteReviewConfirmed();
+      }
+    }, () => {
+      this.pendingDeleteReviewId = null;
+    });
+  }
+
+  deleteReviewConfirmed() {
+    if (this.pendingDeleteReviewId != null) {
+      this.adminService.deleteReview(this.pendingDeleteReviewId).subscribe(() => {
+        this.reviews = this.reviews.filter(r => r.id !== this.pendingDeleteReviewId);
+        this.pendingDeleteReviewId = null;
+      });
+    }
+  }
+
+  getCourseName(courseId: number): string {
+    const course = this.courses.find(c => c.id === courseId);
+    return course ? course.name || course.title : courseId?.toString() || '-';
+  }
+
+  getUniversityName(universityId: number): string {
+    const uni = this.universities.find(u => u.id === universityId);
+    return uni ? uni.name : universityId?.toString() || '-';
   }
 }
