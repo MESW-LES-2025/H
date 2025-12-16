@@ -1,7 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.CourseLightDTO;
-import com.lernia.auth.dto.FavoritesResponse;
+import com.lernia.auth.dto.response.FavoritesResponse;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.service.FavoritesService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ class FavoritesControllerTest {
     void getOwnFavorites_ReturnsOkResponse() {
         FavoritesResponse response = new FavoritesResponse(
                 List.of(new UniversityDTOLight(1L, "Uni", "Desc", null)),
-                List.of(new CourseLightDTO(5L, "Course", "Type"))
+                List.of(new CourseLightDTO(5L, "Course", "Type", "UniName"))
         );
         when(favoritesService.getFavoritesForUser(10L)).thenReturn(response);
 

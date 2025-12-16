@@ -17,13 +17,14 @@ describe('AuthService', () => {
   const mockUser: UserViewmodel = {
     id: 1,
     name: 'Test User',
+    email: 'john.doe@example.com',
     age: 25,
     gender: 'Male',
     location: 'Test City',
     profileImage: 'test.jpg',
     jobTitle: 'Developer',
     academicHistory: [],
-    role: 'USER',
+    userRole: 'USER',
   };
 
   beforeEach(() => {
@@ -65,7 +66,7 @@ describe('AuthService', () => {
       req.flush({ id: 1 });
 
       newService.currentUser$.subscribe((user) => {
-        expect(user).toEqual({ id: 1 });
+        expect(user).toEqual(jasmine.objectContaining({ id: 1 }));
       });
     });
 
@@ -112,7 +113,7 @@ describe('AuthService', () => {
         expect(response.status).toBe('success');
 
         service.currentUser$.subscribe((user) => {
-          expect(user).toEqual({ id: mockUser.id });
+          expect(user).toEqual(jasmine.objectContaining({ id: mockUser.id }));
           done();
         });
       });
@@ -120,6 +121,35 @@ describe('AuthService', () => {
       const req = httpMock.expectOne(`${environment.apiUrl}/login`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(loginRequest);
+      expect(req.request.withCredentials).toBe(true);
+
+      req.flush(loginResponse);
+    });
+
+    it('should include CSRF header when set', (done) => {
+      const loginRequest: LoginRequest = {
+        text: 'testuser',
+        password: 'password123',
+      };
+
+      const loginResponse = {
+        message: 'Login successful',
+        status: 'success',
+        user: mockUser,
+      };
+
+      // set CSRF header values
+      service.csrfToken = 'abc-123';
+      service.csrfHeaderName = 'X-CSRF-TOKEN';
+
+      service.login(loginRequest).subscribe((response) => {
+        expect(response.status).toBe('success');
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/login`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('X-CSRF-TOKEN')).toBe('abc-123');
       expect(req.request.withCredentials).toBe(true);
 
       req.flush(loginResponse);
@@ -145,7 +175,7 @@ describe('AuthService', () => {
 
         // Current user should remain unchanged
         service.currentUser$.subscribe((user) => {
-          expect(user).toEqual({ id: 999 });
+          expect(user).toEqual(jasmine.objectContaining({ id: 999 }));
           done();
         });
       });
@@ -365,6 +395,37 @@ describe('AuthService', () => {
       });
 
       service['currentUserSubject'].next(testUser);
+    });
+  });
+
+  describe('getCurrentUserRole and isAdmin', () => {
+    it('should return current user role and correctly detect admin status', () => {
+      // Admin case
+      service['currentUserSubject'].next({ id: 1, userRole: 'ADMIN' } as any);
+      expect(service.getCurrentUserRole()).toBe('ADMIN');
+      expect(service.isAdmin()).toBeTrue();
+
+      // Non-admin case
+      service['currentUserSubject'].next({ id: 2, userRole: 'USER' } as any);
+      expect(service.getCurrentUserRole()).toBe('USER');
+      expect(service.isAdmin()).toBeFalse();
+
+      // Null / logged-out case
+      service['currentUserSubject'].next(null);
+      expect(service.getCurrentUserRole()).toBeNull();
+      expect(service.isAdmin()).toBeFalse();
+    });
+  });
+
+  describe('getCurrentUserId', () => {
+    it('should return the current user id or null', () => {
+      // populated user case
+      service['currentUserSubject'].next({ id: 42 } as any);
+      expect(service.getCurrentUserId()).toBe(42);
+
+      // logged-out / null case
+      service['currentUserSubject'].next(null);
+      expect(service.getCurrentUserId()).toBeNull();
     });
   });
 

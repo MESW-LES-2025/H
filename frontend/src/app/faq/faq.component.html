@@ -1,0 +1,136 @@
+<div class="faq-page">
+  <!-- HERO -->
+  <section class="faq-hero">
+    <div class="wrap">
+      <div class="hero-card">
+        <div class="hero-left">
+          <div class="kicker-row">
+            <span class="kicker">Help Center</span>
+            <span class="pill">Lernia Support</span>
+          </div>
+
+          <h1>FAQs</h1>
+          <p class="hero-sub">
+            Quick answers about exploring universities, courses, and managing your favourites.
+          </p>
+
+          <div class="hero-search">
+            <div class="search-box">
+            <img class="search-ico" src="/images/search.png" alt="" />
+              <input
+                type="text"
+                placeholder="Search a question (e.g. favourites, filters, profile...)"
+                [(ngModel)]="query"
+                (input)="onSearch()"
+              />
+              <button class="ghost-btn" type="button" (click)="clearSearch()" *ngIf="query">
+                Clear
+              </button>
+            </div>
+
+            <div class="chips">
+              <button class="chip" type="button" (click)="setQuery('favourites')">Favourites</button>
+              <button class="chip" type="button" (click)="setQuery('explore')">Explore</button>
+              <button class="chip" type="button" (click)="setQuery('filters')">Filters</button>
+              <button class="chip" type="button" (click)="setQuery('profile')">Profile</button>
+            </div>
+
+            <p class="hint">
+              Tip: try searching “save”, “reset”, or “ranking”.
+            </p>
+          </div>
+        </div>
+
+        <div class="hero-right" aria-hidden="true">
+          <div class="shape shape-a"></div>
+          <div class="shape shape-b"></div>
+          <div class="shape shape-c"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave wave-top"></div>
+  </section>
+
+  <!-- CONTENT -->
+  <section class="faq-content">
+    <div class="wrap grid">
+      <!-- SIDEBAR -->
+      <aside class="side">
+        <div class="side-card">
+          <div class="side-head">
+            <h3>Topics</h3>
+            <span class="mini">{{ filteredGroups.length }} groups</span>
+          </div>
+
+          <button
+            class="side-link"
+            type="button"
+            *ngFor="let g of filteredGroups; let i = index"
+            [class.active]="i === activeGroupIndex"
+            (click)="activeGroupIndex = i"
+          >
+            <span class="dot"></span>
+            <span class="label">{{ g.title }}</span>
+            <span class="count">{{ g.items.length }}</span>
+          </button>
+        </div>
+
+        <div class="side-cta">
+          <div>
+            <h4>Need help?</h4>
+            <p>If you can’t find what you’re looking for, contact us and we’ll get back to you.</p>
+          </div>
+          <button class="primary-btn" type="button" (click)="contactSupport()">
+            Contact support
+          </button>
+        </div>
+      </aside>
+
+      <!-- FAQ LIST -->
+      <main class="main">
+        <div class="main-card">
+          <div class="main-head">
+            <div>
+              <h2>{{ filteredGroups[activeGroupIndex]?.title || 'FAQs' }}</h2>
+              <p class="muted" *ngIf="query">
+                Showing results for <strong>"{{ query }}"</strong>
+              </p>
+            </div>
+
+            <span class="badge" *ngIf="filteredGroups[activeGroupIndex] as g">
+              {{ g.items.length }} answers
+            </span>
+          </div>
+
+          <ng-container *ngIf="filteredGroups.length; else emptyState">
+            <div class="faq-list" *ngIf="filteredGroups[activeGroupIndex] as group">
+              <div class="faq-item" *ngFor="let item of group.items; let idx = index">
+                <button class="faq-q" type="button" (click)="toggle(group.title, idx)">
+                  <span class="q-text">{{ item.q }}</span>
+                  <span class="chev" [class.open]="isOpen(group.title, idx)">⌄</span>
+                </button>
+
+                <div class="faq-a" [class.open]="isOpen(group.title, idx)">
+                  <div class="a-inner">
+                    {{ item.a }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #emptyState>
+            <div class="empty">
+              <h3>No results</h3>
+              <p>Try searching for a different keyword or browse topics on the left.</p>
+              <button class="primary-btn" type="button" (click)="clearSearch()">Reset</button>
+            </div>
+          </ng-template>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <div class="wave wave-bottom"></div>
+</div>

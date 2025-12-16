@@ -1,6 +1,6 @@
 package com.lernia.auth;
 
-import jakarta.servlet.http.HttpServletResponse; 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,11 +73,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // Login / Register públicos
-                        .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login", "/register", "/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/auth/password/forgot", "api/auth/password/reset").permitAll()
+                        // Login / Register / Logout públicos
 
-                        // Delete account
                         .requestMatchers(HttpMethod.DELETE, "/api/profile/delete/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/profile/**").permitAll()
 
@@ -85,8 +85,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/favorites/**").permitAll()
                         .requestMatchers("/api/favorites").permitAll()
 
-                        // Endpoint de sessão para o frontend
-                        .requestMatchers("/api/auth/me").permitAll()
+                        // Preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Endpoint de sessão e logout para o frontend
+                        .requestMatchers("/api/auth/me", "/api/auth/logout").permitAll()
 
                         // Endpoints GET públicos
                         .requestMatchers(HttpMethod.GET,
@@ -107,6 +110,11 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
+                        // Admin endpoints require ADMIN role
+                        .requestMatchers("/api/admin/**").permitAll()
+                        // TODO: .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // Tudo o resto precisa de autenticação
                         .anyRequest().authenticated()
                 );
 

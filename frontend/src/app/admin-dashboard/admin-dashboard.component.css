@@ -1,0 +1,230 @@
+/* Admin Dashboard - Clean Professional Styling */
+
+/* Stat Cards */
+.stat-card {
+  cursor: pointer;
+  border-radius: 12px;
+  border: none !important;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.border-primary {
+  border-left: 4px solid #4f46e5 !important;
+}
+
+.stat-card.border-success {
+  border-left: 4px solid #10b981 !important;
+}
+
+.stat-card.border-info {
+  border-left: 4px solid #06b6d4 !important;
+}
+
+.stat-card.border-warning {
+  border-left: 4px solid #f59e0b !important;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover .stat-number {
+  transform: scale(1.05);
+}
+
+/* Header Gradients */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border-radius: 12px;
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+/* Content Cards */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+  padding: 1rem 1.25rem;
+}
+
+/* Tables */
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  border-bottom-width: 2px;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 0.875rem 1rem;
+  color: #334155;
+}
+
+.table-row-hover:hover,
+.table-hover tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+  border-radius: 6px;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-outline-warning:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Tab Animations */
+.tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Analytics KPI Cards */
+.card.bg-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.card.bg-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.card.bg-info {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.card.bg-secondary {
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.card.bg-dark {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+/* Scrollable Table Container */
+.table-container {
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.table-container tbody {
+  display: block;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.table-container thead,
+.table-container tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-sticky-header thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #1e293b;
+}
+
+/* Alert Styling */
+.alert {
+  border-radius: 10px;
+  border: none;
+}
+
+.alert-success {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+
+.alert-danger {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

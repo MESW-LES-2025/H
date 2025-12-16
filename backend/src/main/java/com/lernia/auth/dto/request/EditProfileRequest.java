@@ -1,11 +1,8 @@
-package com.lernia.auth.dto;
+package com.lernia.auth.dto.request;
 
-import com.lernia.auth.entity.UserCourseEntity;
 import com.lernia.auth.entity.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor

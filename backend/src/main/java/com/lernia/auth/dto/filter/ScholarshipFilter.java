@@ -1,4 +1,4 @@
-package com.lernia.auth.dto;
+package com.lernia.auth.dto.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

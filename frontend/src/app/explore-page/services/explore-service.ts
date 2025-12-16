@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { UniversityDTO, CollegeVM } from '../viewmodels/explore-viewmodel';
 import { Page, PageRequest } from '../../shared/viewmodels/pagination';
+import { AuthService } from '../../auth/auth.service';
 
 export interface FavoritesResponse {
   universities: { id: number }[];
@@ -15,7 +16,10 @@ export interface FavoritesResponse {
 export class ExploreService {
   private readonly baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   search(
     query: string,
@@ -78,12 +82,12 @@ export class ExploreService {
   }
 
   addFavoriteUniversity(id: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
       return throwError(() => new Error('User not logged in'));
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.post<void>(
       `${this.baseUrl}/api/favorites/universities/${id}`,
@@ -93,12 +97,12 @@ export class ExploreService {
   }
 
   removeFavoriteUniversity(id: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
       return throwError(() => new Error('User not logged in'));
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.delete<void>(
       `${this.baseUrl}/api/favorites/universities/${id}`,
@@ -107,12 +111,12 @@ export class ExploreService {
   }
 
   getFavorites(): Observable<FavoritesResponse> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
       return throwError(() => new Error('User not logged in'));
     }
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.get<FavoritesResponse>(`${this.baseUrl}/api/favorites`, {
       params,

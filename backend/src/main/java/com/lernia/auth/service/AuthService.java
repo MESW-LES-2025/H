@@ -4,6 +4,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.lernia.auth.dto.request.ChangePasswordRequest;
+import com.lernia.auth.dto.request.ForgotPasswordRequest;
+import com.lernia.auth.dto.request.ResetPasswordRequest;
+import com.lernia.auth.dto.response.PasswordResetTokenResponse;
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.response.RegisterResponse;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -15,7 +24,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import com.lernia.auth.dto.*;
 import org.springframework.stereotype.Service;
 
 import com.lernia.auth.entity.UserEntity;
@@ -38,10 +46,10 @@ public class AuthService {
     private String frontendUrl;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       SecurityContextRepository securityContextRepository,
-                       PasswordResetTokenService passwordResetTokenService,
-                       EmailService emailService) {
+            PasswordEncoder passwordEncoder,
+            SecurityContextRepository securityContextRepository,
+            PasswordResetTokenService passwordResetTokenService,
+            EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.securityContextRepository = securityContextRepository;
@@ -74,7 +82,8 @@ public class AuthService {
     public LoginResponse login(LoginRequest req, HttpServletRequest request, HttpServletResponse response) {
         String text = req.getText();
         Optional<UserEntity> userOpt = userRepository.findByUsername(text);
-        if (userOpt.isEmpty()) userOpt = userRepository.findByEmail(text);
+        if (userOpt.isEmpty())
+            userOpt = userRepository.findByEmail(text);
         if (userOpt.isEmpty()) {
             return new LoginResponse("Invalid credentials", "error");
         }
@@ -87,11 +96,11 @@ public class AuthService {
 
         // --- Create Session ---
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+        String roleName = (user.getUserRole() != null) ? user.getUserRole().name() : UserRole.REGULAR.name();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            user.getUsername(),
-            null,
-            List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()))
-        );
+                user.getUsername(),
+                null,
+                List.of(new SimpleGrantedAuthority("ROLE_" + roleName)));
         context.setAuthentication(authToken);
         SecurityContextHolder.setContext(context);
 
@@ -102,6 +111,12 @@ public class AuthService {
         LoginResponse res = new LoginResponse("Login successful", "success");
         res.setUser(profile);
         return res;
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
     }
 
     public void deleteAccount(Long id) {
@@ -117,7 +132,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (req.getCurrentPassword() == null || req.getCurrentPassword().trim().isEmpty() ||
-            req.getNewPassword() == null || req.getNewPassword().trim().isEmpty()) {
+                req.getNewPassword() == null || req.getNewPassword().trim().isEmpty()) {
             throw new IllegalArgumentException("Passwords cannot be empty");
         }
 
@@ -145,7 +160,6 @@ public class AuthService {
         return new PasswordResetTokenResponse(message);
     }
 
-
     public void resetPassword(ResetPasswordRequest req) {
         PasswordResetTokenEntity token = passwordResetTokenService.validate(req.getToken())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
@@ -167,5 +181,18 @@ public class AuthService {
         r.setJobTitle(u.getJobTitle());
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
         return r;
+    }
+
+    public void adminResetPassword(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new IllegalStateException("User does not have an email address");
+        }
+
+        GeneratedToken generated = passwordResetTokenService.createToken(user);
+        String resetLink = frontendUrl + "/reset-password?token=" + generated.token();
+        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
     }
 }
