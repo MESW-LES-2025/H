@@ -21,6 +21,7 @@ export class AdminDashboardComponent implements OnInit {
   pendingResetId: number | null = null;
   resetSuccessMessage: string | null = null;
   resetErrorMessage: string | null = null;
+  pendingDeleteReviewId: number | null = null;
 
   users: any[] = [];
   universities: any[] = [];
@@ -156,10 +157,22 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  deleteReview(id: number): void {
-    if (confirm('Are you sure you want to delete this review?')) {
-      this.adminService.deleteReview(id).subscribe(() => {
-        this.reviews = this.reviews.filter(r => r.id !== id);
+  openDeleteReviewModal(reviewId: number, modalTemplate: TemplateRef<any>) {
+    this.pendingDeleteReviewId = reviewId;
+    this.modalService.open(modalTemplate, { centered: true }).result.then(result => {
+      if (result === 'confirm') {
+        this.deleteReviewConfirmed();
+      }
+    }, () => {
+      this.pendingDeleteReviewId = null;
+    });
+  }
+
+  deleteReviewConfirmed() {
+    if (this.pendingDeleteReviewId != null) {
+      this.adminService.deleteReview(this.pendingDeleteReviewId).subscribe(() => {
+        this.reviews = this.reviews.filter(r => r.id !== this.pendingDeleteReviewId);
+        this.pendingDeleteReviewId = null;
       });
     }
   }
