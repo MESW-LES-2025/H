@@ -180,4 +180,17 @@ public class AdminController {
 
         return result;
     }
+
+    @DeleteMapping("/reviews/{id}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
+        if (courseReviewRepository.existsById(id)) {
+            courseReviewRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        if (universityReviewRepository.existsById(id)) {
+            universityReviewRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
