@@ -11,6 +11,7 @@ public class RegisterAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     public void testRegisterPageContainsFields() {
+        System.out.println("Running testRegisterPageContainsFields");
         driver.get(baseUrl + "/register");
 
         WebElement usernameField = wait.until(d -> findAny(
@@ -120,5 +121,62 @@ public class RegisterAcceptanceTest extends BaseAcceptanceTest {
         wait.until(d -> d.getCurrentUrl().contains("/login"));
 
         Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Did not navigate to login page");
+    }
+
+    @Test
+    public void testLandingPage_Unauthenticated_ATC04() {
+        // ATC-04: View Landing Page (US04)
+        driver.get(baseUrl + "/");
+        WebElement summary = findAny(
+            By.cssSelector(".hero"),
+            By.cssSelector(".summary"),
+            By.xpath("//*[contains(text(),'Lernia')]"),
+            By.xpath("//*[contains(text(),'study') or contains(text(),'explore')]")
+        );
+        Assertions.assertNotNull(summary, "Landing page summary/hero not found");
+
+        WebElement signUp = findAny(
+            By.xpath("//a[contains(text(),'Sign Up') or contains(text(),'Create Account')]"),
+            By.cssSelector("a[href*='register']")
+        );
+        WebElement logIn = findAny(
+            By.xpath("//a[contains(text(),'Log In')]"),
+            By.cssSelector("a[href*='login']")
+        );
+        Assertions.assertNotNull(signUp, "Sign Up CTA not found");
+        Assertions.assertNotNull(logIn, "Log In CTA not found");
+
+        boolean hasProfile = elementExists(By.cssSelector(".profile-menu")) ||
+                             elementExists(By.xpath("//*[contains(text(),'Favorites')]"));
+        Assertions.assertFalse(hasProfile, "Authenticated-only elements should not be visible");
+    }
+
+    @Test
+    public void testRegisterWithExistingEmail_ATC06() {
+        // ATC-06: Sign Up with Existing Email (US05)
+        String existingEmail = "existing.user@lernia.com";
+        String username = "existinguser" + System.currentTimeMillis();
+        String password = "ValidPass123!";
+
+        driver.get(baseUrl + "/register");
+        WebElement usernameField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='username']")));
+        WebElement emailField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='email']")));
+        WebElement passwordField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='password']")));
+        WebElement confirmPasswordField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='confirm']")));
+        WebElement submitButton = findAny(By.cssSelector("button.primary[type='submit']"));
+
+        usernameField.clear();
+        usernameField.sendKeys(username);
+        emailField.clear();
+        emailField.sendKeys(existingEmail);
+        passwordField.clear();
+        passwordField.sendKeys(password);
+        confirmPasswordField.clear();
+        confirmPasswordField.sendKeys(password);
+        submitButton.click();
+
+        wait.until(d -> d.getCurrentUrl().contains("/register"));
+        boolean errorFound = waitUntilAny(errorSelectors());
+        Assertions.assertTrue(errorFound, "Expected error message for existing email");
     }
 }

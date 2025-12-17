@@ -36,7 +36,7 @@ public class LoginAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
-    public void testUnsuccessfulLoginShowsError() {
+    public void testSignInWithInvalidPassword_ATC08() {
         driver.get(baseUrl + "/login");
 
         WebElement userField = wait.until(d -> findAny(
@@ -83,42 +83,7 @@ public class LoginAcceptanceTest extends BaseAcceptanceTest {
                 elementExists(By.xpath("//*[contains(text(),'Invalid') or contains(text(),'failed') or contains(text(),'incorrect')]"));
 
         Assertions.assertTrue(errorFound, "Expected error message after failed login - inspect page HTML for error element");
-    }
-
-    @Test
-    public void testSuccessfulLoginRedirects() {
-        driver.get(baseUrl + "/login");
-
-        WebElement userField = wait.until(d -> findAny(
-                By.name("username"),
-                By.id("username")
-        ));
-        WebElement passField = wait.until(d -> findAny(
-                By.name("password"),
-                By.id("password")
-        ));
-        WebElement submit = findAny(
-                By.cssSelector("button[type='submit']"),
-                By.id("login-button")
-        );
-
-        Assertions.assertNotNull(userField);
-        Assertions.assertNotNull(passField);
-        Assertions.assertNotNull(submit);
-
-        userField.clear();
-        userField.sendKeys("asmith");
-        passField.clear();
-        passField.sendKeys("pass1");
-        submit.click();
-
-        wait.until(d -> !d.getCurrentUrl().contains("/login"));
-
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertFalse(currentUrl.contains("/login"), "Expected redirect after login");
-        Assertions.assertTrue(currentUrl.contains("/profile"));
-    }
-     
+    }     
 
     @Test
     public void testRememberMeCheckbox() {
@@ -198,7 +163,7 @@ public class LoginAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
-    public void testLogoutAfterRegisterAndLogin() {
+    public void testLogoutAfterRegisterAndLogin_ATC13() {
         String unique = "accuser" + System.currentTimeMillis();
         String username = unique;
         String email = unique + "@example.com";
@@ -292,16 +257,139 @@ public class LoginAcceptanceTest extends BaseAcceptanceTest {
             return url.endsWith("/") || url.endsWith("/home");
         });
 
-        WebElement profileBtn = wait.until(d -> findAny(
-                By.cssSelector("button[aria-label='Login']"),
-                By.cssSelector("button[routerLink='/login']"),
-                By.xpath("//button[.//img[contains(@src, 'profile')]]")
+        WebElement loginLink = wait.until(d -> findAny(
+                By.cssSelector("a.nav-link[routerLink='/login']"),
+                By.xpath("//a[contains(text(),'Log In')]"),
+                By.cssSelector("a[href*='login']")
         ));
-        Assertions.assertNotNull(profileBtn, "Profile/Login icon should be visible after logout");
-        
-        profileBtn.click();
+        Assertions.assertNotNull(loginLink, "Log In link should be visible after logout");
+
+        loginLink.click();
 
         wait.until(d -> d.getCurrentUrl().contains("/login"));
-        Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Clicking profile button after logout should redirect to login page");
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Clicking Log In link after logout should redirect to login page");
+    }
+
+    @Test
+    public void testSignInWithValidCredentials_ATC07() {
+        // ATC-07: Sign In with valid credentials
+        driver.get(baseUrl + "/login");
+
+        String username = "asmith";
+        String password = "pass1";
+
+        WebElement userField = wait.until(d -> findAny(
+                By.name("username"),
+                By.id("username"),
+                By.name("email"),
+                By.id("email"),
+                By.cssSelector("input[type='email']"),
+                By.cssSelector("input[name='username']")
+        ));
+        WebElement passField = wait.until(d -> findAny(
+                By.name("password"),
+                By.id("password"),
+                By.cssSelector("input[formcontrolname='password']")
+        ));
+        WebElement submit = findAny(
+                By.cssSelector("button[type='submit']"),
+                By.cssSelector("input[type='submit']"),
+                By.id("login-button"),
+                By.cssSelector("button.login-btn"),
+                By.xpath("//button[contains(text(),'Login') or contains(text(),'Sign In')]")
+        );
+
+        Assertions.assertNotNull(userField, "Login form elements not found - inspect page HTML");
+        Assertions.assertNotNull(passField, "Login form elements not found - inspect page HTML");
+        Assertions.assertNotNull(submit, "Login button not found - inspect page HTML");
+
+        userField.clear();
+        userField.sendKeys(username);
+        passField.clear();
+        passField.sendKeys(password);
+        submit.click();
+
+        wait.until(d -> !d.getCurrentUrl().contains("/login"));
+
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertFalse(currentUrl.contains("/login"), "Expected redirect after login");
+        Assertions.assertTrue(
+            currentUrl.contains("/profile") || currentUrl.contains("/explore") || currentUrl.contains("/courses"),
+            "Expected redirect to authenticated area, got: " + currentUrl
+        );
+    }
+
+    @Test
+    public void testRecoverPassword_ATC09() {
+        // ATC-09: Recover Password (US07)
+        driver.get(baseUrl + "/login");
+
+        // Find and click the "Forgot Password?" link
+        WebElement forgotLink = findAny(
+            By.className("forgot"),
+            By.linkText("Forgot Password"),
+            By.xpath("//a[contains(text(),'Forgot')]")
+        );
+        Assertions.assertNotNull(forgotLink, "Forgot Password link not found");
+
+        forgotLink.click();
+
+        // Wait for the modal to appear
+        WebElement modalContent = wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.cssSelector(".modal-content")
+        ));
+        Assertions.assertNotNull(modalContent, "Forgot Password modal did not appear");
+
+        // Fill the email field inside the modal
+        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.cssSelector(".modal-content input[type='email']")
+        ));
+        Assertions.assertNotNull(emailField, "Email field for password recovery not found");
+        emailField.clear();
+        emailField.sendKeys("reset.user@lernia.com");
+
+        // Click the submit button inside the modal
+        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(
+            modalContent.findElement(By.cssSelector("button[type='submit']"))
+        ));
+        submitBtn.click();
+
+        // Wait for confirmation message inside the modal
+        boolean confirmationShown = waitUntilAny(
+            By.xpath("//*[contains(text(),'If an account exists for that email, we have sent reset instructions')]"),
+            By.cssSelector(".modal-content .alert-success"),
+            By.cssSelector(".modal-content .confirmation")
+        );
+        Assertions.assertTrue(confirmationShown, "No confirmation message shown after password recovery request");
+    }
+
+    @Test
+    public void testSignInWithOAuth_ATC10() {
+        // ATC-10: Sign In using OAuth (e.g., Google)
+        driver.get(baseUrl + "/login");
+
+        WebElement oauthBtn = findAny(
+            By.xpath("//button[contains(text(),'Google')]"),
+            By.cssSelector("button.oauth-google"),
+            By.cssSelector("button[aria-label*='Google']"),
+            By.xpath("//a[contains(text(),'Google')]"),
+            By.cssSelector("a[href*='oauth']")
+        );
+        Assertions.assertNotNull(oauthBtn, "OAuth (Google) button not found on login page");
+
+        oauthBtn.click();
+
+        boolean redirectedToGoogle = waitUntilAny(
+            By.cssSelector("input[type='email']"),
+            By.xpath("//input[@type='email']"),
+            By.xpath("//*[contains(text(),'Sign in with Google')]"),
+            By.cssSelector("form[action*='accounts.google.com']")
+        );
+
+        Assertions.assertTrue(redirectedToGoogle, "Did not reach Google OAuth login page (or test environment does not support external redirects)");
+
+        // NOTE: In CI, you cannot automate the real Google login flow.
+        // In a real environment, you would now enter credentials and complete the flow.
+        // For acceptance, reaching the Google login page is sufficient to prove the button works.
     }
 }

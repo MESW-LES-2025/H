@@ -54,9 +54,14 @@
 
   <!-- DIREITA: ÍCONES -->
   <div class="navbar-actions">
-    <button class="icon-btn" aria-label="Profile" (click)="goToProfile()">
+    <!-- Show profile icon only if logged in -->
+    <button *ngIf="userId" class="icon-btn" aria-label="Profile" (click)="goToProfile()">
       <img src="/images/profile-outline.svg" alt="" />
     </button>
+
+    <!-- Show these only if NOT logged in -->
+    <a *ngIf="!userId" class="nav-link" routerLink="/login">Log In</a>
+    <a *ngIf="!userId" class="nav-link primary" routerLink="/register">Sign Up</a>
 
     <!-- Logout Button -->
     <button *ngIf="userId" class="btn-logout" (click)="logout()">

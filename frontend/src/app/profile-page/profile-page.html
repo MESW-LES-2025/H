@@ -1,5 +1,12 @@
 <router-outlet></router-outlet>
 
+@if (confirmationMessage) {
+  <div class="alert alert-@{confirmationType ?? 'success'} mt-3" role="alert">
+    {{ confirmationMessage }}
+    <button type="button" class="btn-close float-end" aria-label="Close" (click)="confirmationMessage = null"></button>
+  </div>
+}
+
 @if (user) {
   <div class="container" style="max-width: 1100px">
     <div class="card border-0 shadow-sm position-relative my-4">
@@ -24,6 +31,10 @@
           <!-- Profile Info -->
           <div class="flex-grow-1">
             <h1 class="h3 fw-bold mb-2">{{ user.name }}</h1>
+            <p class="text-muted mb-1">
+              <i class="bi bi-envelope-fill me-1"></i>
+              {{ user.email }}
+            </p>
             <p class="text-muted mb-1">
               <i class="bi bi-geo-alt-fill me-1"></i>
               {{ user.location ? user.location : "Location not set" }}
@@ -283,317 +294,330 @@
       </button>
     </div>
   </div>
-}
 
-<!-- Edit Profile Modal -->
-@if (showEditModal) {
-  <div class="modal-backdrop fade show" (click)="closeEditModal()"></div>
-  <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow-lg border-0">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold">
-            <i class="bi bi-person-circle me-2"></i>
-            Edit Profile
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            (click)="closeEditModal()"
-          ></button>
-        </div>
-        <div class="modal-body pt-2">
-          <form [formGroup]="editProfileForm" (ngSubmit)="onSubmitEdit()">
-            <input formControlName="id" type="hidden" />
+  <!-- Edit Profile Modal -->
+  @if (showEditModal) {
+    <div class="modal-backdrop fade show" (click)="closeEditModal()"></div>
+    <div class="modal fade show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold">
+              <i class="bi bi-person-circle me-2"></i>
+              Edit Profile
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="closeEditModal()"
+            ></button>
+          </div>
+          <div class="modal-body pt-2">
+            <form [formGroup]="editProfileForm" (ngSubmit)="onSubmitEdit()">
+              <input formControlName="id" type="hidden" />
 
-            <div class="mb-3">
-              <label for="name" class="form-label fw-semibold">Name *</label>
-              <input
-                id="name"
-                type="text"
-                class="form-control"
-                formControlName="name"
-                [class.is-invalid]="
-                  editProfileForm.get('name')?.invalid &&
-                  editProfileForm.get('name')?.touched
-                "
-              />
-              <div
-                class="invalid-feedback"
-                *ngIf="
-                  editProfileForm.get('name')?.invalid &&
-                  editProfileForm.get('name')?.touched
-                "
-              >
-                Name is required
+              <div class="mb-3">
+                <label for="name" class="form-label fw-semibold">Name *</label>
+                <input
+                  id="name"
+                  type="text"
+                  class="form-control"
+                  formControlName="name"
+                  [class.is-invalid]="
+                    editProfileForm.get('name')?.invalid &&
+                    editProfileForm.get('name')?.touched
+                  "
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editProfileForm.get('name')?.invalid &&
+                    editProfileForm.get('name')?.touched
+                  "
+                >
+                  Name is required
+                </div>
               </div>
-            </div>
 
-            <div class="mb-3">
-              <label for="age" class="form-label fw-semibold">Age</label>
-              <input
-                id="age"
-                type="number"
-                class="form-control"
-                formControlName="age"
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="gender" class="form-label fw-semibold"
-                >Gender *</label
-              >
-              <select
-                id="gender"
-                class="form-select"
-                formControlName="gender"
-                [class.is-invalid]="
-                  editProfileForm.get('gender')?.invalid &&
-                  editProfileForm.get('gender')?.touched
-                "
-              >
-                <option value="">-- Select --</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
-              </select>
-              <div
-                class="invalid-feedback"
-                *ngIf="
-                  editProfileForm.get('gender')?.invalid &&
-                  editProfileForm.get('gender')?.touched
-                "
-              >
-                Gender is required
+              <div class="mb-3">
+                <label for="age" class="form-label fw-semibold">Age</label>
+                <input
+                  id="age"
+                  type="number"
+                  class="form-control"
+                  formControlName="age"
+                />
               </div>
-            </div>
 
-            <div class="mb-3">
-              <label for="location" class="form-label fw-semibold"
-                >Location</label
-              >
-              <input
-                id="location"
-                type="text"
-                class="form-control"
-                formControlName="location"
-              />
-            </div>
+              <div class="mb-3">
+                <label for="gender" class="form-label fw-semibold"
+                  >Gender *</label
+                >
+                <select
+                  id="gender"
+                  class="form-select"
+                  formControlName="gender"
+                  [class.is-invalid]="
+                    editProfileForm.get('gender')?.invalid &&
+                    editProfileForm.get('gender')?.touched
+                  "
+                >
+                  <option value="">-- Select --</option>
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="OTHER">Other</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editProfileForm.get('gender')?.invalid &&
+                    editProfileForm.get('gender')?.touched
+                  "
+                >
+                  Gender is required
+                </div>
+              </div>
 
-            <div class="mb-3">
-              <label for="jobTitle" class="form-label fw-semibold"
-                >Job Title</label
-              >
-              <input
-                id="jobTitle"
-                type="text"
-                class="form-control"
-                formControlName="jobTitle"
-              />
-            </div>
+              <div class="mb-3">
+                <label for="location" class="form-label fw-semibold"
+                  >Location</label
+                >
+                <input
+                  id="location"
+                  type="text"
+                  class="form-control"
+                  formControlName="location"
+                />
+              </div>
 
-            <div class="d-flex gap-2 justify-content-end">
-              <button
-                type="button"
-                class="btn btn-light rounded-pill px-4"
-                (click)="closeEditModal()"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary rounded-pill px-4"
-                [disabled]="editProfileForm.invalid"
-              >
-                <i class="bi bi-check-lg me-2"></i>
-                Save Changes
-              </button>
-            </div>
-          </form>
+              <div class="mb-3">
+                <label for="jobTitle" class="form-label fw-semibold"
+                  >Job Title</label
+                >
+                <input
+                  id="jobTitle"
+                  type="text"
+                  class="form-control"
+                  formControlName="jobTitle"
+                />
+              </div>
+
+              <div class="d-flex gap-2 justify-content-end">
+                <button
+                  type="button"
+                  class="btn btn-light rounded-pill px-4"
+                  (click)="closeEditModal()"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary rounded-pill px-4"
+                  [disabled]="editProfileForm.invalid"
+                >
+                  <i class="bi bi-check-lg me-2"></i>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-}
+  }
 
-<!-- Change Password Modal -->
-@if (showPasswordModal) {
-  <div class="modal-backdrop fade show" (click)="closePasswordModal()"></div>
-  <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow-lg border-0">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold">
-            <i class="bi bi-shield-lock me-2"></i>
-            Change Password
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            (click)="closePasswordModal()"
-          ></button>
-        </div>
-        <div class="modal-body pt-3">
-          <form
-            [formGroup]="changePasswordForm"
-            (ngSubmit)="onSubmitPassword()"
-          >
-            @if (passwordFeedback) {
-              <div
-                class="alert mb-3 d-flex align-items-center"
-                [class.alert-success]="passwordFeedback.type === 'success'"
-                [class.alert-danger]="passwordFeedback.type === 'error'"
-                role="alert"
-              >
-                @if (passwordFeedback.type === "success") {
-                  <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                } @else {
-                  <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-                }
-                <div>{{ passwordFeedback.message }}</div>
-              </div>
-            }
-
-            <!-- Current Password -->
-            <div class="mb-3">
-              <label for="currentPassword" class="form-label fw-semibold"
-                >Current Password</label
-              >
-              <div class="input-group">
-                <input
-                  id="currentPassword"
-                  [type]="showCurrentPassword ? 'text' : 'password'"
-                  class="form-control"
-                  formControlName="currentPassword"
-                  [class.is-invalid]="
-                    changePasswordForm.get('currentPassword')?.invalid &&
-                    changePasswordForm.get('currentPassword')?.touched
-                  "
-                />
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  (click)="showCurrentPassword = !showCurrentPassword"
-                  aria-label="Toggle current password visibility"
+  <!-- Change Password Modal -->
+  @if (showPasswordModal) {
+    <div class="modal-backdrop fade show" (click)="closePasswordModal()"></div>
+    <div class="modal fade show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold">
+              <i class="bi bi-shield-lock me-2"></i>
+              Change Password
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="closePasswordModal()"
+            ></button>
+          </div>
+          <div class="modal-body pt-3">
+            <form
+              [formGroup]="changePasswordForm"
+              (ngSubmit)="onSubmitPassword()"
+            >
+              @if (passwordFeedback) {
+                <div
+                  class="alert mb-3 d-flex align-items-center"
+                  [class.alert-success]="passwordFeedback.type === 'success'"
+                  [class.alert-danger]="passwordFeedback.type === 'error'"
+                  role="alert"
                 >
-                  <i
-                    class="bi"
-                    [class.bi-eye]="!showCurrentPassword"
-                    [class.bi-eye-slash]="showCurrentPassword"
-                  ></i>
-                </button>
-                <div class="invalid-feedback">Current password is required</div>
-              </div>
-            </div>
-
-            <!-- New Password -->
-            <div class="mb-3">
-              <label for="newPassword" class="form-label fw-semibold"
-                >New Password</label
-              >
-              <div class="input-group">
-                <input
-                  id="newPassword"
-                  [type]="showNewPassword ? 'text' : 'password'"
-                  class="form-control"
-                  formControlName="newPassword"
-                  [class.is-invalid]="
-                    changePasswordForm.get('newPassword')?.invalid &&
-                    changePasswordForm.get('newPassword')?.touched
-                  "
-                />
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  (click)="showNewPassword = !showNewPassword"
-                  aria-label="Toggle new password visibility"
-                >
-                  <i
-                    class="bi"
-                    [class.bi-eye]="!showNewPassword"
-                    [class.bi-eye-slash]="showNewPassword"
-                  ></i>
-                </button>
-                <div class="invalid-feedback">
-                  Password is required (min 6 characters)
-                </div>
-              </div>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-3">
-              <label for="confirmPassword" class="form-label fw-semibold"
-                >Confirm New Password</label
-              >
-              <div class="input-group">
-                <input
-                  id="confirmPassword"
-                  [type]="showConfirmPassword ? 'text' : 'password'"
-                  class="form-control"
-                  formControlName="confirmPassword"
-                  [class.is-invalid]="
-                    (changePasswordForm.get('confirmPassword')?.invalid ||
-                      changePasswordForm.errors?.['mismatch']) &&
-                    changePasswordForm.get('confirmPassword')?.touched
-                  "
-                />
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  (click)="showConfirmPassword = !showConfirmPassword"
-                  aria-label="Toggle confirm password visibility"
-                >
-                  <i
-                    class="bi"
-                    [class.bi-eye]="!showConfirmPassword"
-                    [class.bi-eye-slash]="showConfirmPassword"
-                  ></i>
-                </button>
-                <div class="invalid-feedback">
-                  @if (changePasswordForm.errors?.["mismatch"]) {
-                    Passwords do not match
+                  @if (passwordFeedback.type === "success") {
+                    <i class="bi bi-check-circle-fill me-2 fs-5"></i>
                   } @else {
-                    Please confirm your password
+                    <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
                   }
+                  <div>{{ passwordFeedback.message }}</div>
+                </div>
+              }
+
+              <!-- Current Password -->
+              <div class="mb-3">
+                <label for="currentPassword" class="form-label fw-semibold"
+                  >Current Password</label
+                >
+                <div class="input-group">
+                  <input
+                    id="currentPassword"
+                    [type]="showCurrentPassword ? 'text' : 'password'"
+                    class="form-control"
+                    formControlName="currentPassword"
+                    [class.is-invalid]="
+                      changePasswordForm.get('currentPassword')?.invalid &&
+                      changePasswordForm.get('currentPassword')?.touched
+                    "
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="showCurrentPassword = !showCurrentPassword"
+                    aria-label="Toggle current password visibility"
+                  >
+                    <i
+                      class="bi"
+                      [class.bi-eye]="!showCurrentPassword"
+                      [class.bi-eye-slash]="showCurrentPassword"
+                    ></i>
+                  </button>
+                  <div class="invalid-feedback">Current password is required</div>
                 </div>
               </div>
-            </div>
 
-            <div class="d-flex gap-2 justify-content-end mt-4">
-              <button
-                type="button"
-                class="btn btn-light rounded-pill px-4"
-                (click)="closePasswordModal()"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary rounded-pill px-4"
-                [disabled]="changePasswordForm.invalid"
-              >
-                Update Password
-              </button>
-            </div>
-          </form>
+              <!-- New Password -->
+              <div class="mb-3">
+                <label for="newPassword" class="form-label fw-semibold"
+                  >New Password</label
+                >
+                <div class="input-group">
+                  <input
+                    id="newPassword"
+                    [type]="showNewPassword ? 'text' : 'password'"
+                    class="form-control"
+                    formControlName="newPassword"
+                    [class.is-invalid]="
+                      changePasswordForm.get('newPassword')?.invalid &&
+                      changePasswordForm.get('newPassword')?.touched
+                    "
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="showNewPassword = !showNewPassword"
+                    aria-label="Toggle new password visibility"
+                  >
+                    <i
+                      class="bi"
+                      [class.bi-eye]="!showNewPassword"
+                      [class.bi-eye-slash]="showNewPassword"
+                    ></i>
+                  </button>
+                  <div class="invalid-feedback">
+                    Password is required (min 6 characters)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label fw-semibold"
+                  >Confirm New Password</label
+                >
+                <div class="input-group">
+                  <input
+                    id="confirmPassword"
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    class="form-control"
+                    formControlName="confirmPassword"
+                    [class.is-invalid]="
+                      (changePasswordForm.get('confirmPassword')?.invalid ||
+                        changePasswordForm.errors?.['mismatch']) &&
+                      changePasswordForm.get('confirmPassword')?.touched
+                    "
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="showConfirmPassword = !showConfirmPassword"
+                    aria-label="Toggle confirm password visibility"
+                  >
+                    <i
+                      class="bi"
+                      [class.bi-eye]="!showConfirmPassword"
+                      [class.bi-eye-slash]="showConfirmPassword"
+                    ></i>
+                  </button>
+                  <div class="invalid-feedback">
+                    @if (changePasswordForm.errors?.["mismatch"]) {
+                      Passwords do not match
+                    } @else {
+                      Please confirm your password
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 justify-content-end mt-4">
+                <button
+                  type="button"
+                  class="btn btn-light rounded-pill px-4"
+                  (click)="closePasswordModal()"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary rounded-pill px-4"
+                  [disabled]="changePasswordForm.invalid"
+                >
+                  Update Password
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-}
+  }
 
-<!-- Footer -->
-<footer class="bg-light border-top py-4 mt-5">
-  <div class="container text-center">
-    <div class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.25rem">
-      Lernia.
+  <!-- Delete Account Confirmation Modal -->
+  @if (showDeleteModal) {
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold text-danger">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              Confirm Account Deletion
+            </h5>
+            <button type="button" class="btn-close" (click)="onCancelDelete()"></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Are you sure you want to <b>permanently delete</b> your account? This action cannot be undone.
+            </p>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-light rounded-pill px-4" (click)="onCancelDelete()">Cancel</button>
+            <button type="button" class="btn btn-danger rounded-pill px-4" (click)="onConfirmDelete()">
+              Yes, delete my account
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="text-muted small mb-2">
-      <i class="bi bi-mortarboard-fill me-1"></i>
-      Helping students make confident international education decisions.
-    </p>
-    <p class="text-muted mb-0" style="font-size: 0.75rem">
-      © 2025 Lernia • All rights reserved
-    </p>
-  </div>
-</footer>
+  }
+}
