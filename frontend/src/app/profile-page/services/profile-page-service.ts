@@ -132,7 +132,7 @@ export class ProfilePageService {
     const { id, ...userData } = user;
     return this.http.put<UserViewmodel>(
       `${this.apiUrl}/api/profile/${id}/update-profile`,
-      { id, ...userData },
+      { id, ...userData }
     );
   }
 

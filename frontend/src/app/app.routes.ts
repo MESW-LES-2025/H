@@ -70,6 +70,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'oauth/callback',
+    loadComponent: () =>
+      import('./oauth-callback/oauth-callback.component').then(
+        (m) => m.OAuthCallbackComponent,
+      ),
+  },
+  {
     path: 'admin',
     // TODO: canActivate: [AdminGuard],
     loadComponent: () =>

@@ -34,8 +34,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest,
-                               HttpServletRequest request,
-                               HttpServletResponse response) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
         return authService.login(loginRequest, request, response);
     }
 
@@ -68,6 +68,7 @@ public class AuthController {
         java.util.Map<String, Object> result = new java.util.HashMap<>();
         result.put("id", user.getId());
         result.put("username", user.getUsername());
+        result.put("provider", user.getProvider() != null ? user.getProvider().name() : "LOCAL");
 
         if (user.getName() != null) {
             result.put("name", user.getName());
