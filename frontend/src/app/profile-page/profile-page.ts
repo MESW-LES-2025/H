@@ -268,12 +268,10 @@ export class ProfilePage implements OnInit {
     if (!this.user || !this.isOwner) return;
     this.profilePageService.deleteAccount(this.user.id).subscribe({
       next: () => {
-        this.confirmationType = 'success';
-        this.confirmationMessage = 'Your account has been deleted.';
+        sessionStorage.setItem('accountDeleted', 'Your account has been deleted.');
         this.authService.logout();
       },
       error: (err) => {
-        console.error('Error deleting account', err);
         this.confirmationType = 'error';
         this.confirmationMessage = 'Failed to delete account. Please try again.';
       },

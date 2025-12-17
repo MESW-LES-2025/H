@@ -55,23 +55,48 @@ public class ProfileAcceptanceTest extends BaseAcceptanceTest {
         String url = driver.getCurrentUrl();
         Assertions.assertTrue(url.contains("/profile"), "Not on profile page after login");
 
-        WebElement nameField = findAny(
+        WebElement nameField = wait.until(d -> findAny(
             By.cssSelector("h1.h3.fw-bold"),
             By.xpath("//h1[contains(@class,'fw-bold')]"),
             By.xpath("//h1")
-        );
+        ));
+        if (nameField == null) {
+            System.out.println(driver.getPageSource());
+        }
+        Assertions.assertNotNull(nameField, "Profile name not found");
+
         WebElement emailField = findAny(
             By.xpath("//p[i[contains(@class,'bi-envelope')]]"),
             By.xpath("//p[contains(text(),'@')]")
         );
 
-        Assertions.assertNotNull(nameField, "Profile name not found");
         Assertions.assertNotNull(emailField, "Profile email not found");
 
-        // Optionally, check that the email matches the logged-in user
         Assertions.assertTrue(emailField.getText().contains(email), "Profile email does not match logged-in user");
 
-        // Optionally, check for other profile fields (country, etc.) if present
+        // Check for location/country
+        WebElement locationField = findAny(
+            By.xpath("//p[i[contains(@class,'bi-geo-alt')]]"),
+            By.xpath("//p[contains(text(),'Location')]"),
+            By.xpath("//p[contains(text(),'not set')]")
+        );
+        Assertions.assertNotNull(locationField, "Profile location/country not found");
+
+        // Check for age badge
+        WebElement ageBadge = findAny(
+            By.xpath("//span[contains(@class,'badge') and contains(text(),'years')]"),
+            By.xpath("//span[contains(text(),'Age')]"),
+            By.xpath("//span[contains(text(),'not set')]")
+        );
+        Assertions.assertNotNull(ageBadge, "Profile age badge not found");
+
+        // Check for gender badge
+        WebElement genderBadge = findAny(
+            By.xpath("//span[contains(@class,'badge') and .//i[contains(@class,'bi-person-fill')]]"),
+            By.xpath("//span[contains(text(),'Gender')]"),
+            By.xpath("//span[contains(text(),'not set')]")
+        );
+        Assertions.assertNotNull(genderBadge, "Profile gender badge not found");
     }
 
     @Test
@@ -114,11 +139,11 @@ public class ProfileAcceptanceTest extends BaseAcceptanceTest {
         wait.until(d -> d.getCurrentUrl().contains("/profile"));
 
         // Step 3: Click "Edit Profile"
-        WebElement editBtn = findAny(
-            By.xpath("//button[contains(text(),'Edit Profile')]"),
+        WebElement editBtn = wait.until(d -> findAny(
+            By.xpath("//button[contains(translate(.,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'edit profile')]"),
             By.cssSelector("button.btn-outline-primary"),
             By.cssSelector("button[aria-label='Edit Profile']")
-        );
+        ));
         Assertions.assertNotNull(editBtn, "Edit Profile button not found");
         editBtn.click();
 

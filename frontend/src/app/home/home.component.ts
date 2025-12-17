@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -9,4 +9,19 @@ import { RouterModule } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+  confirmationMessage: string | null = null;
+  confirmationType: 'success' | 'error' | null = null;
+
+  ngOnInit() {
+    const msg = sessionStorage.getItem('accountDeleted');
+    if (msg) {
+      this.confirmationMessage = msg;
+      this.confirmationType = 'success';
+      sessionStorage.removeItem('accountDeleted');
+      setTimeout(() => {
+        this.confirmationMessage = null;
+      }, 4000);
+    }
+  }
+}
