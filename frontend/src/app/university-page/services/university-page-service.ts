@@ -62,7 +62,7 @@ export class UniversityPageService {
       id: dto.id,
       name: dto.name,
       location: location,
-      logo: dto.logo || 'https://via.placeholder.com/100',
+      logo: dto.logo || 'https://placehold.co/400x400?text=No+Logo',
       bannerImage:
         'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop',
       description: dto.description || 'No description available',
