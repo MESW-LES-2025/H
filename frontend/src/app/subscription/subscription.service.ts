@@ -35,4 +35,11 @@ export class SubscriptionService {
             { withCredentials: true }
         );
     }
+
+    cancelSubscription(): Observable<SubscriptionResponse> {
+        return this.http.delete<SubscriptionResponse>(
+            `${this.baseUrl}/api/subscriptions`,
+            { withCredentials: true }
+        );
+    }
 }

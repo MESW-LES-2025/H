@@ -262,4 +262,130 @@ describe('AdminService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush(null, { status: 204, statusText: 'No Content' });
   });
+
+  it('getAnalytics() should perform GET and return analytics data', (done) => {
+    const mockAnalytics = {
+      totalUsers: 100,
+      totalCourses: 50,
+      totalUniversities: 20,
+      totalCourseReviews: 200,
+      totalUniversityReviews: 150,
+      totalScholarships: 30,
+      popularCourses: [{ id: 1, name: 'Course A', favoriteCount: 10 }],
+      popularUniversities: [{ id: 1, name: 'Uni A', favoriteCount: 20 }],
+    };
+
+    service.getAnalytics().subscribe((res) => {
+      expect(res).toEqual(mockAnalytics);
+      expect(res.totalUsers).toBe(100);
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/analytics`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.withCredentials).toBe(true);
+    req.flush(mockAnalytics);
+  });
+
+  it('resetUserPassword() should perform POST and return message', (done) => {
+    const mockResponse = { message: 'Password reset email sent successfully' };
+
+    service.resetUserPassword(123).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/users/123/reset-password`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.withCredentials).toBe(true);
+    req.flush(mockResponse);
+  });
+
+  it('resetUserPassword() should handle error', (done) => {
+    service.resetUserPassword(999).subscribe({
+      next: () => fail('should have failed'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        done();
+      },
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/users/999/reset-password`);
+    req.error(new ProgressEvent('error'), { status: 400 });
+  });
+
+  it('deleteReview() should call DELETE and return void', (done) => {
+    service.deleteReview(456).subscribe(() => {
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/reviews/456`);
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.withCredentials).toBe(true);
+    req.flush(null);
+  });
+
+  it('createUniversity() should perform POST and return the created university', (done) => {
+    const payload = {
+      name: 'New University',
+      description: 'A great university',
+      website: 'https://newuni.edu',
+    };
+    const mockResponse = { id: 1, name: 'New University', description: 'A great university' };
+
+    service.createUniversity(payload).subscribe((res) => {
+      expect(res.name).toBe('New University');
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/universities`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.withCredentials).toBe(true);
+    req.flush(mockResponse);
+  });
+
+  it('updateUniversity() should perform PUT and return the updated university', (done) => {
+    const payload = {
+      name: 'Updated University',
+      description: 'Updated description',
+    };
+    const mockResponse = { id: 1, name: 'Updated University' };
+
+    service.updateUniversity(1, payload).subscribe((res) => {
+      expect(res.name).toBe('Updated University');
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/universities/1`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.withCredentials).toBe(true);
+    req.flush(mockResponse);
+  });
+
+  it('deleteUniversity() should call DELETE and return void', (done) => {
+    service.deleteUniversity(789).subscribe(() => {
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/universities/789`);
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.withCredentials).toBe(true);
+    req.flush(null);
+  });
+
+  it('deleteUniversity() should handle error', (done) => {
+    service.deleteUniversity(999).subscribe({
+      next: () => fail('should have failed'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        done();
+      },
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/universities/999`);
+    req.error(new ProgressEvent('error'), { status: 400 });
+  });
 });
+

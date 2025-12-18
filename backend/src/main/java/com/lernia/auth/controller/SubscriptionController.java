@@ -65,6 +65,28 @@ public class SubscriptionController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/subscriptions")
+    public ResponseEntity<SubscriptionResponse> cancelSubscription(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401)
+                    .body(new SubscriptionResponse("Authentication required", "error"));
+        }
+
+        Long userId = getUserIdFromPrincipal(principal);
+        if (userId == null) {
+            return ResponseEntity.status(401)
+                    .body(new SubscriptionResponse("User not found", "error"));
+        }
+
+        SubscriptionResponse response = subscriptionService.cancelSubscription(userId);
+
+        if ("error".equals(response.getStatus())) {
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
     private Long getUserIdFromPrincipal(Principal principal) {
         String username = principal.getName();
         Optional<UserEntity> user = userRepository.findByUsername(username);
