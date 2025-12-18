@@ -68,7 +68,8 @@ public class UniversityService {
                                     course.getId(),
                                     course.getName(),
                                     course.getCourseType(),
-                                    course.getUniversity() != null ? course.getUniversity().getName() : null))
+                                    course.getUniversity() != null ? course.getUniversity().getName() : null,
+                                    course.getCost()))
                             .toList();
 
                     List<ScholarshipEntity> scholarshipEntities = scholarshipRepository.findByUniversityId(id);

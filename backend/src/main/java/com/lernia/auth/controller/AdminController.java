@@ -205,7 +205,8 @@ public class AdminController {
                         course.getId(),
                         course.getName(),
                         course.getCourseType(),
-                        course.getUniversity() != null ? course.getUniversity().getName() : null))
+                        course.getUniversity() != null ? course.getUniversity().getName() : null,
+                        course.getCost()))
                 .toList();
         return ResponseEntity.ok(list);
     }

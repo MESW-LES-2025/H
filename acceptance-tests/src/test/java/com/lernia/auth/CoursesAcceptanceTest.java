@@ -204,4 +204,61 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
             Assertions.assertNotNull(emptyMsg, "No courses found message should be displayed if no results");
         }
     }
+
+    @Test
+    public void testViewCourseDetails_ATC24() {
+        // Scenario: View Course Details (US16)
+        // 1. Go to /course/1 
+        driver.get(baseUrl + "/course/1");
+        wait.until(d -> d.getCurrentUrl().contains("/course/1"));
+
+        // 2. Assert course name is displayed
+        WebElement name = findAny(
+            By.cssSelector(".course-name"),
+            By.xpath("//h1"),
+            By.xpath("//h2")
+        );
+        Assertions.assertNotNull(name, "Course name not found on course page");
+
+        // 3. Assert university, cost, duration, curriculum are displayed
+        WebElement university = findAny(
+            By.cssSelector("p.h4.mb-0"),
+            By.xpath("//p[contains(@class,'h4') and contains(@class,'mb-0')]")
+        );
+        Assertions.assertNotNull(university, "University not found on course page");
+
+        WebElement cost = findAny(By.cssSelector(".course-cost"), By.xpath("//*[contains(text(),'Cost')]"));
+        Assertions.assertNotNull(cost, "Course cost not found");
+
+        WebElement duration = findAny(By.cssSelector(".course-duration"), By.xpath("//*[contains(text(),'Duration')]"));
+        Assertions.assertNotNull(duration, "Course duration not found");
+
+        WebElement curriculum = findAny(By.cssSelector(".course-curriculum"), By.xpath("//*[contains(text(),'Curriculum')]"));
+        Assertions.assertNotNull(curriculum, "Course curriculum not found");
+    }
+
+    @Test
+    public void testAddCourseToFavorites_ATC30() {
+        // Scenario: Add Course to Favorites (US20)
+        loginAsTestUser();
+
+        driver.get(baseUrl + "/course/1");
+        wait.until(d -> d.getCurrentUrl().contains("/course/1"));
+
+        WebElement favBtn = wait.until(d -> d.findElement(By.cssSelector(".btn-save-course")));
+        favBtn.click();
+
+        WebElement favIcon = favBtn.findElement(By.cssSelector("i"));
+        wait.until(d -> favIcon.getAttribute("class").contains("bi-heart-fill"));
+
+        Assertions.assertTrue(
+            favIcon.getAttribute("class").contains("bi-heart-fill"),
+            "Favorite icon did not become filled"
+        );
+
+        driver.get(baseUrl + "/profile");
+        wait.until(d -> d.getCurrentUrl().contains("/profile"));
+        WebElement favoriteCourse = findAny(By.cssSelector(".favorite-course"), By.xpath("//*[contains(@class,'favorite-course')]"));
+        Assertions.assertNotNull(favoriteCourse, "Course not found in favorites after adding");
+    }
 }

@@ -125,7 +125,7 @@ export class CoursePageService {
       credits: dto.credits || 0,
       bannerImage:
         'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-
+      cost: dto.cost || 0,
       university: {
         id: dto.university.id,
         name: dto.university.name,

@@ -412,12 +412,11 @@
 
 .college-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: 1.5fr 1fr;
   align-items: stretch;
 
   margin: 26px 0;
   border-radius: 28px;
-  overflow: hidden;
 
   background: #fdf4e7;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -425,42 +424,22 @@
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
+  cursor: pointer;
 }
 
 .college-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.01);
   box-shadow: 0 26px 55px rgba(0, 0, 0, 0.18);
 }
 
 /* painel verde da esquerda */
 
 .college-card .left {
-  padding: 28px 30px;
-  color: #ffffff;
-  display: grid;
-  align-content: center;
-  gap: 10px;
-
-  background-image: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(0, 0, 0, 0.08)
-  );
-}
-
-.college-card .left h3 {
-  margin: 0;
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.01em;
-}
-
-.college-card .left p {
-  margin: 0;
-  max-width: 40ch;
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.96;
+  padding: 32px 32px 32px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
 }
 
 /* bloco da imagem à direita */
@@ -468,19 +447,25 @@
 .college-card .right {
   position: relative;
   overflow: hidden;
-  min-height: 210px;
+  min-width: 180px;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  /* Remove the green background: */
+  background: none;
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+  padding: 0;
 }
 
 .college-card .right img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.03);
-  transition: transform 0.25s ease;
-}
-
-.college-card:hover .right img {
-  transform: scale(1.07);
+  border-radius: 0; /* Remove inner radius, keep only on container */
+  margin: 0;
+  box-shadow: none;
+  display: block;
 }
 
 /* botão de favorito */
@@ -523,69 +508,178 @@ button.fav-active {
   position: absolute;
   right: 18px;
   bottom: 18px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
 
-  border-radius: 999px;
-  border: 0;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #f2707a;
+  font-size: 1.7rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   cursor: pointer;
-
-  background: #ffffff;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+  transition:
+    transform 0.12s ease,
+    color 0.12s ease;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  color: #f2707a;
-  transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    background 0.16s ease;
+}
+
+.college-card .fav.fav-active {
+  color: #e53935;
+  background: #ffeaea;
+  transform: scale(1.12);
 }
 
 .college-card .fav:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.32);
+  background: #ffeaea;
+  color: #e53935;
 }
 
-.college-card .fav:active {
-  transform: translateY(0);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.26);
-}
-
-/* botão “Show more Colleges” */
-
-.load-more {
+/* --- Badges and Meta --- */
+.badges-row {
   display: flex;
-  justify-content: center;
-  margin: 28px 0 8px;
+  gap: 10px;
+  margin-bottom: 6px;
 }
-
-.more {
-  height: 46px;
-  padding: 0 28px;
+.badge {
+  display: inline-block;
+  padding: 3px 12px;
   border-radius: 999px;
-  border: 0;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e3ebdf;
+  color: #3f2419;
+  letter-spacing: 0.03em;
+}
+.badge.scholarship.has-scholarship {
+  background: #c8d99b;
+  color: #2e4d1a;
+}
+.badge.scholarship.no-scholarship {
+  background: #f3e6bc;
+  color: #a67c00;
+}
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: #3f2419;
+}
+.desc {
+  font-size: 15px;
+  color: #5a3226;
+  margin: 0 0 8px 0;
+  opacity: 0.96;
+}
+.meta-row {
+  font-size: 13px;
+  color: #3f2419;
+  margin-bottom: 10px;
+}
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.btn-outline {
+  border: 1px solid var(--mint);
+  background: #fff;
+  color: var(--mint);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-outline:hover {
   background: var(--mint);
   color: #fff;
-  font-weight: 800;
+}
+.btn-primary {
+  background: var(--mint);
+  color: #fff;
+  border: none;
+  padding: 7px 20px;
+  border-radius: 999px;
   font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.22);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    filter 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
 }
 
-.more:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.26);
-  filter: saturate(1.06);
+
+/* Show More Button */
+.btn-show-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 36px auto 0;
+  padding: 14px 38px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--mint);
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(125, 177, 159, 0.13);
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+  letter-spacing: 0.01em;
 }
 
-/* ================= RESPONSIVO ================= */
+.btn-show-more:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.btn-show-more:disabled {
+  background: #b2cfc2;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Optional: Spinner for loading state */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-top: 3px solid var(--accent-deep);
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .college-card {
+    grid-template-columns: 1fr;
+  }
+  .college-card .right {
+    min-width: 100%;
+    border-radius: 0 0 28px 28px;
+    justify-content: center;
+  }
+  .college-card .right img {
+    max-width: 100%;
+    max-height: 160px;
+    margin: 12px 0;
+  }
+}
 
 @media (max-width: 1024px) {
   .hero-copy h1 {

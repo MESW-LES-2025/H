@@ -63,25 +63,33 @@
                 <p class="text-muted">{{ course.description }}</p>
 
                 <div class="row mt-4">
-                  <div class="col-md-3">
+                  <div class="col">
+                    <div class="stat-box">
+                      <p class="stat-label text-muted mb-1">Cost</p>
+                      <p class="stat-value fw-bold h5">
+                        {{ course.cost | currency:'EUR':'symbol':'1.0-0' }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col">
                     <div class="stat-box">
                       <p class="stat-label text-muted mb-1">Duration</p>
                       <p class="stat-value fw-bold h5">{{ course.duration }}</p>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col">
                     <div class="stat-box">
                       <p class="stat-label text-muted mb-1">Level</p>
                       <p class="stat-value fw-bold h5">{{ course.level }}</p>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col">
                     <div class="stat-box">
                       <p class="stat-label text-muted mb-1">Language</p>
                       <p class="stat-value fw-bold h5">{{ course.language }}</p>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col">
                     <div class="stat-box">
                       <p class="stat-label text-muted mb-1">Credits</p>
                       <p class="stat-value fw-bold h5">{{ course.credits }}</p>
@@ -183,5 +191,11 @@
         <div [ngbNavOutlet]="nav" class="mt-2"></div>
       </div>
     </div>
+
+    @if (message) {
+      <div class="custom-message-bar" [ngClass]="messageType">
+        {{ message }}
+      </div>
+    }
   </div>
 }

@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
 import { AuthService } from '../auth/auth.service';
+import { RouterModule } from '@angular/router'; 
 
 function passwordMatchValidator(
   control: AbstractControl,
@@ -26,9 +27,17 @@ function passwordMatchValidator(
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule, 
+  ],
   templateUrl: './profile-page.html',
-  styleUrl: './profile-page.css',
+  styleUrls: [
+    './profile-page.css',
+    '../courses/courses.css'
+  ],
 })
 export class ProfilePage implements OnInit {
   private profilePageService = inject(ProfilePageService);
@@ -67,7 +76,11 @@ export class ProfilePage implements OnInit {
     id: number;
     name: string;
     type: string;
+    cost?: number;
+    credits?: number;
+    university?: { name: string };
     isFavorite: boolean;
+    description?: string;
   }[] = [];
 
   protected showDeleteModal = false;  
@@ -235,7 +248,11 @@ export class ProfilePage implements OnInit {
           id: c.id,
           name: c.name,
           type: c.courseType,
+          cost: c.cost,
+          credits: c.credits,
+          university: c.university, 
           isFavorite: true,
+          description: c.description,
         }));
       },
       error: (err) => console.error('Error loading favorites', err),
@@ -243,7 +260,7 @@ export class ProfilePage implements OnInit {
   }
 
   protected setTab(
-    tab: 'universities' | 'courses' | 'countries' | 'other',
+    tab: 'universities' | 'courses' | 'other',
   ): void {
     this.activeTab = tab;
   }

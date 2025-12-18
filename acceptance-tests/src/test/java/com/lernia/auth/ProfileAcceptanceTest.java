@@ -323,4 +323,20 @@ public class ProfileAcceptanceTest extends BaseAcceptanceTest {
         );
         Assertions.assertTrue(errorFound, "Expected login failure after account deletion");
     }
+
+
+    @Test
+    public void testViewFavoritesInProfile_ATC29() {
+        // Scenario: View Favorites in Profile (US20)
+        loginAsTestUser();
+
+        driver.get(baseUrl + "/profile");
+        wait.until(d -> d.getCurrentUrl().contains("/profile"));
+
+        WebElement favoritesSection = findAny(By.cssSelector(".favorites-section"), By.xpath("//*[contains(text(),'Favorites')]"));
+        Assertions.assertNotNull(favoritesSection, "Favorites section not found");
+
+        WebElement favoriteCourse = findAny(By.cssSelector(".favorite-course"), By.xpath("//*[contains(@class,'favorite-course')]"));
+        Assertions.assertNotNull(favoriteCourse, "No favorite courses found");
+    }
 }

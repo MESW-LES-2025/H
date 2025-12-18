@@ -126,7 +126,8 @@ public class FavoritesService {
                 course.getId(),
                 course.getName(),
                 course.getCourseType(),
-                universityName
+                universityName,
+                course.getCost()
         );
     }
 }

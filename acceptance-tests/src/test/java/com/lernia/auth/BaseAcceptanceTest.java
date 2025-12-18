@@ -90,4 +90,39 @@ public class BaseAcceptanceTest {
             return false;
         }
     }
+
+    protected void loginAsTestUser() {
+        driver.get(baseUrl + "/login");
+
+        String username = "asmith";
+        String password = "pass1";
+
+        WebElement userField = wait.until(d -> findAny(
+                By.name("username"),
+                By.id("username"),
+                By.name("email"),
+                By.id("email"),
+                By.cssSelector("input[type='email']"),
+                By.cssSelector("input[name='username']")
+        ));
+        WebElement passField = wait.until(d -> findAny(
+                By.name("password"),
+                By.id("password"),
+                By.cssSelector("input[formcontrolname='password']")
+        ));
+        WebElement submit = findAny(
+                By.cssSelector("button[type='submit']"),
+                By.cssSelector("input[type='submit']"),
+                By.id("login-button"),
+                By.cssSelector("button.login-btn"),
+                By.xpath("//button[contains(text(),'Login') or contains(text(),'Sign In')]")
+        );
+        userField.clear();
+        userField.sendKeys(username);
+        passField.clear();
+        passField.sendKeys(password);
+        submit.click();
+
+        wait.until(d -> d.getCurrentUrl().contains("/profile"));
+    }
 }
