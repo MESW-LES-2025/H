@@ -66,6 +66,7 @@ public class AdminController {
             r.setLocation(u.getLocation());
             r.setJobTitle(u.getJobTitle());
             r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
+            r.setPremium(u.getUserRole() != null && "PREMIUM".equals(u.getUserRole().name()));
             return r;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(users);
@@ -121,8 +122,7 @@ public class AdminController {
                         saved.getLocation().getId(),
                         saved.getLocation().getCity(),
                         saved.getLocation().getCountry(),
-                        saved.getLocation().getCostOfLiving()) : null
-        );
+                        saved.getLocation().getCostOfLiving()) : null);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
@@ -141,7 +141,8 @@ public class AdminController {
         }
 
         UniversityEntity entity = opt.get();
-        if (dto.getName() != null && !dto.getName().isBlank()) entity.setName(dto.getName());
+        if (dto.getName() != null && !dto.getName().isBlank())
+            entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setContactInfo(dto.getContactInfo());
         entity.setWebsite(dto.getWebsite());
@@ -167,8 +168,7 @@ public class AdminController {
                         saved.getLocation().getId(),
                         saved.getLocation().getCity(),
                         saved.getLocation().getCountry(),
-                        saved.getLocation().getCostOfLiving()) : null
-        );
+                        saved.getLocation().getCostOfLiving()) : null);
         return ResponseEntity.ok(res);
     }
 
@@ -186,7 +186,8 @@ public class AdminController {
                     .body(Map.of("message", "University not found"));
         }
 
-        // prevent deletion if there are courses referencing this university (FK constraint)
+        // prevent deletion if there are courses referencing this university (FK
+        // constraint)
         boolean hasCourses = courseRepository.findAll().stream()
                 .anyMatch(c -> c.getUniversity() != null && id.equals(c.getUniversity().getId()));
         if (hasCourses) {
@@ -206,7 +207,9 @@ public class AdminController {
                         course.getName(),
                         course.getCourseType(),
                         course.getUniversity() != null ? course.getUniversity().getName() : null,
-                        course.getCost()))
+                        course.getCost(),
+                        course.getCredits(),
+                        course.getDescription()))
                 .toList();
         return ResponseEntity.ok(list);
     }

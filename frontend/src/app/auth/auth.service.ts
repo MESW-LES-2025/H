@@ -129,7 +129,8 @@ export class AuthService {
   }
 
   updateUser(userId: number, userData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/api/profile/${userId}/update-profile`, userData, { withCredentials: true });
+    // Uses public endpoint for post-registration profile completion
+    return this.http.put(`${this.baseUrl}/api/users/${userId}`, userData, { withCredentials: true });
   }
 
   logout(): void {

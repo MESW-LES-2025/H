@@ -14,7 +14,7 @@ import {
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
 import { AuthService } from '../auth/auth.service';
-import { RouterModule } from '@angular/router'; 
+import { RouterModule } from '@angular/router';
 
 function passwordMatchValidator(
   control: AbstractControl,
@@ -31,7 +31,7 @@ function passwordMatchValidator(
     RouterOutlet,
     CommonModule,
     ReactiveFormsModule,
-    RouterModule, 
+    RouterModule,
   ],
   templateUrl: './profile-page.html',
   styleUrls: [
@@ -78,12 +78,12 @@ export class ProfilePage implements OnInit {
     type: string;
     cost?: number;
     credits?: number;
-    university?: { name: string };
+    universityName?: string;
     isFavorite: boolean;
     description?: string;
   }[] = [];
 
-  protected showDeleteModal = false;  
+  protected showDeleteModal = false;
   protected confirmationMessage: string | null = null;
   protected confirmationType: 'success' | 'error' | null = null;
 
@@ -250,7 +250,7 @@ export class ProfilePage implements OnInit {
           type: c.courseType,
           cost: c.cost,
           credits: c.credits,
-          university: c.university, 
+          universityName: c.universityName,
           isFavorite: true,
           description: c.description,
         }));

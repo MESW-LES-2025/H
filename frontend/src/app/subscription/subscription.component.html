@@ -1,0 +1,191 @@
+<div class="subscription-page">
+    <div class="subscription-container">
+        <h1 class="page-title">Upgrade to Premium</h1>
+        <p class="page-subtitle">Unlock exclusive features and take your experience to the next level</p>
+
+        <!-- Already Premium State -->
+        @if (isAlreadyPremium()) {
+        <div class="already-premium">
+            <div class="premium-icon">👑</div>
+            <h2>You're Already Premium!</h2>
+            <p>Enjoy all the exclusive features available to premium members.</p>
+            @if (premiumStartDate()) {
+            <p class="premium-since">Premium since: {{ premiumStartDate() }}</p>
+            }
+            <button class="profile-btn" (click)="goToProfile()">Go to Profile</button>
+        </div>
+        }
+
+        <!-- Success State -->
+        @else if (subscriptionSuccess()) {
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <h2>Welcome to Premium!</h2>
+            <p>{{ successMessage() }}</p>
+            <button class="profile-btn" (click)="goToProfile()">Go to Your Profile</button>
+        </div>
+        }
+
+        <!-- Subscription Form -->
+        @else {
+        <div class="subscription-card">
+            <div class="card-header">
+                <div class="premium-badge">
+                    <span class="icon">⭐</span>
+                    <span>PREMIUM</span>
+                </div>
+                <div class="price">
+                    <span class="currency">€</span>9.99
+                    <span class="period">/month</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="benefits-section">
+                    <h3 class="benefits-title">What you'll get:</h3>
+                    <ul class="benefits-list">
+                        <li class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <div class="benefit-text">
+                                <strong>Personalized Suggestions</strong>
+                                <span>Get course and university recommendations tailored to your profile</span>
+                            </div>
+                        </li>
+                        <li class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <div class="benefit-text">
+                                <strong>Entry Rate Previsions</strong>
+                                <span>Access probability estimates for your admission</span>
+                            </div>
+                        </li>
+                        <li class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <div class="benefit-text">
+                                <strong>Priority Support</strong>
+                                <span>Get faster responses from our support team</span>
+                            </div>
+                        </li>
+                        <li class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <div class="benefit-text">
+                                <strong>Exclusive Content</strong>
+                                <span>Access premium guides and tips</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="payment-section">
+                    <h4 class="payment-title">Select Payment Method</h4>
+                    <div class="payment-methods">
+                        <label class="payment-option" [class.selected]="selectedPaymentMethod() === 'MOCK_CARD'">
+                            <input type="radio" name="paymentMethod" value="MOCK_CARD"
+                                [checked]="selectedPaymentMethod() === 'MOCK_CARD'"
+                                (change)="selectPaymentMethod('MOCK_CARD')" />
+                            <span class="payment-icon">💳</span>
+                            <span>Credit Card</span>
+                        </label>
+                        <label class="payment-option" [class.selected]="selectedPaymentMethod() === 'MOCK_PAYPAL'">
+                            <input type="radio" name="paymentMethod" value="MOCK_PAYPAL"
+                                [checked]="selectedPaymentMethod() === 'MOCK_PAYPAL'"
+                                (change)="selectPaymentMethod('MOCK_PAYPAL')" />
+                            <span class="payment-icon">🅿️</span>
+                            <span>PayPal</span>
+                        </label>
+                    </div>
+
+                    <!-- Credit Card Form -->
+                    @if (showCardForm()) {
+                    <div class="credit-card-form">
+                        <div class="card-preview">
+                            <div class="card-preview-inner">
+                                <div class="card-chip"></div>
+                                <div class="card-number-preview">
+                                    {{ cardNumber || '•••• •••• •••• ••••' }}
+                                </div>
+                                <div class="card-details-preview">
+                                    <div class="card-name-preview">
+                                        {{ cardName || 'CARDHOLDER NAME' }}
+                                    </div>
+                                    <div class="card-expiry-preview">
+                                        {{ expiryMonth || 'MM' }}/{{ expiryYear || 'YY' }}
+                                    </div>
+                                </div>
+                                <div class="card-type-badge">{{ getCardIcon() }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" class="form-input" [(ngModel)]="cardNumber"
+                                (input)="formatCardNumber()" placeholder="1234 5678 9012 3456" maxlength="19"
+                                [class.valid]="isCardNumberValid()"
+                                [class.invalid]="cardNumber.length > 0 && !isCardNumberValid()" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cardName">Cardholder Name</label>
+                            <input type="text" id="cardName" class="form-input" [(ngModel)]="cardName"
+                                placeholder="John Doe" [class.valid]="cardName.trim().length >= 2"
+                                [class.invalid]="cardName.length > 0 && cardName.trim().length < 2" />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>Expiry Date</label>
+                                <div class="expiry-inputs">
+                                    <input type="text" class="form-input" [(ngModel)]="expiryMonth" placeholder="MM"
+                                        maxlength="2" [class.valid]="isExpiryValid()"
+                                        [class.invalid]="expiryMonth.length > 0 && !isExpiryValid()" />
+                                    <span class="expiry-separator">/</span>
+                                    <input type="text" class="form-input" [(ngModel)]="expiryYear" placeholder="YY"
+                                        maxlength="2" [class.valid]="isExpiryValid()"
+                                        [class.invalid]="expiryYear.length > 0 && !isExpiryValid()" />
+                                </div>
+                            </div>
+                            <div class="form-group half">
+                                <label for="cvv">CVV</label>
+                                <input type="password" id="cvv" class="form-input" [(ngModel)]="cvv" placeholder="•••"
+                                    maxlength="4" [class.valid]="isCvvValid()"
+                                    [class.invalid]="cvv.length > 0 && !isCvvValid()" />
+                            </div>
+                        </div>
+
+                        <div class="test-card-hint">
+                            <span class="hint-icon">💡</span>
+                            <span>Test card: <strong>4242 4242 4242 4242</strong> - Any future date - Any CVV</span>
+                        </div>
+                    </div>
+                    }
+
+                    @if (error()) {
+                    <div class="error-message">{{ error() }}</div>
+                    }
+
+                    <!-- Processing Overlay -->
+                    @if (loading()) {
+                    <div class="processing-overlay">
+                        <div class="processing-spinner"></div>
+                        <div class="processing-text">{{ processingStep() }}</div>
+                    </div>
+                    }
+
+                    <button class="subscribe-btn"
+                        [disabled]="loading() || !selectedPaymentMethod() || (selectedPaymentMethod() === 'MOCK_CARD' && !isCardFormValid())"
+                        (click)="subscribe()">
+                        @if (loading()) {
+                        <span>Processing...</span>
+                        } @else {
+                        <span>Pay €9.99 Now</span>
+                        }
+                    </button>
+
+                    <p class="secure-notice">
+                        🔒 Secure payment • Cancel anytime
+                    </p>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>

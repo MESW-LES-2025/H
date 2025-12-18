@@ -21,6 +21,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
 
   protected userId: number | null = null;
+  protected userRole: string | null = null;
   private userSubscription: Subscription | null = null;
 
   // dropdown state
@@ -32,6 +33,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.userId = user ? user.id : null;
+      this.userRole = user?.userRole || null;
     });
   }
 

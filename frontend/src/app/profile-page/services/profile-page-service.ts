@@ -15,7 +15,7 @@ export class ProfilePageService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   // ----------------------------
   // USER PROFILE
@@ -133,7 +133,7 @@ export class ProfilePageService {
     return this.http.put<UserViewmodel>(
       `${this.apiUrl}/api/profile/${id}/update-profile`,
       { id, ...userData },
-      { withCredentials: true },
+      { withCredentials: true }
     );
   }
 

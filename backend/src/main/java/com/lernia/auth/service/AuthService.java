@@ -184,6 +184,7 @@ public class AuthService {
         r.setJobTitle(u.getJobTitle());
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
         r.setProvider(u.getProvider() != null ? u.getProvider().name() : null);
+        r.setPremium(u.getUserRole() != null && "PREMIUM".equals(u.getUserRole().name()));
         return r;
     }
 

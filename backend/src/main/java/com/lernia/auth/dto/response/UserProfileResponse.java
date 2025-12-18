@@ -39,6 +39,12 @@ public class UserProfileResponse {
     @Setter
     @Getter
     private String profilePicture;
+    @Setter
+    @Getter
+    private java.time.LocalDate premiumStartDate;
+    @Setter
+    @Getter
+    private boolean isPremium;
 
     public UserProfileResponse() {
     }

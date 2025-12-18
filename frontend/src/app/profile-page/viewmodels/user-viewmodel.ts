@@ -12,6 +12,8 @@ export interface UserViewmodel {
   academicHistory: UserCourse[];
   userRole: string;
   provider?: string;
+  premiumStartDate?: string;
+  premium?: boolean;
 }
 
 export interface FavoriteUniversityDTO {
@@ -30,9 +32,9 @@ export interface FavoriteCourseDTO {
   id: number;
   name: string;
   courseType: string;
+  universityName?: string;
   cost?: number;
   credits?: number;
-  university?: { name: string };
   description?: string;
 }
 
