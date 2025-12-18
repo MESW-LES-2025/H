@@ -81,10 +81,18 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   }
 
   submitReview() {
-    const reviewToSend = { ...this.newReview };
-    delete reviewToSend.id;
+    if (this.currentUserId === null) {
+      alert('You must be logged in to submit a review.');
+      return;
+    }
 
-    reviewToSend.universityId = this.universityId;
+    const reviewToSend = {
+      userId: this.currentUserId,
+      universityId: this.universityId,
+      rating: this.newReview.rating,
+      title: this.newReview.title,
+      description: this.newReview.description
+    };
 
     this.reviewService.addReview(reviewToSend).subscribe({
       next: (savedReview) => {

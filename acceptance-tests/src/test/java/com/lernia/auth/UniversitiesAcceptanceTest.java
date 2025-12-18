@@ -25,9 +25,6 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
         WebElement location = findAny(
             By.cssSelector("p.h4.mb-0"),
             By.cssSelector("p.stat-value.fw-bold.h5"),
-            By.cssSelector("p.fw-bold.mb-0"),
-            By.xpath("//p[contains(text(),'Sweden')]"),
-            By.xpath("//p[contains(text(),'Stockholm')]"),
             By.xpath("//p[contains(text(),'Unknown Location')]"),
             By.xpath("//p[contains(text(),'N/A')]")
         );
@@ -169,7 +166,6 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
                         String meta = card.findElement(By.cssSelector(".meta")).getText().toLowerCase();
                         countryOk = meta.contains("spain");
                     } catch (Exception ignored) {}
-                    // Check scholarship (blurb or meta may mention scholarship)
                     boolean scholarshipOk = false;
                     try {
                         String blurb = card.findElement(By.xpath(".//p")).getText().toLowerCase();
@@ -227,13 +223,36 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
         driver.get(baseUrl + "/university/1");
         wait.until(d -> d.getCurrentUrl().contains("/university/1"));
 
-        WebElement name = findAny(By.cssSelector(".university-name"), By.xpath("//h1"), By.xpath("//h2"));
+        WebElement name = findAny(
+            By.cssSelector(".h1.fw-bold.mb-1"),
+            By.xpath("//h2[contains(@class,'h1')]"),
+            By.xpath("//h2")
+        );
         Assertions.assertNotNull(name, "University name not found");
 
-        WebElement location = findAny(By.cssSelector(".university-location"), By.xpath("//*[contains(text(),'City')]"), By.xpath("//*[contains(text(),'Country')]"));
+        // Look for location in either header or overview stat box
+        WebElement location = findAny(
+            By.cssSelector("p.h4.mb-0"),
+            By.cssSelector("p.stat-value.fw-bold.h5"),
+            By.xpath("//p[contains(text(),'Unknown Location')]"),
+            By.xpath("//p[contains(text(),'N/A')]")
+        );
         Assertions.assertNotNull(location, "University location not found");
 
-        WebElement programs = findAny(By.cssSelector(".university-programs"), By.xpath("//*[contains(text(),'Programs')]"));
+        // Click the Courses tab to make its content visible
+        WebElement coursesTab = wait.until(d -> findAny(
+            By.xpath("//button[contains(.,'Courses')]"),
+            By.cssSelector("button[ngbnavlink]")
+        ));
+        coursesTab.click();
+
+        // Wait for the "Featured Courses" heading or a course item to appear
+        WebElement programs = wait.until(d -> findAny(
+            By.xpath("//*[contains(text(),'Featured Courses')]"),
+            By.cssSelector(".courses-list"),
+            By.cssSelector(".course-item"),
+            By.xpath("//h5[contains(@class,'fw-bold') and contains(text(),'Courses')]")
+        ));
         Assertions.assertNotNull(programs, "University programs not found");
     }
 
@@ -251,24 +270,43 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
         Assertions.assertNotNull(review, "No reviews found for university");
     }
 
+
     @Test
-    public void testAddReviewToUniversity_ATC28() {
-        // Scenario: Add Review to a University (US19)
-        loginAsTestUser(); // Implement this helper to log in
+    public void testAddReviewToUniversity_ATC28() throws InterruptedException {
+        loginAsTestUser();
 
         driver.get(baseUrl + "/university/1");
         wait.until(d -> d.getCurrentUrl().contains("/university/1"));
 
-        WebElement reviewInput = wait.until(d -> d.findElement(By.cssSelector("textarea.review-input")));
-        reviewInput.sendKeys("Great university!");
+        // Click the Reviews tab
+        WebElement reviewsTab = wait.until(d -> d.findElement(
+            By.xpath("//ul[contains(@class,'nav-tabs')]//button[contains(.,'Reviews')]")
+        ));
+        reviewsTab.click();
+        Thread.sleep(300); // Give time for tab animation
 
-        WebElement star = wait.until(d -> d.findElement(By.cssSelector(".star-rating .star[data-value='5']")));
-        star.click();
+        // Wait for the add-review-section to be visible
+        wait.until(d -> d.findElements(By.cssSelector(".add-review-section")).size() > 0);
 
-        WebElement postBtn = wait.until(d -> d.findElement(By.cssSelector("button.post-review")));
+        // Use data-testid selectors for robust element targeting
+        WebElement titleInput = wait.until(d -> d.findElement(By.cssSelector("input[data-testid='review-title']")));
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", titleInput);
+        titleInput.clear();
+        titleInput.sendKeys("Great university!");
+
+        WebElement reviewInput = wait.until(d -> d.findElement(By.cssSelector("textarea[data-testid='review-description']")));
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", reviewInput);
+        reviewInput.clear();
+        reviewInput.sendKeys("This is a test review description.");
+
+        WebElement ratingSelect = wait.until(d -> d.findElement(By.cssSelector("select[data-testid='review-rating']")));
+        ratingSelect.click();
+        ratingSelect.findElement(By.cssSelector("option[value='5']")).click();
+
+        WebElement postBtn = wait.until(d -> d.findElement(By.cssSelector("button[data-testid='submit-review']")));
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", postBtn);
         postBtn.click();
 
-        // Wait for review to appear
-        wait.until(d -> d.findElement(By.xpath("//*[contains(text(),'Great university!')]")));
+        wait.until(d -> d.findElements(By.xpath("//*[contains(text(),'Great university!')]")).size() > 0);
     }
 }

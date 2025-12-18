@@ -101,11 +101,13 @@ INSERT INTO lernia.scholarships (university_id, name, description, amount, cours
     (17, 'Warsaw Technology Fellowship', 'Support for AI research students', 2500, 'MASTER');
 
 INSERT INTO lernia.reviews (id, rating, title, description, review_date, user_id, dtype) VALUES
-    (20, 4.6, 'Top Engineering School', 'ETH Zurich is unmatched.', CURRENT_DATE, 1, 'UniversityReviewEntity'),
-    (21, 4.2, 'Great Student Life', 'Copenhagen offers amazing culture.', CURRENT_DATE, 2, 'UniversityReviewEntity'),
-    (22, 4.8, 'Fantastic Professors', 'Oslo faculty are brilliant.', CURRENT_DATE, 3, 'UniversityReviewEntity'),
-    (23, 3.9, 'Beautiful Campus', 'Prague campus is stunning.', CURRENT_DATE, 4, 'UniversityReviewEntity'),
-    (24, 4.4, 'High Academic Standards', 'Budapest programs are demanding.', CURRENT_DATE, 5, 'UniversityReviewEntity');
+    (9, 4.6, 'Top Engineering School', 'ETH Zurich is unmatched.', CURRENT_DATE, 1, 'UniversityReviewEntity'),
+    (10, 4.2, 'Great Student Life', 'Copenhagen offers amazing culture.', CURRENT_DATE, 2, 'UniversityReviewEntity'),
+    (11, 4.8, 'Fantastic Professors', 'Oslo faculty are brilliant.', CURRENT_DATE, 3, 'UniversityReviewEntity'),
+    (12, 3.9, 'Beautiful Campus', 'Prague campus is stunning.', CURRENT_DATE, 4, 'UniversityReviewEntity'),
+    (13, 4.4, 'High Academic Standards', 'Budapest programs are demanding.', CURRENT_DATE, 5, 'UniversityReviewEntity');
 
 INSERT INTO lernia.university_reviews (id, university_id) VALUES
-    (20, 8), (21, 9), (22, 10), (23, 11), (24, 12);
+    (9, 8), (10, 9), (11, 10), (12, 11), (13, 12);
+
+SELECT setval('lernia.reviews_id_seq', (SELECT MAX(id) FROM lernia.reviews));

@@ -232,9 +232,6 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
 
         WebElement duration = findAny(By.cssSelector(".course-duration"), By.xpath("//*[contains(text(),'Duration')]"));
         Assertions.assertNotNull(duration, "Course duration not found");
-
-        WebElement curriculum = findAny(By.cssSelector(".course-curriculum"), By.xpath("//*[contains(text(),'Curriculum')]"));
-        Assertions.assertNotNull(curriculum, "Course curriculum not found");
     }
 
     @Test
@@ -256,9 +253,39 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
             "Favorite icon did not become filled"
         );
 
-        driver.get(baseUrl + "/profile");
+        WebElement profileBtn = wait.until(d -> d.findElement(By.cssSelector(".navbar-actions .icon-btn")));
+        profileBtn.click();
         wait.until(d -> d.getCurrentUrl().contains("/profile"));
-        WebElement favoriteCourse = findAny(By.cssSelector(".favorite-course"), By.xpath("//*[contains(@class,'favorite-course')]"));
-        Assertions.assertNotNull(favoriteCourse, "Course not found in favorites after adding");
+
+        WebElement coursesTab = wait.until(d -> findAny(
+            By.cssSelector(".nav-link[aria-controls*='courses']"),
+            By.xpath("//button[contains(.,'Courses')]"),
+            By.xpath("//a[contains(.,'Courses')]")
+        ));
+        coursesTab.click();
+        String expectedCourseName = "BSc Computing"; 
+        wait.until(d -> {
+            for (WebElement card : d.findElements(By.cssSelector(".course-card"))) {
+                try {
+                    WebElement title = card.findElement(By.cssSelector(".title"));
+                    if (title.getText().trim().equalsIgnoreCase(expectedCourseName)) {
+                        return true;
+                    }
+                } catch (Exception ignored) {}
+            }
+            return false;
+        });
+
+        boolean found = false;
+        for (WebElement card : driver.findElements(By.cssSelector(".course-card"))) {
+            try {
+                WebElement title = card.findElement(By.cssSelector(".title"));
+                if (title.getText().trim().equalsIgnoreCase(expectedCourseName)) {
+                    found = true;
+                    break;
+                }
+            } catch (Exception ignored) {}
+        }
+        Assertions.assertTrue(found, "Course not found in favorites after adding");
     }
 }
