@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CoursePage } from './course-page';
 import { CoursePageService } from './services/course-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CourseViewmodel } from './viewmodels/course-viewmodel';
 
 describe('CoursePage', () => {
@@ -124,6 +124,20 @@ describe('CoursePage', () => {
       }, 100);
     });
 
+    it('should set isFavorite to true when course is in favorites list', (done) => {
+      service.getCourseProfile.and.returnValue(of(mockCourse));
+      service.getFavoriteCourses.and.returnValue(of([100, 201, 150]));
+
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1);
+
+      component.ngOnInit();
+
+      setTimeout(() => {
+        expect(component.isFavorite).toBe(true);
+        done();
+      }, 100);
+    });
+
     it('should parse course id from route params', () => {
       service.getCourseProfile.and.returnValue(of(mockCourse));
       spyOn(localStorage, 'getItem').and.returnValue(null);
@@ -156,7 +170,7 @@ describe('CoursePage', () => {
     it('should remove course from favorites when already favorited', (done) => {
       component.isFavorite = true;
       component.course = mockCourse;
-      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1); 
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1);
       service.removeFavoriteCourse.and.returnValue(of(void 0));
 
       component.toggleFavorite();
@@ -181,7 +195,7 @@ describe('CoursePage', () => {
     it('should call addFavoriteCourse service method', () => {
       component.isFavorite = false;
       component.course = mockCourse;
-      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1); 
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1);
       service.addFavoriteCourse.and.returnValue(of(void 0));
 
       component.toggleFavorite();
@@ -199,6 +213,58 @@ describe('CoursePage', () => {
 
       expect(service.removeFavoriteCourse).toHaveBeenCalledWith(201);
     });
+
+    it('should show login message when user not logged in', fakeAsync(() => {
+      component.course = mockCourse;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(null);
+
+      component.toggleFavorite();
+
+      expect(component.message).toBe('Please log in to save courses to your favorites.');
+      expect(component.messageType).toBe('info');
+      expect(service.addFavoriteCourse).not.toHaveBeenCalled();
+      expect(service.removeFavoriteCourse).not.toHaveBeenCalled();
+
+      tick(3000);
+      expect(component.message).toBeNull();
+      expect(component.messageType).toBeNull();
+    }));
+
+    it('should show error message when addFavoriteCourse fails', fakeAsync(() => {
+      component.isFavorite = false;
+      component.course = mockCourse;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1);
+      service.addFavoriteCourse.and.returnValue(throwError(() => new Error('fail')));
+
+      component.toggleFavorite();
+      tick();
+
+      expect(component.message).toBe('Could not add to favorites. Please try again.');
+      expect(component.messageType).toBe('error');
+      expect(component.isFavorite).toBe(false);
+
+      tick(3000);
+      expect(component.message).toBeNull();
+      expect(component.messageType).toBeNull();
+    }));
+
+    it('should show error message when removeFavoriteCourse fails', fakeAsync(() => {
+      component.isFavorite = true;
+      component.course = mockCourse;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1);
+      service.removeFavoriteCourse.and.returnValue(throwError(() => new Error('fail')));
+
+      component.toggleFavorite();
+      tick();
+
+      expect(component.message).toBe('Could not remove from favorites. Please try again.');
+      expect(component.messageType).toBe('error');
+      expect(component.isFavorite).toBe(true);
+
+      tick(3000);
+      expect(component.message).toBeNull();
+      expect(component.messageType).toBeNull();
+    }));
   });
 
   describe('Component properties', () => {
@@ -206,6 +272,8 @@ describe('CoursePage', () => {
       expect(component.course).toBeNull();
       expect(component.active).toBe(1);
       expect(component.isFavorite).toBe(false);
+      expect(component.message).toBeNull();
+      expect(component.messageType).toBeNull();
     });
 
     it('should update course property when loaded', (done) => {
@@ -239,3 +307,4 @@ describe('CoursePage', () => {
     });
   });
 });
+

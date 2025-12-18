@@ -12,7 +12,10 @@
             @if (premiumStartDate()) {
             <p class="premium-since">Premium since: {{ premiumStartDate() }}</p>
             }
-            <button class="profile-btn" (click)="goToProfile()">Go to Profile</button>
+            <div class="premium-actions">
+                <button class="profile-btn" (click)="goToProfile()">Go to Profile</button>
+                <button class="cancel-btn" (click)="openCancelModal()">Cancel Subscription</button>
+            </div>
         </div>
         }
 
@@ -189,3 +192,33 @@
         }
     </div>
 </div>
+
+<!-- Cancel Subscription Modal -->
+@if (showCancelModal()) {
+<div class="modal-backdrop" (click)="closeCancelModal()"></div>
+<div class="cancel-modal">
+    <div class="cancel-modal-icon">⚠️</div>
+    <h3>Cancel Your Subscription?</h3>
+    <p>Are you sure you want to cancel your premium subscription? You will immediately lose access to:</p>
+    <ul class="cancel-features-list">
+        <li>Personalized Suggestions</li>
+        <li>Entry Rate Previsions</li>
+        <li>Priority Support</li>
+        <li>Exclusive Content</li>
+    </ul>
+    <div class="cancel-modal-actions">
+        <button class="cancel-modal-btn cancel-modal-btn-secondary" (click)="closeCancelModal()"
+            [disabled]="cancelLoading()">
+            Keep Premium
+        </button>
+        <button class="cancel-modal-btn cancel-modal-btn-danger" (click)="confirmCancelSubscription()"
+            [disabled]="cancelLoading()">
+            @if (cancelLoading()) {
+            Cancelling...
+            } @else {
+            Yes, Cancel
+            }
+        </button>
+    </div>
+</div>
+}

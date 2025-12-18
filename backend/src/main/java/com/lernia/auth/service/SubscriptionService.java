@@ -78,4 +78,35 @@ public class SubscriptionService {
 
         return response;
     }
+
+    @Transactional
+    public SubscriptionResponse cancelSubscription(Long userId) {
+        Optional<UserEntity> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isEmpty()) {
+            return new SubscriptionResponse("User not found", "error");
+        }
+
+        UserEntity user = userOpt.get();
+
+        // Check if user is actually premium
+        if (user.getUserRole() != UserRole.PREMIUM) {
+            SubscriptionResponse response = new SubscriptionResponse("User is not a premium member", "error");
+            response.setUserRole(user.getUserRole().name());
+            return response;
+        }
+
+        // Cancel subscription - downgrade to REGULAR
+        user.setUserRole(UserRole.REGULAR);
+        user.setPremiumStartDate(null);
+        userRepository.save(user);
+
+        SubscriptionResponse response = new SubscriptionResponse(
+                "Subscription cancelled successfully. You have been downgraded to a free account.",
+                "success");
+        response.setUserRole(UserRole.REGULAR.name());
+        response.setPremiumStartDate(null);
+
+        return response;
+    }
 }

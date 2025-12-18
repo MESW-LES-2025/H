@@ -141,6 +141,8 @@ public class SecurityConfig {
 
                                                 // Subscription endpoints (require auth)
                                                 .requestMatchers(HttpMethod.POST, "/api/subscriptions").authenticated()
+                                                .requestMatchers(HttpMethod.DELETE, "/api/subscriptions")
+                                                .authenticated()
                                                 .requestMatchers(HttpMethod.GET, "/api/users/me/status").authenticated()
 
                                                 // Admin endpoints require ADMIN role

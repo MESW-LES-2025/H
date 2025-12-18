@@ -185,4 +185,41 @@ export class SubscriptionComponent implements OnInit {
             this.router.navigate(['/']);
         }
     }
+
+    // Cancel subscription modal state
+    showCancelModal = signal(false);
+    cancelLoading = signal(false);
+
+    openCancelModal(): void {
+        this.showCancelModal.set(true);
+    }
+
+    closeCancelModal(): void {
+        this.showCancelModal.set(false);
+    }
+
+    confirmCancelSubscription(): void {
+        this.cancelLoading.set(true);
+        this.subscriptionService.cancelSubscription().subscribe({
+            next: (response) => {
+                this.cancelLoading.set(false);
+                this.showCancelModal.set(false);
+                if (response.status === 'success') {
+                    this.isAlreadyPremium.set(false);
+                    this.premiumStartDate.set(null);
+                    // Refresh user session to update role
+                    this.authService.restoreSession().subscribe();
+                    // Redirect to profile
+                    this.goToProfile();
+                } else {
+                    this.error.set(response.message);
+                }
+            },
+            error: (err) => {
+                this.cancelLoading.set(false);
+                this.showCancelModal.set(false);
+                this.error.set(err.error?.message || 'Failed to cancel subscription. Please try again.');
+            }
+        });
+    }
 }
