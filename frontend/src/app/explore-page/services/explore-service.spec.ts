@@ -195,7 +195,7 @@ describe('ExploreService', () => {
       const req = httpMock.expectOne((request) => {
         return (
           request.url === `${environment.apiUrl}/api/university` &&
-          request.params.get('costOfLivingMax') === '3000'
+          request.params.get('maxCostOfLiving') === '3000'
         );
       });
 
@@ -212,7 +212,7 @@ describe('ExploreService', () => {
       const req = httpMock.expectOne((request) => {
         return (
           request.url === `${environment.apiUrl}/api/university` &&
-          !request.params.has('costOfLivingMax')
+          !request.params.has('maxCostOfLiving')
         );
       });
 
@@ -287,7 +287,7 @@ describe('ExploreService', () => {
           request.params.get('sort') === 'name,desc' &&
           request.params.get('name') === 'Harvard' &&
           request.params.get('countries') === 'USA' &&
-          request.params.get('costOfLivingMax') === '3000' &&
+          request.params.get('maxCostOfLiving') === '3000' &&
           request.params.get('hasScholarship') === 'true'
         );
       });

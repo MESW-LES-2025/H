@@ -19,7 +19,7 @@ export class ExploreService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   search(
     query: string,
@@ -45,7 +45,7 @@ export class ExploreService {
     }
 
     if (costMax !== null) {
-      params = params.set('costOfLivingMax', costMax.toString());
+      params = params.set('maxCostOfLiving', costMax.toString());
     }
 
     if (scholarship !== 'Any') {
