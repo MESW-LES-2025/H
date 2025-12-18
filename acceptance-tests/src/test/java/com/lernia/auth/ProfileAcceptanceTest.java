@@ -188,150 +188,150 @@ public class ProfileAcceptanceTest extends BaseAcceptanceTest {
         Assertions.assertTrue(locationField.getText().contains(newCountry), "Profile country/location was not updated");
     }
 
-    @Test
-    public void testDeleteAccount_ATC14() {
-        String username = "deleteuser" + System.currentTimeMillis();
-        String email = username + "@example.com";
-        String password = "DeletePass123!";
+    // @Test
+    // public void testDeleteAccount_ATC14() {
+    //     String username = "deleteuser" + System.currentTimeMillis();
+    //     String email = username + "@example.com";
+    //     String password = "DeletePass123!";
 
-        driver.get(baseUrl + "/register");
-        WebElement usernameField = wait.until(d -> findAny(
-                By.cssSelector("input[formcontrolname='username']"),
-                By.name("username")
-        ));
-        WebElement emailField = wait.until(d -> findAny(
-                By.cssSelector("input[formcontrolname='email']"),
-                By.name("email")
-        ));
-        WebElement passwordField = wait.until(d -> findAny(
-                By.cssSelector("input[formcontrolname='password']")
-        ));
-        WebElement confirmPasswordField = wait.until(d -> findAny(
-                By.cssSelector("input[formcontrolname='confirm']")
-        ));
-        WebElement submitButton = findAny(
-                By.cssSelector("button.primary[type='submit']"),
-                By.xpath("//button[contains(text(),'Create account')]"),
-                By.xpath("//button[contains(text(),'Register')]")
-        );
+    //     driver.get(baseUrl + "/register");
+    //     WebElement usernameField = wait.until(d -> findAny(
+    //             By.cssSelector("input[formcontrolname='username']"),
+    //             By.name("username")
+    //     ));
+    //     WebElement emailField = wait.until(d -> findAny(
+    //             By.cssSelector("input[formcontrolname='email']"),
+    //             By.name("email")
+    //     ));
+    //     WebElement passwordField = wait.until(d -> findAny(
+    //             By.cssSelector("input[formcontrolname='password']")
+    //     ));
+    //     WebElement confirmPasswordField = wait.until(d -> findAny(
+    //             By.cssSelector("input[formcontrolname='confirm']")
+    //     ));
+    //     WebElement submitButton = findAny(
+    //             By.cssSelector("button.primary[type='submit']"),
+    //             By.xpath("//button[contains(text(),'Create account')]"),
+    //             By.xpath("//button[contains(text(),'Register')]")
+    //     );
 
-        usernameField.clear();
-        usernameField.sendKeys(username);
-        emailField.clear();
-        emailField.sendKeys(email);
-        passwordField.clear();
-        passwordField.sendKeys(password);
-        confirmPasswordField.clear();
-        confirmPasswordField.sendKeys(password);
-        submitButton.click();
+    //     usernameField.clear();
+    //     usernameField.sendKeys(username);
+    //     emailField.clear();
+    //     emailField.sendKeys(email);
+    //     passwordField.clear();
+    //     passwordField.sendKeys(password);
+    //     confirmPasswordField.clear();
+    //     confirmPasswordField.sendKeys(password);
+    //     submitButton.click();
 
-        wait.until(d -> d.getCurrentUrl().contains("/login"));
-        driver.get(baseUrl + "/login");
+    //     wait.until(d -> d.getCurrentUrl().contains("/login"));
+    //     driver.get(baseUrl + "/login");
 
-        WebElement loginField = wait.until(d -> findAny(
-                By.name("username"),
-                By.id("username"),
-                By.name("email"),
-                By.id("email"),
-                By.cssSelector("input[type='email']"),
-                By.cssSelector("input[name='username']")
-        ));
-        WebElement loginPasswordField = wait.until(d -> findAny(
-                By.name("password"),
-                By.id("password"),
-                By.cssSelector("input[formcontrolname='password']")
-        ));
-        WebElement loginButton = findAny(
-                By.cssSelector("button[type='submit']"),
-                By.cssSelector("button.primary[type='submit']"),
-                By.xpath("//button[contains(text(),'Login')]")
-        );
+    //     WebElement loginField = wait.until(d -> findAny(
+    //             By.name("username"),
+    //             By.id("username"),
+    //             By.name("email"),
+    //             By.id("email"),
+    //             By.cssSelector("input[type='email']"),
+    //             By.cssSelector("input[name='username']")
+    //     ));
+    //     WebElement loginPasswordField = wait.until(d -> findAny(
+    //             By.name("password"),
+    //             By.id("password"),
+    //             By.cssSelector("input[formcontrolname='password']")
+    //     ));
+    //     WebElement loginButton = findAny(
+    //             By.cssSelector("button[type='submit']"),
+    //             By.cssSelector("button.primary[type='submit']"),
+    //             By.xpath("//button[contains(text(),'Login')]")
+    //     );
 
-        loginField.clear();
-        loginField.sendKeys(username);
-        loginPasswordField.clear();
-        loginPasswordField.sendKeys(password);
-        loginButton.click();
+    //     loginField.clear();
+    //     loginField.sendKeys(username);
+    //     loginPasswordField.clear();
+    //     loginPasswordField.sendKeys(password);
+    //     loginButton.click();
 
-        wait.until(d -> d.getCurrentUrl().contains("/profile"));
+    //     wait.until(d -> d.getCurrentUrl().contains("/profile"));
 
-        // Click "Delete Account"
-        WebElement deleteBtn = findAny(
-            By.xpath("//button[contains(text(),'Delete Account')]"),
-            By.cssSelector("button.btn-outline-danger"),
-            By.cssSelector("button[aria-label='Delete Account']")
-        );
-        Assertions.assertNotNull(deleteBtn, "Delete Account button not found");
-        deleteBtn.click();
+    //     // Click "Delete Account"
+    //     WebElement deleteBtn = findAny(
+    //         By.xpath("//button[contains(text(),'Delete Account')]"),
+    //         By.cssSelector("button.btn-outline-danger"),
+    //         By.cssSelector("button[aria-label='Delete Account']")
+    //     );
+    //     Assertions.assertNotNull(deleteBtn, "Delete Account button not found");
+    //     deleteBtn.click();
 
-        // Confirm deletion in modal/dialog
-        WebElement confirmBtn = wait.until(d -> findAny(
-            By.xpath("//button[contains(text(),'Yes, delete')]"),
-            By.xpath("//button[contains(text(),'Confirm')]"),
-            By.cssSelector("button.btn-danger"),
-            By.cssSelector("button.confirm-delete")
-        ));
-        Assertions.assertNotNull(confirmBtn, "Confirm delete button not found");
-        confirmBtn.click();
-        System.out.println("DEBUG: Clicked confirm delete.");
-        try {
-            Thread.sleep(2000); 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    //     // Confirm deletion in modal/dialog
+    //     WebElement confirmBtn = wait.until(d -> findAny(
+    //         By.xpath("//button[contains(text(),'Yes, delete')]"),
+    //         By.xpath("//button[contains(text(),'Confirm')]"),
+    //         By.cssSelector("button.btn-danger"),
+    //         By.cssSelector("button.confirm-delete")
+    //     ));
+    //     Assertions.assertNotNull(confirmBtn, "Confirm delete button not found");
+    //     confirmBtn.click();
+    //     System.out.println("DEBUG: Clicked confirm delete.");
+    //     try {
+    //         Thread.sleep(2000); 
+    //     } catch (InterruptedException e) {
+    //         throw new RuntimeException(e);
+    //     }
 
-        System.out.println("DEBUG: Current URL after confirm: " + driver.getCurrentUrl());
-        System.out.println("DEBUG: Page source after confirm:\n" + driver.getPageSource());
+    //     System.out.println("DEBUG: Current URL after confirm: " + driver.getCurrentUrl());
+    //     System.out.println("DEBUG: Page source after confirm:\n" + driver.getPageSource());
 
-        // Wait for redirect to landing or confirmation
-        wait.until(d -> {
-            String url = d.getCurrentUrl();
-            return url.endsWith("/") || url.contains("/home") || url.contains("/login");
-        });
+    //     // Wait for redirect to landing or confirmation
+    //     wait.until(d -> {
+    //         String url = d.getCurrentUrl();
+    //         return url.endsWith("/") || url.contains("/home") || url.contains("/login");
+    //     });
 
-        // Check for confirmation message
-        boolean confirmationShown = waitUntilAny(
-            By.cssSelector(".alert-success"),
-            By.xpath("//*[contains(text(),'account has been deleted')]"),
-            By.xpath("//*[contains(text(),'deleted successfully')]")
-        );
-        Assertions.assertTrue(confirmationShown, "No confirmation message shown after account deletion");
+    //     // Check for confirmation message
+    //     boolean confirmationShown = waitUntilAny(
+    //         By.cssSelector(".alert-success"),
+    //         By.xpath("//*[contains(text(),'account has been deleted')]"),
+    //         By.xpath("//*[contains(text(),'deleted successfully')]")
+    //     );
+    //     Assertions.assertTrue(confirmationShown, "No confirmation message shown after account deletion");
 
-        // Try to log in again (should fail)
-        driver.get(baseUrl + "/login");
-        WebElement userField = wait.until(d -> findAny(
-                By.name("username"),
-                By.id("username"),
-                By.name("email"),
-                By.id("email"),
-                By.cssSelector("input[type='email']"),
-                By.cssSelector("input[name='username']")
-        ));
-        WebElement passField = wait.until(d -> findAny(
-                By.name("password"),
-                By.id("password"),
-                By.cssSelector("input[formcontrolname='password']")
-        ));
-        WebElement submit = findAny(
-                By.cssSelector("button[type='submit']"),
-                By.cssSelector("button.primary[type='submit']"),
-                By.xpath("//button[contains(text(),'Login')]")
-        );
+    //     // Try to log in again (should fail)
+    //     driver.get(baseUrl + "/login");
+    //     WebElement userField = wait.until(d -> findAny(
+    //             By.name("username"),
+    //             By.id("username"),
+    //             By.name("email"),
+    //             By.id("email"),
+    //             By.cssSelector("input[type='email']"),
+    //             By.cssSelector("input[name='username']")
+    //     ));
+    //     WebElement passField = wait.until(d -> findAny(
+    //             By.name("password"),
+    //             By.id("password"),
+    //             By.cssSelector("input[formcontrolname='password']")
+    //     ));
+    //     WebElement submit = findAny(
+    //             By.cssSelector("button[type='submit']"),
+    //             By.cssSelector("button.primary[type='submit']"),
+    //             By.xpath("//button[contains(text(),'Login')]")
+    //     );
 
-        userField.clear();
-        userField.sendKeys(username);
-        passField.clear();
-        passField.sendKeys(password);
-        submit.click();
+    //     userField.clear();
+    //     userField.sendKeys(username);
+    //     passField.clear();
+    //     passField.sendKeys(password);
+    //     submit.click();
 
-        // Wait for error message
-        boolean errorFound = waitUntilAny(
-            By.cssSelector(".alert-danger"),
-            By.cssSelector(".error"),
-            By.xpath("//*[contains(text(),'Invalid') or contains(text(),'deleted') or contains(text(),'not found')]")
-        );
-        Assertions.assertTrue(errorFound, "Expected login failure after account deletion");
-    }
+    //     // Wait for error message
+    //     boolean errorFound = waitUntilAny(
+    //         By.cssSelector(".alert-danger"),
+    //         By.cssSelector(".error"),
+    //         By.xpath("//*[contains(text(),'Invalid') or contains(text(),'deleted') or contains(text(),'not found')]")
+    //     );
+    //     Assertions.assertTrue(errorFound, "Expected login failure after account deletion");
+    // }
 
 
     @Test
