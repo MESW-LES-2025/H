@@ -168,21 +168,14 @@ jobs:
           npx wait-on --timeout 30000 http://localhost:4200
         working-directory: ./frontend
 
-      - name: Install Firefox + geckodriver
+      - name: Install Firefox + geckodriver (snap-compatible)
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox jq
-
-          GECKO_TAG=$(curl -fsSL https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r .tag_name)
-          echo "Latest geckodriver tag: $GECKO_TAG"
-
-          curl -L -o geckodriver.tar.gz \
-            "https://github.com/mozilla/geckodriver/releases/download/${GECKO_TAG}/geckodriver-${GECKO_TAG}-linux64.tar.gz"
-          tar -xzf geckodriver.tar.gz
-          sudo mv geckodriver /usr/local/bin/geckodriver
-          sudo chmod +x /usr/local/bin/geckodriver
-          geckodriver --version
+          sudo apt-get install -y firefox geckodriver
+          which firefox
+          which geckodriver
           firefox --version
+          geckodriver --version
 
 
       - name: Download Backend Artifact
