@@ -187,11 +187,10 @@ jobs:
 
       - name: Set FIREFOX_BIN env variable
         run: |
-          REAL_FIREFOX=$(readlink -f $(which firefox) | grep -o '/.*/firefox')
-          if [ -x "$REAL_FIREFOX" ]; then
-            echo "FIREFOX_BIN=$REAL_FIREFOX" >> $GITHUB_ENV
+          if [ -x /snap/firefox/current/usr/lib/firefox/firefox ]; then
+            echo "FIREFOX_BIN=/snap/firefox/current/usr/lib/firefox/firefox" >> $GITHUB_ENV
           else
-            echo "FIREFOX_BIN=/usr/lib/firefox/firefox" >> $GITHUB_ENV
+            echo "FIREFOX_BIN=$(which firefox)" >> $GITHUB_ENV
           fi
 
       - name: Download Backend Artifact
