@@ -137,7 +137,7 @@ jobs:
     env:
       HEADLESS: "true"
       APP_BASE_URL: "http://localhost:4200"
-      FIREFOX_BIN: "/snap/firefox/current/firefox.launcher"
+      FIREFOX_BIN: "/snap/firefox/current/usr/lib/firefox/firefox"
       WAIT_SECONDS: "25"
 
     steps:
@@ -168,10 +168,19 @@ jobs:
           npx wait-on --timeout 30000 http://localhost:4200
         working-directory: ./frontend
 
-      - name: Install Firefox + geckodriver (snap-compatible)
+      - name: Install Firefox + geckodriver
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox firefox-geckodriver
+          sudo apt-get install -y firefox jq
+
+          GECKO_URL=$(curl -fsSL https://api.github.com/repos/mozilla/geckodriver/releases/latest \
+            | jq -r '.assets[].browser_download_url | select(endswith("linux64.tar.gz"))')
+
+          echo "Downloading: $GECKO_URL"
+          curl -fsSL "$GECKO_URL" | tar -xz
+          sudo mv geckodriver /usr/local/bin/geckodriver
+          sudo chmod +x /usr/local/bin/geckodriver
+
           which firefox
           which geckodriver
           firefox --version
