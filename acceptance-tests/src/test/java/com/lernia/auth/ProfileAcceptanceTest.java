@@ -273,6 +273,15 @@ public class ProfileAcceptanceTest extends BaseAcceptanceTest {
         ));
         Assertions.assertNotNull(confirmBtn, "Confirm delete button not found");
         confirmBtn.click();
+        System.out.println("DEBUG: Clicked confirm delete.");
+        try {
+            Thread.sleep(2000); 
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("DEBUG: Current URL after confirm: " + driver.getCurrentUrl());
+        System.out.println("DEBUG: Page source after confirm:\n" + driver.getPageSource());
 
         // Wait for redirect to landing or confirmation
         wait.until(d -> {
