@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 import { UserViewmodel } from '../profile-page/viewmodels/user-viewmodel';
 import { UniversityLight } from '../universities/viewmodels/university-light';
 import { CourseLight } from '../shared/viewmodels/course-light';
+import { Review } from '../university-page/viewmodels/review';
 
 describe('AdminService', () => {
   let service: AdminService;
@@ -40,7 +41,7 @@ describe('AdminService', () => {
         age: 25,
         gender: 'FEMALE',
         location: 'City A',
-        profileImage: '',
+        profilePicture: '',
         jobTitle: 'Student',
         academicHistory: [],
         userRole: 'REGULAR',
@@ -52,7 +53,7 @@ describe('AdminService', () => {
         age: 30,
         gender: 'MALE',
         location: 'City B',
-        profileImage: '',
+        profilePicture: '',
         jobTitle: 'Engineer',
         academicHistory: [],
         userRole: 'ADMIN',
@@ -133,7 +134,43 @@ describe('AdminService', () => {
     req.flush(mockCourses);
   });
 
-  it('getAll() should call all three endpoints and return aggregated result', (done) => {
+  it('getReviews() should perform GET and return reviews', (done) => {
+    const mockReviews: Review[] = [
+      {
+        id: 1,
+        userId: 1,
+        userName: 'Alice',
+        universityId: 10,
+        courseId: undefined,
+        rating: 5,
+        title: 'Great course!',
+        description: 'Really enjoyed it',
+        reviewDate: '2025-01-01',
+      },
+      {
+        id: 2,
+        userId: 2,
+        userName: 'Bob',
+        universityId: undefined,
+        courseId: 101,
+        rating: 3,
+        title: 'Not bad',
+        description: 'Could be better',
+        reviewDate: '2025-01-02',
+      },
+    ];
+
+    service.getReviews().subscribe((res) => {
+      expect(res).toEqual(mockReviews);
+      done();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/admin/reviews`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockReviews);
+  });
+
+  it('getAll() should call all four endpoints and return aggregated result', (done) => {
     const mockUsers: UserViewmodel[] = [
       {
         id: 1,
@@ -142,7 +179,7 @@ describe('AdminService', () => {
         age: 25,
         gender: 'FEMALE',
         location: 'City A',
-        profileImage: '',
+        profilePicture: '',
         jobTitle: 'Student',
         academicHistory: [],
         userRole: 'REGULAR',
@@ -169,11 +206,25 @@ describe('AdminService', () => {
         universityName: 'Uni A',
       },
     ];
+    const mockReviews = [
+      {
+        id: 1,
+        userId: 1,
+        userName: 'Alice',
+        universityId: 10,
+        courseId: undefined,
+        rating: 5,
+        title: 'Great!',
+        description: 'Awesome university',
+        reviewDate: '2025-01-01',
+      },
+    ];
 
     service.getAll().subscribe((res) => {
       expect(res.users).toEqual(mockUsers);
       expect(res.universities).toEqual(mockUnis);
       expect(res.courses).toEqual(mockCourses);
+      expect(res.reviews).toEqual(mockReviews);
       done();
     });
 
@@ -194,6 +245,12 @@ describe('AdminService', () => {
     );
     expect(reqCourses.request.method).toBe('GET');
     reqCourses.flush(mockCourses);
+
+    const reqReviews = httpMock.expectOne(
+      `${environment.apiUrl}/api/admin/reviews`,
+    );
+    expect(reqReviews.request.method).toBe('GET');
+    reqReviews.flush(mockReviews);
   });
 
   it('deleteUser() should call DELETE and return void', (done) => {

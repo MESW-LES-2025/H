@@ -7,10 +7,11 @@ export interface UserViewmodel {
   age: number;
   gender: string;
   location: string;
-  profileImage: string;
+  profilePicture: string;
   jobTitle: string;
   academicHistory: UserCourse[];
   userRole: string;
+  provider?: string;
 }
 
 export interface FavoriteUniversityDTO {

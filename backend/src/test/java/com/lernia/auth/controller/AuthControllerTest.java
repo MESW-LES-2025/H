@@ -56,8 +56,7 @@ class AuthControllerTest {
         req.setText("userOrEmail");
         req.setPassword("secret");
 
-        LoginResponse serviceResponse =
-                new LoginResponse("Login successful", "success");
+        LoginResponse serviceResponse = new LoginResponse("Login successful", "success");
         serviceResponse.setUser(new UserProfileResponse());
         serviceResponse.getUser().setId(123L);
 
@@ -84,8 +83,7 @@ class AuthControllerTest {
         req.setText("wrong");
         req.setPassword("bad");
 
-        LoginResponse errorResponse =
-                new LoginResponse("Invalid credentials", "error");
+        LoginResponse errorResponse = new LoginResponse("Invalid credentials", "error");
 
         when(authService.login(eq(req), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(errorResponse);
@@ -109,11 +107,9 @@ class AuthControllerTest {
                 "Name",
                 "newuser",
                 "pass123",
-                "new@example.com"
-        );
+                "new@example.com");
 
-        RegisterResponse serviceResponse =
-                new RegisterResponse("User registered", "success");
+        RegisterResponse serviceResponse = new RegisterResponse("User registered", "success");
 
         when(authService.register(any(RegisterRequest.class))).thenReturn(serviceResponse);
 
@@ -136,11 +132,9 @@ class AuthControllerTest {
                 "Name",
                 "existingUser",
                 "pass123",
-                "taken@example.com"
-        );
+                "taken@example.com");
 
-        RegisterResponse errorResponse =
-                new RegisterResponse("Username already taken", "error");
+        RegisterResponse errorResponse = new RegisterResponse("Username already taken", "error");
 
         when(authService.register(req)).thenReturn(errorResponse);
 
@@ -182,7 +176,7 @@ class AuthControllerTest {
         ResponseEntity<?> responseEntity = authController.getCurrentUser(principal);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("id", 5L, "username", "john"), responseEntity.getBody());
+        assertEquals(Map.of("id", 5L, "username", "john", "provider", "LOCAL"), responseEntity.getBody());
         verify(userRepository).findByUsername("john");
     }
 }

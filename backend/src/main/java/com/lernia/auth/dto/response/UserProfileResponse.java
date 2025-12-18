@@ -4,7 +4,6 @@ import com.lernia.auth.entity.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
-
 public class UserProfileResponse {
 
     @Setter
@@ -34,7 +33,14 @@ public class UserProfileResponse {
     @Setter
     @Getter
     private String userRole;
+    @Setter
+    @Getter
+    private String provider;
+    @Setter
+    @Getter
+    private String profilePicture;
 
-    public UserProfileResponse() {}
+    public UserProfileResponse() {
+    }
 
 }

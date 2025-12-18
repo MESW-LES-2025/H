@@ -61,6 +61,17 @@
         </div>
         <div class="col-md-3">
           <div class="card border-0 shadow h-100 stat-card hover-lift"
+            [class.border-danger]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-danger mb-1 stat-number">
+                {{ reviews.length }}
+              </h3>
+              <p class="text-muted mb-0">Reviews</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift"
             [class.border-warning]="activeTab === 'analytics'" (click)="setActiveTab('analytics')">
             <div class="card-body text-center p-4">
               <h3 class="fw-bold text-warning mb-1 stat-number">
@@ -193,12 +204,10 @@
         <div class="card border-0 shadow-lg">
           <div class="card-header bg-gradient-success text-white py-3">
             <div class="d-flex justify-content-between align-items-center">
-              <h4 class="mb-0 fw-bold">
-                <i class="fas fa-university me-2"></i>Universities
-              </h4>
-              <span class="badge bg-light text-dark fs-6 px-3 py-2">{{
-                universities.length
-                }}</span>
+              <h5 class="mb-0">Universities</h5>
+              <button class="btn btn-light btn-sm" (click)="openCreateUniversity()">
+                <i class="bi bi-plus-lg me-1"></i>Create University
+              </button>
             </div>
           </div>
           <div class="card-body p-0">
@@ -213,21 +222,98 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (uni of universities; track uni.id) {
-                  <tr class="table-row-hover">
-                    <td class="fw-medium">{{ uni.id }}</td>
-                    <td class="text-truncate" style="max-width: 250px">
-                      {{ uni.name }}
-                    </td>
-                    <td>{{ uni.description || "N/A" }}</td>
-                    <td>{{ uni.location?.city || "N/A" }}</td>
-                  </tr>
+                  @for (u of universities; track u.id) {
+                    <tr>
+                      <td>{{ u.name }}</td>
+                      <td>{{ u.location?.city || '-' }}</td>
+                      <td>{{ u.location?.country || '-' }}</td>
+                      <td>
+                        @if (u.website) {
+                          <a [href]="u.website" target="_blank" rel="noopener">{{ u.website }}</a>
+                        } @else { - }
+                      </td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditUniversity(u)">
+                          Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteUniversity(u.id)">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                  @if (!universities?.length) {
+                    <tr><td colspan="5" class="text-center text-muted py-4">No universities</td></tr>
                   }
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+
+          <!-- University Form -->
+          <ng-template #universityFormModal let-modal>
+            <div class="modal-header">
+              <h5 class="modal-title">{{ editing ? 'Edit University' : 'Create University' }}</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+            </div>
+            <div class="modal-body">
+              <form (ngSubmit)="saveUniversity(modal)" #uniFormRef="ngForm">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input class="form-control" [(ngModel)]="uniForm.name" name="name" required />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" rows="3" [(ngModel)]="uniForm.description" name="description"></textarea>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Contact Info</label>
+                    <input class="form-control" [(ngModel)]="uniForm.contactInfo" name="contactInfo" />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Website</label>
+                    <input class="form-control" [(ngModel)]="uniForm.website" name="website" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Address</label>
+                    <input class="form-control" [(ngModel)]="uniForm.address" name="address" />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Logo</label>
+                    <input class="form-control" [(ngModel)]="uniForm.logo" name="logo" />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Location ID</label>
+                  <input type="number" class="form-control"
+                         [ngModel]="uniForm.location?.id" (ngModelChange)="uniForm.location = $event ? { id: +$event } : null"
+                         name="locationId" />
+                  <div class="form-text">Provide an existing location id to link city/country.</div>
+                </div>
+                <button class="btn btn-primary" type="submit" [disabled]="!uniFormRef.form.valid">
+                  {{ editing ? 'Save Changes' : 'Create' }}
+                </button>
+              </form>
+            </div>
+          </ng-template>
+
+          <ng-template #confirmUniversityDeleteModal let-modal>
+            <div class="modal-header">
+              <h5 class="modal-title">Confirm Delete</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this university?
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+              <button class="btn btn-danger" (click)="modal.close('confirm')">Delete</button>
+            </div>
+          </ng-template>
         }
 
         <!-- Courses Table -->
@@ -248,10 +334,11 @@
               <table class="table table-hover mb-0 table-sticky-header">
                 <thead class="table-dark">
                   <tr>
-                    <th class="border-0">ID</th>
-                    <th class="border-0">Title</th>
-                    <th class="border-0">Type</th>
-                    <th class="border-0">University</th>
+                    <th style="width: 30%">Name</th>
+                    <th style="width: 20%">City</th>
+                    <th style="width: 20%">Country</th>
+                    <th style="width: 20%">Website</th>
+                    <th style="width: 10%" class="text-end">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -263,6 +350,67 @@
                     </td>
                     <td>{{ course.courseType || "N/A" }}</td>
                     <td>{{ course.universityName || "N/A" }}</td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Reviews Table -->
+        @if (activeTab === "reviews") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-danger text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 fw-bold text-dark">
+                <i class="fas fa-comments me-2"></i>Reviews Management
+              </h4>
+              <span class="badge bg-light text-dark fs-6 px-3 py-2">{{ reviews.length }}</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive table-container">
+              <table class="table table-hover mb-0 table-sticky-header">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="border-0">ID</th>
+                    <th class="border-0">User</th>
+                    <th class="border-0">Type</th>
+                    <th class="border-0">Course</th>
+                    <th class="border-0">University</th>
+                    <th class="border-0">Rating</th>
+                    <th class="border-0">Title</th>
+                    <th class="border-0">Comment</th>
+                    <th class="border-0">Date</th>
+                    <th class="border-0 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (review of reviews; track review.id) {
+                  <tr>
+                    <td>{{ review.id }}</td>
+                    <td>{{ review.userName }}</td>
+                    <td>
+                      {{ review.courseId ? 'Course' : 'University' }}
+                    </td>
+                    <td>
+                      {{ review.courseId ? getCourseName(review.courseId) : '-' }}
+                    </td>
+                    <td>
+                      {{ review.universityId ? getUniversityName(review.universityId) : '-' }}
+                    </td>
+                    <td>{{ review.rating }}</td>
+                    <td>{{ review.title }}</td>
+                    <td>{{ review.description }}</td>
+                    <td>{{ review.reviewDate | date }}</td>
+                    <td class="text-center">
+                      <button class="btn btn-sm btn-outline-danger"
+                        (click)="openDeleteReviewModal(review.id, deleteReviewModal)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    </td>
                   </tr>
                   }
                 </tbody>
@@ -407,4 +555,24 @@
       }
     </div>
   </div>
+
+  <ng-template #deleteReviewModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Confirm Deletion</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Are you sure you want to delete this review? This action cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('confirm')">
+        Delete
+      </button>
+    </div>
+  </ng-template>
 </div>
