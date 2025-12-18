@@ -330,13 +330,31 @@ public class ProfileAcceptanceTest extends BaseAcceptanceTest {
         // Scenario: View Favorites in Profile (US20)
         loginAsTestUser();
 
-        driver.get(baseUrl + "/profile");
-        wait.until(d -> d.getCurrentUrl().contains("/profile"));
+        driver.get(baseUrl + "/profile/1");
+        wait.until(d -> d.getCurrentUrl().contains("/profile/1"));
 
-        WebElement favoritesSection = findAny(By.cssSelector(".favorites-section"), By.xpath("//*[contains(text(),'Favorites')]"));
-        Assertions.assertNotNull(favoritesSection, "Favorites section not found");
+        // Check for favorite universities
+        WebElement universitiesTab = wait.until(d -> d.findElement(
+            By.xpath("//button[contains(.,'Universities') and contains(@class,'active')]")
+        ));
+        Assertions.assertNotNull(universitiesTab, "Universities tab not active");
 
-        WebElement favoriteCourse = findAny(By.cssSelector(".favorite-course"), By.xpath("//*[contains(@class,'favorite-course')]"));
+        WebElement favoriteUniversity = findAny(
+            By.cssSelector(".card.h-100"),
+            By.xpath("//div[contains(@class,'card') and contains(@class,'h-100')]")
+        );
+        Assertions.assertNotNull(favoriteUniversity, "No favorite universities found");
+
+        // check for favorite courses
+        WebElement coursesTab = wait.until(d -> d.findElement(
+            By.xpath("//button[contains(.,'Courses')]")
+        ));
+        coursesTab.click();
+
+        WebElement favoriteCourse = findAny(
+            By.cssSelector(".course-card"),
+            By.xpath("//article[contains(@class,'course-card')]")
+        );
         Assertions.assertNotNull(favoriteCourse, "No favorite courses found");
     }
 }

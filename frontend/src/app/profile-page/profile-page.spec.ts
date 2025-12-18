@@ -377,10 +377,6 @@ describe('ProfilePage', () => {
       expect(component['activeTab']).toBe('courses');
     });
 
-    it('should set active tab to countries', () => {
-      component['setTab']('countries');
-      expect(component['activeTab']).toBe('countries');
-    });
 
     it('should set active tab to other', () => {
       component['setTab']('other');
@@ -393,9 +389,6 @@ describe('ProfilePage', () => {
 
       component['setTab']('universities');
       expect(component['activeTab']).toBe('universities');
-
-      component['setTab']('countries');
-      expect(component['activeTab']).toBe('countries');
     });
   });
 

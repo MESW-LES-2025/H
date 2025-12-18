@@ -76,7 +76,8 @@ export class UniversityPage implements OnInit {
     if (!this.isFavorite) {
       this.exploreService.addFavoriteUniversity(uniId).subscribe({
         next: () => (this.isFavorite = true),
-        error: () => {
+        error: (err) => {
+          console.error('Could not add to favorites:', err);
           this.message = 'Could not add to favorites. Please try again.';
           this.messageType = 'error';
           setTimeout(() => {
@@ -88,7 +89,8 @@ export class UniversityPage implements OnInit {
     } else {
       this.exploreService.removeFavoriteUniversity(uniId).subscribe({
         next: () => (this.isFavorite = false),
-        error: () => {
+        error: (err) => {
+          console.error('Could not remove from favorites:', err);
           this.message = 'Could not remove from favorites. Please try again.';
           this.messageType = 'error';
           setTimeout(() => {

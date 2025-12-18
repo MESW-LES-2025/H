@@ -154,9 +154,8 @@ public class RegisterAcceptanceTest extends BaseAcceptanceTest {
     @Test
     public void testRegisterWithExistingEmail_ATC06() {
         // ATC-06: Sign Up with Existing Email (US05)
-        String existingEmail = "existing.user@lernia.com";
-        String username = "existinguser" + System.currentTimeMillis();
-        String password = "ValidPass123!";
+        String existingEmail = "alice@example.com";
+        String password = "pass12345";
 
         driver.get(baseUrl + "/register");
         WebElement usernameField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='username']")));
@@ -166,7 +165,7 @@ public class RegisterAcceptanceTest extends BaseAcceptanceTest {
         WebElement submitButton = findAny(By.cssSelector("button.primary[type='submit']"));
 
         usernameField.clear();
-        usernameField.sendKeys(username);
+        usernameField.sendKeys("existinguser");
         emailField.clear();
         emailField.sendKeys(existingEmail);
         passwordField.clear();
