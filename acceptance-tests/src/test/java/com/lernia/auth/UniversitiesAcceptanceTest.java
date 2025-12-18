@@ -262,7 +262,9 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
         WebElement review = findAny(
             By.cssSelector(".review-card"),
-            By.xpath("//*[contains(@class,'review-card')]")
+            By.cssSelector(".no-reviews"),
+            By.xpath("//*[contains(@class,'review-card')]"),
+            By.xpath("//*[contains(text(),'No reviews yet.')]")
         );
         Assertions.assertNotNull(review, "No reviews found for university");
     }

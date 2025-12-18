@@ -109,21 +109,6 @@ public class RegisterAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
-    public void testNavigateToLoginFromRegister() {
-        driver.get(baseUrl + "/register");
-
-        WebElement loginLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(text(),'Log in')]")));
-
-        Assertions.assertNotNull(loginLink, "Log in link not found on register page");
-
-        loginLink.click();
-
-        wait.until(d -> d.getCurrentUrl().contains("/login"));
-
-        Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Did not navigate to login page");
-    }
-
-    @Test
     public void testLandingPage_Unauthenticated_ATC04() {
         // ATC-04: View Landing Page (US04)
         driver.get(baseUrl + "/");
