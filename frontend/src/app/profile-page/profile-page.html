@@ -42,6 +42,10 @@
             }
           </h1>
           <p class="text-muted mb-1">
+            <i class="bi bi-envelope-fill me-1"></i>
+            {{ user.email }}
+          </p>
+          <p class="text-muted mb-1">
             <i class="bi bi-geo-alt-fill me-1"></i>
             {{ user.location ? user.location : "Location not set" }}
           </p>
@@ -160,41 +164,34 @@
 
   <!-- Courses Tab -->
   @if (activeTab === "courses") {
-  <div class="row g-4 mb-5">
+  <div class="cards">
     @if (courses.length > 0) {
     @for (course of courses; track course.id) {
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 position-relative transition-hover">
-        <div class="card-body pb-5 pt-4">
-          <div class="d-flex align-items-start mb-3">
-            <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
-              <i class="bi bi-journal-text text-primary" style="font-size: 1.5rem"></i>
-            </div>
-            <div class="flex-grow-1">
-              <h5 class="card-title fw-semibold mb-1" style="color: #2c3e50">
-                {{ course.name }}
-              </h5>
-              <p class="card-text text-muted small mb-0">
-                <i class="bi bi-tag me-1"></i>
-                {{ course.type }}
-              </p>
-            </div>
-          </div>
+    <article class="course-card" tabindex="0" role="button">
+      <div class="card-top">
+        <div class="badges">
+          <span class="badge type">{{ course.type }}</span>
         </div>
-        <button class="btn btn-light rounded-circle shadow-sm position-absolute transition-scale"
-          style="width: 42px; height: 42px; bottom: 12px; right: 12px" [style.border]="
-                    course.isFavorite
-                      ? '2px solid rgba(201, 42, 42, 0.2)'
-                      : '2px solid rgba(153, 153, 153, 0.2)'
-                  " aria-label="Toggle favourite" (click)="
-                    toggleCourseFavorite(course); $event.stopPropagation()
-                  ">
-          <i [class]="
-                      course.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'
-                    " [style.color]="course.isFavorite ? '#c92a2a' : '#999'" style="font-size: 1.1rem"></i>
+        <div class="price">
+          <span class="price-value">€{{ course.cost ?? '—' }}</span>
+          <span class="price-sub">/ year</span>
+        </div>
+      </div>
+      <h3 class="title">{{ course.name }}</h3>
+      <p class="uni"><i class="bi bi-building"></i> {{ course.universityName ?? '' }}</p>
+      <p class="desc">{{ course.description }}</p>
+      <div class="actions">
+        <a class="btn-primary" [routerLink]="['/course', course.id]">
+          View details
+          <i class="bi bi-arrow-right"></i>
+        </a>
+        <button class="btn btn-light rounded-circle shadow-sm ms-auto"
+          style="width: 38px; height: 38px; border: 2px solid rgba(201, 42, 42, 0.2);"
+          aria-label="Remove favourite course" (click)="toggleCourseFavorite(course)">
+          <i class="bi bi-heart-fill" style="color: #c92a2a; font-size: 1.1rem"></i>
         </button>
       </div>
-    </div>
+    </article>
     }
     } @else {
     <div class="col-12">

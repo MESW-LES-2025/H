@@ -34,8 +34,7 @@ public class FavoritesService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "User not found: " + userId
-                ));
+                        "User not found: " + userId));
     }
 
     // ------------- COURSES -------------
@@ -104,16 +103,14 @@ public class FavoritesService {
                     loc.getId(),
                     loc.getCity(),
                     loc.getCountry(),
-                    loc.getCostOfLiving()
-            );
+                    loc.getCostOfLiving());
         }
 
         return new UniversityDTOLight(
                 university.getId(),
                 university.getName(),
                 university.getDescription(),
-                locationDTO
-        );
+                locationDTO);
     }
 
     private CourseLightDTO toCourseLight(CourseEntity course) {
@@ -127,7 +124,8 @@ public class FavoritesService {
                 course.getName(),
                 course.getCourseType(),
                 universityName,
-                course.getCost()
-        );
+                course.getCost(),
+                course.getCredits(),
+                course.getDescription());
     }
 }

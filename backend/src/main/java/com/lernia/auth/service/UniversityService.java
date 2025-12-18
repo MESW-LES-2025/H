@@ -26,80 +26,87 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UniversityService {
-    private final UniversityRepository universityRepository;
-    private final CourseRepository courseRepository;
-    private final ScholarshipRepository scholarshipRepository;
-    private final UniversityMapper universityMapper;
+        private final UniversityRepository universityRepository;
+        private final CourseRepository courseRepository;
+        private final ScholarshipRepository scholarshipRepository;
+        private final UniversityMapper universityMapper;
 
-    public List<String> getAllCountries() {
-        return universityRepository.findDistinctCountries();
-    }
+        public List<String> getAllCountries() {
+                return universityRepository.findDistinctCountries();
+        }
 
-    public UniversityDTOLight getUniversityById(Long id) {
-        return universityRepository.findById(id)
-                .map(universityMapper::toDTOLight).orElseThrow();
-    }
+        public UniversityDTOLight getUniversityById(Long id) {
+                return universityRepository.findById(id)
+                                .map(universityMapper::toDTOLight).orElseThrow();
+        }
 
-    public Page<UniversityDTOLight> getUniversitiesByFilter(UniversityFilter filter, Pageable pageable) {
-        Specification<UniversityEntity> spec = UniversitySpecification.filter(filter);
+        public Page<UniversityDTOLight> getUniversitiesByFilter(UniversityFilter filter, Pageable pageable) {
+                Specification<UniversityEntity> spec = UniversitySpecification.filter(filter);
 
-        return universityRepository.findAll(spec, pageable)
-                .map(university -> new UniversityDTOLight(
-                        university.getId(),
-                        university.getName(),
-                        university.getDescription(),
-                        university.getLocation() != null ? new LocationDTO(
-                                university.getLocation().getId(),
-                                university.getLocation().getCity(),
-                                university.getLocation().getCountry(),
-                                university.getLocation().getCostOfLiving()) : null));
-    }
+                return universityRepository.findAll(spec, pageable)
+                                .map(university -> new UniversityDTOLight(
+                                                university.getId(),
+                                                university.getName(),
+                                                university.getDescription(),
+                                                university.getLocation() != null ? new LocationDTO(
+                                                                university.getLocation().getId(),
+                                                                university.getLocation().getCity(),
+                                                                university.getLocation().getCountry(),
+                                                                university.getLocation().getCostOfLiving()) : null));
+        }
 
-    public UniversityDTO getUniversityDetailsById(Long id) {
-        return universityRepository.findById(id)
-                .map(university -> {
-                    List<CourseEntity> courseEntities = courseRepository.findAll()
-                            .stream()
-                            .filter(course -> course.getUniversity().getId().equals(id))
-                            .toList();
+        public UniversityDTO getUniversityDetailsById(Long id) {
+                return universityRepository.findById(id)
+                                .map(university -> {
+                                        List<CourseEntity> courseEntities = courseRepository.findAll()
+                                                        .stream()
+                                                        .filter(course -> course.getUniversity().getId().equals(id))
+                                                        .toList();
 
-                    List<CourseLightDTO> courses = courseEntities.stream()
-                            .map(course -> new CourseLightDTO(
-                                    course.getId(),
-                                    course.getName(),
-                                    course.getCourseType(),
-                                    course.getUniversity() != null ? course.getUniversity().getName() : null,
-                                    course.getCost()))
-                            .toList();
+                                        List<CourseLightDTO> courses = courseEntities.stream()
+                                                        .map(course -> new CourseLightDTO(
+                                                                        course.getId(),
+                                                                        course.getName(),
+                                                                        course.getCourseType(),
+                                                                        course.getUniversity() != null
+                                                                                        ? course.getUniversity()
+                                                                                                        .getName()
+                                                                                        : null,
+                                                                        course.getCost(),
+                                                                        course.getCredits(),
+                                                                        course.getDescription()))
+                                                        .toList();
 
-                    List<ScholarshipEntity> scholarshipEntities = scholarshipRepository.findByUniversityId(id);
+                                        List<ScholarshipEntity> scholarshipEntities = scholarshipRepository
+                                                        .findByUniversityId(id);
 
-                    List<ScholarshipDTO> scholarships = scholarshipEntities.stream()
-                            .map(scholarship -> new ScholarshipDTO(
-                                    scholarship.getId(),
-                                    scholarship.getName(),
-                                    scholarship.getDescription(),
-                                    scholarship.getAmount(),
-                                    scholarship.getCourseType()))
-                            .toList();
+                                        List<ScholarshipDTO> scholarships = scholarshipEntities.stream()
+                                                        .map(scholarship -> new ScholarshipDTO(
+                                                                        scholarship.getId(),
+                                                                        scholarship.getName(),
+                                                                        scholarship.getDescription(),
+                                                                        scholarship.getAmount(),
+                                                                        scholarship.getCourseType()))
+                                                        .toList();
 
-                    return new UniversityDTO(
-                            university.getId(),
-                            university.getName(),
-                            university.getDescription(),
-                            university.getContactInfo(),
-                            university.getWebsite(),
-                            university.getAddress(),
-                            university.getLogo(),
-                            university.getLocation() != null ? new LocationDTO(
-                                    university.getLocation().getId(),
-                                    university.getLocation().getCity(),
-                                    university.getLocation().getCountry(),
-                                    university.getLocation().getCostOfLiving()) : null,
-                            courses,
-                            scholarships);
-                })
-                .orElse(null);
-    }
+                                        return new UniversityDTO(
+                                                        university.getId(),
+                                                        university.getName(),
+                                                        university.getDescription(),
+                                                        university.getContactInfo(),
+                                                        university.getWebsite(),
+                                                        university.getAddress(),
+                                                        university.getLogo(),
+                                                        university.getLocation() != null ? new LocationDTO(
+                                                                        university.getLocation().getId(),
+                                                                        university.getLocation().getCity(),
+                                                                        university.getLocation().getCountry(),
+                                                                        university.getLocation().getCostOfLiving())
+                                                                        : null,
+                                                        courses,
+                                                        scholarships);
+                                })
+                                .orElse(null);
+        }
 
 }

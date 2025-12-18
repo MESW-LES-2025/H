@@ -11,4 +11,6 @@ public class CourseLightDTO {
   private String courseType;
   private String universityName;
   private Integer cost;
+  private Integer credits;
+  private String description;
 }

@@ -32,9 +32,9 @@ export interface FavoriteCourseDTO {
   id: number;
   name: string;
   courseType: string;
+  universityName?: string;
   cost?: number;
   credits?: number;
-  university?: { name: string };
   description?: string;
 }
 
