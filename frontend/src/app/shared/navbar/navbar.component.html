@@ -41,6 +41,17 @@
     <a class="nav-link" routerLink="/about" routerLinkActive="active">
       About Us
     </a>
+
+    <!-- Admin link - show for ADMIN users -->
+    <a
+      *ngIf="userRole === 'ADMIN'"
+      class="nav-link admin-link"
+      routerLink="/admin"
+      routerLinkActive="active"
+    >
+      <i class="bi bi-shield-lock-fill me-1"></i>
+      Admin
+    </a>
   </nav>
 
   <!-- DIREITA: ÍCONES -->
