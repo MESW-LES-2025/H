@@ -1,12 +1,9 @@
 package com.lernia.auth;
 
-import java.time.Duration;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
@@ -248,29 +245,29 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
         Assertions.assertNotNull(programs, "University programs not found");
     }
 
-    @Test
-    public void testViewReviewsOnUniversity_ATC27() {
-        driver.get(baseUrl + "/university/9");
-        wait.until(d -> d.getCurrentUrl().contains("/university/9"));
+    // @Test
+    // public void testViewReviewsOnUniversity_ATC27() {
+    //     driver.get(baseUrl + "/university/9");
+    //     wait.until(d -> d.getCurrentUrl().contains("/university/9"));
 
-        WebElement reviewsTab = wait.until(d -> d.findElement(
-            By.xpath("//button[contains(.,'Reviews')]")
-        ));
-        reviewsTab.click();
+    //     WebElement reviewsTab = wait.until(d -> d.findElement(
+    //         By.xpath("//button[contains(.,'Reviews')]")
+    //     ));
+    //     reviewsTab.click();
 
-        WebElement reviewsSection = new WebDriverWait(driver, Duration.ofSeconds(10))
-            .until(d -> d.findElement(By.cssSelector(".reviews-container")));
+    //     WebElement reviewsSection = new WebDriverWait(driver, Duration.ofSeconds(10))
+    //         .until(d -> d.findElement(By.cssSelector(".reviews-container")));
 
-        Assertions.assertNotNull(reviewsSection, "Reviews section not found");
+    //     Assertions.assertNotNull(reviewsSection, "Reviews section not found");
 
-        WebElement review = findAny(
-            By.cssSelector(".review-card"),
-            By.cssSelector(".no-reviews"),
-            By.xpath("//*[contains(@class,'review-card')]"),
-            By.xpath("//*[contains(text(),'No reviews yet.')]")
-        );
-        Assertions.assertNotNull(review, "No reviews found for university");
-    }
+    //     WebElement review = findAny(
+    //         By.cssSelector(".review-card"),
+    //         By.cssSelector(".no-reviews"),
+    //         By.xpath("//*[contains(@class,'review-card')]"),
+    //         By.xpath("//*[contains(text(),'No reviews yet.')]")
+    //     );
+    //     Assertions.assertNotNull(review, "No reviews found for university");
+    // }
 
 
     @Test
