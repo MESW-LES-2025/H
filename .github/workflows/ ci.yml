@@ -137,7 +137,6 @@ jobs:
     env:
       HEADLESS: "true"
       APP_BASE_URL: "http://localhost:4200"
-      FIREFOX_BIN: "/snap/firefox/current/usr/lib/firefox/firefox"
       WAIT_SECONDS: "25"
 
     steps:
