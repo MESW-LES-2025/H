@@ -315,7 +315,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/profile/${userId}/update-profile`,
+        `${environment.apiUrl}/api/users/${userId}`,
       );
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(userData);
@@ -336,7 +336,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/profile/${userId}/update-profile`,
+        `${environment.apiUrl}/api/users/${userId}`,
       );
       req.error(new ProgressEvent('error'), { status: 400 });
     });
