@@ -240,7 +240,21 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
         loginAsTestUser();
 
         driver.get(baseUrl + "/course/1");
-        wait.until(d -> d.getCurrentUrl().contains("/course/1"));
+        String currentUrl = driver.getCurrentUrl();
+        System.out.println("Navigated to: " + currentUrl);
+
+        Assertions.assertTrue(
+            currentUrl.contains("/course/1"),
+            "Failed to open course page: expected URL to contain /course/1 but was " + currentUrl
+        );
+
+        try {
+            wait.until(d -> d.findElement(By.cssSelector(".container-course")));
+            System.out.println("Course page loaded!");
+        } catch (Exception e) {
+            System.out.println("Course page did not load. Page source:\n" + driver.getPageSource());
+            Assertions.fail("Course page did not load: .container-course not found");
+        }
 
         WebElement favBtn = wait.until(d -> d.findElement(By.cssSelector(".btn-save-course")));
         favBtn.click();

@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
@@ -255,9 +259,9 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
         ));
         reviewsTab.click();
 
-        WebElement reviewsSection = wait.until(d -> d.findElement(
-            By.cssSelector(".reviews-container")
-        ));
+        WebElement reviewsSection = new WebDriverWait(driver, Duration.ofSeconds(10))
+            .until(d -> d.findElement(By.cssSelector(".reviews-container")));
+
         Assertions.assertNotNull(reviewsSection, "Reviews section not found");
 
         WebElement review = findAny(
