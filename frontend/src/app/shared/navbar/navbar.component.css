@@ -233,7 +233,24 @@
   transform: rotate(180deg);
 }
 
+/* ================= ADMIN LINK ================= */
+.admin-link {
+  background: #0a8fcc;
+  color: #fff !important;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.5em 1.2em;
+  box-shadow: 0 2px 12px rgba(69, 80, 233, 0.18);
+  margin-left: 12px;
+  transition: filter 0.18s;
+}
 
+.admin-link:hover,
+.admin-link.active {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 18px rgba(23, 101, 219, 0.28);
+  text-decoration: none;
+}
 
 /* ================= RESPONSIVO ================= */
 
