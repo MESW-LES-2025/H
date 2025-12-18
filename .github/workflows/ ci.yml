@@ -186,7 +186,9 @@ jobs:
           firefox --version
           geckodriver --version
 
-
+      - name: Set FIREFOX_BIN env variable
+        run: echo "FIREFOX_BIN=$(which firefox)" >> $GITHUB_ENV
+        
       - name: Download Backend Artifact
         uses: actions/download-artifact@v4
         with:

@@ -44,12 +44,11 @@ public class BaseAcceptanceTest {
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-
-        driver = new FirefoxDriver(options);
         String firefoxBin = System.getenv("FIREFOX_BIN");
         if (firefoxBin != null && !firefoxBin.isBlank()) {
             options.setBinary(firefoxBin);
         }
+        driver = new FirefoxDriver(options);
 
         wait = new WebDriverWait(driver, Duration.ofSeconds(waitSeconds));
     }
