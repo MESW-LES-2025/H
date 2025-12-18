@@ -1,13 +1,12 @@
 package com.lernia.auth;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
@@ -251,8 +250,8 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     public void testViewReviewsOnUniversity_ATC27() {
-        driver.get(baseUrl + "/university/1");
-        wait.until(d -> d.getCurrentUrl().contains("/university/1"));
+        driver.get(baseUrl + "/university/2");
+        wait.until(d -> d.getCurrentUrl().contains("/university/2"));
 
         WebElement reviewsTab = wait.until(d -> d.findElement(
             By.xpath("//button[contains(.,'Reviews')]")

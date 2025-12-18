@@ -239,13 +239,13 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
         // Scenario: Add Course to Favorites (US20)
         loginAsTestUser();
 
-        driver.get(baseUrl + "/course/1");
+        driver.get(baseUrl + "/course/2");
         String currentUrl = driver.getCurrentUrl();
         System.out.println("Navigated to: " + currentUrl);
 
         Assertions.assertTrue(
-            currentUrl.contains("/course/1"),
-            "Failed to open course page: expected URL to contain /course/1 but was " + currentUrl
+            currentUrl.contains("/course/2"),
+            "Failed to open course page: expected URL to contain /course/2 but was " + currentUrl
         );
 
         try {
@@ -256,7 +256,7 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
             Assertions.fail("Course page did not load: .container-course not found");
         }
 
-        WebElement favBtn = wait.until(d -> d.findElement(By.cssSelector(".btn-save-course")));
+        WebElement favBtn = wait.until(d -> d.findElement(By.cssSelector("button.btn.btn-save-course")));
         favBtn.click();
 
         WebElement favIcon = favBtn.findElement(By.cssSelector("i"));
@@ -267,25 +267,21 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
             "Favorite icon did not become filled"
         );
 
-        WebElement profileBtn = wait.until(d -> d.findElement(By.cssSelector(".navbar-actions .icon-btn")));
+        WebElement profileBtn = wait.until(d -> d.findElement(By.cssSelector(".navbar-actions .icon-btn[aria-label='Profile']")));
         profileBtn.click();
         wait.until(d -> d.getCurrentUrl().contains("/profile"));
 
         WebElement coursesTab = wait.until(d -> findAny(
-            By.cssSelector(".nav-link[aria-controls*='courses']"),
-            By.xpath("//button[contains(.,'Courses')]"),
-            By.xpath("//a[contains(.,'Courses')]")
+            By.xpath("//button[contains(.,'Courses')]")
         ));
         coursesTab.click();
-        String expectedCourseName = "BSc Computing"; 
+        String expectedCourseName = "MEng Aeronautical Engineering"; 
         wait.until(d -> {
             for (WebElement card : d.findElements(By.cssSelector(".course-card"))) {
-                try {
                     WebElement title = card.findElement(By.cssSelector(".title"));
                     if (title.getText().trim().equalsIgnoreCase(expectedCourseName)) {
                         return true;
                     }
-                } catch (Exception ignored) {}
             }
             return false;
         });
