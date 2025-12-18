@@ -344,9 +344,8 @@ describe('ProfilePage', () => {
         'Failed to update profile:',
         jasmine.any(Error),
       );
-      expect(window.alert).toHaveBeenCalledWith(
-        'Failed to update profile. Please try again.',
-      );
+      expect(component['confirmationType']).toBe('error');
+      expect(component['confirmationMessage']).toBe('Failed to update profile. Please try again.');
     });
 
     it('should keep modal open on update error', () => {
@@ -409,70 +408,59 @@ describe('ProfilePage', () => {
 
     afterEach(() => {
       localStorage.clear();
+      sessionStorage.clear();
     });
 
-    it('should not delete if user is null', () => {
+    it('should not show modal if user is null', () => {
       component['user'] = null;
       component['confirmDelete']();
-
-      expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
+      expect(component['showDeleteModal']).toBeFalse();
     });
 
-    it('should not delete if not owner', () => {
-      mockAuthService.getCurrentUserId.and.returnValue(999); // Different user
-      spyOn(window, 'confirm'); // Add this to prevent confirm dialog
-
+    it('should not show modal if not owner', () => {
+      mockAuthService.getCurrentUserId.and.returnValue(999); // Not owner
       component['confirmDelete']();
-
-      expect(window.confirm).not.toHaveBeenCalled(); // Confirm should not even be called
-      expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
+      expect(component['showDeleteModal']).toBeFalse();
     });
 
-    it('should not delete if user cancels confirmation', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
-
+    it('should show the delete confirmation modal when confirmDelete is called', () => {
+      component['user'] = mockUser;
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
       component['confirmDelete']();
-
-      expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
+      expect(component['showDeleteModal']).toBeTrue();
     });
 
-    it('should show confirmation dialog with correct message', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
-
-      component['confirmDelete']();
-
-      expect(window.confirm).toHaveBeenCalledWith(
-        'Are you sure you want to delete your account? This action cannot be undone.',
-      );
+    it('should close the modal when onCancelDelete is called', () => {
+      component['showDeleteModal'] = true;
+      component['onCancelDelete']();
+      expect(component['showDeleteModal']).toBeFalse();
     });
 
-    it('should not clean up localStorage on delete error', () => {
-      spyOn(console, 'error');
-      spyOn(window, 'confirm').and.returnValue(true);
-      spyOn(window, 'alert');
-      spyOn(localStorage, 'removeItem');
-      mockProfileService.deleteAccount.and.returnValue(
-        throwError(() => new Error('Delete failed')),
-      );
+  it('should call deleteAccount and logout on confirm', () => {
+    mockProfileService.deleteAccount.and.returnValue(of(void 0));
+    spyOn(sessionStorage, 'setItem');
+    component['user'] = mockUser;
+    mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+    component['showDeleteModal'] = true;
 
-      component['confirmDelete']();
+    component['onConfirmDelete']();
 
-      expect(localStorage.removeItem).not.toHaveBeenCalled();
-    });
+    expect(component['showDeleteModal']).toBeFalse();
+    expect(mockProfileService.deleteAccount).toHaveBeenCalledWith(mockUser.id);
+    expect(sessionStorage.setItem).toHaveBeenCalledWith('accountDeleted', 'Your account has been deleted.');
+    expect(mockAuthService.logout).toHaveBeenCalled();
+  });
 
-    it('should alert and logout on successful delete', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
-      spyOn(window, 'alert');
+    it('should show error message on delete error', () => {
+      mockProfileService.deleteAccount.and.returnValue(throwError(() => new Error('Delete failed')));
+      component['user'] = mockUser;
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      component['showDeleteModal'] = true;
 
-      mockProfileService.deleteAccount.and.returnValue(of(void 0));
+      component['onConfirmDelete']();
 
-      component['confirmDelete']();
-
-      expect(mockProfileService.deleteAccount).toHaveBeenCalled();
-      expect(window.alert).toHaveBeenCalledWith(
-        'Account deleted successfully.',
-      );
-      expect(mockAuthService.logout).toHaveBeenCalled();
+      expect(component['confirmationType']).toBe('error');
+      expect(component['confirmationMessage']).toBe('Failed to delete account. Please try again.');
     });
   });
 
@@ -1001,4 +989,6 @@ describe('ProfilePage', () => {
       expect(component.isOwner).toBeFalse();
     });
   });
+
+
 });
