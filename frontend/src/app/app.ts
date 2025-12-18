@@ -4,13 +4,14 @@ import { filter } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { FooterComponent } from './shared/footer/footer.component';
 import { DataService } from './shared/services/data-service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

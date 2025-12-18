@@ -27,7 +27,7 @@
                 height: 120px;
                 object-fit: cover;
                 border: 4px solid white;
-              " [src]="user.profilePicture || '/images/default-avatar.png'" [alt]="user.name || 'User picture'" />
+              " [src]="images/default-avatar.png" [alt]="user.name || 'User picture'" />
         </div>
 
         <!-- Profile Info -->
@@ -216,13 +216,16 @@
   </div>
   }
 
+
   <!-- Delete Account -->
+   @if (isOwner) {
   <div class="text-end mb-5">
     <button class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm" (click)="confirmDelete()">
       <i class="bi bi-trash3 me-2"></i>
       Delete Account
     </button>
   </div>
+  }
 </div>
 }
 
@@ -437,19 +440,3 @@
   </div>
 </div>
 }
-
-<!-- Footer -->
-<footer class="bg-light border-top py-4 mt-5">
-  <div class="container text-center">
-    <div class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.25rem">
-      Lernia.
-    </div>
-    <p class="text-muted small mb-2">
-      <i class="bi bi-mortarboard-fill me-1"></i>
-      Helping students make confident international education decisions.
-    </p>
-    <p class="text-muted mb-0" style="font-size: 0.75rem">
-      © 2025 Lernia • All rights reserved
-    </p>
-  </div>
-</footer>
