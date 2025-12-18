@@ -1,0 +1,135 @@
+<div class="stage">
+    <div class="frame">
+        <img class="hero" src="/hero.png" alt="Graduation hats" />
+
+        <svg class="beige" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M540,0 L1000,0 L1000,700 L540,700
+               C610,610 620,500 560,430
+               C500,360 495,300 560,230
+               C625,160 610,70 540,0 Z" />
+        </svg>
+
+        <div class="panel">
+            <div class="step-indicator">
+                <span class="step completed">1</span>
+                <span class="step-line"></span>
+                <span class="step active">2</span>
+            </div>
+
+            <h1 class="welcome vt-title">
+                <span class="kicker">Almost there!</span>
+                <span class="brandline">Complete Your Profile</span>
+            </h1>
+            <p class="subtitle">Help us personalize your experience (optional)</p>
+
+            @if (error()) {
+            <div class="error-message">{{ error() }}</div>
+            }
+
+            <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()" novalidate>
+                <!-- Profile Fields Section -->
+                <div class="section">
+                    <h3 class="section-title">About You</h3>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label>Age</label>
+                            <div class="field">
+                                <input formControlName="age" type="number" placeholder="Your age" min="16" max="120" />
+                            </div>
+                        </div>
+
+                        <div class="form-group half">
+                            <label>Gender</label>
+                            <div class="field">
+                                <select formControlName="gender">
+                                    @for (opt of genderOptions; track opt.value) {
+                                    <option [value]="opt.value">{{ opt.label }}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label>Location</label>
+                    <div class="field">
+                        <input formControlName="location" type="text" placeholder="City, Country" />
+                    </div>
+
+                    <label>Job Title / Occupation</label>
+                    <div class="field">
+                        <input formControlName="jobTitle" type="text" placeholder="e.g. Student, Software Engineer" />
+                    </div>
+                </div>
+
+                <!-- Education Section -->
+                <div class="section">
+                    <h3 class="section-title">Education Background</h3>
+
+                    <label>Search for courses you've attended</label>
+                    <div class="dropdown-container">
+                        <input type="text" class="form-control dropdown-input" [value]="courseSearchQuery()"
+                            (input)="onCourseSearchInput($event)" (focus)="showCourseDropdown.set(true)"
+                            (blur)="onInputBlur()" placeholder="Type to search courses..." />
+
+                        @if (isSearching()) {
+                        <div class="search-loading">Searching...</div>
+                        }
+
+                        <div class="dropdown-menu"
+                            [class.show]="showCourseDropdown() && courseSearchResults().length > 0">
+                            @for (course of courseSearchResults(); track course.id) {
+                            <div class="dropdown-item" (mousedown)="selectCourse(course)">
+                                <strong>{{ course.name }}</strong>
+                                <small class="text-muted d-block">{{ course.university.name }}</small>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    @if (educationEntries().length > 0) {
+                    <div class="education-list">
+                        @for (entry of educationEntries(); track entry.courseId; let i = $index) {
+                        <div class="education-entry">
+                            <div class="education-header">
+                                <span class="education-name">{{ entry.courseName }}</span>
+                                <button type="button" class="remove-btn" (click)="removeEducation(i)">
+                                    ×
+                                </button>
+                            </div>
+                            <div class="education-dates">
+                                <div class="date-field">
+                                    <label>Start</label>
+                                    <input type="date" [value]="entry.startDate"
+                                        (input)="updateEducationDate(i, 'startDate', $event)" />
+                                </div>
+                                <div class="date-field">
+                                    <label>End</label>
+                                    <input type="date" [value]="entry.endDate"
+                                        (input)="updateEducationDate(i, 'endDate', $event)" />
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="button-row">
+                    <button class="secondary ripple" type="button" (click)="skip()" [disabled]="loading()">
+                        Skip for now
+                    </button>
+                    <button class="primary ripple" type="submit" [disabled]="loading()">
+                        @if (loading()) {
+                        <span class="btn-spinner"></span>
+                        } @else {
+                        Complete Profile
+                        }
+                    </button>
+                </div>
+            </form>
+
+            <a routerLink="/login" class="guest">Go to login <span class="arrow">→</span></a>
+        </div>
+    </div>
+</div>

@@ -78,8 +78,8 @@ public class AuthService {
         user.setUserRole(UserRole.REGULAR);
         user.setCreationDate(LocalDate.now());
 
-        userRepository.save(user);
-        return new RegisterResponse("User registered", "success");
+        UserEntity savedUser = userRepository.save(user);
+        return new RegisterResponse("User registered", "success", savedUser.getId());
     }
 
     public LoginResponse login(LoginRequest req, HttpServletRequest request, HttpServletResponse response) {

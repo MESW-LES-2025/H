@@ -27,6 +27,7 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   message: string;
   status: string;
+  userId?: number;
 }
 
 export interface CsrfResponse {
