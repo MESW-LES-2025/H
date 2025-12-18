@@ -250,8 +250,8 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     public void testViewReviewsOnUniversity_ATC27() {
-        driver.get(baseUrl + "/university/2");
-        wait.until(d -> d.getCurrentUrl().contains("/university/2"));
+        driver.get(baseUrl + "/university/9");
+        wait.until(d -> d.getCurrentUrl().contains("/university/9"));
 
         WebElement reviewsTab = wait.until(d -> d.findElement(
             By.xpath("//button[contains(.,'Reviews')]")
