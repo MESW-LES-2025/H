@@ -37,6 +37,15 @@ public class BaseAcceptanceTest {
             waitSeconds = 10;
         }
         FirefoxOptions options = new FirefoxOptions();
+
+        // Force Firefox binary (important on Ubuntu runners with Snap Firefox)
+        String firefoxBin = System.getenv("FIREFOX_BIN");
+        if (firefoxBin == null || firefoxBin.isBlank()) {
+            // default for Snap Firefox on Ubuntu
+            firefoxBin = "/snap/firefox/current/firefox.launcher";
+        }
+        options.setBinary(firefoxBin);
+
         String headless = System.getenv().getOrDefault("HEADLESS", "false");
         if (!"false".equalsIgnoreCase(headless)) {
             options.addArguments("--headless");
