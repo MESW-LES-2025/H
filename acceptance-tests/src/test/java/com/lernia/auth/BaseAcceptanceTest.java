@@ -46,6 +46,9 @@ public class BaseAcceptanceTest {
         options.addArguments("--disable-dev-shm-usage");
 
         driver = new FirefoxDriver(options);
+        String firefoxBin = System.getenv().getOrDefault("FIREFOX_BIN", "/snap/firefox/current/firefox.launcher");
+        options.setBinary(firefoxBin);
+
         wait = new WebDriverWait(driver, Duration.ofSeconds(waitSeconds));
     }
 

@@ -137,6 +137,9 @@ jobs:
     env:
       HEADLESS: "true"
       APP_BASE_URL: "http://localhost:4200"
+      FIREFOX_BIN: "/snap/firefox/current/firefox.launcher"
+      WAIT_SECONDS: "25"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
