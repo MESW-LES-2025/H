@@ -171,7 +171,7 @@ jobs:
       - name: Install Firefox + geckodriver (snap-compatible)
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox geckodriver
+          sudo apt-get install -y firefox firefox-geckodriver
           which firefox
           which geckodriver
           firefox --version
