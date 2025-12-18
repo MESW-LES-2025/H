@@ -25,7 +25,7 @@ describe('ProfilePage', () => {
     gender: 'MALE',
     location: 'Lisbon',
     jobTitle: 'Developer',
-    profileImage: '/test-image.jpg',
+    profilePicture: '/test-image.jpg',
     academicHistory: [],
     userRole: 'USER',
   };

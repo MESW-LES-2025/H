@@ -18,13 +18,13 @@ INSERT INTO lernia.locations(city, country, cost_of_living) VALUES
 
 
 INSERT INTO lernia.universities (name, description, location_id, contact_info, website, address, logo) VALUES
-    ('Imperial College London', 'Leading science and technology university', 1, '+44-20-7589-5111', 'https://www.imperial.ac.uk', 'South Kensington Campus, London SW7 2AZ', 'imperial_logo.png'),
-    ('Technical University of Berlin', 'Top technical university in Germany', 2, '+49-30-314-0', 'https://www.tu-berlin.de', 'Straße des 17. Juni 135, 10623 Berlin', 'tu_berlin_logo.png'),
-    ('Universitat de Barcelona', 'Historic comprehensive university', 3, '+34-93-403-5474', 'https://www.ub.edu', 'Gran Via de les Corts Catalanes, 585, Barcelona', 'ub_logo.png'),
-    ('University of Amsterdam', 'Premier Dutch research university', 4, '+31-20-525-9111', 'https://www.uva.nl', 'Spui 21, 1012 WX Amsterdam', 'uva_logo.png'),
-    ('Sorbonne University', 'Prestigious French university', 5, '+33-1-40-46-22-11', 'https://www.sorbonne-universite.fr', '21 Rue de l''École de Médecine, 75006 Paris', 'sorbonne_logo.png'),
-    ('University of Vienna', 'Oldest university in German-speaking world', 6, '+43-1-4277-0', 'https://www.univie.ac.at', 'Universitätsring 1, 1010 Wien', 'univie_logo.png'),
-    ('University of Porto', 'Leading Portuguese research university', 7, '+351-22-040-8000', 'https://www.up.pt', 'Praça Gomes Teixeira, 4099-002 Porto', 'up_logo.png');
+    ('Imperial College London', 'Leading science and technology university', 1, '+44-20-7589-5111', 'https://www.imperial.ac.uk', 'South Kensington Campus, London SW7 2AZ', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/imperial_college.png'),
+    ('Technical University of Berlin', 'Top technical university in Germany', 2, '+49-30-314-0', 'https://www.tu-berlin.de', 'Straße des 17. Juni 135, 10623 Berlin', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/TU-Berlin.png'),
+    ('Universitat de Barcelona', 'Historic comprehensive university', 3, '+34-93-403-5474', 'https://www.ub.edu', 'Gran Via de les Corts Catalanes, 585, Barcelona', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/universitat_barcelona.jpg'),
+    ('University of Amsterdam', 'Premier Dutch research university', 4, '+31-20-525-9111', 'https://www.uva.nl', 'Spui 21, 1012 WX Amsterdam', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/university_of_amsterdam.png'),
+    ('Sorbonne University', 'Prestigious French university', 5, '+33-1-40-46-22-11', 'https://www.sorbonne-universite.fr', '21 Rue de l''École de Médecine, 75006 Paris', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/sorbonne_university.png'),
+    ('University of Vienna', 'Oldest university in German-speaking world', 6, '+43-1-4277-0', 'https://www.univie.ac.at', 'Universitätsring 1, 1010 Wien', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/University_of_Vienna.png'),
+    ('University of Porto', 'Leading Portuguese research university', 7, '+351-22-040-8000', 'https://www.up.pt', 'Praça Gomes Teixeira, 4099-002 Porto', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/university_of_porto.png');
 
 
 INSERT INTO lernia.campuses (university_id, name, description, country, city, capacity) VALUES

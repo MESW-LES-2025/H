@@ -1,0 +1,20 @@
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Build artifacts
+target/
+*.class
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
