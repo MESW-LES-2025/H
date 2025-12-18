@@ -12,6 +12,8 @@ export interface UserViewmodel {
   academicHistory: UserCourse[];
   userRole: string;
   provider?: string;
+  premiumStartDate?: string;
+  premium?: boolean;
 }
 
 export interface FavoriteUniversityDTO {

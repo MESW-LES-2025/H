@@ -84,6 +84,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'subscribe',
+    loadComponent: () =>
+      import('./subscription/subscription.component').then(
+        (m) => m.SubscriptionComponent,
+      ),
+  },
+  {
     path: 'admin',
     // TODO: canActivate: [AdminGuard],
     loadComponent: () =>

@@ -133,6 +133,20 @@
   color: white;
 }
 
+/* ================= PREMIUM LINK ================= */
+.premium-link {
+  background: linear-gradient(135deg, #e94560, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.premium-link:hover {
+  transform: scale(1.05);
+}
+
 /* ================= DROPDOWN ================= */
 
 .nav-dropdown {

@@ -1,0 +1,481 @@
+.subscription-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 6rem;
+}
+
+.subscription-container {
+    max-width: 900px;
+    width: 100%;
+}
+
+.page-title {
+    text-align: center;
+    color: #fff;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.page-subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+}
+
+.subscription-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+    padding: 2rem;
+    text-align: center;
+}
+
+.premium-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.premium-badge .icon {
+    font-size: 1.2rem;
+}
+
+.price {
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.price .currency {
+    font-size: 1.5rem;
+    vertical-align: super;
+}
+
+.price .period {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.benefits-section {
+    margin-bottom: 2rem;
+}
+
+.benefits-title {
+    color: #fff;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.benefit-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #1a1a2e;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.benefit-text strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.benefit-text span {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.payment-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+}
+
+.payment-title {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.payment-option {
+    flex: 1;
+    min-width: 150px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.payment-option:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.payment-option.selected {
+    border-color: #e94560;
+    background: rgba(233, 69, 96, 0.1);
+}
+
+.payment-option input {
+    display: none;
+}
+
+.payment-icon {
+    font-size: 1.5rem;
+}
+
+.subscribe-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.subscribe-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+}
+
+.subscribe-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.error-message {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.success-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    padding: 3rem;
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.success-card h2 {
+    color: #00ff88;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.success-card p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.profile-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    border: none;
+    border-radius: 12px;
+    color: #1a1a2e;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+}
+
+.already-premium {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(233, 69, 96, 0.3);
+    padding: 3rem;
+    text-align: center;
+}
+
+.already-premium .premium-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.already-premium h2 {
+    color: #e94560;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.already-premium p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.premium-since {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+/* Credit Card Form Styles */
+.credit-card-form {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-preview {
+    perspective: 1000px;
+    margin-bottom: 1.5rem;
+}
+
+.card-preview-inner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    min-height: 180px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-chip {
+    width: 45px;
+    height: 35px;
+    background: linear-gradient(135deg, #d4af37 0%, #f5d061 50%, #d4af37 100%);
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.card-number-preview {
+    font-size: 1.4rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+
+.card-details-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card-name-preview {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-expiry-preview {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Courier New', monospace;
+}
+
+.card-type-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #e94560;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.form-input.valid {
+    border-color: #00ff88;
+}
+
+.form-input.invalid {
+    border-color: #ff6b6b;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.expiry-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.expiry-inputs .form-input {
+    width: 60px;
+    text-align: center;
+}
+
+.expiry-separator {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.2rem;
+}
+
+.test-card-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 217, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 1rem;
+}
+
+.hint-icon {
+    font-size: 1.1rem;
+}
+
+.processing-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+}
+
+.processing-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #e94560;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.processing-text {
+    margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+.secure-notice {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
