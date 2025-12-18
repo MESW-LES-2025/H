@@ -24,6 +24,8 @@ export class UniversityPage implements OnInit {
 
   protected university: UniversityViewmodel | null = null;
   protected isFavorite: boolean = false;
+  protected message: string | null = null;
+  protected messageType: 'info' | 'error' | null = null;
   active: number = 1;
 
   ngOnInit(): void {
@@ -58,17 +60,44 @@ export class UniversityPage implements OnInit {
   onToggleFavorite(): void {
     if (!this.university) return;
 
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      this.message = 'Please log in to save universities to your favorites.';
+      this.messageType = 'info';
+      setTimeout(() => {
+        this.message = null;
+        this.messageType = null;
+      }, 3000);
+      return;
+    }
+
     const uniId = this.university.id;
 
     if (!this.isFavorite) {
       this.exploreService.addFavoriteUniversity(uniId).subscribe({
         next: () => (this.isFavorite = true),
-        error: (err) => console.error('Error adding favorite:', err),
+        error: (err) => {
+          console.error('Could not add to favorites:', err);
+          this.message = 'Could not add to favorites. Please try again.';
+          this.messageType = 'error';
+          setTimeout(() => {
+            this.message = null;
+            this.messageType = null;
+          }, 3000);
+        },
       });
     } else {
       this.exploreService.removeFavoriteUniversity(uniId).subscribe({
         next: () => (this.isFavorite = false),
-        error: (err) => console.error('Error removing favorite:', err),
+        error: (err) => {
+          console.error('Could not remove from favorites:', err);
+          this.message = 'Could not remove from favorites. Please try again.';
+          this.messageType = 'error';
+          setTimeout(() => {
+            this.message = null;
+            this.messageType = null;
+          }, 3000);
+        },
       });
     }
   }

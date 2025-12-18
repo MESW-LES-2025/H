@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { of, throwError, delay } from 'rxjs';
 import { Page } from '../shared/viewmodels/pagination';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ExploreComponent', () => {
   let component: ExploreComponent;
@@ -62,7 +63,10 @@ describe('ExploreComponent', () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [ExploreComponent],
+      imports: [
+        ExploreComponent,
+        HttpClientTestingModule, // <-- Add this line
+      ],
       providers: [
         { provide: ExploreService, useValue: exploreServiceSpy },
         { provide: DataService, useValue: dataServiceSpy },

@@ -1,4 +1,4 @@
-package com.lernia.auth.acceptance;
+package com.lernia.auth;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -6,11 +6,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class RegisterAcceptanceIT extends BaseAcceptanceIT {
+public class RegisterAcceptanceTest extends BaseAcceptanceTest {
 
 
     @Test
     public void testRegisterPageContainsFields() {
+        System.out.println("Running testRegisterPageContainsFields");
         driver.get(baseUrl + "/register");
 
         WebElement usernameField = wait.until(d -> findAny(
@@ -108,17 +109,58 @@ public class RegisterAcceptanceIT extends BaseAcceptanceIT {
     }
 
     @Test
-    public void testNavigateToLoginFromRegister() {
+    public void testLandingPage_Unauthenticated_ATC04() {
+        // ATC-04: View Landing Page (US04)
+        driver.get(baseUrl + "/");
+        WebElement summary = findAny(
+            By.cssSelector(".hero"),
+            By.cssSelector(".summary"),
+            By.xpath("//*[contains(text(),'Lernia')]"),
+            By.xpath("//*[contains(text(),'study') or contains(text(),'explore')]")
+        );
+        Assertions.assertNotNull(summary, "Landing page summary/hero not found");
+
+        WebElement signUp = findAny(
+            By.xpath("//a[contains(text(),'Sign Up') or contains(text(),'Create Account')]"),
+            By.cssSelector("a[href*='register']")
+        );
+        WebElement logIn = findAny(
+            By.xpath("//a[contains(text(),'Log In')]"),
+            By.cssSelector("a[href*='login']")
+        );
+        Assertions.assertNotNull(signUp, "Sign Up CTA not found");
+        Assertions.assertNotNull(logIn, "Log In CTA not found");
+
+        boolean hasProfile = elementExists(By.cssSelector(".profile-menu")) ||
+                             elementExists(By.xpath("//*[contains(text(),'Favorites')]"));
+        Assertions.assertFalse(hasProfile, "Authenticated-only elements should not be visible");
+    }
+
+    @Test
+    public void testRegisterWithExistingEmail_ATC06() {
+        // ATC-06: Sign Up with Existing Email (US05)
+        String existingEmail = "alice@example.com";
+        String password = "pass12345";
+
         driver.get(baseUrl + "/register");
+        WebElement usernameField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='username']")));
+        WebElement emailField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='email']")));
+        WebElement passwordField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='password']")));
+        WebElement confirmPasswordField = wait.until(d -> findAny(By.cssSelector("input[formcontrolname='confirm']")));
+        WebElement submitButton = findAny(By.cssSelector("button.primary[type='submit']"));
 
-        WebElement loginLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(text(),'Log in')]")));
+        usernameField.clear();
+        usernameField.sendKeys("existinguser");
+        emailField.clear();
+        emailField.sendKeys(existingEmail);
+        passwordField.clear();
+        passwordField.sendKeys(password);
+        confirmPasswordField.clear();
+        confirmPasswordField.sendKeys(password);
+        submitButton.click();
 
-        Assertions.assertNotNull(loginLink, "Log in link not found on register page");
-
-        loginLink.click();
-
-        wait.until(d -> d.getCurrentUrl().contains("/login"));
-
-        Assertions.assertTrue(driver.getCurrentUrl().contains("/login"), "Did not navigate to login page");
+        wait.until(d -> d.getCurrentUrl().contains("/register"));
+        boolean errorFound = waitUntilAny(errorSelectors());
+        Assertions.assertTrue(errorFound, "Expected error message for existing email");
     }
 }

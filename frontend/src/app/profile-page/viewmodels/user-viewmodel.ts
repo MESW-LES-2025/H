@@ -30,6 +30,10 @@ export interface FavoriteCourseDTO {
   id: number;
   name: string;
   courseType: string;
+  cost?: number;
+  credits?: number;
+  university?: { name: string };
+  description?: string;
 }
 
 export interface FavoritesResponse {

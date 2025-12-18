@@ -118,25 +118,59 @@
         class="college-card"
         *ngFor="let c of results()"
         (click)="goToUniversity(c.id)"
-        style="cursor: pointer"
       >
-        <div class="left" [style.backgroundColor]="c.color">
-          <h3>{{ c.title }}</h3>
-          <p>{{ c.blurb }}</p>
-          <div class="meta">
-            <span>📍 {{ c.city }}, {{ c.country }}</span>
-            <span *ngIf="c.costOfLiving > 0"
-              >💰 ${{ c.costOfLiving }}/month</span
+        <!-- LEFT: Info -->
+        <div class="left">
+          <div class="badges-row">
+            <span class="badge country">{{ c.country }}</span>
+            <span class="badge city">{{ c.city }}</span>
+          </div>
+          <h3 class="title">{{ c.title }}</h3>
+          <p class="desc">{{ c.blurb }}</p>
+          <div class="meta-row">
+            <span *ngIf="c.costOfLiving > 0">
+              <i class="bi bi-cash"></i> ${{ c.costOfLiving }}/month
+            </span>
+          </div>
+          <div class="actions-row">
+            <a
+              *ngIf="c.website"
+              [href]="c.website"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-outline"
+              (click)="$event.stopPropagation()"
             >
+              <i class="bi bi-box-arrow-up-right"></i>
+              Website
+            </a>
+            <a
+              *ngIf="c.contactEmail"
+              href="mailto:{{ c.contactEmail }}"
+              class="btn-outline"
+              (click)="$event.stopPropagation()"
+            >
+              <i class="bi bi-envelope"></i>
+              Contact
+            </a>
+            <button
+              class="btn-primary"
+              type="button"
+              (click)="goToUniversity(c.id); $event.stopPropagation()"
+            >
+              View details
+              <i class="bi bi-arrow-right"></i>
+            </button>
           </div>
         </div>
-
+        <!-- RIGHT: Image & Favorite -->
         <div class="right">
           <img [src]="c.photo" [alt]="c.title" />
           <button
+            *ngIf="isLoggedIn"
             class="fav"
             aria-label="Save"
-            (click)="onFavoriteUniversityClick(c, $event)"
+            (click)="onFavoriteUniversityClick(c, $event); $event.stopPropagation()"
             [class.fav-active]="c.isFavorite"
           >
             {{ c.isFavorite ? "❤" : "♡" }}
@@ -145,8 +179,15 @@
       </article>
 
       <div class="load-more" *ngIf="hasMorePages()">
-        <button class="more" (click)="loadMore()" [disabled]="isLoading()">
-          {{ isLoading() ? "Loading..." : "Show more Universities" }}
+        <button
+          class="btn-show-more"
+          (click)="loadMore()"
+          [disabled]="isLoading()"
+        >
+          <span *ngIf="!isLoading()">Show more universities</span>
+          <span *ngIf="isLoading()">
+            <span class="spinner"></span> Loading...
+          </span>
         </button>
       </div>
 

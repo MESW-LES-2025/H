@@ -1,4 +1,28 @@
 <main class="home-page">
+  @if (confirmationMessage) {
+    <div
+      class="alert alert-@{confirmationType ?? 'success'} d-flex align-items-center shadow-sm fade show mt-3"
+      role="alert"
+      style="font-size: 1.1rem; border-radius: 1rem; max-width: 500px; margin: 0 auto;"
+    >
+      <i
+        class="bi me-3 fs-4"
+        [class.bi-check-circle-fill]="confirmationType === 'success'"
+        [class.bi-exclamation-triangle-fill]="confirmationType === 'error'"
+        [style.color]="confirmationType === 'success' ? '#198754' : '#dc3545'"
+      ></i>
+      <div class="flex-grow-1">
+        {{ confirmationMessage }}
+      </div>
+      <button
+        type="button"
+        class="btn-close ms-3"
+        aria-label="Close"
+        (click)="confirmationMessage = null"
+        style="filter: brightness(0.7);"
+      ></button>
+    </div>
+  }
   <!-- HERO -->
   <section class="hero">
     <div class="hero-shell">

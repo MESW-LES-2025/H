@@ -137,6 +137,8 @@ jobs:
     env:
       HEADLESS: "true"
       APP_BASE_URL: "http://localhost:4200"
+      WAIT_SECONDS: "25"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -165,16 +167,31 @@ jobs:
           npx wait-on --timeout 30000 http://localhost:4200
         working-directory: ./frontend
 
-      - name: Install geckodriver (for Firefox)
+      - name: Install Firefox + geckodriver
         run: |
           sudo apt-get update
           sudo apt-get install -y firefox jq
-          GECKO_TAG=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r .tag_name)
-          curl -L -o geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/${GECKO_TAG}/geckodriver-${GECKO_TAG}-linux64.tar.gz"
-          tar -xzf geckodriver.tar.gz
+
+          GECKO_URL=$(curl -fsSL https://api.github.com/repos/mozilla/geckodriver/releases/latest \
+            | jq -r '.assets[].browser_download_url | select(endswith("linux64.tar.gz"))')
+
+          echo "Downloading: $GECKO_URL"
+          curl -fsSL "$GECKO_URL" | tar -xz
           sudo mv geckodriver /usr/local/bin/geckodriver
           sudo chmod +x /usr/local/bin/geckodriver
-          echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> $GITHUB_ENV
+
+          which firefox
+          which geckodriver
+          firefox --version
+          geckodriver --version
+
+      - name: Set FIREFOX_BIN env variable
+        run: |
+          if [ -x /snap/firefox/current/usr/lib/firefox/firefox ]; then
+            echo "FIREFOX_BIN=/snap/firefox/current/usr/lib/firefox/firefox" >> $GITHUB_ENV
+          else
+            echo "FIREFOX_BIN=$(which firefox)" >> $GITHUB_ENV
+          fi
 
       - name: Download Backend Artifact
         uses: actions/download-artifact@v4
@@ -189,7 +206,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: lernia
         run: |
           java -jar target/*.jar &
-          npx wait-on --timeout 120000 tcp:8080
+          npx wait-on --timeout 180000 http://localhost:8080/home
         working-directory: ./backend
 
       - name: Run acceptance tests

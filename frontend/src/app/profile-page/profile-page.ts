@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
 import { AuthService } from '../auth/auth.service';
+import { RouterModule } from '@angular/router'; 
 
 function passwordMatchValidator(
   control: AbstractControl,
@@ -26,9 +27,17 @@ function passwordMatchValidator(
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule, 
+  ],
   templateUrl: './profile-page.html',
-  styleUrl: './profile-page.css',
+  styleUrls: [
+    './profile-page.css',
+    '../courses/courses.css'
+  ],
 })
 export class ProfilePage implements OnInit {
   private profilePageService = inject(ProfilePageService);
@@ -67,8 +76,16 @@ export class ProfilePage implements OnInit {
     id: number;
     name: string;
     type: string;
+    cost?: number;
+    credits?: number;
+    university?: { name: string };
     isFavorite: boolean;
+    description?: string;
   }[] = [];
+
+  protected showDeleteModal = false;  
+  protected confirmationMessage: string | null = null;
+  protected confirmationType: 'success' | 'error' | null = null;
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -142,10 +159,15 @@ export class ProfilePage implements OnInit {
         next: (updatedUser) => {
           this.user = updatedUser;
           this.closeEditModal();
+          this.confirmationType = 'success';
+          this.confirmationMessage = 'Profile updated successfully!';
+          setTimeout(() => this.confirmationMessage = null, 4000);
         },
         error: (error) => {
           console.error('Failed to update profile:', error);
-          alert('Failed to update profile. Please try again.');
+          this.confirmationType = 'error';
+          this.confirmationMessage = 'Failed to update profile. Please try again.';
+          setTimeout(() => this.confirmationMessage = null, 4000);
         },
       });
     } else {
@@ -189,7 +211,8 @@ export class ProfilePage implements OnInit {
               type: 'success',
               message: 'Password changed successfully!',
             };
-
+            this.confirmationType = 'success';
+            this.confirmationMessage = 'Password changed successfully!';
             setTimeout(() => {
               this.closePasswordModal();
             }, 1500);
@@ -200,6 +223,8 @@ export class ProfilePage implements OnInit {
               type: 'error',
               message: 'Incorrect current password. Please try again.',
             };
+            this.confirmationType = 'error';
+            this.confirmationMessage = 'Incorrect current password. Please try again.';
           },
         });
     } else {
@@ -223,7 +248,11 @@ export class ProfilePage implements OnInit {
           id: c.id,
           name: c.name,
           type: c.courseType,
+          cost: c.cost,
+          credits: c.credits,
+          university: c.university, 
           isFavorite: true,
+          description: c.description,
         }));
       },
       error: (err) => console.error('Error loading favorites', err),
@@ -231,7 +260,7 @@ export class ProfilePage implements OnInit {
   }
 
   protected setTab(
-    tab: 'universities' | 'courses' | 'countries' | 'other',
+    tab: 'universities' | 'courses' | 'other',
   ): void {
     this.activeTab = tab;
   }
@@ -244,21 +273,24 @@ export class ProfilePage implements OnInit {
     if (!this.user || !this.isOwner) {
       return;
     }
+    this.showDeleteModal = true;
+  }
 
-    const sure = window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.',
-    );
-    if (!sure) return;
+  protected onCancelDelete(): void {
+    this.showDeleteModal = false;
+  }
 
+  protected onConfirmDelete(): void {
+    this.showDeleteModal = false;
+    if (!this.user || !this.isOwner) return;
     this.profilePageService.deleteAccount(this.user.id).subscribe({
       next: () => {
-        alert('Account deleted successfully.');
-        // Use AuthService logout to clear session properly
+        sessionStorage.setItem('accountDeleted', 'Your account has been deleted.');
         this.authService.logout();
       },
       error: (err) => {
-        console.error('Error deleting account', err);
-        alert('Failed to delete account.');
+        this.confirmationType = 'error';
+        this.confirmationMessage = 'Failed to delete account. Please try again.';
       },
     });
   }

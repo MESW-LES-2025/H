@@ -1,4 +1,6 @@
-package com.lernia.auth.acceptance;
+package com.lernia.auth;
+
+import java.time.Duration;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-public class BaseAcceptanceIT {
+public class BaseAcceptanceTest {
 
     protected WebDriver driver;
     protected WebDriverWait wait;
@@ -39,13 +39,17 @@ public class BaseAcceptanceIT {
         FirefoxOptions options = new FirefoxOptions();
         String headless = System.getenv().getOrDefault("HEADLESS", "false");
         if (!"false".equalsIgnoreCase(headless)) {
-            options.addArguments("--headless");
+            options.addArguments("-headless");
         }
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-
+        String firefoxBin = System.getenv("FIREFOX_BIN");
+        if (firefoxBin != null && !firefoxBin.isBlank()) {
+            options.setBinary(firefoxBin);
+        }
         driver = new FirefoxDriver(options);
+
         wait = new WebDriverWait(driver, Duration.ofSeconds(waitSeconds));
     }
 
@@ -89,5 +93,40 @@ public class BaseAcceptanceIT {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    protected void loginAsTestUser() {
+        driver.get(baseUrl + "/login");
+
+        String username = "asmith";
+        String password = "pass1";
+
+        WebElement userField = wait.until(d -> findAny(
+                By.name("username"),
+                By.id("username"),
+                By.name("email"),
+                By.id("email"),
+                By.cssSelector("input[type='email']"),
+                By.cssSelector("input[name='username']")
+        ));
+        WebElement passField = wait.until(d -> findAny(
+                By.name("password"),
+                By.id("password"),
+                By.cssSelector("input[formcontrolname='password']")
+        ));
+        WebElement submit = findAny(
+                By.cssSelector("button[type='submit']"),
+                By.cssSelector("input[type='submit']"),
+                By.id("login-button"),
+                By.cssSelector("button.login-btn"),
+                By.xpath("//button[contains(text(),'Login') or contains(text(),'Sign In')]")
+        );
+        userField.clear();
+        userField.sendKeys(username);
+        passField.clear();
+        passField.sendKeys(password);
+        submit.click();
+
+        wait.until(d -> d.getCurrentUrl().contains("/profile"));
     }
 }

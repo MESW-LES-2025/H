@@ -210,6 +210,7 @@ describe('ReviewsComponent', () => {
         title: 'Test Review',
         description: 'Test description',
       };
+      component.currentUserId = 1; 
     });
 
     it('should submit a new review successfully', (done) => {

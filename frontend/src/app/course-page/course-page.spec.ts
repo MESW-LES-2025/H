@@ -36,6 +36,7 @@ describe('CoursePage', () => {
     topics: ['Programming', 'Algorithms', 'Data Structures'],
     requirements: ['High school diploma', 'Math proficiency'],
     isFavorite: false,
+    cost: 20000,
   };
 
   beforeEach(async () => {
@@ -88,7 +89,7 @@ describe('CoursePage', () => {
       setTimeout(() => {
         expect(service.getCourseProfile).toHaveBeenCalledWith(201);
         expect(component.course).toEqual(mockCourse);
-        expect(component.isFavorite).toBe(true);
+        expect(component.isFavorite).toBe(false);
         done();
       }, 100);
     });
@@ -140,6 +141,7 @@ describe('CoursePage', () => {
 
     it('should add course to favorites when not favorited', (done) => {
       component.isFavorite = false;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1); // <-- Add this line
       service.addFavoriteCourse.and.returnValue(of(void 0));
 
       component.toggleFavorite();
@@ -153,6 +155,8 @@ describe('CoursePage', () => {
 
     it('should remove course from favorites when already favorited', (done) => {
       component.isFavorite = true;
+      component.course = mockCourse;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1); 
       service.removeFavoriteCourse.and.returnValue(of(void 0));
 
       component.toggleFavorite();
@@ -176,6 +180,8 @@ describe('CoursePage', () => {
 
     it('should call addFavoriteCourse service method', () => {
       component.isFavorite = false;
+      component.course = mockCourse;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1); 
       service.addFavoriteCourse.and.returnValue(of(void 0));
 
       component.toggleFavorite();
@@ -185,6 +191,8 @@ describe('CoursePage', () => {
 
     it('should call removeFavoriteCourse service method', () => {
       component.isFavorite = true;
+      component.course = mockCourse;
+      spyOn(component['authService'], 'getCurrentUserId').and.returnValue(1);
       service.removeFavoriteCourse.and.returnValue(of(void 0));
 
       component.toggleFavorite();

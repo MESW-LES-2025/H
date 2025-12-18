@@ -29,6 +29,7 @@ export class RegisterComponent {
   form!: FormGroup;
   show1 = false;
   show2 = false;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -66,7 +67,6 @@ export class RegisterComponent {
 
     this.auth.register(body).subscribe({
       next: (res: RegisterResponse) => {
-        console.log('Register OK', res);
         if (res.status === 'success') {
           if (res.userId) {
             localStorage.setItem('pendingProfileUserId', res.userId.toString());
@@ -75,12 +75,11 @@ export class RegisterComponent {
           localStorage.setItem('pendingLoginPassword', password);
           this.router.navigate(['/register/profile']);
         } else {
-          alert(res.message || 'Registration failed');
+          this.errorMessage = res.message || 'Registration failed';
         }
       },
       error: (err) => {
-        console.error('Register error', err);
-        alert('Registration error');
+        this.errorMessage = err.error?.message || 'Registration error';
       },
     });
   }

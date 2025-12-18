@@ -6,17 +6,14 @@
     <div class="form-row">
       <div class="rating-input">
         <label>Rating:</label>
-        <select [(ngModel)]="newReview.rating">
-          <option [value]="5">5 - Excellent</option>
-          <option [value]="4">4 - Very Good</option>
-          <option [value]="3">3 - Good</option>
-          <option [value]="2">2 - Fair</option>
-          <option [value]="1">1 - Poor</option>
+        <select data-testid="review-rating" [(ngModel)]="newReview.rating">
+          <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{r}}</option>
         </select>
       </div>
       <div class="title-input">
         <input
           type="text"
+          data-testid="review-title"
           [(ngModel)]="newReview.title"
           placeholder="Review Title (e.g., Great Campus!)"
         />
@@ -24,11 +21,13 @@
     </div>
 
     <textarea
+      rows="3"
+      data-testid="review-description"
       [(ngModel)]="newReview.description"
       placeholder="Share your experience..."
-      rows="3"
     ></textarea>
     <button
+      data-testid="submit-review"
       class="btn-submit"
       (click)="submitReview()"
       [disabled]="!newReview.description || !newReview.title"

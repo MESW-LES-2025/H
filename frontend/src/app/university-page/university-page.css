@@ -183,6 +183,34 @@
   margin: 0.5rem 0 0 0;
 }
 
+.custom-message-bar {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  background: #fffbe6;
+  color: #8a6d3b;
+  border: 1px solid #faebcc;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transition: opacity 0.2s;
+}
+
+.custom-message-bar.info {
+  background: #e6f7ff;
+  color: #31708f;
+  border-color: #bce8f1;
+}
+
+.custom-message-bar.error {
+  background: #ffeaea;
+  color: #a94442;
+  border-color: #ebccd1;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .university-banner-container {

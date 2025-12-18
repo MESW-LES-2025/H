@@ -175,6 +175,38 @@
   background-color: transparent;
 }
 
+.custom-message-bar {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  background: #e6f7ff;
+  color: #31708f;
+  border: 1.5px solid #bce8f1;
+  border-radius: 10px;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.1);
+  opacity: 0.98;
+  transition: opacity 0.2s;
+  min-width: 320px;
+  text-align: center;
+}
+
+.custom-message-bar.info {
+  background: #e6f7ff;
+  color: #31708f;
+  border-color: #bce8f1;
+}
+
+.custom-message-bar.error {
+  background: #ffeaea;
+  color: #a94442;
+  border-color: #ebccd1;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .course-banner-container {

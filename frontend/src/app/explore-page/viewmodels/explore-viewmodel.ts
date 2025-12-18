@@ -22,4 +22,6 @@ export interface CollegeVM {
   city: string;
   costOfLiving: number;
   isFavorite?: boolean;
+  contactEmail?: string;
+  website?: string; 
 }

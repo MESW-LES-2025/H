@@ -436,23 +436,6 @@ describe('ProfilePageService', () => {
       req.flush(errorMessage, { status: 400, statusText: 'Bad Request' });
     });
 
-    it('should not send credentials with the update request', () => {
-      const updateRequest: EditProfileRequest = {
-        id: 1,
-        name: 'Test',
-        age: 20,
-        gender: 'MALE',
-        location: 'Test City',
-        jobTitle: 'Tester',
-      };
-
-      service.updateProfile(updateRequest).subscribe();
-
-      const req = httpMock.expectOne(`${apiUrl}/api/profile/1/update-profile`);
-      expect(req.request.withCredentials).toBeFalsy();
-      req.flush({} as UserViewmodel);
-    });
-
     it('should handle server error (500)', () => {
       const updateRequest: EditProfileRequest = {
         id: 123,

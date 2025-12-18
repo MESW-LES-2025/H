@@ -6,6 +6,8 @@ import { ExploreService } from './services/explore-service';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
 import { DataService } from '../shared/services/data-service';
 import { PageRequest } from '../shared/viewmodels/pagination';
+import { AuthService } from '../auth/auth.service'; 
+import { Subscription } from 'rxjs'; 
 
 @Component({
   selector: 'app-explore',
@@ -19,6 +21,7 @@ export class ExploreComponent implements OnInit {
     private svc: ExploreService,
     private dataService: DataService,
     private router: Router,
+    private authService: AuthService 
   ) {}
 
   q = signal<string>('');
@@ -40,12 +43,26 @@ export class ExploreComponent implements OnInit {
 
   favoriteUniversityIds = signal<number[]>([]);
 
+  isLoggedIn = false;
+  private userSubscription: Subscription | undefined;
+
   ngOnInit(): void {
     this.dataService.countries$.subscribe((countries) => {
       this.countries.set(['Any', ...countries]);
     });
 
+    // Subscribe to auth changes
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
+      this.isLoggedIn = !!user;
+    });
+
     this.loadFavoritesAndSearch();
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   // ================== FAVORITOS ==================
