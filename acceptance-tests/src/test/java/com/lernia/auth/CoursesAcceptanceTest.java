@@ -9,44 +9,13 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     public void testViewSingleCoursePage_ATC15() {
-        String username = "asmith";
-        String password = "pass1";
-
-        // Step 1: Log in
-        driver.get(baseUrl + "/login");
-        WebElement userField = wait.until(d -> findAny(
-                By.name("username"),
-                By.id("username"),
-                By.name("email"),
-                By.id("email"),
-                By.cssSelector("input[type='email']"),
-                By.cssSelector("input[name='username']")
-        ));
-        WebElement passField = wait.until(d -> findAny(
-                By.name("password"),
-                By.id("password"),
-                By.cssSelector("input[formcontrolname='password']")
-        ));
-        WebElement submit = findAny(
-                By.cssSelector("button[type='submit']"),
-                By.cssSelector("input[type='submit']"),
-                By.id("login-button"),
-                By.cssSelector("button.login-btn"),
-                By.xpath("//button[contains(text(),'Login') or contains(text(),'Sign In')]")
-        );
-        userField.clear();
-        userField.sendKeys(username);
-        passField.clear();
-        passField.sendKeys(password);
-        submit.click();
-
-        // Step 2: Go directly to course/1
+        // Step 1: Go directly to course/1 (no login)
         driver.get(baseUrl + "/course/1");
 
-        // Step 3: Wait for the course page to load
+        // Step 2: Wait for the course page to load
         wait.until(d -> d.getCurrentUrl().contains("/course/1"));
 
-        // Step 4: Check that the course details are present
+        // Step 3: Check that the course details are present
         WebElement courseTitle = findAny(
             By.cssSelector(".course-title"),
             By.xpath("//h1"),
@@ -64,43 +33,11 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     public void testSearchCoursesByName_ATC16() {
-        // Preconditions: user exists and can log in
-        String username = "asmith";
-        String password = "pass1";
-
-        // Step 1: Log in
-        driver.get(baseUrl + "/login");
-        WebElement userField = wait.until(d -> findAny(
-                By.name("username"),
-                By.id("username"),
-                By.name("email"),
-                By.id("email"),
-                By.cssSelector("input[type='email']"),
-                By.cssSelector("input[name='username']")
-        ));
-        WebElement passField = wait.until(d -> findAny(
-                By.name("password"),
-                By.id("password"),
-                By.cssSelector("input[formcontrolname='password']")
-        ));
-        WebElement submit = findAny(
-                By.cssSelector("button[type='submit']"),
-                By.cssSelector("input[type='submit']"),
-                By.id("login-button"),
-                By.cssSelector("button.login-btn"),
-                By.xpath("//button[contains(text(),'Login') or contains(text(),'Sign In')]")
-        );
-        userField.clear();
-        userField.sendKeys(username);
-        passField.clear();
-        passField.sendKeys(password);
-        submit.click();
-
-        // Step 2: Go to /courses
+        // Step 1: Go to /courses (no login)
         driver.get(baseUrl + "/courses");
         wait.until(d -> d.getCurrentUrl().contains("/courses"));
 
-        // Step 3: Find the search input and enter a course name (e.g., "Architecture")
+        // Step 2: Find the search input and enter a course name (e.g., "Architecture")
         WebElement searchInput = wait.until(d -> findAny(
             By.cssSelector("input.hero-input"),
             By.cssSelector("input[placeholder*='course']"),
@@ -111,7 +48,7 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
         searchInput.clear();
         searchInput.sendKeys("Architecture");
 
-        // Step 4: Always click the search button and wait for it to be clickable
+        // Step 3: Always click the search button and wait for it to be clickable
         WebElement searchBtn = wait.until(d -> findAny(
             By.cssSelector("button.search-btn"),
             By.xpath("//button[contains(text(),'Search')]")
@@ -120,7 +57,7 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
         wait.until(org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable(searchBtn));
         searchBtn.click();
 
-        // Step 5: Wait until all visible course cards match the search or "no results" is shown
+        // Step 4: Wait until all visible course cards match the search or "no results" is shown
         wait.until(d -> {
             var cards = d.findElements(By.cssSelector(".course-card"));
             if (cards.isEmpty()) {
@@ -142,7 +79,7 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
             return true;
         });
 
-        // Step 6: Assert that all visible course cards contain "Architecture" in the name (case-insensitive)
+        // Step 5: Assert that all visible course cards contain "Architecture" in the name (case-insensitive)
         boolean found = false;
         for (WebElement card : driver.findElements(By.cssSelector(".course-card"))) {
             WebElement title = null;
@@ -164,6 +101,105 @@ public class CoursesAcceptanceTest extends BaseAcceptanceTest {
             WebElement emptyMsg = findAny(
                 By.cssSelector(".empty"),
                 By.xpath("//*[contains(text(),'No courses found')]")
+            );
+            Assertions.assertNotNull(emptyMsg, "No courses found message should be displayed if no results");
+        }
+    }
+
+    @Test
+    public void testFilterCourses_ATC17() {
+        // Step 1: Go to /courses 
+        driver.get(baseUrl + "/courses");
+        wait.until(d -> d.getCurrentUrl().contains("/courses"));
+
+        // Step 2: Open filters and set values
+        // Type: MASTER
+        WebElement masterCheckbox = wait.until(d -> findAny(
+            By.xpath("//label[contains(.,'MASTER')]/input[@type='checkbox']"),
+            By.xpath("//input[@type='checkbox' and @value='MASTER']")
+        ));
+        Assertions.assertNotNull(masterCheckbox, "MASTER type checkbox not found");
+        if (!masterCheckbox.isSelected()) masterCheckbox.click();
+
+        // Max cost
+        WebElement costInput = wait.until(d -> findAny(
+            By.cssSelector("input[formcontrolname='costMax']"),
+            By.xpath("//input[@placeholder='e.g. 3000']")
+        ));
+        Assertions.assertNotNull(costInput, "Max cost input not found");
+        costInput.clear();
+        costInput.sendKeys("2000");
+
+        // Language: English
+        WebElement englishCheckbox = wait.until(d -> findAny(
+            By.xpath("//label[contains(.,'English')]/input[@type='checkbox']"),
+            By.xpath("//input[@type='checkbox' and @value='English']")
+        ));
+        Assertions.assertNotNull(englishCheckbox, "English language checkbox not found");
+        if (!englishCheckbox.isSelected()) englishCheckbox.click();
+
+        // Country: Sweden
+        WebElement swedenCheckbox = wait.until(d -> findAny(
+            By.xpath("//label[contains(.,'Sweden')]/input[@type='checkbox']"),
+            By.xpath("//input[@type='checkbox' and @value='Sweden']")
+        ));
+        Assertions.assertNotNull(swedenCheckbox, "Sweden country checkbox not found");
+        if (!swedenCheckbox.isSelected()) swedenCheckbox.click();
+
+        // Step 3: Wait for the filter to apply (all visible cards must match)
+        wait.until(d -> {
+            var cards = d.findElements(By.cssSelector(".course-card"));
+            if (cards.isEmpty()) {
+                // No cards, check for empty message
+                return !d.findElements(By.cssSelector(".empty")).isEmpty();
+            }
+            for (WebElement card : cards) {
+                // Type
+                boolean typeOk = card.findElements(By.xpath(".//span[contains(@class,'badge') and contains(.,'MASTER')]")).size() > 0;
+                // Cost
+                boolean costOk = true;
+                try {
+                    String priceText = card.findElement(By.cssSelector(".price-value")).getText().replaceAll("[^\\d]", "");
+                    int price = Integer.parseInt(priceText);
+                    costOk = price <= 2000;
+                } catch (Exception ignored) {}
+                // Language
+                boolean langOk = card.findElements(By.xpath(".//div[contains(@class,'meta')]//div[contains(.,'English')]")).size() > 0;
+                // Country
+                boolean countryOk = card.findElements(By.xpath(".//p[contains(@class,'uni') and contains(.,'Sweden')]")).size() > 0;
+
+                if (!(typeOk && costOk && langOk && countryOk)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        // Step 4: Assert that all visible course cards match the filters
+        boolean found = false;
+        for (WebElement card : driver.findElements(By.cssSelector(".course-card"))) {
+            boolean typeOk = card.findElements(By.xpath(".//span[contains(@class,'badge') and contains(.,'MASTER')]")).size() > 0;
+            boolean costOk = true;
+            try {
+                String priceText = card.findElement(By.cssSelector(".price-value")).getText().replaceAll("[^\\d]", "");
+                int price = Integer.parseInt(priceText);
+                costOk = price <= 2000;
+            } catch (Exception ignored) {}
+            boolean langOk = card.findElements(By.xpath(".//div[contains(@class,'meta')]//div[contains(.,'English')]")).size() > 0;
+            boolean countryOk = card.findElements(By.xpath(".//p[contains(@class,'uni') and (contains(.,'Sweden') or contains(.,'Stockholm'))]")).size() > 0;
+            Assertions.assertTrue(typeOk, "Course type is not MASTER");
+            Assertions.assertTrue(costOk, "Course cost is above 2000");
+            Assertions.assertTrue(langOk, "Course language is not English");
+            Assertions.assertTrue(countryOk, "Course country is not Sweden");
+            found = true;
+        }
+
+        // If no cards, check for "No courses found" message
+        if (!found) {
+            WebElement emptyMsg = findAny(
+                By.cssSelector(".empty"),
+                By.xpath("//*[contains(text(),'No courses found')]"),
+                By.xpath("//*[contains(text(),'No courses match your criteria')]")
             );
             Assertions.assertNotNull(emptyMsg, "No courses found message should be displayed if no results");
         }
