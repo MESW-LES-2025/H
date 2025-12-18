@@ -1,5 +1,19 @@
 <router-outlet></router-outlet>
 
+@if (confirmationMessage) {
+<div class="alert alert-@{confirmationType ?? 'success'} d-flex align-items-center shadow-sm fade show mt-3"
+  role="alert" style="font-size: 1.1rem; border-radius: 1rem; max-width: 500px; margin: 0 auto;">
+  <i class="bi me-3 fs-4" [class.bi-check-circle-fill]="confirmationType === 'success'"
+    [class.bi-exclamation-triangle-fill]="confirmationType === 'error'"
+    [style.color]="confirmationType === 'success' ? '#198754' : '#dc3545'"></i>
+  <div class="flex-grow-1">
+    {{ confirmationMessage }}
+  </div>
+  <button type="button" class="btn-close ms-3" aria-label="Close" (click)="confirmationMessage = null"
+    style="filter: brightness(0.7);"></button>
+</div>
+}
+
 @if (user) {
 <div class="container" style="max-width: 1100px">
   <div class="card border-0 shadow-sm position-relative my-4">
@@ -392,6 +406,35 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Delete Account Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-danger">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          Confirm Account Deletion
+        </h5>
+        <button type="button" class="btn-close" (click)="onCancelDelete()"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to <b>permanently delete</b> your account? This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-light rounded-pill px-4" (click)="onCancelDelete()">Cancel</button>
+        <button type="button" class="btn btn-danger rounded-pill px-4" (click)="onConfirmDelete()">
+          Yes, delete my account
+        </button>
       </div>
     </div>
   </div>
