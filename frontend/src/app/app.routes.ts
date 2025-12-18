@@ -15,6 +15,13 @@ export const routes: Routes = [
       import('./auth/register.component').then((m) => m.RegisterComponent),
   },
   {
+    path: 'register/profile',
+    loadComponent: () =>
+      import('./auth/register-profile.component').then(
+        (m) => m.RegisterProfileComponent,
+      ),
+  },
+  {
     path: 'profile/:id',
     loadComponent: () =>
       import('./profile-page/profile-page').then((m) => m.ProfilePage),

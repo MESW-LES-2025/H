@@ -85,6 +85,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/favorites/**").permitAll()
                         .requestMatchers("/api/favorites").permitAll()
 
+                        .requestMatchers("/api/users/**").permitAll()
+
                         // Preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 

@@ -68,7 +68,12 @@ export class RegisterComponent {
       next: (res: RegisterResponse) => {
         console.log('Register OK', res);
         if (res.status === 'success') {
-          this.router.navigate(['/login']);
+          if (res.userId) {
+            localStorage.setItem('pendingProfileUserId', res.userId.toString());
+          }
+          localStorage.setItem('pendingLoginEmail', email);
+          localStorage.setItem('pendingLoginPassword', password);
+          this.router.navigate(['/register/profile']);
         } else {
           alert(res.message || 'Registration failed');
         }
