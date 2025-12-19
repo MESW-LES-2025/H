@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CourseReviewsComponent } from './reviews/course-reviews.component';
 import { AuthService } from '../auth/auth.service';
+import { EntryProbabilityComponent } from './entry-probability/entry-probability.component';
 
 @Component({
   selector: 'app-course-page',
   standalone: true,
-  imports: [CommonModule, NgbNavModule, CourseReviewsComponent],
+  imports: [CommonModule, NgbNavModule, CourseReviewsComponent, EntryProbabilityComponent],
   templateUrl: './course-page.html',
   styleUrls: ['./course-page.css'],
 })

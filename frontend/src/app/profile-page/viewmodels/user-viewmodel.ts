@@ -14,6 +14,10 @@ export interface UserViewmodel {
   provider?: string;
   premiumStartDate?: string;
   premium?: boolean;
+  // Academic profile
+  academicGrade?: number;
+  educationLevel?: string;
+  studyArea?: string;
 }
 
 export interface FavoriteUniversityDTO {

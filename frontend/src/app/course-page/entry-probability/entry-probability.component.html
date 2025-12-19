@@ -1,0 +1,71 @@
+<div class="probability-widget">
+    @if (!isPremium()) {
+    <!-- Locked state for non-premium users -->
+    <div class="locked-state">
+        <div class="lock-overlay">
+            <i class="bi bi-lock-fill lock-icon"></i>
+            <h5 class="lock-title">Acceptance Odds</h5>
+            <p class="lock-text">Unlock personalized acceptance probability</p>
+            <a routerLink="/subscribe" class="unlock-btn">
+                ⭐ Upgrade to Premium
+            </a>
+        </div>
+    </div>
+    } @else {
+    <!-- Premium user content -->
+    <div class="premium-content">
+        <div class="widget-header">
+            <h5 class="widget-title">
+                <i class="bi bi-graph-up-arrow me-2"></i>Your Acceptance Odds
+            </h5>
+            <span class="premium-badge">Premium</span>
+        </div>
+
+        @if (loading()) {
+        <div class="loading-state">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span class="ms-2">Calculating...</span>
+        </div>
+        } @else if (error()) {
+        <div class="error-state">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ error() }}
+        </div>
+        } @else if (probability()) {
+        <!-- Probability Display -->
+        <div class="probability-display">
+            <div class="gauge-container">
+                <svg viewBox="0 0 120 120" class="gauge">
+                    <circle class="gauge-bg" cx="60" cy="60" r="50" fill="none" stroke-width="10" />
+                    <circle class="gauge-progress" [class.low]="probability()!.percentage < 40"
+                        [class.medium]="probability()!.percentage >= 40 && probability()!.percentage < 70"
+                        [class.high]="probability()!.percentage >= 70" cx="60" cy="60" r="50" fill="none"
+                        stroke-width="10" [attr.stroke-dasharray]="getStrokeDashArray()" stroke-dashoffset="0"
+                        transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="gauge-value">
+                    <span class="percentage">{{ probability()!.percentage }}%</span>
+                    <span class="label" [class.low]="probability()!.percentage < 40"
+                        [class.medium]="probability()!.percentage >= 40 && probability()!.percentage < 70"
+                        [class.high]="probability()!.percentage >= 70">
+                        {{ probability()!.label }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Factors Breakdown -->
+            <div class="factors-list">
+                @for (entry of getFactorEntries(); track entry.key) {
+                <div class="factor-item">
+                    <span class="factor-key">{{ entry.key }}</span>
+                    <span class="factor-value">{{ entry.value }}</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

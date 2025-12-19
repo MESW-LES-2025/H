@@ -309,14 +309,16 @@ describe('ProfilePage', () => {
       });
       component['onSubmitEdit']();
 
-      expect(mockProfileService.updateProfile).toHaveBeenCalledWith({
-        id: 1,
-        name: 'New Name',
-        age: 30,
-        gender: 'FEMALE',
-        location: 'Porto',
-        jobTitle: 'Manager',
-      });
+      expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          id: 1,
+          name: 'New Name',
+          age: 30,
+          gender: 'FEMALE',
+          location: 'Porto',
+          jobTitle: 'Manager',
+        })
+      );
     });
 
     it('should mark form as touched if invalid on submit', () => {
@@ -429,20 +431,20 @@ describe('ProfilePage', () => {
       expect(component['showDeleteModal']).toBeFalse();
     });
 
-  it('should call deleteAccount and logout on confirm', () => {
-    mockProfileService.deleteAccount.and.returnValue(of(void 0));
-    spyOn(sessionStorage, 'setItem');
-    component['user'] = mockUser;
-    mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
-    component['showDeleteModal'] = true;
+    it('should call deleteAccount and logout on confirm', () => {
+      mockProfileService.deleteAccount.and.returnValue(of(void 0));
+      spyOn(sessionStorage, 'setItem');
+      component['user'] = mockUser;
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      component['showDeleteModal'] = true;
 
-    component['onConfirmDelete']();
+      component['onConfirmDelete']();
 
-    expect(component['showDeleteModal']).toBeFalse();
-    expect(mockProfileService.deleteAccount).toHaveBeenCalledWith(mockUser.id);
-    expect(sessionStorage.setItem).toHaveBeenCalledWith('accountDeleted', 'Your account has been deleted.');
-    expect(mockAuthService.logout).toHaveBeenCalled();
-  });
+      expect(component['showDeleteModal']).toBeFalse();
+      expect(mockProfileService.deleteAccount).toHaveBeenCalledWith(mockUser.id);
+      expect(sessionStorage.setItem).toHaveBeenCalledWith('accountDeleted', 'Your account has been deleted.');
+      expect(mockAuthService.logout).toHaveBeenCalled();
+    });
 
     it('should show error message on delete error', () => {
       mockProfileService.deleteAccount.and.returnValue(throwError(() => new Error('Delete failed')));

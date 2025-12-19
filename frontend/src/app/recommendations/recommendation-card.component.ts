@@ -14,9 +14,6 @@ import { Suggestion } from './recommendation.service';
           <span class="type-badge" [class.course]="suggestion.type === 'course'" [class.university]="suggestion.type === 'university'">
             {{ suggestion.type === 'course' ? '📚 Course' : '🏛️ University' }}
           </span>
-          <span class="match-badge">
-            {{ suggestion.matchScore | number:'1.0-0' }}% Match
-          </span>
         </div>
         
         <h5 class="card-title">{{ suggestion.title }}</h5>

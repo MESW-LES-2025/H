@@ -119,6 +119,9 @@ export class ProfilePage implements OnInit {
       gender: this.fb.control<string | null>(null, Validators.required),
       location: this.fb.control<string | null>(null),
       jobTitle: this.fb.control<string | null>(null),
+      academicGrade: this.fb.control<number | null>(null),
+      educationLevel: this.fb.control<string | null>(null),
+      studyArea: this.fb.control<string | null>(null),
     });
 
     this.changePasswordForm = this.fb.group(
@@ -141,6 +144,9 @@ export class ProfilePage implements OnInit {
       gender: this.user.gender,
       location: this.user.location,
       jobTitle: this.user.jobTitle,
+      academicGrade: this.user.academicGrade,
+      educationLevel: this.user.educationLevel,
+      studyArea: this.user.studyArea,
     });
 
     this.showEditModal = true;

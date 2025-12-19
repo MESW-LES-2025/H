@@ -336,6 +336,9 @@ describe('ProfilePageService', () => {
         gender: 'MALE',
         location: 'Boston',
         jobTitle: 'Senior Developer',
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       const mockResponse: UserViewmodel = {
@@ -373,6 +376,9 @@ describe('ProfilePageService', () => {
         gender: 'FEMALE',
         location: 'London',
         jobTitle: 'Director',
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       service.updateProfile(updateRequest).subscribe();
@@ -397,6 +403,9 @@ describe('ProfilePageService', () => {
         gender: 'OTHER',
         location: null,
         jobTitle: null,
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       service.updateProfile(updateRequest).subscribe();
@@ -418,6 +427,9 @@ describe('ProfilePageService', () => {
         gender: 'MALE',
         location: 'City',
         jobTitle: 'Job',
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       const errorMessage = 'Update failed';
@@ -444,6 +456,9 @@ describe('ProfilePageService', () => {
         gender: 'MALE',
         location: 'City',
         jobTitle: 'Job',
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       service.updateProfile(updateRequest).subscribe({
@@ -470,6 +485,9 @@ describe('ProfilePageService', () => {
         gender: 'MALE',
         location: 'City',
         jobTitle: 'Job',
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       service.updateProfile(updateRequest).subscribe();
@@ -570,6 +588,9 @@ describe('ProfilePageService', () => {
         gender: 'MALE',
         location: 'City',
         jobTitle: 'Job',
+        academicGrade: null,
+        educationLevel: null,
+        studyArea: null,
       };
 
       service.updateProfile(updateRequest).subscribe();

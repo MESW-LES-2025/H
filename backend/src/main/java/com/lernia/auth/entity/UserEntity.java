@@ -1,6 +1,7 @@
 package com.lernia.auth.entity;
 
 import com.lernia.auth.entity.enums.AuthProvider;
+import com.lernia.auth.entity.enums.EducationLevel;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,14 @@ public class UserEntity {
         @Column(nullable = false, columnDefinition = "user_role")
         private UserRole userRole;
         private LocalDate premiumStartDate;
+
+        private Integer academicGrade; // 0-200 scale (e.g., Portuguese grading)
+
+        @Enumerated(EnumType.STRING)
+        @Column(columnDefinition = "varchar(50)")
+        private EducationLevel educationLevel;
+
+        private String studyArea;
 
         @ManyToMany
         @JoinTable(name = "user_bookmarked_courses", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
