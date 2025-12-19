@@ -54,6 +54,13 @@ public class UserProfileService {
             user.setGender(req.getGender());
         if (req.getAge() != null)
             user.setAge(req.getAge());
+        // Academic profile fields
+        if (req.getAcademicGrade() != null)
+            user.setAcademicGrade(req.getAcademicGrade());
+        if (req.getEducationLevel() != null)
+            user.setEducationLevel(req.getEducationLevel());
+        if (req.getStudyArea() != null)
+            user.setStudyArea(req.getStudyArea());
         userRepository.save(user);
         return map(user);
     }
@@ -72,6 +79,10 @@ public class UserProfileService {
         r.setUserRole(u.getUserRole() != null ? u.getUserRole().name() : null);
         r.setProvider(u.getProvider() != null ? u.getProvider().name() : null);
         r.setPremium(u.getUserRole() != null && "PREMIUM".equals(u.getUserRole().name()));
+        // Academic profile
+        r.setAcademicGrade(u.getAcademicGrade());
+        r.setEducationLevel(u.getEducationLevel() != null ? u.getEducationLevel().name() : null);
+        r.setStudyArea(u.getStudyArea());
         return r;
     }
 }

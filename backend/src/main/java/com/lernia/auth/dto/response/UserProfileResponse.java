@@ -46,6 +46,17 @@ public class UserProfileResponse {
     @Getter
     private boolean isPremium;
 
+    // Academic profile
+    @Setter
+    @Getter
+    private Integer academicGrade;
+    @Setter
+    @Getter
+    private String educationLevel;
+    @Setter
+    @Getter
+    private String studyArea;
+
     public UserProfileResponse() {
     }
 
