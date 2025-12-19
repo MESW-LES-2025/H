@@ -183,4 +183,8 @@ export class AuthService {
   isAdmin(): boolean {
     return this.getCurrentUserRole() === 'ADMIN';
   }
+
+  isPremium(): boolean {
+    return this.getCurrentUserRole() === 'PREMIUM';
+  }
 }

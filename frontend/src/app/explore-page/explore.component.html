@@ -1,9 +1,7 @@
 <main class="page">
-  <!-- HERO -->
+  <!-- HERO with Recommendations -->
   <section class="hero">
-    <div class="hero-copy">
-      <img class="hero-arrow" src="/images/arrow.png" alt="arrow" />
-
+    <div class="hero-content">
       <h1>
         Find the Right Path<br />
         for Your Future
@@ -14,30 +12,15 @@
         local institutions to international opportunities, uncover the options
         that truly match who you are and where you want to go.
       </p>
-    </div>
 
-    <div class="hero-photo">
-      <div class="searchbar hero-searchbar">
-        <div class="icon">
-          <img src="/images/lupa.png" alt="Search icon" />
-        </div>
-
-        <input
-          class="hero-input"
-          type="search"
-          placeholder="Search for a university..."
-          [value]="q()"
-          (input)="q.set($any($event.target).value)"
-        />
-
-        <button class="search-btn" (click)="search()">Search</button>
+      <!-- PERSONALIZED RECOMMENDATIONS - In Hero -->
+      <div class="recommendations-wrapper hero-recommendations">
+        <app-recommendations typeFilter="university"></app-recommendations>
       </div>
-
-      <img class="hero-image" src="/images/studentss.jpg" alt="Students" />
     </div>
   </section>
 
-  <!-- GRID: placeholder dos filtros -->
+  <!-- GRID: Filters + Results -->
   <section class="content">
     <aside class="filters-card">
       <div class="filters-head">
@@ -51,11 +34,7 @@
         <!-- Country -->
         <label class="filter-field">
           <span class="filter-label">Country</span>
-          <select
-            class="filter-select"
-            [value]="country()"
-            (change)="onCountryChange($any($event.target).value)"
-          >
+          <select class="filter-select" [value]="country()" (change)="onCountryChange($any($event.target).value)">
             <option *ngFor="let c of countries()" [value]="c">
               {{ c === "Any" ? "Any country" : c }}
             </option>
@@ -65,11 +44,8 @@
         <!-- Scholarships -->
         <label class="filter-field">
           <span class="filter-label">Scholarships</span>
-          <select
-            class="filter-select"
-            [value]="scholarship()"
-            (change)="onScholarshipChange($any($event.target).value)"
-          >
+          <select class="filter-select" [value]="scholarship()"
+            (change)="onScholarshipChange($any($event.target).value)">
             <option *ngFor="let opt of scholarshipOptions" [value]="opt">
               {{ opt === "Any" ? "Any scholarship option" : opt }}
             </option>
@@ -78,21 +54,13 @@
 
         <!-- Cost of living -->
         <label class="filter-field">
-          <span class="filter-label"
-            >Max Cost of Living:
+          <span class="filter-label">Max Cost of Living:
             <strong>{{
               cost() >= maxCost ? "Any" : "$" + cost() + "/month"
-            }}</strong>
+              }}</strong>
           </span>
-          <input
-            type="range"
-            class="filter-slider"
-            [min]="500"
-            [max]="maxCost"
-            [step]="100"
-            [value]="cost()"
-            (input)="onCostChange(+$any($event.target).value)"
-          />
+          <input type="range" class="filter-slider" [min]="500" [max]="maxCost" [step]="100" [value]="cost()"
+            (input)="onCostChange(+$any($event.target).value)" />
           <div class="slider-labels">
             <span>$500</span>
             <span>Any</span>
@@ -105,6 +73,18 @@
 
     <!-- RESULTADOS -->
     <section class="results">
+      <!-- Search Bar - At top of results -->
+      <div class="searchbar results-searchbar">
+        <div class="icon">
+          <img src="/images/lupa.png" alt="Search icon" />
+        </div>
+
+        <input class="hero-input" type="search" placeholder="Search for a university..." [value]="q()"
+          (input)="q.set($any($event.target).value)" (keyup.enter)="search()" />
+
+        <button class="search-btn" (click)="search()">Search</button>
+      </div>
+
       <div class="results-head">
         <div>
           <h2>Explore Universities</h2>
@@ -114,11 +94,7 @@
         </div>
       </div>
 
-      <article
-        class="college-card"
-        *ngFor="let c of results()"
-        (click)="goToUniversity(c.id)"
-      >
+      <article class="college-card" *ngFor="let c of results()" (click)="goToUniversity(c.id)">
         <!-- LEFT: Info -->
         <div class="left">
           <div class="badges-row">
@@ -133,31 +109,17 @@
             </span>
           </div>
           <div class="actions-row">
-            <a
-              *ngIf="c.website"
-              [href]="c.website"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-outline"
-              (click)="$event.stopPropagation()"
-            >
+            <a *ngIf="c.website" [href]="c.website" target="_blank" rel="noopener noreferrer" class="btn-outline"
+              (click)="$event.stopPropagation()">
               <i class="bi bi-box-arrow-up-right"></i>
               Website
             </a>
-            <a
-              *ngIf="c.contactEmail"
-              href="mailto:{{ c.contactEmail }}"
-              class="btn-outline"
-              (click)="$event.stopPropagation()"
-            >
+            <a *ngIf="c.contactEmail" href="mailto:{{ c.contactEmail }}" class="btn-outline"
+              (click)="$event.stopPropagation()">
               <i class="bi bi-envelope"></i>
               Contact
             </a>
-            <button
-              class="btn-primary"
-              type="button"
-              (click)="goToUniversity(c.id); $event.stopPropagation()"
-            >
+            <button class="btn-primary" type="button" (click)="goToUniversity(c.id); $event.stopPropagation()">
               View details
               <i class="bi bi-arrow-right"></i>
             </button>
@@ -166,24 +128,15 @@
         <!-- RIGHT: Image & Favorite -->
         <div class="right">
           <img [src]="c.photo" [alt]="c.title" />
-          <button
-            *ngIf="isLoggedIn"
-            class="fav"
-            aria-label="Save"
-            (click)="onFavoriteUniversityClick(c, $event); $event.stopPropagation()"
-            [class.fav-active]="c.isFavorite"
-          >
+          <button *ngIf="isLoggedIn" class="fav" aria-label="Save"
+            (click)="onFavoriteUniversityClick(c, $event); $event.stopPropagation()" [class.fav-active]="c.isFavorite">
             {{ c.isFavorite ? "❤" : "♡" }}
           </button>
         </div>
       </article>
 
       <div class="load-more" *ngIf="hasMorePages()">
-        <button
-          class="btn-show-more"
-          (click)="loadMore()"
-          [disabled]="isLoading()"
-        >
+        <button class="btn-show-more" (click)="loadMore()" [disabled]="isLoading()">
           <span *ngIf="!isLoading()">Show more universities</span>
           <span *ngIf="isLoading()">
             <span class="spinner"></span> Loading...
