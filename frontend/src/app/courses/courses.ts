@@ -18,11 +18,12 @@ import { DataService } from '../shared/services/data-service';
 import { integerValidator } from '../shared/validators/integer-validator';
 
 import { RouterModule } from '@angular/router';
+import { RecommendationsComponent } from '../recommendations/recommendations.component';
 
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [DatePipe, ReactiveFormsModule, AsyncPipe, RouterModule],
+  imports: [DatePipe, ReactiveFormsModule, AsyncPipe, RouterModule, RecommendationsComponent],
   templateUrl: './courses.html',
   styleUrls: ['./courses.css'],
 })

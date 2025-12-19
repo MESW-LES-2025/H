@@ -15,152 +15,129 @@
 
     <div class="hero-photo">
       @if (filterCoursesForm) {
-        <form class="searchbar hero-searchbar" [formGroup]="filterCoursesForm">
-          <div class="icon">
-            <img src="/images/lupa.png" alt="Search icon" />
-          </div>
+      <form class="searchbar hero-searchbar" [formGroup]="filterCoursesForm">
+        <div class="icon">
+          <img src="/images/lupa.png" alt="Search icon" />
+        </div>
 
-          <input
-            class="hero-input"
-            type="search"
-            placeholder="Search for a course (e.g. Computer Science, Medicine...)"
-            formControlName="name"
-          />
+        <input class="hero-input" type="search" placeholder="Search for a course (e.g. Computer Science, Medicine...)"
+          formControlName="name" />
 
-          <button class="search-btn" type="button">
-            Search
-          </button>
-        </form>
+        <button class="search-btn" type="button">
+          Search
+        </button>
+      </form>
       }
     </div>
   </section>
 
- <!-- FILTERS -->
-  @if (filterCoursesForm) {
-    <section class="courses-filters">
-      <div class="wrap">
-        <div class="filters-card">
-          <div class="filters-head">
-            <div>
-              <h2>Filters</h2>
-              <p class="muted">Narrow results and find the right course faster.</p>
-            </div>
+  <!-- COURSE RECOMMENDATIONS FOR PREMIUM USERS -->
+  <section class="recommendations-section">
+    <div class="wrap">
+      <app-recommendations typeFilter="course"></app-recommendations>
+    </div>
+  </section>
 
-            <button type="button" class="btn-reset" (click)="resetFilters()">
-              Reset
-            </button>
+  <!-- FILTERS -->
+  @if (filterCoursesForm) {
+  <section class="courses-filters">
+    <div class="wrap">
+      <div class="filters-card">
+        <div class="filters-head">
+          <div>
+            <h2>Filters</h2>
+            <p class="muted">Narrow results and find the right course faster.</p>
           </div>
 
-          <form [formGroup]="filterCoursesForm" class="filters-body">
-            <!-- Remote only -->
-            <div class="switch-row">
-              <label class="switch">
-                <input type="checkbox" formControlName="onlyRemote" />
-                <span class="slider"></span>
-                <span class="switch-label">Remote only</span>
-              </label>
-            </div>
-
-            <div class="grid">
-              <!-- Course Types -->
-              @if (CourseTypeEnum) {
-                <div class="filter-block">
-                  <div class="filter-title">Course Types</div>
-                  <div class="check-list">
-                    @for (type of CourseTypeEnum; track type) {
-                      <label class="check">
-                        <input
-                          type="checkbox"
-                          [value]="type"
-                          [checked]="isValueSelected('courseTypes', type)"
-                          (change)="onCheckboxChange($event, 'courseTypes')"
-                        />
-                        <span>{{ type }}</span>
-                      </label>
-                    }
-                  </div>
-                </div>
-              }
-
-              <!-- Areas of Study -->
-              <div class="filter-block">
-                <div class="filter-title">Areas of Study</div>
-                <div class="check-list scroll">
-                  @for (areaOfStudy of dataService.areasOfStudy$ | async; track areaOfStudy) {
-                    <label class="check">
-                      <input
-                        type="checkbox"
-                        [value]="areaOfStudy"
-                        [checked]="isValueSelected('areasOfStudy', areaOfStudy)"
-                        (change)="onCheckboxChange($event, 'areasOfStudy')"
-                      />
-                      <span>{{ areaOfStudy }}</span>
-                    </label>
-                  }
-                </div>
-              </div>
-
-              <!-- Languages -->
-              <div class="filter-block">
-                <div class="filter-title">Languages</div>
-                <div class="check-list scroll">
-                  @for (language of dataService.languages$ | async; track language) {
-                    <label class="check">
-                      <input
-                        type="checkbox"
-                        [value]="language"
-                        [checked]="isValueSelected('languages', language)"
-                        (change)="onCheckboxChange($event, 'languages')"
-                      />
-                      <span>{{ language }}</span>
-                    </label>
-                  }
-                </div>
-              </div>
-
-              <!-- Countries -->
-              <div class="filter-block">
-                <div class="filter-title">Countries</div>
-                <div class="check-list scroll">
-                  @for (country of dataService.countries$ | async; track country) {
-                    <label class="check">
-                      <input
-                        type="checkbox"
-                        [value]="country"
-                        [checked]="isValueSelected('countries', country)"
-                        (change)="onCheckboxChange($event, 'countries')"
-                      />
-                      <span>{{ country }}</span>
-                    </label>
-                  }
-                </div>
-              </div>
-
-              <!-- Numeric filters -->
-              <div class="filter-block compact">
-                <div class="filter-title">Max cost (€/year)</div>
-                <input
-                  type="number"
-                  formControlName="costMax"
-                  class="mini-input no-spinner"
-                  placeholder="e.g. 3000"
-                />
-              </div>
-
-              <div class="filter-block compact">
-                <div class="filter-title">Duration (years)</div>
-                <input
-                  type="number"
-                  formControlName="duration"
-                  class="mini-input"
-                  placeholder="e.g. 3"
-                />
-              </div>
-            </div>
-          </form>
+          <button type="button" class="btn-reset" (click)="resetFilters()">
+            Reset
+          </button>
         </div>
+
+        <form [formGroup]="filterCoursesForm" class="filters-body">
+          <!-- Remote only -->
+          <div class="switch-row">
+            <label class="switch">
+              <input type="checkbox" formControlName="onlyRemote" />
+              <span class="slider"></span>
+              <span class="switch-label">Remote only</span>
+            </label>
+          </div>
+
+          <div class="grid">
+            <!-- Course Types -->
+            @if (CourseTypeEnum) {
+            <div class="filter-block">
+              <div class="filter-title">Course Types</div>
+              <div class="check-list">
+                @for (type of CourseTypeEnum; track type) {
+                <label class="check">
+                  <input type="checkbox" [value]="type" [checked]="isValueSelected('courseTypes', type)"
+                    (change)="onCheckboxChange($event, 'courseTypes')" />
+                  <span>{{ type }}</span>
+                </label>
+                }
+              </div>
+            </div>
+            }
+
+            <!-- Areas of Study -->
+            <div class="filter-block">
+              <div class="filter-title">Areas of Study</div>
+              <div class="check-list scroll">
+                @for (areaOfStudy of dataService.areasOfStudy$ | async; track areaOfStudy) {
+                <label class="check">
+                  <input type="checkbox" [value]="areaOfStudy" [checked]="isValueSelected('areasOfStudy', areaOfStudy)"
+                    (change)="onCheckboxChange($event, 'areasOfStudy')" />
+                  <span>{{ areaOfStudy }}</span>
+                </label>
+                }
+              </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="filter-block">
+              <div class="filter-title">Languages</div>
+              <div class="check-list scroll">
+                @for (language of dataService.languages$ | async; track language) {
+                <label class="check">
+                  <input type="checkbox" [value]="language" [checked]="isValueSelected('languages', language)"
+                    (change)="onCheckboxChange($event, 'languages')" />
+                  <span>{{ language }}</span>
+                </label>
+                }
+              </div>
+            </div>
+
+            <!-- Countries -->
+            <div class="filter-block">
+              <div class="filter-title">Countries</div>
+              <div class="check-list scroll">
+                @for (country of dataService.countries$ | async; track country) {
+                <label class="check">
+                  <input type="checkbox" [value]="country" [checked]="isValueSelected('countries', country)"
+                    (change)="onCheckboxChange($event, 'countries')" />
+                  <span>{{ country }}</span>
+                </label>
+                }
+              </div>
+            </div>
+
+            <!-- Numeric filters -->
+            <div class="filter-block compact">
+              <div class="filter-title">Max cost (€/year)</div>
+              <input type="number" formControlName="costMax" class="mini-input no-spinner" placeholder="e.g. 3000" />
+            </div>
+
+            <div class="filter-block compact">
+              <div class="filter-title">Duration (years)</div>
+              <input type="number" formControlName="duration" class="mini-input" placeholder="e.g. 3" />
+            </div>
+          </div>
+        </form>
       </div>
-    </section>
+    </div>
+  </section>
   }
 
 
@@ -176,9 +153,9 @@
 
         <div class="pager-pages">
           @for (page of pages; track page) {
-            <button class="pager-page" [class.active]="page === currentPage" (click)="goToPage(page)">
-              {{ page + 1 }}
-            </button>
+          <button class="pager-page" [class.active]="page === currentPage" (click)="goToPage(page)">
+            {{ page + 1 }}
+          </button>
           }
         </div>
 
@@ -191,60 +168,61 @@
       <!-- cards -->
       <div class="cards">
         @for (course of courses; track course.id) {
-          <article class="course-card" tabindex="0" role="button">
-            <div class="card-top">
-              <div class="badges">
-                <span class="badge type">{{ course.courseType }}</span>
-                @if (course.isRemote) {
-                  <span class="badge remote">Remote</span>
-                }
-                @for (areaOfStudy of course.areasOfStudy; track areaOfStudy.id) {
-                  <span class="badge tag">{{ areaOfStudy.name }}</span>
-                }
-              </div>
-
-              <div class="price">
-                <span class="price-value">€{{ course.cost }}</span>
-                <span class="price-sub">/ year</span>
-              </div>
+        <article class="course-card" tabindex="0" role="button">
+          <div class="card-top">
+            <div class="badges">
+              <span class="badge type">{{ course.courseType }}</span>
+              @if (course.isRemote) {
+              <span class="badge remote">Remote</span>
+              }
+              @for (areaOfStudy of course.areasOfStudy; track areaOfStudy.id) {
+              <span class="badge tag">{{ areaOfStudy.name }}</span>
+              }
             </div>
 
-            <h3 class="title">{{ course.name }}</h3>
-            <p class="uni"><i class="bi bi-building"></i> {{ course.university.name }}</p>
-            <p class="desc">{{ course.description }}</p>
-
-            <div class="meta">
-              <div><i class="bi bi-clock"></i> {{ course.duration }} years</div>
-              <div><i class="bi bi-translate"></i> {{ course.language }}</div>
-              <div><i class="bi bi-award"></i> {{ course.credits }} credits</div>
-              <div><i class="bi bi-calendar-event"></i> {{ course.startDate | date:"MMM d, yyyy" }}</div>
-              <div class="deadline"><i class="bi bi-clock-history"></i> Apply by {{ course.applicationDeadline | date:"MMM d, yyyy" }}</div>
+            <div class="price">
+              <span class="price-value">€{{ course.cost }}</span>
+              <span class="price-sub">/ year</span>
             </div>
-
-            <div class="actions">
-              <a href="mailto:{{ course.contactEmail }}" class="btn-outline">
-                <i class="bi bi-envelope"></i>
-                Contact
-              </a>
-
-              <a href="{{ course.website }}" target="_blank" rel="noopener noreferrer" class="btn-outline">
-                <i class="bi bi-box-arrow-up-right"></i>
-                Website
-              </a>
-
-              <a class="btn-primary" [routerLink]="['/course', course.id]">
-                View details
-                <i class="bi bi-arrow-right"></i>
-              </a>
-
-            </div>
-          </article>
-        } @empty {
-          <div class="empty">
-            <h3>No courses found</h3>
-            <p>Try changing filters or search for a different keyword.</p>
-            <button class="btn-primary" type="button" (click)="resetFilters()">Reset filters</button>
           </div>
+
+          <h3 class="title">{{ course.name }}</h3>
+          <p class="uni"><i class="bi bi-building"></i> {{ course.university.name }}</p>
+          <p class="desc">{{ course.description }}</p>
+
+          <div class="meta">
+            <div><i class="bi bi-clock"></i> {{ course.duration }} years</div>
+            <div><i class="bi bi-translate"></i> {{ course.language }}</div>
+            <div><i class="bi bi-award"></i> {{ course.credits }} credits</div>
+            <div><i class="bi bi-calendar-event"></i> {{ course.startDate | date:"MMM d, yyyy" }}</div>
+            <div class="deadline"><i class="bi bi-clock-history"></i> Apply by {{ course.applicationDeadline | date:"MMM
+              d, yyyy" }}</div>
+          </div>
+
+          <div class="actions">
+            <a href="mailto:{{ course.contactEmail }}" class="btn-outline">
+              <i class="bi bi-envelope"></i>
+              Contact
+            </a>
+
+            <a href="{{ course.website }}" target="_blank" rel="noopener noreferrer" class="btn-outline">
+              <i class="bi bi-box-arrow-up-right"></i>
+              Website
+            </a>
+
+            <a class="btn-primary" [routerLink]="['/course', course.id]">
+              View details
+              <i class="bi bi-arrow-right"></i>
+            </a>
+
+          </div>
+        </article>
+        } @empty {
+        <div class="empty">
+          <h3>No courses found</h3>
+          <p>Try changing filters or search for a different keyword.</p>
+          <button class="btn-primary" type="button" (click)="resetFilters()">Reset filters</button>
+        </div>
         }
       </div>
     </div>

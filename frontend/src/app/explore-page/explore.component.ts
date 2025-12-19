@@ -6,13 +6,14 @@ import { ExploreService } from './services/explore-service';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
 import { DataService } from '../shared/services/data-service';
 import { PageRequest } from '../shared/viewmodels/pagination';
-import { AuthService } from '../auth/auth.service'; 
-import { Subscription } from 'rxjs'; 
+import { AuthService } from '../auth/auth.service';
+import { Subscription } from 'rxjs';
+import { RecommendationsComponent } from '../recommendations/recommendations.component';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RecommendationsComponent],
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.css'],
 })
@@ -21,8 +22,8 @@ export class ExploreComponent implements OnInit {
     private svc: ExploreService,
     private dataService: DataService,
     private router: Router,
-    private authService: AuthService 
-  ) {}
+    private authService: AuthService
+  ) { }
 
   q = signal<string>('');
 

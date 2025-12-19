@@ -145,6 +145,9 @@ public class SecurityConfig {
                                                 .authenticated()
                                                 .requestMatchers(HttpMethod.GET, "/api/users/me/status").authenticated()
 
+                                                // Recommendations endpoint (require auth, premium check in controller)
+                                                .requestMatchers(HttpMethod.GET, "/api/recommendations").authenticated()
+
                                                 // Admin endpoints require ADMIN role
                                                 .requestMatchers("/api/admin/**").permitAll()
                                                 // TODO: .requestMatchers("/api/admin/**").hasRole("ADMIN")

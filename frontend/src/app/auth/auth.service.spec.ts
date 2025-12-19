@@ -523,4 +523,58 @@ describe('AuthService', () => {
       req.error(new ProgressEvent('error'), { status: 400 });
     });
   });
+
+  describe('isPremium', () => {
+    it('should return true when user role is PREMIUM', () => {
+      // Set up a user with PREMIUM role
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'PREMIUM' });
+
+      expect(service.isPremium()).toBe(true);
+    });
+
+    it('should return false when user role is USER', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'USER' });
+
+      expect(service.isPremium()).toBe(false);
+    });
+
+    it('should return false when user role is ADMIN', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'ADMIN' });
+
+      expect(service.isPremium()).toBe(false);
+    });
+
+    it('should return false when no user is logged in', () => {
+      (service as any).currentUserSubject.next(null);
+
+      expect(service.isPremium()).toBe(false);
+    });
+  });
+
+  describe('isAdmin', () => {
+    it('should return true when user role is ADMIN', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'ADMIN' });
+
+      expect(service.isAdmin()).toBe(true);
+    });
+
+    it('should return false when user role is USER', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'USER' });
+
+      expect(service.isAdmin()).toBe(false);
+    });
+
+    it('should return false when user role is PREMIUM', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'PREMIUM' });
+
+      expect(service.isAdmin()).toBe(false);
+    });
+
+    it('should return false when no user is logged in', () => {
+      (service as any).currentUserSubject.next(null);
+
+      expect(service.isAdmin()).toBe(false);
+    });
+  });
 });
+
