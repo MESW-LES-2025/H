@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ProfilePage } from './profile-page';
 import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -982,6 +982,86 @@ describe('ProfilePage', () => {
       component['user'] = mockUser;
 
       expect(component.isOwner).toBeFalse();
+    });
+  });
+
+  describe('Additional Coverage', () => {
+    beforeEach(() => {
+      mockAuthService.getCurrentUserId.and.returnValue(mockUser.id);
+      fixture.detectChanges();
+      component['user'] = mockUser;
+    });
+
+    it('should show mismatch error when passwords do not match', () => {
+      const group = component['changePasswordForm'];
+      group.patchValue({
+        currentPassword: 'old',
+        newPassword: 'abc',
+        confirmPassword: 'xyz',
+      });
+
+      expect(group.errors).toEqual({ mismatch: true });
+      expect(group.valid).toBeFalse();
+    });
+
+    it('should clear success confirmation message after timeout', fakeAsync(() => {
+      const updatedUser = { ...mockUser, name: 'Updated Name' };
+      mockProfileService.updateProfile.and.returnValue(of(updatedUser));
+
+      component['openEditModal']();
+      component['editProfileForm'].patchValue({ name: 'Updated Name' });
+      component['onSubmitEdit']();
+
+      // Check intermediate state
+      expect(component['confirmationMessage']).toBe('Profile updated successfully!');
+
+      // Fast forward
+      tick(4000);
+
+      expect(component['confirmationMessage']).toBeNull();
+    }));
+
+    it('should clear error confirmation message after timeout', fakeAsync(() => {
+      mockProfileService.updateProfile.and.returnValue(throwError(() => new Error('Fail')));
+
+      component['openEditModal']();
+      component['editProfileForm'].patchValue({ name: 'Updated Name' });
+      component['onSubmitEdit']();
+
+      expect(component['confirmationMessage']).toBe('Failed to update profile. Please try again.');
+
+      tick(4000);
+
+      expect(component['confirmationMessage']).toBeNull();
+    }));
+
+    it('should mark password form as touched if invalid on submit', () => {
+      component['openPasswordModal']();
+      // Form is empty and invalid
+      component['onSubmitPassword']();
+
+      expect(component['changePasswordForm'].touched).toBeTrue();
+      expect(mockProfileService.changePassword).not.toHaveBeenCalled();
+    });
+
+    it('should early return in onConfirmDelete if user is null', () => {
+      component['user'] = null;
+      component['showDeleteModal'] = true;
+
+      component['onConfirmDelete']();
+
+      expect(component['showDeleteModal']).toBeFalse();
+      expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
+    });
+
+    it('should early return in onConfirmDelete if not owner', () => {
+      mockAuthService.getCurrentUserId.and.returnValue(999);
+      component['showDeleteModal'] = true;
+
+      component['onConfirmDelete']();
+
+      expect(component['showDeleteModal']).toBeFalse();
+      expect(mockProfileService.deleteAccount).not.toHaveBeenCalled();
     });
   });
 

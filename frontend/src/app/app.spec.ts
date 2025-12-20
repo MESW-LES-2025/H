@@ -143,6 +143,20 @@ describe('App', () => {
         done();
       });
     });
+
+    it('should fallback to event.url when urlAfterRedirects is missing', (done) => {
+      spyOn(titleService, 'setTitle');
+      // mimic a case where urlAfterRedirects is null/undefined
+      const navigationEnd = new NavigationEnd(1, '/login', null as any);
+
+      routerEventsSubject.next(navigationEnd);
+
+      setTimeout(() => {
+        expect(component.showNavbar).toBe(false); // Should still identify /login
+        expect(titleService.setTitle).toHaveBeenCalledWith('Login');
+        done();
+      });
+    });
   });
 
   describe('Lifecycle hooks', () => {
