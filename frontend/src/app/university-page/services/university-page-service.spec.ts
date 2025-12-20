@@ -104,7 +104,7 @@ describe('UniversityPageService', () => {
 
     expect(vm.location).toBe('Location not available');
     expect(vm.description).toBe('No description available');
-    expect(vm.logo).toContain('https://via.placeholder.com');
+    expect(vm.logo).toContain('https://placehold.co');
     expect(vm.courses[0].area).toBe('General');
     expect(vm.scholarships).toEqual([]);
     expect(vm.address).toBe('N/A');

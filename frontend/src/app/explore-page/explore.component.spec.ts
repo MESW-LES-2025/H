@@ -2,10 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExploreComponent } from './explore.component';
 import { ExploreService } from './services/explore-service';
 import { DataService } from '../shared/services/data-service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { of, throwError, delay } from 'rxjs';
 import { Page } from '../shared/viewmodels/pagination';
 import { CollegeVM } from './viewmodels/explore-viewmodel';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ExploreComponent', () => {
   let component: ExploreComponent;
@@ -59,14 +61,15 @@ describe('ExploreComponent', () => {
       countries$: of(['USA', 'UK', 'Canada']),
     });
 
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-
     await TestBed.configureTestingModule({
-      imports: [ExploreComponent],
+      imports: [
+        ExploreComponent,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
       providers: [
         { provide: ExploreService, useValue: exploreServiceSpy },
         { provide: DataService, useValue: dataServiceSpy },
-        { provide: Router, useValue: routerSpy },
       ],
     }).compileComponents();
 
@@ -75,6 +78,7 @@ describe('ExploreComponent', () => {
     ) as jasmine.SpyObj<ExploreService>;
     dataService = TestBed.inject(DataService) as jasmine.SpyObj<DataService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    spyOn(router, 'navigate');
 
     exploreService.search.and.returnValue(of(mockPage));
     exploreService.getFavorites.and.returnValue(

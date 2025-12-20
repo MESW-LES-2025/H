@@ -7,7 +7,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { AuthService, LoginResponse } from './auth.service';
+import { AuthService, LoginResponse, PasswordResetTokenResponse } from './auth.service';
 import { DataService } from '../shared/services/data-service';
 
 @Component({
@@ -23,6 +23,13 @@ export class LoginComponent {
   loading = false;
   errorMessage: string | null = null;
 
+  // Forgot Password Modal
+  showForgotPasswordModal = false;
+  forgotPasswordForm!: FormGroup;
+  forgotPasswordLoading = false;
+  forgotPasswordFeedback?: string;
+  forgotPasswordError?: string;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -33,6 +40,10 @@ export class LoginComponent {
       text: ['', Validators.required],
       password: ['', Validators.required],
       remember: [false],
+    });
+
+    this.forgotPasswordForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -53,14 +64,6 @@ export class LoginComponent {
 
         if (res.status === 'success' && res.user?.id != null) {
           this.dataService.setUserAtual(res.user);
-          localStorage.setItem('userId', res.user.id.toString());
-          if (res.user.name) {
-            localStorage.setItem('username', res.user.name);
-          }
-          if (res.user.role) {
-            localStorage.setItem('role', res.user.role);
-          }
-
           this.router.navigate(['/profile', res.user.id]);
         } else {
           this.errorMessage = res.message || 'Login failed';
@@ -79,5 +82,39 @@ export class LoginComponent {
     const nav = () => this.router.navigate([`/${path}`]);
     const doc: any = document;
     doc.startViewTransition ? doc.startViewTransition(() => nav()) : nav();
+  }
+
+  openForgotPassword() {
+    this.showForgotPasswordModal = true;
+    this.forgotPasswordFeedback = undefined;
+    this.forgotPasswordError = undefined;
+    this.forgotPasswordForm.reset();
+  }
+
+  closeForgotPassword() {
+    this.showForgotPasswordModal = false;
+  }
+
+  submitForgotPassword() {
+    if (this.forgotPasswordForm.invalid || this.forgotPasswordLoading) return;
+
+    this.forgotPasswordLoading = true;
+    this.forgotPasswordError = undefined;
+    this.forgotPasswordFeedback = undefined;
+
+    this.auth.forgotPassword(this.forgotPasswordForm.value.email.trim()).subscribe({
+      next: (res: PasswordResetTokenResponse) => {
+        this.forgotPasswordFeedback = res.message;
+        this.forgotPasswordLoading = false;
+      },
+      error: () => {
+        this.forgotPasswordError = 'Unable to process request right now. Please try again.';
+        this.forgotPasswordLoading = false;
+      },
+    });
+  }
+
+  loginWithGoogle() {
+    this.auth.loginWithGoogle();
   }
 }

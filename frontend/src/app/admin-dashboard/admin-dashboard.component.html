@@ -1,0 +1,578 @@
+<div class="container-fluid py-5 bg-light">
+  <div class="row justify-content-center">
+    <div class="col-lg-11">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+          <h1 class="display-5 fw-bold text-dark mb-1">Admin Dashboard</h1>
+        </div>
+      </div>
+
+      @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h4 class="mt-3 text-muted">Loading dashboard data...</h4>
+      </div>
+      }
+
+      @if (error) {
+      <div class="alert alert-danger border-0 shadow-sm" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+      </div>
+      }
+
+      @if (!loading && !error) {
+      <!-- Stats Row - Clickable -->
+      <div class="row g-4 mb-5">
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift" [class.border-primary]="activeTab === 'users'"
+            (click)="setActiveTab('users')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-primary mb-1 stat-number">
+                {{ users.length }}
+              </h3>
+              <p class="text-muted mb-0">Total Users</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift"
+            [class.border-success]="activeTab === 'universities'" (click)="setActiveTab('universities')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-success mb-1 stat-number">
+                {{ universities.length }}
+              </h3>
+              <p class="text-muted mb-0">Universities</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift" [class.border-info]="activeTab === 'courses'"
+            (click)="setActiveTab('courses')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-info mb-1 stat-number">
+                {{ courses.length }}
+              </h3>
+              <p class="text-muted mb-0">Courses</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift"
+            [class.border-danger]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-danger mb-1 stat-number">
+                {{ reviews.length }}
+              </h3>
+              <p class="text-muted mb-0">Reviews</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 shadow h-100 stat-card hover-lift"
+            [class.border-warning]="activeTab === 'analytics'" (click)="setActiveTab('analytics')">
+            <div class="card-body text-center p-4">
+              <h3 class="fw-bold text-warning mb-1 stat-number">
+                <i class="fas fa-chart-bar"></i>
+              </h3>
+              <p class="text-muted mb-0">Analytics</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Users Table -->
+        @if (activeTab === "users") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 fw-bold">
+                <i class="fas fa-users me-2"></i>Users Management
+              </h4>
+              <span class="badge bg-light text-dark fs-6 px-3 py-2">{{
+                users.length
+                }}</span>
+            </div>
+
+            <!-- Confirmation Modal Template -->
+            <ng-template #confirmModal let-modal>
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  Are you sure you want to delete this user? This action
+                  cannot be undone.
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+                  Cancel
+                </button>
+                <button type="button" class="btn btn-danger" (click)="modal.close('confirm')">
+                  Delete
+                </button>
+              </div>
+            </ng-template>
+
+            <!-- Reset Password Modal Template -->
+            <ng-template #resetPasswordModal let-modal>
+              <div class="modal-header">
+                <h5 class="modal-title">Reset User Password</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  Are you sure you want to reset this user's password? A password reset email will be sent to their
+                  registered email address.
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+                  Cancel
+                </button>
+                <button type="button" class="btn btn-warning" (click)="modal.close('confirm')">
+                  Reset Password
+                </button>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Success/Error Messages -->
+          @if (resetSuccessMessage) {
+          <div class="alert alert-success m-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i>{{ resetSuccessMessage }}
+          </div>
+          }
+          @if (resetErrorMessage) {
+          <div class="alert alert-danger m-3" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ resetErrorMessage }}
+          </div>
+          }
+
+          <div class="card-body p-0">
+            <div class="table-responsive table-container">
+              <table class="table table-hover mb-0 table-sticky-header">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="border-0 w-10">ID</th>
+                    <th class="border-0 w-20">Name</th>
+                    <th class="border-0 w-30">Email</th>
+                    <th class="border-0 w-25">Role</th>
+                    <th class="border-0 w-15 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (user of users; track user.id) {
+                  <tr class="table-row-hover">
+                    <td class="fw-medium w-10">{{ user.id }}</td>
+                    <td class="text-truncate w-20" style="max-width: 200px">
+                      {{ user.name || user.fullName || user.username }}
+                    </td>
+                    <td class="w-30">{{ user.email }}</td>
+                    <td class="w-25">
+                      <span class="badge bg-info text-dark px-3 py-2 fs-6">{{ user.userRole }}</span>
+                    </td>
+                    <td class="text-center py-2 w-15">
+                      @if (user.id !== currentUserId) {
+                      <button class="btn btn-sm btn-outline-warning p-1 me-1" (click)="confirmResetPassword(user.id)"
+                        title="Reset Password">
+                        <i class="fas fa-key"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger p-1" (click)="confirmDelete(user.id)"
+                        title="Delete User">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      }
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Universities Table -->
+        @if (activeTab === "universities") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-success text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Universities</h5>
+              <button class="btn btn-light btn-sm" (click)="openCreateUniversity()">
+                <i class="bi bi-plus-lg me-1"></i>Create University
+              </button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive table-container">
+              <table class="table table-hover mb-0 table-sticky-header">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="border-0">ID</th>
+                    <th class="border-0">Name</th>
+                    <th class="border-0">Description</th>
+                    <th class="border-0">Location</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (u of universities; track u.id) {
+                    <tr>
+                      <td>{{ u.name }}</td>
+                      <td>{{ u.location?.city || '-' }}</td>
+                      <td>{{ u.location?.country || '-' }}</td>
+                      <td>
+                        @if (u.website) {
+                          <a [href]="u.website" target="_blank" rel="noopener">{{ u.website }}</a>
+                        } @else { - }
+                      </td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditUniversity(u)">
+                          Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteUniversity(u.id)">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                  @if (!universities.length) {
+                    <tr><td colspan="5" class="text-center text-muted py-4">No universities</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+          <!-- University Form -->
+          <ng-template #universityFormModal let-modal>
+            <div class="modal-header">
+              <h5 class="modal-title">{{ editing ? 'Edit University' : 'Create University' }}</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+            </div>
+            <div class="modal-body">
+              <form (ngSubmit)="saveUniversity(modal)" #uniFormRef="ngForm">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input class="form-control" [(ngModel)]="uniForm.name" name="name" required />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" rows="3" [(ngModel)]="uniForm.description" name="description"></textarea>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Contact Info</label>
+                    <input class="form-control" [(ngModel)]="uniForm.contactInfo" name="contactInfo" />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Website</label>
+                    <input class="form-control" [(ngModel)]="uniForm.website" name="website" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Address</label>
+                    <input class="form-control" [(ngModel)]="uniForm.address" name="address" />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Logo</label>
+                    <input class="form-control" [(ngModel)]="uniForm.logo" name="logo" />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Location ID</label>
+                  <input type="number" class="form-control"
+                         [ngModel]="uniForm.location?.id" (ngModelChange)="uniForm.location = $event ? { id: +$event } : null"
+                         name="locationId" />
+                  <div class="form-text">Provide an existing location id to link city/country.</div>
+                </div>
+                <button class="btn btn-primary" type="submit" [disabled]="!uniFormRef.form.valid">
+                  {{ editing ? 'Save Changes' : 'Create' }}
+                </button>
+              </form>
+            </div>
+          </ng-template>
+
+          <ng-template #confirmUniversityDeleteModal let-modal>
+            <div class="modal-header">
+              <h5 class="modal-title">Confirm Delete</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this university?
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+              <button class="btn btn-danger" (click)="modal.close('confirm')">Delete</button>
+            </div>
+          </ng-template>
+        }
+
+        <!-- Courses Table -->
+        @if (activeTab === "courses") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-info text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 fw-bold">
+                <i class="fas fa-book me-2"></i>Courses
+              </h4>
+              <span class="badge bg-light text-dark fs-6 px-3 py-2">{{
+                courses.length
+                }}</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive table-container">
+              <table class="table table-hover mb-0 table-sticky-header">
+                <thead class="table-dark">
+                  <tr>
+                    <th style="width: 30%">Name</th>
+                    <th style="width: 20%">City</th>
+                    <th style="width: 20%">Country</th>
+                    <th style="width: 20%">Website</th>
+                    <th style="width: 10%" class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (course of courses; track course.id) {
+                  <tr class="table-row-hover">
+                    <td class="fw-medium">{{ course.id }}</td>
+                    <td class="text-truncate" style="max-width: 250px">
+                      {{ course.title || course.name }}
+                    </td>
+                    <td>{{ course.courseType || "N/A" }}</td>
+                    <td>{{ course.universityName || "N/A" }}</td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Reviews Table -->
+        @if (activeTab === "reviews") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-danger text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 fw-bold text-dark">
+                <i class="fas fa-comments me-2"></i>Reviews Management
+              </h4>
+              <span class="badge bg-light text-dark fs-6 px-3 py-2">{{ reviews.length }}</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive table-container">
+              <table class="table table-hover mb-0 table-sticky-header">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="border-0">ID</th>
+                    <th class="border-0">User</th>
+                    <th class="border-0">Type</th>
+                    <th class="border-0">Course</th>
+                    <th class="border-0">University</th>
+                    <th class="border-0">Rating</th>
+                    <th class="border-0">Title</th>
+                    <th class="border-0">Comment</th>
+                    <th class="border-0">Date</th>
+                    <th class="border-0 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (review of reviews; track review.id) {
+                  <tr>
+                    <td>{{ review.id }}</td>
+                    <td>{{ review.userName }}</td>
+                    <td>
+                      {{ review.courseId ? 'Course' : 'University' }}
+                    </td>
+                    <td>
+                      {{ review.courseId ? getCourseName(review.courseId) : '-' }}
+                    </td>
+                    <td>
+                      {{ review.universityId ? getUniversityName(review.universityId) : '-' }}
+                    </td>
+                    <td>{{ review.rating }}</td>
+                    <td>{{ review.title }}</td>
+                    <td>{{ review.description }}</td>
+                    <td>{{ review.reviewDate | date }}</td>
+                    <td class="text-center">
+                      <button class="btn btn-sm btn-outline-danger"
+                        (click)="openDeleteReviewModal(review.id, deleteReviewModal)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Analytics Dashboard -->
+        @if (activeTab === "analytics") {
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-gradient-warning text-dark py-3">
+            <h4 class="mb-0 fw-bold">
+              <i class="fas fa-chart-bar me-2"></i>Platform Analytics
+            </h4>
+          </div>
+          <div class="card-body p-4">
+            @if (!analytics) {
+            <div class="text-center py-4">
+              <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            } @else {
+            <!-- KPI Cards -->
+            <div class="row g-3 mb-4 d-flex justify-content-around">
+              <div class="col-md-4 col-lg-2">
+                <div class="card bg-primary text-white h-100">
+                  <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">{{ analytics.totalUsers }}</h3>
+                    <small>Users</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-lg-2">
+                <div class="card bg-success text-white h-100">
+                  <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">{{ analytics.totalUniversities }}</h3>
+                    <small>Universities</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-lg-2">
+                <div class="card bg-info text-white h-100">
+                  <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">{{ analytics.totalCourses }}</h3>
+                    <small>Courses</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-lg-2">
+                <div class="card bg-secondary text-white h-100">
+                  <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">{{ analytics.totalCourseReviews + analytics.totalUniversityReviews }}</h3>
+                    <small>Reviews</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-lg-2">
+                <div class="card bg-dark text-white h-100">
+                  <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">{{ analytics.totalScholarships }}</h3>
+                    <small>Scholarships</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Popularity Rankings -->
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Popular Courses</h5>
+                  </div>
+                  <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>#</th>
+                          <th>Course Name</th>
+                          <th class="text-end">Favorites</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (course of analytics.popularCourses; track course.id; let i = $index) {
+                        <tr>
+                          <td class="fw-bold">{{ i + 1 }}</td>
+                          <td>{{ course.name }}</td>
+                          <td class="text-end"><span class="badge bg-info">{{ course.favoriteCount }}</span></td>
+                        </tr>
+                        }
+                        @if (analytics.popularCourses.length === 0) {
+                        <tr>
+                          <td colspan="3" class="text-center text-muted">No data</td>
+                        </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Popular Universities</h5>
+                  </div>
+                  <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>#</th>
+                          <th>University Name</th>
+                          <th class="text-end">Favorites</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (uni of analytics.popularUniversities; track uni.id; let i = $index) {
+                        <tr>
+                          <td class="fw-bold">{{ i + 1 }}</td>
+                          <td>{{ uni.name }}</td>
+                          <td class="text-end"><span class="badge bg-success">{{ uni.favoriteCount }}</span></td>
+                        </tr>
+                        }
+                        @if (analytics.popularUniversities.length === 0) {
+                        <tr>
+                          <td colspan="3" class="text-center text-muted">No data</td>
+                        </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+
+  <ng-template #deleteReviewModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Confirm Deletion</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Are you sure you want to delete this review? This action cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('confirm')">
+        Delete
+      </button>
+    </div>
+  </ng-template>
+</div>

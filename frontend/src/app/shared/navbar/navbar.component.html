@@ -6,29 +6,64 @@
 
   <!-- CENTRO: LINKS -->
   <nav class="navbar-nav">
-    <a
-      class="nav-link"
-      routerLink="/home"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
+    <a class="nav-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
       Home
     </a>
 
-    <a class="nav-link" routerLink="/explore" routerLinkActive="active">
-      Explore
+    <div class="nav-dropdown" [class.open]="exploreOpen" (keydown.escape)="exploreOpen = false">
+      <button class="nav-link dropdown-trigger" type="button" (click)="toggleExplore($event)" aria-haspopup="menu"
+        [attr.aria-expanded]="exploreOpen">
+        Explore
+        <span class="caret" [class.open]="exploreOpen">⌄</span>
+      </button>
+
+      <div class="dropdown-menu" role="menu">
+        <a class="dropdown-item" role="menuitem" routerLink="/explore" (click)="closeExplore()">
+          Explore Universities
+        </a>
+        <a class="dropdown-item" role="menuitem" routerLink="/courses" (click)="closeExplore()">
+          Explore Courses
+        </a>
+      </div>
+    </div>
+
+
+
+    <a class="nav-link" routerLink="/faqs" routerLinkActive="active">
+      FAQs
+    </a>
+
+    <!-- Premium link - show for logged-in users -->
+    <a *ngIf="userId" class="nav-link premium-link" routerLink="/subscribe" routerLinkActive="active">
+      ⭐ Premium
     </a>
 
     <a class="nav-link" routerLink="/about" routerLinkActive="active">
       About Us
     </a>
+
+    <!-- Admin link - show for ADMIN users -->
+    <a
+      *ngIf="userRole === 'ADMIN'"
+      class="nav-link admin-link"
+      routerLink="/admin"
+      routerLinkActive="active"
+    >
+      <i class="bi bi-shield-lock-fill me-1"></i>
+      Admin
+    </a>
   </nav>
 
   <!-- DIREITA: ÍCONES -->
   <div class="navbar-actions">
-    <button class="icon-btn" aria-label="Profile" (click)="goToProfile()">
+    <!-- Show profile icon only if logged in -->
+    <button *ngIf="userId" class="icon-btn" aria-label="Profile" (click)="goToProfile()">
       <img src="/images/profile-outline.svg" alt="" />
     </button>
+
+    <!-- Show these only if NOT logged in -->
+    <a *ngIf="!userId" class="nav-link" routerLink="/login">Log In</a>
+    <a *ngIf="!userId" class="nav-link primary" routerLink="/register">Sign Up</a>
 
     <!-- Logout Button -->
     <button *ngIf="userId" class="btn-logout" (click)="logout()">

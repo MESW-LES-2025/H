@@ -3,13 +3,21 @@ import { UserCourse } from '../../shared/viewmodels/user-course';
 export interface UserViewmodel {
   id: number;
   name: string;
+  email: string;
   age: number;
   gender: string;
   location: string;
-  profileImage: string;
+  profilePicture: string;
   jobTitle: string;
   academicHistory: UserCourse[];
-  role: string;
+  userRole: string;
+  provider?: string;
+  premiumStartDate?: string;
+  premium?: boolean;
+  // Academic profile
+  academicGrade?: number;
+  educationLevel?: string;
+  studyArea?: string;
 }
 
 export interface FavoriteUniversityDTO {
@@ -28,6 +36,10 @@ export interface FavoriteCourseDTO {
   id: number;
   name: string;
   courseType: string;
+  universityName?: string;
+  cost?: number;
+  credits?: number;
+  description?: string;
 }
 
 export interface FavoritesResponse {

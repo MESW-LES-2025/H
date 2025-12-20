@@ -1,3 +1,4 @@
+
 package com.lernia.auth.entity;
 
 import lombok.Data;

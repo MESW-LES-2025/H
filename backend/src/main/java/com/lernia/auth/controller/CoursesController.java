@@ -1,7 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.dto.filter.CourseFilter;
 import com.lernia.auth.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

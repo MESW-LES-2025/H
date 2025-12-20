@@ -13,6 +13,7 @@ export interface CourseViewmodel {
   university: UniversityDTO;
   topics: string[];
   requirements: string[];
+  cost: number;
 
   isFavorite?: boolean;
 }

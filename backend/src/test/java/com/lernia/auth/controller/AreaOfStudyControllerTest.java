@@ -63,4 +63,16 @@ class AreaOfStudyControllerTest {
 
         verify(areaOfStudyService, times(1)).getAllAreasOfStudy();
     }
+
+    @Test
+    void getAllAreasOfStudy_doesNotCallOtherMethods() {
+        when(areaOfStudyService.getAllAreasOfStudy())
+                .thenReturn(List.of());
+
+        controller.getAllAreasOfStudy();
+
+        verify(areaOfStudyService).getAllAreasOfStudy();
+        verifyNoMoreInteractions(areaOfStudyService);
+    }
+
 }

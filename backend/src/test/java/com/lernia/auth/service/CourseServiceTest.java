@@ -2,33 +2,42 @@ package com.lernia.auth.service;
 
 import com.lernia.auth.dto.AreaOfStudyDTO;
 import com.lernia.auth.dto.CourseDTO;
-import com.lernia.auth.dto.CourseFilter;
+import com.lernia.auth.dto.filter.CourseFilter;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.AreaOfStudyEntity;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
-import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.mapper.CourseMapper;
-import java.time.LocalDate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import com.lernia.auth.repository.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 class CourseServiceTest {
 
@@ -110,7 +119,7 @@ class CourseServiceTest {
         assertEquals("Portugal", lDto.getCountry());
         assertEquals(850, lDto.getCostOfLiving());
 
-        List<AreaOfStudyDTO> areas = dto.getAreasOfStudy();
+        List<AreaOfStudyDTO> areas = dto.getAreaOfStudy();
         assertNotNull(areas);
         assertEquals(2, areas.size());
     }
@@ -129,7 +138,7 @@ class CourseServiceTest {
     @Test
     void testGetCourseById_MapsEmptyAreasOfStudyList() {
         CourseEntity course = buildFullCourseEntity(7L);
-        course.setAreaOfStudies(new ArrayList<>());
+        course.setAreasOfStudy(new ArrayList<>());
 
         when(courseRepository.findById(7L)).thenReturn(Optional.of(course));
 
@@ -138,8 +147,8 @@ class CourseServiceTest {
         assertTrue(opt.isPresent());
         CourseDTO dto = opt.get();
 
-        assertNotNull(dto.getAreasOfStudy(), "Areas list should not be null");
-        assertTrue(dto.getAreasOfStudy().isEmpty(), "Areas list should be empty");
+        assertNotNull(dto.getAreaOfStudy(), "Areas list should not be null");
+        assertTrue(dto.getAreaOfStudy().isEmpty(), "Areas list should be empty");
 
         verify(courseRepository, times(1)).findById(7L);
     }
@@ -247,7 +256,7 @@ class CourseServiceTest {
         course.setName("Software Engineering");
         course.setDescription("SE description");
         course.setUniversity(university);
-        course.setAreaOfStudies(areas);
+        course.setAreasOfStudy(areas);
 
         return course;
     }

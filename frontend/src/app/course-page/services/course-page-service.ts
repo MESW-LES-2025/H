@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { CourseViewmodel } from '../viewmodels/course-viewmodel';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../auth/auth.service';
 
 interface LocationDTO {
   id: number;
@@ -48,7 +49,10 @@ interface CourseDTO {
 export class CoursePageService {
   private readonly baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   // -------------------------------------
   // GET COURSE PROFILE
@@ -77,10 +81,10 @@ export class CoursePageService {
   // ADD FAVORITE COURSE
   // -------------------------------------
   public addFavoriteCourse(courseId: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) throw new Error('User not logged in');
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) throw new Error('User not logged in');
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.post<void>(
       `${this.baseUrl}/api/favorites/courses/${courseId}`,
@@ -93,10 +97,10 @@ export class CoursePageService {
   // REMOVE FAVORITE COURSE
   // -------------------------------------
   public removeFavoriteCourse(courseId: number): Observable<void> {
-    const storedId = localStorage.getItem('userId');
-    if (!storedId) throw new Error('User not logged in');
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) throw new Error('User not logged in');
 
-    const params = new HttpParams().set('userId', storedId);
+    const params = new HttpParams().set('userId', userId.toString());
 
     return this.http.delete<void>(
       `${this.baseUrl}/api/favorites/courses/${courseId}`,
@@ -108,10 +112,12 @@ export class CoursePageService {
   // MAPPER
   // -------------------------------------
   private mapToViewmodel(dto: CourseDTO): CourseViewmodel {
+    const areas = dto.areasOfStudy ?? []; // Default to empty array if undefined
+
     return {
       id: dto.id,
       name: dto.name,
-      area: dto.areasOfStudy.length > 0 ? dto.areasOfStudy[0].name : 'General',
+      area: areas.length > 0 ? areas[0].name : 'General',
       description: dto.description || 'No description available',
       duration: dto.duration ? `${dto.duration} months` : 'N/A',
       level: dto.courseType || 'General',
@@ -119,7 +125,7 @@ export class CoursePageService {
       credits: dto.credits || 0,
       bannerImage:
         'https://images.unsplash.com/photo-1605470207062-b72b5cbe2a87?q=80&w=1170&auto=format&fit=crop',
-
+      cost: dto.cost || 0,
       university: {
         id: dto.university.id,
         name: dto.university.name,
@@ -132,7 +138,7 @@ export class CoursePageService {
         } as any,
       },
 
-      topics: dto.areasOfStudy.map((a) => a.name),
+      topics: areas.map((a) => a.name),
 
       requirements: dto.minAdmissionGrade
         ? [`Minimum admission grade: ${dto.minAdmissionGrade}`]

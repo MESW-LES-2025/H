@@ -9,24 +9,56 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { EditProfileRequest } from './viewmodels/edit-profile-request';
+import { AuthService } from '../auth/auth.service';
+import { RouterModule } from '@angular/router';
+
+function passwordMatchValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const newPass = control.get('newPassword')?.value;
+  const confirmPass = control.get('confirmPassword')?.value;
+  return newPass === confirmPass ? null : { mismatch: true };
+}
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
   templateUrl: './profile-page.html',
-  styleUrl: './profile-page.css',
+  styleUrls: [
+    './profile-page.css',
+    '../courses/courses.css'
+  ],
 })
 export class ProfilePage implements OnInit {
   private profilePageService = inject(ProfilePageService);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
 
   protected user: UserViewmodel | null = null;
   protected showEditModal = false;
+  protected showPasswordModal = false;
   protected editProfileForm: FormGroup = undefined as any;
+  protected changePasswordForm: FormGroup = undefined as any;
+
+  protected passwordFeedback: {
+    type: 'success' | 'error';
+    message: string;
+  } | null = null;
+
+  protected showCurrentPassword = false;
+  protected showNewPassword = false;
+  protected showConfirmPassword = false;
 
   protected activeTab: 'universities' | 'courses' | 'countries' | 'other' =
     'universities';
@@ -44,8 +76,16 @@ export class ProfilePage implements OnInit {
     id: number;
     name: string;
     type: string;
+    cost?: number;
+    credits?: number;
+    universityName?: string;
     isFavorite: boolean;
+    description?: string;
   }[] = [];
+
+  protected showDeleteModal = false;
+  protected confirmationMessage: string | null = null;
+  protected confirmationType: 'success' | 'error' | null = null;
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -66,9 +106,9 @@ export class ProfilePage implements OnInit {
   }
 
   get isOwner(): boolean {
-    const stored = localStorage.getItem('userId');
-    if (!this.user || !stored) return false;
-    return Number(stored) === this.user.id;
+    const currentUserId = this.authService.getCurrentUserId();
+    if (!this.user || currentUserId === null) return false;
+    return currentUserId === this.user.id;
   }
 
   private initForm(): void {
@@ -79,7 +119,19 @@ export class ProfilePage implements OnInit {
       gender: this.fb.control<string | null>(null, Validators.required),
       location: this.fb.control<string | null>(null),
       jobTitle: this.fb.control<string | null>(null),
+      academicGrade: this.fb.control<number | null>(null),
+      educationLevel: this.fb.control<string | null>(null),
+      studyArea: this.fb.control<string | null>(null),
     });
+
+    this.changePasswordForm = this.fb.group(
+      {
+        currentPassword: ['', Validators.required],
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: passwordMatchValidator },
+    );
   }
 
   protected openEditModal(): void {
@@ -92,6 +144,9 @@ export class ProfilePage implements OnInit {
       gender: this.user.gender,
       location: this.user.location,
       jobTitle: this.user.jobTitle,
+      academicGrade: this.user.academicGrade,
+      educationLevel: this.user.educationLevel,
+      studyArea: this.user.studyArea,
     });
 
     this.showEditModal = true;
@@ -110,14 +165,76 @@ export class ProfilePage implements OnInit {
         next: (updatedUser) => {
           this.user = updatedUser;
           this.closeEditModal();
+          this.confirmationType = 'success';
+          this.confirmationMessage = 'Profile updated successfully!';
+          setTimeout(() => this.confirmationMessage = null, 4000);
         },
         error: (error) => {
           console.error('Failed to update profile:', error);
-          alert('Failed to update profile. Please try again.');
+          this.confirmationType = 'error';
+          this.confirmationMessage = 'Failed to update profile. Please try again.';
+          setTimeout(() => this.confirmationMessage = null, 4000);
         },
       });
     } else {
       this.editProfileForm.markAllAsTouched();
+    }
+  }
+
+  // --- Password Modal Logic ---
+
+  protected openPasswordModal(): void {
+    if (!this.user || !this.isOwner) return;
+    this.showPasswordModal = true;
+    this.passwordFeedback = null;
+    this.resetPasswordVisibility();
+  }
+
+  protected closePasswordModal(): void {
+    this.showPasswordModal = false;
+    this.changePasswordForm.reset();
+    this.passwordFeedback = null;
+    this.resetPasswordVisibility();
+  }
+
+  private resetPasswordVisibility(): void {
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  protected onSubmitPassword(): void {
+    if (this.changePasswordForm.valid && this.user) {
+      const { currentPassword, newPassword } = this.changePasswordForm.value;
+
+      this.passwordFeedback = null;
+
+      this.profilePageService
+        .changePassword(this.user.id, { currentPassword, newPassword })
+        .subscribe({
+          next: () => {
+            this.passwordFeedback = {
+              type: 'success',
+              message: 'Password changed successfully!',
+            };
+            this.confirmationType = 'success';
+            this.confirmationMessage = 'Password changed successfully!';
+            setTimeout(() => {
+              this.closePasswordModal();
+            }, 1500);
+          },
+          error: (err) => {
+            console.error(err);
+            this.passwordFeedback = {
+              type: 'error',
+              message: 'Incorrect current password. Please try again.',
+            };
+            this.confirmationType = 'error';
+            this.confirmationMessage = 'Incorrect current password. Please try again.';
+          },
+        });
+    } else {
+      this.changePasswordForm.markAllAsTouched();
     }
   }
 
@@ -137,7 +254,11 @@ export class ProfilePage implements OnInit {
           id: c.id,
           name: c.name,
           type: c.courseType,
+          cost: c.cost,
+          credits: c.credits,
+          universityName: c.universityName,
           isFavorite: true,
+          description: c.description,
         }));
       },
       error: (err) => console.error('Error loading favorites', err),
@@ -145,7 +266,7 @@ export class ProfilePage implements OnInit {
   }
 
   protected setTab(
-    tab: 'universities' | 'courses' | 'countries' | 'other',
+    tab: 'universities' | 'courses' | 'other',
   ): void {
     this.activeTab = tab;
   }
@@ -155,25 +276,27 @@ export class ProfilePage implements OnInit {
   }
 
   protected confirmDelete(): void {
-    // Only owner may delete account
     if (!this.user || !this.isOwner) {
       return;
     }
+    this.showDeleteModal = true;
+  }
 
-    const sure = window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.',
-    );
-    if (!sure) return;
+  protected onCancelDelete(): void {
+    this.showDeleteModal = false;
+  }
 
+  protected onConfirmDelete(): void {
+    this.showDeleteModal = false;
+    if (!this.user || !this.isOwner) return;
     this.profilePageService.deleteAccount(this.user.id).subscribe({
       next: () => {
-        alert('Account deleted successfully.');
-        localStorage.removeItem('userId');
-        window.location.href = '/home';
+        sessionStorage.setItem('accountDeleted', 'Your account has been deleted.');
+        this.authService.logout();
       },
       error: (err) => {
-        console.error('Error deleting account', err);
-        alert('Failed to delete account.');
+        this.confirmationType = 'error';
+        this.confirmationMessage = 'Failed to delete account. Please try again.';
       },
     });
   }

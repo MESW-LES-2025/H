@@ -1,0 +1,194 @@
+.probability-widget {
+    background: #fdf4e7;
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.locked-state {
+    position: relative;
+    min-height: 200px;
+}
+
+.lock-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(125, 177, 159, 0.1) 0%, rgba(206, 220, 167, 0.1) 100%);
+    border-radius: 12px;
+}
+
+.lock-icon {
+    font-size: 2rem;
+    color: #7db19f;
+    margin-bottom: 0.75rem;
+}
+
+.lock-title {
+    color: #3f2419;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.lock-text {
+    color: #5a3226;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.unlock-btn {
+    background: #7db19f;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.unlock-btn:hover {
+    background: #6a9e8c;
+    color: white;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.widget-title {
+    color: #3f2419;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.premium-badge {
+    background: #f3e6bc;
+    color: #5a3226;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.loading-state,
+.error-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #5a3226;
+}
+
+.error-state {
+    color: #dc3545;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.probability-display {
+    text-align: center;
+}
+
+.gauge-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 1rem;
+}
+
+.gauge {
+    width: 100%;
+    height: 100%;
+}
+
+.gauge-bg {
+    stroke: #e9ecef;
+}
+
+.gauge-progress {
+    transition: stroke-dasharray 0.5s ease;
+}
+
+.gauge-progress.low {
+    stroke: #dc3545;
+}
+
+.gauge-progress.medium {
+    stroke: #ffc107;
+}
+
+.gauge-progress.high {
+    stroke: #28a745;
+}
+
+.gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.percentage {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #3f2419;
+}
+
+.label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.label.low {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+.label.medium {
+    background: rgba(255, 193, 7, 0.15);
+    color: #856404;
+}
+
+.label.high {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+
+.factors-list {
+    text-align: left;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.factor-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.factor-key {
+    color: #5a3226;
+    font-weight: 600;
+}
+
+.factor-value {
+    color: #7a6053;
+    text-align: right;
+    max-width: 60%;
+}
