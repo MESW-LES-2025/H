@@ -30,3 +30,7 @@
 .transition-scale:hover {
   transform: scale(1.1);
 }
+
+.cards .course-card {
+  background: #fff !important;
+}

@@ -9,8 +9,6 @@
   --leaf: #e6efeb;
 }
 
-/* ---------- base ---------- */
-
 * {
   box-sizing: border-box;
 }
@@ -22,17 +20,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
 }
 
-/* ================= HERO ================= */
-
+/* HERO - Clean centered layout */
 .hero {
   width: min(1040px, 92%);
   margin-inline: auto;
@@ -40,95 +32,81 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 40px;
+  gap: 32px;
+  padding: 40px 0 20px;
 }
 
-.hero-copy {
-  position: relative;
-  max-width: 720px;
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
 }
 
-.hero-arrow {
-  position: absolute;
-  left: -220px;
-  top: 30px;
-  width: 260px;
-  height: auto;
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.95;
-}
-
-/* título principal */
-
-.hero-copy h1 {
-  margin: 0 0 24px;
-  font-size: 56px;
+.hero h1 {
+  margin: 0 0 20px;
+  font-size: 52px;
   line-height: 1.12;
   letter-spacing: 0.01em;
   color: #3f2419;
   font-weight: 800;
-  position: relative;
-}
-
-/* spark amarelo ao lado do título */
-
-.hero-copy h1::after {
-  content: "";
-  position: absolute;
-  right: -48px;
-  top: 6px;
-  width: 70px;
-  height: 70px;
-  background: url("/images/start.png") no-repeat center/contain;
-  opacity: 1;
 }
 
 .hero-subtitle {
-  margin: 0;
-  max-width: 790px;
-  font-size: 14px;
+  margin: 0 0 32px;
+  max-width: 650px;
+  font-size: 15px;
   line-height: 1.6;
   color: #5a3226;
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* ================= HERO IMAGE + SEARCHBAR ================= */
-
-.hero-photo {
-  width: 100%;
-  max-width: 1300px;
-  position: relative;
-  margin-top: 16px;
-}
-
-.hero-image {
-  width: 100%;
-  height: 460px;
-  object-fit: cover;
-  border-radius: 28px;
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.25);
-}
+/* ================= SEARCHBAR - Centered, not floating ================= */
 
 .searchbar.hero-searchbar {
-  position: absolute;
-  left: 50%;
-  top: -30px;
-  transform: translateX(-50%);
-
-  width: 70%;
-  max-width: 820px;
-  height: 78px;
-
+  width: 100%;
+  max-width: 680px;
+  height: 64px;
   background: #cedca7;
-  border-radius: 26px;
-
+  border-radius: 20px;
   display: grid;
-  grid-template-columns: 85px 1fr 190px;
+  grid-template-columns: 60px 1fr 140px;
   align-items: center;
-
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
   overflow: hidden;
+}
+
+/* Results searchbar styling */
+.searchbar.results-searchbar {
+  width: 100%;
+  height: 58px;
+  background: #cedca7;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 50px 1fr 120px;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.results-searchbar .icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.results-searchbar .icon img {
+  width: 22px;
+  height: 22px;
+  opacity: 0.9;
+}
+
+/* Hero recommendations wrapper */
+.hero-recommendations {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 20px;
 }
 
 .hero-searchbar .icon {
@@ -138,46 +116,40 @@
 }
 
 .hero-searchbar .icon img {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   opacity: 0.9;
 }
 
 /* input */
-
 .hero-input {
   width: 100%;
   height: 100%;
   border: none;
   outline: none;
   background: transparent;
-
   padding-left: 10px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: #5a3226;
 }
 
 .hero-input::placeholder {
   color: #5a3226;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* botão SEARCH */
-
 .search-btn {
   height: 100%;
   width: 100%;
-
   background: #f3e6bc;
   border: none;
-  border-left: 3px solid rgba(0, 0, 0, 0.07);
-
+  border-left: 2px solid rgba(0, 0, 0, 0.05);
   color: #5a3226;
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
-
   transition: 0.2s ease;
 }
 
@@ -186,7 +158,6 @@
 }
 
 .search-btn:active {
-  transform: translateY(0);
   filter: brightness(0.97);
 }
 
@@ -335,9 +306,11 @@
 .skeleton .w-70 {
   width: 70%;
 }
+
 .skeleton .w-50 {
   width: 50%;
 }
+
 .skeleton .w-60 {
   width: 60%;
 }
@@ -357,6 +330,7 @@
   0% {
     background-position: -220px 0;
   }
+
   100% {
     background-position: 220px 0;
   }
@@ -412,55 +386,32 @@
 
 .college-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: 1.5fr 1fr;
   align-items: stretch;
-
   margin: 26px 0;
   border-radius: 28px;
-  overflow: hidden;
-
   background: #fdf4e7;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 22px 45px rgba(0, 0, 0, 0.12);
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
+  cursor: pointer;
 }
 
 .college-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.01);
   box-shadow: 0 26px 55px rgba(0, 0, 0, 0.18);
 }
 
 /* painel verde da esquerda */
 
 .college-card .left {
-  padding: 28px 30px;
-  color: #ffffff;
-  display: grid;
-  align-content: center;
-  gap: 10px;
-
-  background-image: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(0, 0, 0, 0.08)
-  );
-}
-
-.college-card .left h3 {
-  margin: 0;
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.01em;
-}
-
-.college-card .left p {
-  margin: 0;
-  max-width: 40ch;
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.96;
+  padding: 32px 32px 32px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
 }
 
 /* bloco da imagem à direita */
@@ -468,141 +419,174 @@
 .college-card .right {
   position: relative;
   overflow: hidden;
-  min-height: 210px;
+  min-width: 180px;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background: none;
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+  padding: 0;
 }
 
 .college-card .right img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.03);
-  transition: transform 0.25s ease;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  display: block;
 }
 
-.college-card:hover .right img {
-  transform: scale(1.07);
+/* --- Badges and Meta --- */
+.badges-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
 }
 
-/* botão de favorito */
-.fav {
-  border: none;
-  background: white;
-  font-size: 1.6rem;
-  cursor: pointer;
-  transition:
-    transform 0.1s ease,
-    color 0.1s ease;
-  color: #444; /* coração "vazio" */
-}
-
-.fav--active {
-  color: #e53935; /* vermelho quando favorito */
-}
-
-.fav:hover {
-  transform: scale(1.1);
-}
-
-button.fav {
-  border: none;
-  background: transparent;
-  font-size: 24px;
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    color 0.15s ease;
-  color: #ffffff;
-}
-
-button.fav-active {
-  color: red;
-  transform: scale(1.1);
-}
-
-.college-card .fav {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  width: 40px;
-  height: 40px;
-
+.badge {
+  display: inline-block;
+  padding: 3px 12px;
   border-radius: 999px;
-  border: 0;
-  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e3ebdf;
+  color: #3f2419;
+  letter-spacing: 0.03em;
+}
 
-  background: #ffffff;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: #3f2419;
+}
 
+.desc {
+  font-size: 15px;
+  color: #5a3226;
+  margin: 0 0 8px 0;
+  opacity: 0.96;
+}
+
+.meta-row {
+  font-size: 13px;
+  color: #3f2419;
+  margin-bottom: 10px;
+}
+
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-outline {
+  border: 1px solid var(--mint);
+  background: #fff;
+  color: var(--mint);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #f2707a;
-  transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    background 0.16s ease;
+  gap: 6px;
 }
 
-.college-card .fav:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.32);
-}
-
-.college-card .fav:active {
-  transform: translateY(0);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.26);
-}
-
-/* botão “Show more Colleges” */
-
-.load-more {
-  display: flex;
-  justify-content: center;
-  margin: 28px 0 8px;
-}
-
-.more {
-  height: 46px;
-  padding: 0 28px;
-  border-radius: 999px;
-  border: 0;
+.btn-outline:hover {
   background: var(--mint);
   color: #fff;
-  font-weight: 800;
+}
+
+.btn-primary {
+  background: var(--mint);
+  color: #fff;
+  border: none;
+  padding: 7px 20px;
+  border-radius: 999px;
   font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.22);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    filter 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
 }
 
-.more:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.26);
-  filter: saturate(1.06);
+/* Show More Button */
+.btn-show-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 36px auto 0;
+  padding: 14px 38px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--mint);
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(125, 177, 159, 0.13);
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+  letter-spacing: 0.01em;
 }
 
-/* ================= RESPONSIVO ================= */
+.btn-show-more:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.btn-show-more:disabled {
+  background: #b2cfc2;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Optional: Spinner for loading state */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-top: 3px solid var(--accent-deep);
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .college-card {
+    grid-template-columns: 1fr;
+  }
+
+  .college-card .right {
+    min-width: 100%;
+    border-radius: 0 0 28px 28px;
+    justify-content: center;
+  }
+
+  .college-card .right img {
+    max-width: 100%;
+    max-height: 160px;
+    margin: 12px 0;
+  }
+}
 
 @media (max-width: 1024px) {
-  .hero-copy h1 {
-    font-size: 42px;
-  }
-
-  .hero-arrow {
-    display: none;
-  }
-
-  .hero-image {
-    height: 320px;
-  }
-
-  .searchbar.hero-searchbar {
-    width: 88%;
-    top: -34px;
+  .hero h1 {
+    font-size: 40px;
   }
 
   .content {
@@ -623,16 +607,17 @@ button.fav-active {
     padding-top: 40px;
   }
 
-  .hero-copy h1 {
-    font-size: 32px;
+  .hero h1 {
+    font-size: 28px;
   }
 
-  .hero-image {
-    height: 240px;
+  .hero-subtitle {
+    font-size: 14px;
   }
 
   .searchbar.hero-searchbar {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 50px 1fr;
+    height: 54px;
   }
 
   .search-btn {

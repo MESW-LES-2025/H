@@ -1,6 +1,6 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.FavoritesResponse;
+import com.lernia.auth.dto.response.FavoritesResponse;
 import com.lernia.auth.service.FavoritesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

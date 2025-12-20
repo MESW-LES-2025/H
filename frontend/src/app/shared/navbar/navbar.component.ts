@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../auth/auth.service';
@@ -12,14 +12,20 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+
   links = [
     { label: 'Home', path: '/home' },
     { label: 'Explore', path: '/explore' },
     { label: 'About Us', path: '/about' },
   ];
 
+
   protected userId: number | null = null;
+  protected userRole: string | null = null;
   private userSubscription: Subscription | null = null;
+
+  // dropdown state
+  exploreOpen = false;
 
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -27,7 +33,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       this.userId = user ? user.id : null;
+      this.userRole = user?.userRole || null;
     });
+  }
+
+  // fecha dropdown ao clicar fora
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.exploreOpen = false;
+  }
+
+  // abre/fecha com click no botão
+  toggleExplore(ev: MouseEvent) {
+    ev.stopPropagation();
+    this.exploreOpen = !this.exploreOpen;
+  }
+
+  closeExplore() {
+    this.exploreOpen = false;
   }
 
   logout() {

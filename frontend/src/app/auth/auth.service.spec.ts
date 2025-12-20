@@ -17,13 +17,14 @@ describe('AuthService', () => {
   const mockUser: UserViewmodel = {
     id: 1,
     name: 'Test User',
+    email: 'john.doe@example.com',
     age: 25,
     gender: 'Male',
     location: 'Test City',
-    profileImage: 'test.jpg',
+    profilePicture: 'test.jpg',
     jobTitle: 'Developer',
     academicHistory: [],
-    role: 'USER',
+    userRole: 'USER',
   };
 
   beforeEach(() => {
@@ -65,7 +66,7 @@ describe('AuthService', () => {
       req.flush({ id: 1 });
 
       newService.currentUser$.subscribe((user) => {
-        expect(user).toEqual({ id: 1 });
+        expect(user).toEqual(jasmine.objectContaining({ id: 1 }));
       });
     });
 
@@ -112,7 +113,7 @@ describe('AuthService', () => {
         expect(response.status).toBe('success');
 
         service.currentUser$.subscribe((user) => {
-          expect(user).toEqual({ id: mockUser.id });
+          expect(user).toEqual(jasmine.objectContaining({ id: mockUser.id }));
           done();
         });
       });
@@ -120,6 +121,35 @@ describe('AuthService', () => {
       const req = httpMock.expectOne(`${environment.apiUrl}/login`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(loginRequest);
+      expect(req.request.withCredentials).toBe(true);
+
+      req.flush(loginResponse);
+    });
+
+    it('should include CSRF header when set', (done) => {
+      const loginRequest: LoginRequest = {
+        text: 'testuser',
+        password: 'password123',
+      };
+
+      const loginResponse = {
+        message: 'Login successful',
+        status: 'success',
+        user: mockUser,
+      };
+
+      // set CSRF header values
+      service.csrfToken = 'abc-123';
+      service.csrfHeaderName = 'X-CSRF-TOKEN';
+
+      service.login(loginRequest).subscribe((response) => {
+        expect(response.status).toBe('success');
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/login`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('X-CSRF-TOKEN')).toBe('abc-123');
       expect(req.request.withCredentials).toBe(true);
 
       req.flush(loginResponse);
@@ -145,7 +175,7 @@ describe('AuthService', () => {
 
         // Current user should remain unchanged
         service.currentUser$.subscribe((user) => {
-          expect(user).toEqual({ id: 999 });
+          expect(user).toEqual(jasmine.objectContaining({ id: 999 }));
           done();
         });
       });
@@ -244,7 +274,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/users/${userId}`,
+        `${environment.apiUrl}/api/profile/${userId}`,
       );
       expect(req.request.method).toBe('GET');
 
@@ -263,7 +293,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${environment.apiUrl}/api/users/${userId}`,
+        `${environment.apiUrl}/api/profile/${userId}`,
       );
       req.error(new ProgressEvent('error'), { status: 404 });
     });
@@ -319,7 +349,7 @@ describe('AuthService', () => {
 
       service.logout();
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/logout`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/logout`);
       expect(req.request.method).toBe('POST');
       expect(req.request.withCredentials).toBe(true);
 
@@ -338,7 +368,7 @@ describe('AuthService', () => {
 
       service.logout();
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/logout`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/logout`);
       req.error(new ProgressEvent('error'));
 
       service.currentUser$.subscribe((user) => {
@@ -368,6 +398,37 @@ describe('AuthService', () => {
     });
   });
 
+  describe('getCurrentUserRole and isAdmin', () => {
+    it('should return current user role and correctly detect admin status', () => {
+      // Admin case
+      service['currentUserSubject'].next({ id: 1, userRole: 'ADMIN' } as any);
+      expect(service.getCurrentUserRole()).toBe('ADMIN');
+      expect(service.isAdmin()).toBeTrue();
+
+      // Non-admin case
+      service['currentUserSubject'].next({ id: 2, userRole: 'USER' } as any);
+      expect(service.getCurrentUserRole()).toBe('USER');
+      expect(service.isAdmin()).toBeFalse();
+
+      // Null / logged-out case
+      service['currentUserSubject'].next(null);
+      expect(service.getCurrentUserRole()).toBeNull();
+      expect(service.isAdmin()).toBeFalse();
+    });
+  });
+
+  describe('getCurrentUserId', () => {
+    it('should return the current user id or null', () => {
+      // populated user case
+      service['currentUserSubject'].next({ id: 42 } as any);
+      expect(service.getCurrentUserId()).toBe(42);
+
+      // logged-out / null case
+      service['currentUserSubject'].next(null);
+      expect(service.getCurrentUserId()).toBeNull();
+    });
+  });
+
   describe('CSRF Token Management', () => {
     it('should allow setting CSRF token', () => {
       service.csrfToken = 'new-token';
@@ -388,4 +449,132 @@ describe('AuthService', () => {
       expect(service.csrfHeaderName).toBeNull();
     });
   });
+
+  describe('forgotPassword', () => {
+    it('should send forgot password request and return success message', (done) => {
+      const email = 'test@example.com';
+      const response = {
+        message: 'If an account exists for that email, we have sent reset instructions.',
+      };
+
+      service.forgotPassword(email).subscribe((res) => {
+        expect(res).toEqual(response);
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/forgot`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ email });
+      req.flush(response);
+    });
+
+    it('should handle forgot password error', (done) => {
+      const email = 'test@example.com';
+
+      service.forgotPassword(email).subscribe({
+        next: () => fail('should have failed'),
+        error: (err) => {
+          expect(err).toBeTruthy();
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/forgot`);
+      req.error(new ProgressEvent('error'), { status: 500 });
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('should send reset password request and complete', (done) => {
+      const payload = {
+        token: 'sometoken',
+        newPassword: 'newpassword123',
+      };
+
+      service.resetPassword(payload).subscribe({
+        next: (res) => {
+          expect(res).toBeNull();
+          done();
+        },
+        error: () => fail('should not error'),
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/reset`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      req.flush(null);
+    });
+
+    it('should handle reset password error', (done) => {
+      const payload = {
+        token: 'badtoken',
+        newPassword: 'newpassword123',
+      };
+
+      service.resetPassword(payload).subscribe({
+        next: () => fail('should have failed'),
+        error: (err) => {
+          expect(err).toBeTruthy();
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/password/reset`);
+      req.error(new ProgressEvent('error'), { status: 400 });
+    });
+  });
+
+  describe('isPremium', () => {
+    it('should return true when user role is PREMIUM', () => {
+      // Set up a user with PREMIUM role
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'PREMIUM' });
+
+      expect(service.isPremium()).toBe(true);
+    });
+
+    it('should return false when user role is USER', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'USER' });
+
+      expect(service.isPremium()).toBe(false);
+    });
+
+    it('should return false when user role is ADMIN', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'ADMIN' });
+
+      expect(service.isPremium()).toBe(false);
+    });
+
+    it('should return false when no user is logged in', () => {
+      (service as any).currentUserSubject.next(null);
+
+      expect(service.isPremium()).toBe(false);
+    });
+  });
+
+  describe('isAdmin', () => {
+    it('should return true when user role is ADMIN', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'ADMIN' });
+
+      expect(service.isAdmin()).toBe(true);
+    });
+
+    it('should return false when user role is USER', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'USER' });
+
+      expect(service.isAdmin()).toBe(false);
+    });
+
+    it('should return false when user role is PREMIUM', () => {
+      (service as any).currentUserSubject.next({ id: 1, userRole: 'PREMIUM' });
+
+      expect(service.isAdmin()).toBe(false);
+    });
+
+    it('should return false when no user is logged in', () => {
+      (service as any).currentUserSubject.next(null);
+
+      expect(service.isAdmin()).toBe(false);
+    });
+  });
 });
+

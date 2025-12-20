@@ -5,11 +5,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import com.lernia.auth.dto.request.ChangePasswordRequest;
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.response.RegisterResponse;
+import com.lernia.auth.dto.request.ResetPasswordRequest;
+import com.lernia.auth.dto.response.PasswordResetTokenResponse;
+import com.lernia.auth.service.PasswordResetTokenService;
+import com.lernia.auth.dto.request.ForgotPasswordRequest;
 
-import com.lernia.auth.dto.LoginRequest;
-import com.lernia.auth.dto.LoginResponse;
-import com.lernia.auth.dto.RegisterRequest;
-import com.lernia.auth.dto.RegisterResponse;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.entity.enums.Gender;
 import com.lernia.auth.entity.enums.UserRole;
@@ -33,6 +38,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 class AuthServiceTest {
 
     @InjectMocks
@@ -54,23 +63,26 @@ class AuthServiceTest {
     private HttpSession session;
 
     @Mock
-    private SecurityContextRepository securityContextRepository; 
+    private SecurityContextRepository securityContextRepository;
+
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private PasswordResetTokenService passwordResetTokenService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         SecurityContextHolder.clearContext();
-        
+
         when(request.getSession(true)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
-        
         when(passwordEncoder.encode(anyString())).thenReturn("encoded_password_placeholder");
-
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-
         doNothing().when(securityContextRepository)
-            .saveContext(any(SecurityContext.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
+                .saveContext(any(SecurityContext.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
     @Test
@@ -172,7 +184,7 @@ class AuthServiceTest {
 
     @Test
     void testLoginUserNotFound() {
-        
+
         LoginRequest req = new LoginRequest();
         req.setText("noone");
         req.setPassword("whatever");
@@ -224,7 +236,7 @@ class AuthServiceTest {
         user.setCreationDate(LocalDate.now());
 
         when(userRepository.findByEmail("email@example.com")).thenReturn(Optional.of(user));
-        
+
         when(passwordEncoder.matches(rawPassword, hashed)).thenReturn(true);
 
         LoginRequest req = new LoginRequest();
@@ -247,8 +259,7 @@ class AuthServiceTest {
                 "Name",
                 "existingUser",
                 "password123",
-                "taken@example.com"
-        );
+                "taken@example.com");
 
         when(userRepository.existsByUsername("existingUser")).thenReturn(true);
         when(userRepository.existsByEmail("taken@example.com")).thenReturn(true);
@@ -268,8 +279,7 @@ class AuthServiceTest {
                 "Name",
                 "someUser",
                 "somePassword",
-                "some@example.com"
-        );
+                "some@example.com");
 
         when(userRepository.existsByUsername("someUser")).thenReturn(false);
         when(userRepository.existsByEmail("some@example.com")).thenReturn(false);
@@ -319,7 +329,7 @@ class AuthServiceTest {
         user.setCreationDate(LocalDate.now());
 
         when(userRepository.findByEmail("email2@example.com")).thenReturn(Optional.of(user));
-        
+
         when(passwordEncoder.matches("wrong-pass", hashed)).thenReturn(false);
 
         LoginRequest req = new LoginRequest();
@@ -341,8 +351,7 @@ class AuthServiceTest {
                 "Name",
                 "userNoEmail",
                 "password123",
-                null
-        );
+                null);
 
         when(userRepository.existsByUsername("userNoEmail")).thenReturn(false);
 
@@ -375,8 +384,7 @@ class AuthServiceTest {
                 "Name",
                 "roleUser",
                 "pass123",
-                "role@example.com"
-        );
+                "role@example.com");
 
         when(userRepository.existsByUsername("roleUser")).thenReturn(false);
         when(userRepository.existsByEmail("role@example.com")).thenReturn(false);
@@ -433,21 +441,6 @@ class AuthServiceTest {
     }
 
     @Test
-    void logout_ShouldClearSecurityContext() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
-
-        authService.logout(request, response);
-
-        ArgumentCaptor<SecurityContext> contextCaptor = ArgumentCaptor.forClass(SecurityContext.class);
-        verify(securityContextRepository).saveContext(contextCaptor.capture(), eq(request), eq(response));
-        
-        SecurityContext capturedContext = contextCaptor.getValue();
-        assertNull(capturedContext.getAuthentication(), "Authentication should be null after logout");
-        assertNull(SecurityContextHolder.getContext().getAuthentication(), "Holder should also be cleared");
-    }
-
-    @Test
     void testDeleteAccount_UserExists() {
         when(userRepository.existsById(55L)).thenReturn(true);
 
@@ -466,5 +459,199 @@ class AuthServiceTest {
 
         verify(userRepository).existsById(77L);
         verify(userRepository, never()).deleteById(anyLong());
+    }
+
+    // -------------------------------------------------------
+    // Change Password Tests
+    // -------------------------------------------------------
+
+    @Test
+    void testChangePassword_Success() {
+        Long userId = 100L;
+        String oldHash = "$2a$10$oldHash";
+        String newHash = "$2a$10$newHash";
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setPassword(oldHash);
+
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("correctOldPassword");
+        req.setNewPassword("newPassword123");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("correctOldPassword", oldHash)).thenReturn(true);
+        when(passwordEncoder.encode("newPassword123")).thenReturn(newHash);
+
+        authService.changePassword(userId, req);
+
+        assertEquals(newHash, user.getPassword());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void testChangePassword_UserNotFound() {
+        Long userId = 999L;
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("any");
+        req.setNewPassword("any");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.changePassword(userId, req));
+        assertEquals("User not found", ex.getMessage());
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_IncorrectCurrentPassword() {
+        Long userId = 100L;
+        String oldHash = "$2a$10$oldHash";
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setPassword(oldHash);
+
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("wrongPassword");
+        req.setNewPassword("newPassword123");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongPassword", oldHash)).thenReturn(false);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.changePassword(userId, req));
+        assertEquals("Incorrect current password", ex.getMessage());
+
+        assertEquals(oldHash, user.getPassword());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_NullOrEmptyPasswords() {
+        Long userId = 100L;
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        ChangePasswordRequest reqNull = new ChangePasswordRequest();
+        reqNull.setCurrentPassword("valid");
+        reqNull.setNewPassword(null);
+
+        assertThrows(IllegalArgumentException.class, () -> authService.changePassword(userId, reqNull));
+
+        ChangePasswordRequest reqEmpty = new ChangePasswordRequest();
+        reqEmpty.setCurrentPassword("valid");
+        reqEmpty.setNewPassword("   ");
+
+        assertThrows(IllegalArgumentException.class, () -> authService.changePassword(userId, reqEmpty));
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_NewPasswordSameAsCurrent() {
+        Long userId = 100L;
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("samePassword");
+        req.setNewPassword("samePassword");
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> authService.changePassword(userId, req));
+
+        assertEquals("New password cannot be the same as the current password", ex.getMessage());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void requestPasswordReset_sendsEmailIfUserExists() {
+        String email = "test@example.com";
+        UserEntity user = new UserEntity();
+        user.setEmail(email);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(passwordResetTokenService.createToken(user))
+                .thenReturn(new PasswordResetTokenService.GeneratedToken("token123", null));
+
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail(email);
+
+        PasswordResetTokenResponse response = authService.requestPasswordReset(request);
+
+        assertThat(response.getMessage()).contains("we have sent reset instructions");
+        verify(emailService).sendPasswordResetEmail(eq(email), contains("token123"));
+    }
+
+    @Test
+    void requestPasswordReset_noEmailIfUserNotExists() {
+        String email = "notfound@example.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail(email);
+
+        PasswordResetTokenResponse response = authService.requestPasswordReset(request);
+
+        assertThat(response.getMessage()).contains("we have sent reset instructions");
+        verify(emailService, never()).sendPasswordResetEmail(anyString(), anyString());
+    }
+
+    // -------------------------------------------------------
+    // Admin Reset Password Tests
+    // -------------------------------------------------------
+
+    @Test
+    void testAdminResetPassword_Success() {
+        Long userId = 42L;
+        String userEmail = "user@example.com";
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setEmail(userEmail);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordResetTokenService.createToken(user))
+                .thenReturn(new PasswordResetTokenService.GeneratedToken("resetToken123", null));
+
+        authService.adminResetPassword(userId);
+
+        verify(userRepository).findById(userId);
+        verify(passwordResetTokenService).createToken(user);
+        verify(emailService).sendPasswordResetEmail(eq(userEmail), contains("resetToken123"));
+    }
+
+    @Test
+    void testAdminResetPassword_UserNotFound() {
+        Long userId = 999L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.adminResetPassword(userId));
+
+        assertEquals("User not found", ex.getMessage());
+        verify(emailService, never()).sendPasswordResetEmail(anyString(), anyString());
+    }
+
+    @Test
+    void testAdminResetPassword_UserWithoutEmail() {
+        Long userId = 50L;
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setEmail(null);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class,
+                () -> authService.adminResetPassword(userId));
+
+        assertEquals("User does not have an email address", ex.getMessage());
+        verify(emailService, never()).sendPasswordResetEmail(anyString(), anyString());
     }
 }

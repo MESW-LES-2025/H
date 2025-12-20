@@ -1,0 +1,249 @@
+<div class="min-vh-100 d-flex justify-content-center pt-5"
+    style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+    <div class="container" style="max-width: 900px;">
+        <h1 class="text-center text-white display-5 fw-bold mb-2">Upgrade to Premium</h1>
+        <p class="text-center text-white-50 mb-5">Unlock exclusive features and take your experience to the next level
+        </p>
+
+        <!-- Already Premium State -->
+        @if (isAlreadyPremium()) {
+        <div class="card bg-dark bg-opacity-25 border-danger border-opacity-50 text-center p-5 rounded-4">
+            <div class="fs-1 mb-3">👑</div>
+            <h2 class="text-danger mb-3">You're Already Premium!</h2>
+            <p class="text-white-50">Enjoy all the exclusive features available to premium members.</p>
+            @if (premiumStartDate()) {
+            <p class="text-white-50 small">Premium since: {{ premiumStartDate() }}</p>
+            }
+            <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
+                <button class="btn btn-success px-4 py-2 rounded-pill fw-semibold" (click)="goToProfile()">Go to
+                    Profile</button>
+                <button class="btn btn-outline-danger px-4 py-2 rounded-pill fw-semibold"
+                    (click)="openCancelModal()">Cancel Subscription</button>
+            </div>
+        </div>
+        }
+
+        <!-- Success State -->
+        @else if (subscriptionSuccess()) {
+        <div class="card bg-dark bg-opacity-25 border-success border-opacity-50 text-center p-5 rounded-4">
+            <div class="fs-1 mb-3">🎉</div>
+            <h2 class="text-success mb-3">Welcome to Premium!</h2>
+            <p class="text-white-50 mb-4">{{ successMessage() }}</p>
+            <button class="btn btn-success px-4 py-2 rounded-pill fw-semibold" (click)="goToProfile()">Go to Your
+                Profile</button>
+        </div>
+        }
+
+        <!-- Subscription Form -->
+        @else {
+        <div class="card bg-dark bg-opacity-25 border-0 rounded-4 overflow-hidden">
+            <div class="text-center p-4" style="background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);">
+                <span class="badge bg-white bg-opacity-25 px-3 py-2 rounded-pill mb-3">
+                    <span class="me-1">⭐</span> PREMIUM
+                </span>
+                <div class="text-white">
+                    <span class="h6 align-top">€</span>
+                    <span class="display-4 fw-bold">9.99</span>
+                    <span class="text-white-50">/month</span>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <h5 class="text-white mb-4">What you'll get:</h5>
+                <ul class="list-unstyled mb-4">
+                    <li class="d-flex align-items-start gap-3 mb-3 text-white-50">
+                        <span class="badge rounded-circle bg-success p-2">✓</span>
+                        <div><strong class="text-white d-block">Personalized Suggestions</strong>Get course and
+                            university recommendations tailored to your profile</div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3 mb-3 text-white-50">
+                        <span class="badge rounded-circle bg-success p-2">✓</span>
+                        <div><strong class="text-white d-block">Entry Rate Previsions</strong>Access probability
+                            estimates for your admission</div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3 mb-3 text-white-50">
+                        <span class="badge rounded-circle bg-success p-2">✓</span>
+                        <div><strong class="text-white d-block">Priority Support</strong>Get faster responses from our
+                            support team</div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3 text-white-50">
+                        <span class="badge rounded-circle bg-success p-2">✓</span>
+                        <div><strong class="text-white d-block">Exclusive Content</strong>Access premium guides and tips
+                        </div>
+                    </li>
+                </ul>
+
+                <hr class="border-secondary my-4">
+
+                <h6 class="text-white mb-3">Select Payment Method</h6>
+                <div class="d-flex gap-3 mb-4 flex-wrap">
+                    <label class="flex-fill">
+                        <input type="radio" name="paymentMethod" value="MOCK_CARD" class="d-none"
+                            [checked]="selectedPaymentMethod() === 'MOCK_CARD'"
+                            (change)="selectPaymentMethod('MOCK_CARD')" />
+                        <div class="p-3 rounded-3 border cursor-pointer d-flex align-items-center gap-2"
+                            [class.border-danger]="selectedPaymentMethod() === 'MOCK_CARD'"
+                            [class.border-secondary]="selectedPaymentMethod() !== 'MOCK_CARD'"
+                            [class.bg-danger]="selectedPaymentMethod() === 'MOCK_CARD'"
+                            [class.bg-opacity-10]="selectedPaymentMethod() === 'MOCK_CARD'" style="cursor: pointer;">
+                            <span class="fs-4">💳</span>
+                            <span class="text-white-50">Credit Card</span>
+                        </div>
+                    </label>
+                    <label class="flex-fill">
+                        <input type="radio" name="paymentMethod" value="MOCK_PAYPAL" class="d-none"
+                            [checked]="selectedPaymentMethod() === 'MOCK_PAYPAL'"
+                            (change)="selectPaymentMethod('MOCK_PAYPAL')" />
+                        <div class="p-3 rounded-3 border cursor-pointer d-flex align-items-center gap-2"
+                            [class.border-danger]="selectedPaymentMethod() === 'MOCK_PAYPAL'"
+                            [class.border-secondary]="selectedPaymentMethod() !== 'MOCK_PAYPAL'"
+                            [class.bg-danger]="selectedPaymentMethod() === 'MOCK_PAYPAL'"
+                            [class.bg-opacity-10]="selectedPaymentMethod() === 'MOCK_PAYPAL'" style="cursor: pointer;">
+                            <span class="fs-4">🅿️</span>
+                            <span class="text-white-50">PayPal</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Credit Card Form -->
+                @if (showCardForm()) {
+                <div class="mb-4">
+                    <div class="card-preview p-4 rounded-3 mb-4 position-relative"
+                        style="background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%); min-height: 180px;">
+                        <div class="mb-3"
+                            style="width: 45px; height: 35px; background: linear-gradient(135deg, #d4af37 0%, #f5d061 50%, #d4af37 100%); border-radius: 6px;">
+                        </div>
+                        <div class="text-white fs-5 mb-3 font-monospace">{{ cardNumber || '•••• •••• •••• ••••' }}</div>
+                        <div class="d-flex justify-content-between text-white-50 small">
+                            <span class="text-uppercase">{{ cardName || 'CARDHOLDER NAME' }}</span>
+                            <span class="font-monospace">{{ expiryMonth || 'MM' }}/{{ expiryYear || 'YY' }}</span>
+                        </div>
+                        <div class="position-absolute top-0 end-0 p-3 text-white-50">{{ getCardIcon() }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Card Number</label>
+                        <input type="text" class="form-control bg-dark bg-opacity-50 border-secondary text-white"
+                            [(ngModel)]="cardNumber" (input)="formatCardNumber()" placeholder="1234 5678 9012 3456"
+                            maxlength="19" [class.border-success]="isCardNumberValid()"
+                            [class.border-danger]="cardNumber.length > 0 && !isCardNumberValid()" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Cardholder Name</label>
+                        <input type="text" class="form-control bg-dark bg-opacity-50 border-secondary text-white"
+                            [(ngModel)]="cardName" placeholder="John Doe"
+                            [class.border-success]="cardName.trim().length >= 2"
+                            [class.border-danger]="cardName.length > 0 && cardName.trim().length < 2" />
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-white-50 small">Expiry Date</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="text"
+                                    class="form-control bg-dark bg-opacity-50 border-secondary text-white text-center"
+                                    style="width: 60px;" [(ngModel)]="expiryMonth" placeholder="MM" maxlength="2"
+                                    [class.border-success]="isExpiryValid()"
+                                    [class.border-danger]="expiryMonth.length > 0 && !isExpiryValid()" />
+                                <span class="text-white-50">/</span>
+                                <input type="text"
+                                    class="form-control bg-dark bg-opacity-50 border-secondary text-white text-center"
+                                    style="width: 60px;" [(ngModel)]="expiryYear" placeholder="YY" maxlength="2"
+                                    [class.border-success]="isExpiryValid()"
+                                    [class.border-danger]="expiryYear.length > 0 && !isExpiryValid()" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-white-50 small">CVV</label>
+                            <input type="password"
+                                class="form-control bg-dark bg-opacity-50 border-secondary text-white" [(ngModel)]="cvv"
+                                placeholder="•••" maxlength="4" [class.border-success]="isCvvValid()"
+                                [class.border-danger]="cvv.length > 0 && !isCvvValid()" />
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info bg-info bg-opacity-10 border-info border-opacity-25 py-2">
+                        <span class="me-2">💡</span>
+                        <small>Test card: <strong>4242 4242 4242 4242</strong> - Any future date - Any CVV</small>
+                    </div>
+                </div>
+                }
+
+                @if (error()) {
+                <div class="alert alert-danger mb-3">{{ error() }}</div>
+                }
+
+                <!-- Processing Overlay -->
+                @if (loading()) {
+                <div class="d-flex flex-column align-items-center p-4 mb-3 bg-dark bg-opacity-50 rounded-3">
+                    <div class="spinner-border text-danger mb-3" role="status"></div>
+                    <span class="text-white-50">{{ processingStep() }}</span>
+                </div>
+                }
+
+                <button class="btn w-100 py-3 fw-semibold fs-5 rounded-3 text-white"
+                    style="background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);"
+                    [disabled]="loading() || !selectedPaymentMethod() || (selectedPaymentMethod() === 'MOCK_CARD' && !isCardFormValid())"
+                    (click)="subscribe()">
+                    @if (loading()) {
+                    <span>Processing...</span>
+                    } @else {
+                    <span>Pay €9.99 Now</span>
+                    }
+                </button>
+
+                <p class="text-center text-white-50 small mt-3 mb-0">
+                    🔒 Secure payment • Cancel anytime
+                </p>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Cancel Subscription Modal -->
+@if (showCancelModal()) {
+<div class="modal-backdrop fade show" (click)="closeCancelModal()"></div>
+<div class="modal d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 text-center"
+            style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <div class="modal-body p-5">
+                <div class="fs-1 mb-3">⚠️</div>
+                <h4 class="text-white mb-3">Cancel Your Subscription?</h4>
+                <p class="text-white-50 mb-4">Are you sure you want to cancel your premium subscription? You will
+                    immediately lose access to:</p>
+                <ul class="list-unstyled text-start text-white-50 mb-4">
+                    <li class="py-2 border-bottom border-secondary d-flex align-items-center gap-2">
+                        <span class="text-danger fw-bold">✕</span> Personalized Suggestions
+                    </li>
+                    <li class="py-2 border-bottom border-secondary d-flex align-items-center gap-2">
+                        <span class="text-danger fw-bold">✕</span> Entry Rate Previsions
+                    </li>
+                    <li class="py-2 border-bottom border-secondary d-flex align-items-center gap-2">
+                        <span class="text-danger fw-bold">✕</span> Priority Support
+                    </li>
+                    <li class="py-2 d-flex align-items-center gap-2">
+                        <span class="text-danger fw-bold">✕</span> Exclusive Content
+                    </li>
+                </ul>
+                <div class="d-flex gap-3 justify-content-center">
+                    <button class="btn btn-outline-light px-4 py-2 rounded-pill" (click)="closeCancelModal()"
+                        [disabled]="cancelLoading()">
+                        Keep Premium
+                    </button>
+                    <button class="btn btn-danger px-4 py-2 rounded-pill" (click)="confirmCancelSubscription()"
+                        [disabled]="cancelLoading()">
+                        @if (cancelLoading()) {
+                        Cancelling...
+                        } @else {
+                        Yes, Cancel
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

@@ -8,6 +8,17 @@
   --mint-dark: #5a9485;
   --google-border: #4b2e24;
   --line: #d8c9a0;
+  --beige:#fff7ee;
+  --ink:#5a3226;
+  --accent:#c8d99b;
+  --mint:#7db19f;
+  --leaf:#e6efeb;
+  --line:#d9ccb5;
+  --card-soft:#fdf4e7;
+  --sh1:0 18px 40px rgba(0,0,0,.1);
+  --sh2:0 22px 55px rgba(0,0,0,.16);
+  --r:28px;
+  --f:0 0 0 4px rgba(77,148,118,.2);
 }
 
 * {

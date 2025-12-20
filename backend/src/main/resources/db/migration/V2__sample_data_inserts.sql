@@ -2,10 +2,10 @@
 -- TODO: Fix Passwords
 INSERT INTO lernia.users (name, username, email, password, age, gender, location, profile_picture, job_title, creation_date, user_role, premium_start_date) VALUES
     ('Alice Smith', 'asmith', 'alice@example.com', '$2y$10$5TkGtbvc64nU7P7UcZdtveIJ4CR8p9V094f/b4ckSZw0BaqQ/QsJe', 21, 'FEMALE', 'Lisbon', 'asmith.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
-    ('Bob Johnson', 'bjohnson', 'bob@example.com', 'pass2', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
-    ('Claire Lee', 'clee', 'claire@example.com', 'pass3', 30, 'FEMALE', 'Berlin', 'clee.png', 'Researcher', CURRENT_DATE, 'STUDENT', NULL),
-    ('David Wilson', 'dwilson', 'david@example.com', 'pass4', 22, 'MALE', 'Lisbon', 'dwilson.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
-    ('Eva Brown', 'ebrown', 'eva@example.com', 'pass5', 27, 'FEMALE', 'Madrid', 'ebrown.png', 'Manager', CURRENT_DATE, 'ADMIN', NULL);
+    ('Bob Johnson', 'bjohnson', 'bob@example.com', '$2b$12$.HjQtPJpu0i3cT6Po3rF8uSAmdLg90tT4qiCKjhERR0gb5c0tSEte', 25, 'MALE', 'Madrid', 'bjohnson.png', 'Analyst', CURRENT_DATE, 'PREMIUM', '2024-01-01'),
+    ('Claire Lee', 'clee', 'claire@example.com', '$2b$12$tCOrNtDr/ty3ahzyvnc64.Ui1R7dskG7YqFo.hLSkk78k56k0OXLC', 30, 'FEMALE', 'Berlin', 'clee.png', 'Researcher', CURRENT_DATE, 'STUDENT', NULL),
+    ('David Wilson', 'dwilson', 'david@example.com', '$2b$12$bB96yRt1MTiHTAvdI3XhQeCPAb4JnZ3aSHlcCmzZzmN8tA7QJ5Dka', 22, 'MALE', 'Lisbon', 'dwilson.png', 'Student', CURRENT_DATE, 'REGULAR', NULL),
+    ('Eva Brown', 'ebrown', 'eva@example.com', '$2b$12$eFTGu92X36qBRZW8r0xRIOyJUr3Pq6WPjSehsLA9SmwvgkYlFVYzG', 27, 'FEMALE', 'Madrid', 'ebrown.png', 'Manager', CURRENT_DATE, 'ADMIN', NULL);
 
 INSERT INTO lernia.locations(city, country, cost_of_living) VALUES
     ('London', 'United Kingdom', 1500),
@@ -18,13 +18,13 @@ INSERT INTO lernia.locations(city, country, cost_of_living) VALUES
 
 
 INSERT INTO lernia.universities (name, description, location_id, contact_info, website, address, logo) VALUES
-    ('Imperial College London', 'Leading science and technology university', 1, '+44-20-7589-5111', 'https://www.imperial.ac.uk', 'South Kensington Campus, London SW7 2AZ', 'imperial_logo.png'),
-    ('Technical University of Berlin', 'Top technical university in Germany', 2, '+49-30-314-0', 'https://www.tu-berlin.de', 'Straße des 17. Juni 135, 10623 Berlin', 'tu_berlin_logo.png'),
-    ('Universitat de Barcelona', 'Historic comprehensive university', 3, '+34-93-403-5474', 'https://www.ub.edu', 'Gran Via de les Corts Catalanes, 585, Barcelona', 'ub_logo.png'),
-    ('University of Amsterdam', 'Premier Dutch research university', 4, '+31-20-525-9111', 'https://www.uva.nl', 'Spui 21, 1012 WX Amsterdam', 'uva_logo.png'),
-    ('Sorbonne University', 'Prestigious French university', 5, '+33-1-40-46-22-11', 'https://www.sorbonne-universite.fr', '21 Rue de l''École de Médecine, 75006 Paris', 'sorbonne_logo.png'),
-    ('University of Vienna', 'Oldest university in German-speaking world', 6, '+43-1-4277-0', 'https://www.univie.ac.at', 'Universitätsring 1, 1010 Wien', 'univie_logo.png'),
-    ('University of Porto', 'Leading Portuguese research university', 7, '+351-22-040-8000', 'https://www.up.pt', 'Praça Gomes Teixeira, 4099-002 Porto', 'up_logo.png');
+    ('Imperial College London', 'Leading science and technology university', 1, '+44-20-7589-5111', 'https://www.imperial.ac.uk', 'South Kensington Campus, London SW7 2AZ', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/imperial_college.png'),
+    ('Technical University of Berlin', 'Top technical university in Germany', 2, '+49-30-314-0', 'https://www.tu-berlin.de', 'Straße des 17. Juni 135, 10623 Berlin', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/TU-Berlin.png'),
+    ('Universitat de Barcelona', 'Historic comprehensive university', 3, '+34-93-403-5474', 'https://www.ub.edu', 'Gran Via de les Corts Catalanes, 585, Barcelona', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/universitat_barcelona.jpg'),
+    ('University of Amsterdam', 'Premier Dutch research university', 4, '+31-20-525-9111', 'https://www.uva.nl', 'Spui 21, 1012 WX Amsterdam', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/university_of_amsterdam.png'),
+    ('Sorbonne University', 'Prestigious French university', 5, '+33-1-40-46-22-11', 'https://www.sorbonne-universite.fr', '21 Rue de l''École de Médecine, 75006 Paris', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/sorbonne_university.png'),
+    ('University of Vienna', 'Oldest university in German-speaking world', 6, '+43-1-4277-0', 'https://www.univie.ac.at', 'Universitätsring 1, 1010 Wien', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/University_of_Vienna.png'),
+    ('University of Porto', 'Leading Portuguese research university', 7, '+351-22-040-8000', 'https://www.up.pt', 'Praça Gomes Teixeira, 4099-002 Porto', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/university_of_porto.png');
 
 
 INSERT INTO lernia.campuses (university_id, name, description, country, city, capacity) VALUES

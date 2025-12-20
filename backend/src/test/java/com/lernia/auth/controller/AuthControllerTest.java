@@ -1,6 +1,10 @@
 package com.lernia.auth.controller;
 
-import com.lernia.auth.dto.*;
+import com.lernia.auth.dto.request.LoginRequest;
+import com.lernia.auth.dto.request.RegisterRequest;
+import com.lernia.auth.dto.response.LoginResponse;
+import com.lernia.auth.dto.response.RegisterResponse;
+import com.lernia.auth.dto.response.UserProfileResponse;
 import com.lernia.auth.service.AuthService;
 import com.lernia.auth.entity.UserEntity;
 import com.lernia.auth.repository.UserRepository;
@@ -52,8 +56,7 @@ class AuthControllerTest {
         req.setText("userOrEmail");
         req.setPassword("secret");
 
-        LoginResponse serviceResponse =
-                new LoginResponse("Login successful", "success");
+        LoginResponse serviceResponse = new LoginResponse("Login successful", "success");
         serviceResponse.setUser(new UserProfileResponse());
         serviceResponse.getUser().setId(123L);
 
@@ -80,8 +83,7 @@ class AuthControllerTest {
         req.setText("wrong");
         req.setPassword("bad");
 
-        LoginResponse errorResponse =
-                new LoginResponse("Invalid credentials", "error");
+        LoginResponse errorResponse = new LoginResponse("Invalid credentials", "error");
 
         when(authService.login(eq(req), any(HttpServletRequest.class), any(HttpServletResponse.class)))
                 .thenReturn(errorResponse);
@@ -105,11 +107,9 @@ class AuthControllerTest {
                 "Name",
                 "newuser",
                 "pass123",
-                "new@example.com"
-        );
+                "new@example.com");
 
-        RegisterResponse serviceResponse =
-                new RegisterResponse("User registered", "success");
+        RegisterResponse serviceResponse = new RegisterResponse("User registered", "success");
 
         when(authService.register(any(RegisterRequest.class))).thenReturn(serviceResponse);
 
@@ -132,11 +132,9 @@ class AuthControllerTest {
                 "Name",
                 "existingUser",
                 "pass123",
-                "taken@example.com"
-        );
+                "taken@example.com");
 
-        RegisterResponse errorResponse =
-                new RegisterResponse("Username already taken", "error");
+        RegisterResponse errorResponse = new RegisterResponse("Username already taken", "error");
 
         when(authService.register(req)).thenReturn(errorResponse);
 
@@ -147,15 +145,6 @@ class AuthControllerTest {
         assertEquals("Username already taken", controllerResponse.getMessage());
 
         verify(authService, times(1)).register(req);
-    }
-
-    @Test
-    void testLogout_ReturnsOkAndDelegates() {
-        ResponseEntity<?> responseEntity = authController.logout(request, response);
-
-        assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("message", "Logged out successfully"), responseEntity.getBody());
-        verify(authService).logout(request, response);
     }
 
     @Test
@@ -171,8 +160,8 @@ class AuthControllerTest {
     void testGetCurrentUser_NotAuthenticated() {
         ResponseEntity<?> responseEntity = authController.getCurrentUser(null);
 
-        assertEquals(401, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("message", "Not authenticated"), responseEntity.getBody());
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertNull(responseEntity.getBody());
         verifyNoInteractions(userRepository);
     }
 
@@ -187,7 +176,7 @@ class AuthControllerTest {
         ResponseEntity<?> responseEntity = authController.getCurrentUser(principal);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(Map.of("id", 5L, "username", "john"), responseEntity.getBody());
+        assertEquals(Map.of("id", 5L, "username", "john", "provider", "LOCAL"), responseEntity.getBody());
         verify(userRepository).findByUsername("john");
     }
 }

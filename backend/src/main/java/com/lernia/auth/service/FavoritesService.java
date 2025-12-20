@@ -1,7 +1,7 @@
 package com.lernia.auth.service;
 
 import com.lernia.auth.dto.CourseLightDTO;
-import com.lernia.auth.dto.FavoritesResponse;
+import com.lernia.auth.dto.response.FavoritesResponse;
 import com.lernia.auth.dto.LocationDTO;
 import com.lernia.auth.dto.UniversityDTOLight;
 import com.lernia.auth.entity.CourseEntity;
@@ -34,8 +34,7 @@ public class FavoritesService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "User not found: " + userId
-                ));
+                        "User not found: " + userId));
     }
 
     // ------------- COURSES -------------
@@ -104,23 +103,29 @@ public class FavoritesService {
                     loc.getId(),
                     loc.getCity(),
                     loc.getCountry(),
-                    loc.getCostOfLiving()
-            );
+                    loc.getCostOfLiving());
         }
 
         return new UniversityDTOLight(
                 university.getId(),
                 university.getName(),
                 university.getDescription(),
-                locationDTO
-        );
+                locationDTO);
     }
 
     private CourseLightDTO toCourseLight(CourseEntity course) {
+        String universityName = null;
+        if (course.getUniversity() != null) {
+            universityName = course.getUniversity().getName();
+        }
+
         return new CourseLightDTO(
                 course.getId(),
                 course.getName(),
-                course.getCourseType()
-        );
+                course.getCourseType(),
+                universityName,
+                course.getCost(),
+                course.getCredits(),
+                course.getDescription());
     }
 }

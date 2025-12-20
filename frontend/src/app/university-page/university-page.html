@@ -271,7 +271,7 @@
             </ng-template>
           </li>
 
-          <!-- NEW: Reviews Tab -->
+          <!-- Reviews Tab -->
           <li [ngbNavItem]="4">
             <button ngbNavLink>Reviews</button>
             <ng-template ngbNavContent>
@@ -290,3 +290,10 @@
     </div>
   </div>
 }
+
+@if (message) {
+  <div class="custom-message-bar" [ngClass]="messageType">
+    {{ message }}
+  </div>
+}
+

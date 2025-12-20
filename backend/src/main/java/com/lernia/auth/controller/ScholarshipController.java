@@ -1,7 +1,7 @@
 package com.lernia.auth.controller;
 
 import com.lernia.auth.dto.ScholarshipDTOLight;
-import com.lernia.auth.dto.ScholarshipFilter;
+import com.lernia.auth.dto.filter.ScholarshipFilter;
 import com.lernia.auth.service.ScholarshipService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
