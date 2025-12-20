@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 
 public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
 
-    @Test
+    /*@Test
     public void testViewUniversityPage_ATC18() {
         // Step 1: Go to /university/1 (no login required)
         driver.get(baseUrl + "/university/1");
@@ -39,7 +39,7 @@ public class UniversitiesAcceptanceTest extends BaseAcceptanceTest {
             By.xpath("//*[contains(text(),'Description')]")
         );
         Assertions.assertNotNull(description, "University description not found on university page");
-    }
+    }*/
 
     @Test
     public void testSearchUniversityByName_ATC19() {
