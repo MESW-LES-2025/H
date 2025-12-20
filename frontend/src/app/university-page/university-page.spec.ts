@@ -165,7 +165,7 @@ describe('UniversityPage', () => {
   it('onToggleFavorite should add favorite when not favorite', fakeAsync(() => {
     (component as any).university = sampleUni;
     (component as any).isFavorite = false;
-    authServiceSpy.getCurrentUserId.and.returnValue(5); 
+    authServiceSpy.getCurrentUserId.and.returnValue(5);
     exploreService.addFavoriteUniversity.and.returnValue(of(void 0));
 
     component.onToggleFavorite();
@@ -225,4 +225,19 @@ describe('UniversityPage', () => {
 
     expect(router.navigate).toHaveBeenCalledWith(['/course', 123]);
   });
+
+  it('onToggleFavorite should show message and clear it after 3s when user not logged in', fakeAsync(() => {
+    (component as any).university = sampleUni;
+    authServiceSpy.getCurrentUserId.and.returnValue(null);
+
+    component.onToggleFavorite();
+
+    expect((component as any).message).toBe('Please log in to save universities to your favorites.');
+    expect((component as any).messageType).toBe('info');
+
+    tick(3000);
+
+    expect((component as any).message).toBeNull();
+    expect((component as any).messageType).toBeNull();
+  }));
 });
