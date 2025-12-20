@@ -146,4 +146,34 @@ describe('NavbarComponent', () => {
       expect((component as any).userId).toBeNull();
     });
   });
+
+  describe('Dropdown Toggles', () => {
+    beforeEach(() => {
+      fixture.detectChanges();
+    });
+
+    it('should close dropdown on document click', () => {
+      component.exploreOpen = true;
+      component.onDocumentClick();
+      expect(component.exploreOpen).toBeFalse();
+    });
+
+    it('should toggle dropdown and stop propagation', () => {
+      const mockEvent = jasmine.createSpyObj('MouseEvent', ['stopPropagation']);
+
+      expect(component.exploreOpen).toBeFalse();
+      component.toggleExplore(mockEvent);
+      expect(mockEvent.stopPropagation).toHaveBeenCalled();
+      expect(component.exploreOpen).toBeTrue();
+
+      component.toggleExplore(mockEvent);
+      expect(component.exploreOpen).toBeFalse();
+    });
+
+    it('should close dropdown via closeExplore', () => {
+      component.exploreOpen = true;
+      component.closeExplore();
+      expect(component.exploreOpen).toBeFalse();
+    });
+  });
 });
