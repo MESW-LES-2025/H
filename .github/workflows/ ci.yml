@@ -1,3 +1,9 @@
+# CI/CD Pipeline
+# Automatically runs tests, builds artifacts, and triggers deployment
+# when pull requests are merged into lernia-dev or iteration branches.
+# Re-deployment to hosting platforms (Vercel/Render) happens automatically
+# after successful merges to target branches.
+
 name: CI Pipeline
 
 on:
