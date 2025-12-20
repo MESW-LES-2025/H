@@ -210,7 +210,7 @@ describe('ReviewsComponent', () => {
         title: 'Test Review',
         description: 'Test description',
       };
-      component.currentUserId = 1; 
+      component.currentUserId = 1;
     });
 
     it('should submit a new review successfully', (done) => {
@@ -285,6 +285,29 @@ describe('ReviewsComponent', () => {
       expect(window.alert).toHaveBeenCalledWith(
         'Failed to delete review: Failed to delete',
       );
+    });
+
+    it('should show fallback error message when deleteReview has no error message', () => {
+      spyOn(window, 'alert');
+      reviewService.deleteReview.and.returnValue(throwError(() => ({})));
+
+      component.deleteReview(1);
+
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to delete review: An unexpected error occurred.',
+      );
+    });
+  });
+
+  describe('submitReview when not logged in', () => {
+    it('should alert user to log in when currentUserId is null', () => {
+      spyOn(window, 'alert');
+      component.currentUserId = null;
+
+      component.submitReview();
+
+      expect(window.alert).toHaveBeenCalledWith('You must be logged in to submit a review.');
+      expect(reviewService.addReview).not.toHaveBeenCalled();
     });
   });
 
@@ -399,6 +422,17 @@ describe('ReviewsComponent', () => {
 
       expect(window.alert).toHaveBeenCalledWith(
         'Failed to update review: Failed to update',
+      );
+    });
+
+    it('should show fallback error message when updateReview has no error message', () => {
+      spyOn(window, 'alert');
+      reviewService.updateReview.and.returnValue(throwError(() => ({})));
+
+      component.saveEditedReview();
+
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to update review: An unexpected error occurred.',
       );
     });
 
