@@ -144,6 +144,20 @@ describe('ExploreComponent', () => {
         done();
       }, 100);
     });
+    it('should handle undefined universities in favorites response', (done) => {
+      spyOn(localStorage, 'getItem').and.returnValue('1');
+      exploreService.getFavorites.and.returnValue(
+        of({ universities: undefined as any, courses: [] }),
+      );
+
+      fixture.detectChanges();
+
+      setTimeout(() => {
+        expect(component.favoriteUniversityIds()).toEqual([]);
+        expect(exploreService.search).toHaveBeenCalled();
+        done();
+      }, 100);
+    });
   });
 
   describe('search', () => {
@@ -245,6 +259,26 @@ describe('ExploreComponent', () => {
       setTimeout(() => {
         expect(component.pageRequest.page).toBe(1);
         expect(component.results().length).toBeGreaterThan(2);
+        done();
+      }, 100);
+    });
+
+    it('should pass correct cost filter to search when loading more', (done) => {
+      component.cost.set(2500); // Below max cost
+      const morePage: Page<CollegeVM> = {
+        content: [],
+        totalElements: 3,
+        totalPages: 2,
+        size: 3,
+        number: 1,
+      };
+      exploreService.search.and.returnValue(of(morePage));
+
+      component.loadMore();
+
+      setTimeout(() => {
+        const callArgs = exploreService.search.calls.mostRecent().args;
+        expect(callArgs[2]).toBe(2500);
         done();
       }, 100);
     });

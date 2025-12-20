@@ -287,6 +287,17 @@ describe('CourseReviewsComponent', () => {
         'Failed to delete review: Failed to delete',
       );
     });
+
+    it('should handle error with default message when deleting review fails without message', () => {
+      spyOn(window, 'alert');
+      reviewService.deleteCourseReview.and.returnValue(throwError(() => ({})));
+
+      component.deleteReview(1);
+
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to delete review: An unexpected error occurred.',
+      );
+    });
   });
 
   describe('openDeleteModal', () => {
@@ -400,6 +411,17 @@ describe('CourseReviewsComponent', () => {
 
       expect(window.alert).toHaveBeenCalledWith(
         'Failed to update review: Failed to update',
+      );
+    });
+
+    it('should handle error with default message when updating review fails without message', () => {
+      spyOn(window, 'alert');
+      reviewService.updateCourseReview.and.returnValue(throwError(() => ({})));
+
+      component.saveEditedReview();
+
+      expect(window.alert).toHaveBeenCalledWith(
+        'Failed to update review: An unexpected error occurred.',
       );
     });
 
