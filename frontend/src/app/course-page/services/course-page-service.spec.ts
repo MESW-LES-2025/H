@@ -183,6 +183,31 @@ describe('CoursePageService', () => {
       const req = httpMock.expectOne(`${environment.apiUrl}/api/courses/1`);
       req.flush(dtoWithoutGrade);
     });
+
+    it('should handle course with undefined areas of study (nullish coalescing)', (done) => {
+      const dtoWithoutAreas = { ...mockCourseDTO, areasOfStudy: undefined } as any;
+
+      service.getCourseProfile(1).subscribe((course) => {
+        expect(course.topics).toEqual([]);
+        expect(course.area).toBe('General');
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/courses/1`);
+      req.flush(dtoWithoutAreas);
+    });
+
+    it('should handle course with undefined cost', (done) => {
+      const dtoWithoutCost = { ...mockCourseDTO, cost: undefined } as any;
+
+      service.getCourseProfile(1).subscribe((course) => {
+        expect(course.cost).toBe(0);
+        done();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/courses/1`);
+      req.flush(dtoWithoutCost);
+    });
   });
 
   describe('getFavoriteCourses', () => {

@@ -125,6 +125,19 @@ describe('RecommendationsComponent', () => {
             expect(component.error()).toBeNull();
             expect(component.loading()).toBe(false);
         }));
+
+        it('should filter suggestions by type when typeFilter is set', fakeAsync(() => {
+            component.typeFilter = 'course';
+            recommendationServiceSpy.getRecommendations.and.returnValue(of(mockSuggestions));
+
+            fixture.detectChanges();
+            tick();
+
+            const filtered = component.recommendations();
+            expect(filtered.length).toBe(1);
+            expect(filtered[0].type).toBe('course');
+            expect(filtered[0].title).toBe('Computer Science');
+        }));
     });
 
     describe('Loading State', () => {
