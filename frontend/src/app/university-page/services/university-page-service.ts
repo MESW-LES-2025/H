@@ -35,6 +35,8 @@ interface UniversityDTO {
   address: string;
   logo: string;
   location: LocationDTO;
+  studentCount?: number;
+  foundedYear?: number;
   courses: CourseLightDTO[];
   scholarships: ScholarshipDTO[];
 }
@@ -66,8 +68,8 @@ export class UniversityPageService {
       bannerImage:
         'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop',
       description: dto.description || 'No description available',
-      studentCount: 0,
-      foundedYear: 0,
+      studentCount: dto.studentCount ?? 0,
+      foundedYear: dto.foundedYear ?? 0,
       courses: dto.courses.map((course) => ({
         id: course.id,
         name: course.name,

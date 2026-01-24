@@ -42,6 +42,7 @@ describe('CoursePageService', () => {
       { id: 1, name: 'Computer Science' },
       { id: 2, name: 'Software Engineering' },
     ],
+    topics: ['Programming', 'Algorithms'],
   };
 
   beforeEach(() => {
@@ -83,10 +84,7 @@ describe('CoursePageService', () => {
         expect(course.language).toBe('English');
         expect(course.credits).toBe(180);
         expect(course.university.name).toBe('Test University');
-        expect(course.topics).toEqual([
-          'Computer Science',
-          'Software Engineering',
-        ]);
+        expect(course.topics).toEqual(['Programming', 'Algorithms']);
         expect(course.requirements).toEqual(['Minimum admission grade: 85']);
         expect(course.isFavorite).toBe(false);
         done();
@@ -104,7 +102,7 @@ describe('CoursePageService', () => {
 
       service.getCourseProfile(1).subscribe((course) => {
         expect(course.area).toBe('General');
-        expect(course.topics).toEqual([]);
+        expect(course.topics).toEqual(['Programming', 'Algorithms']);
         done();
       });
 

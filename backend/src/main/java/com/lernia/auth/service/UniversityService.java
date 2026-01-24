@@ -102,6 +102,8 @@ public class UniversityService {
                                                                         university.getLocation().getCountry(),
                                                                         university.getLocation().getCostOfLiving())
                                                                         : null,
+                                                        university.getStudentCount(),
+                                                        university.getFoundedYear(),
                                                         courses,
                                                         scholarships);
                                 })

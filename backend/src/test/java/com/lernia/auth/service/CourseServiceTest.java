@@ -9,7 +9,6 @@ import com.lernia.auth.entity.AreaOfStudyEntity;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
-import com.lernia.auth.mapper.CourseMapper;
 import com.lernia.auth.repository.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,9 +45,6 @@ class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
-
-    @Mock
-    private CourseMapper courseMapper;
 
     @BeforeEach
     void setUp() {
@@ -183,23 +179,17 @@ class CourseServiceTest {
         CourseEntity entity = buildFullCourseEntity(11L);
         Page<CourseEntity> entityPage = new PageImpl<>(List.of(entity));
 
-        CourseDTO dto = new CourseDTO(
-                11L, "Software Engineering", "SE description", "Master", true, 150, 5000,
-                24, 120, "English", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 5, 31),
-                "http://example.com", "contact@example.com", null, List.of()
-        );
-
         when(courseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(entityPage);
-        when(courseMapper.toDTO(entity)).thenReturn(dto);
 
         Page<CourseDTO> result = courseService.getCourses(filter, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
-        assertSame(dto, result.getContent().getFirst());
+        CourseDTO dto = result.getContent().getFirst();
+        assertEquals(11L, dto.getId());
+        assertEquals("Software Engineering", dto.getName());
 
         verify(courseRepository, times(1)).findAll(any(Specification.class), eq(pageable));
-        verify(courseMapper, times(1)).toDTO(entity);
     }
 
     @Test
@@ -215,7 +205,6 @@ class CourseServiceTest {
         assertTrue(result.getContent().isEmpty());
 
         verify(courseRepository, times(1)).findAll(any(Specification.class), eq(pageable));
-        verifyNoInteractions(courseMapper);
     }
 
     // -------------------------------------------------------

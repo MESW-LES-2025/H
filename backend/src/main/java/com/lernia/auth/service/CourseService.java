@@ -9,7 +9,7 @@ import com.lernia.auth.entity.AreaOfStudyEntity;
 import com.lernia.auth.entity.CourseEntity;
 import com.lernia.auth.entity.LocationEntity;
 import com.lernia.auth.entity.UniversityEntity;
-import com.lernia.auth.mapper.CourseMapper;
+import com.lernia.auth.entity.CurricularUnitEntity;
 import com.lernia.auth.repository.CourseRepository;
 import com.lernia.auth.repository.CourseSpecification;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ import java.util.Optional;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final CourseMapper courseMapper;
 
     public List<String> getAllLanguages() {
         return courseRepository.findDistinctLanguages();
@@ -42,6 +41,11 @@ public class CourseService {
 
         List<AreaOfStudyDTO> areasOfStudy = course.getAreasOfStudy().stream()
                 .map(this::getAreaOfStudyDTO).toList();
+
+        List<String> topics = course.getCurricularUnits().stream()
+                .map(CurricularUnitEntity::getName)
+                .distinct()
+                .toList();        
 
         return new CourseDTO(
                 course.getId(),
@@ -59,7 +63,8 @@ public class CourseService {
                 course.getWebsite(),
                 course.getContactEmail(),
                 universityDTOLight,
-                areasOfStudy
+                areasOfStudy,
+                topics
         );
 
     }
@@ -68,7 +73,7 @@ public class CourseService {
         Specification<CourseEntity> spec = CourseSpecification.filter(filter);
 
         return courseRepository.findAll(spec, pageable)
-                .map(courseMapper::toDTO);
+                .map(this::convertToDTO);
     }
 
 

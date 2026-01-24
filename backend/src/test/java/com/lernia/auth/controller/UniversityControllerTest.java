@@ -78,7 +78,7 @@ class UniversityControllerTest {
     @Test
     void testGetUniversityById_FoundReturnsOk() {
         Long id = 5L;
-        UniversityDTO dto = new UniversityDTO(id, "Uni 5", "Desc", "Contact", "site", "addr", "logo", null, List.of(),
+        UniversityDTO dto = new UniversityDTO(id, "Uni 5", "Desc", "Contact", "site", "addr", "logo", null, 1000, 1990, List.of(),
                 List.of());
         when(universityService.getUniversityDetailsById(id)).thenReturn(dto);
 

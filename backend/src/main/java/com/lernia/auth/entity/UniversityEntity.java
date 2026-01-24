@@ -20,6 +20,8 @@ public class UniversityEntity {
     private String website;
     private String address;
     private String logo;
+    private Integer studentCount;
+    private Integer foundedYear;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
