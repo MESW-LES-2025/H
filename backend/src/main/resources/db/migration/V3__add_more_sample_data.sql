@@ -12,17 +12,16 @@ INSERT INTO lernia.locations (city, country, cost_of_living) VALUES
 
 
 INSERT INTO lernia.universities (name, description, location_id, contact_info, website, address, logo) VALUES
-    ('ETH Zurich', 'World-leading science and engineering university', 8, '+41-44-632-11-11', 'https://ethz.ch', 'Rämistrasse 101, 8092 Zürich', 'eth_logo.png'),
-    ('University of Copenhagen', 'Top Scandinavian research university', 9, '+45-35-32-26-26', 'https://ku.dk', 'Nørregade 10, Copenhagen', 'copenhagen_logo.png'),
-    ('University of Oslo', 'Leading Norwegian public university', 10, '+47-22-85-50-50', 'https://www.uio.no', 'Problemveien 7, Oslo', 'oslo_logo.png'),
-    ('Charles University', 'Oldest university in Central Europe', 11, '+420-221-111-111', 'https://cuni.cz', 'Ovocný trh 3–5, Prague', 'charles_logo.png'),
-    ('Eötvös Loránd University', 'Prestigious Hungarian university in Budapest', 12, '+36-1-411-6500', 'https://www.elte.hu', 'Egyetem tér 1-3, Budapest', 'elte_logo.png'),
-    ('Sapienza University of Rome', 'One of Europes largest universities', 13, '+39-06-4991', 'https://www.uniroma1.it', 'Piazzale Aldo Moro 5, Rome', 'sapienza_logo.png'),
-    ('Stockholm University', 'Top Swedish research university', 14, '+46-8-16-20-00', 'https://www.su.se', 'Universitetsvägen 10A, Stockholm', 'stockholm_logo.png'),
-    ('Trinity College Dublin', 'Ireland’s oldest university', 15, '+353-1-896-1000', 'https://www.tcd.ie', 'College Green, Dublin', 'trinity_logo.png'),
-    ('University of Helsinki', 'Top Finnish university', 16, '+358-2941-911', 'https://www.helsinki.fi', 'Yliopistonkatu 4, Helsinki', 'helsinki_logo.png'),
-    ('University of Warsaw', 'Largest university in Poland', 17, '+48-22-55-20-00', 'https://www.uw.edu.pl', 'Krakowskie Przedmieście 26/28, Warsaw', 'warsaw_logo.png');
-
+    ('ETH Zurich', 'World-leading science and engineering university', 8, '+41-44-632-11-11', 'https://ethz.ch', 'Rämistrasse 101, 8092 Zürich', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/eth-zurich.png'),
+    ('University of Copenhagen', 'Top Scandinavian research university', 9, '+45-35-32-26-26', 'https://ku.dk', 'Nørregade 10, Copenhagen', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/university-copenhagen.png'),
+    ('University of Oslo', 'Leading Norwegian public university', 10, '+47-22-85-50-50', 'https://www.uio.no', 'Problemveien 7, Oslo', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/oslo.png'),
+    ('Charles University', 'Oldest university in Central Europe', 11, '+420-221-111-111', 'https://cuni.cz', 'Ovocný trh 3–5, Prague', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/charles.png'),
+    ('Eötvös Loránd University', 'Prestigious Hungarian university in Budapest', 12, '+36-1-411-6500', 'https://www.elte.hu', 'Egyetem tér 1-3, Budapest', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/elte.png'),
+    ('Sapienza University of Rome', 'One of Europes largest universities', 13, '+39-06-4991', 'https://www.uniroma1.it', 'Piazzale Aldo Moro 5, Rome', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/sapienza.png'),
+    ('Stockholm University', 'Top Swedish research university', 14, '+46-8-16-20-00', 'https://www.su.se', 'Universitetsvägen 10A, Stockholm', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/stockholm.png'),
+    ('Trinity College Dublin', 'Ireland’s oldest university', 15, '+353-1-896-1000', 'https://www.tcd.ie', 'College Green, Dublin', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/trinity.png'),
+    ('University of Helsinki', 'Top Finnish university', 16, '+358-2941-911', 'https://www.helsinki.fi', 'Yliopistonkatu 4, Helsinki', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/helsinki.png'),
+    ('University of Warsaw', 'Largest university in Poland', 17, '+48-22-55-20-00', 'https://www.uw.edu.pl', 'Krakowskie Przedmieście 26/28, Warsaw', 'https://lernia-s3.s3.eu-north-1.amazonaws.com/warsaw.png');
 INSERT INTO lernia.campuses (university_id, name, description, country, city, capacity) VALUES
     (8, 'ETH Main Campus', 'Central Zurich campus', 'Switzerland', 'Zurich', 21000),
     (9, 'City Campus', 'Copenhagen historic district', 'Denmark', 'Copenhagen', 32000),

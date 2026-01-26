@@ -23,7 +23,7 @@ INSERT INTO lernia.universities (
         '+44-1223-337733',
         'https://www.cam.ac.uk',
         'The Old Schools, Trinity Lane, Cambridge CB2 1TN, United Kingdom',
-        'https://lernia-s3.s3.eu-north-1.amazonaws.com/university_of_cambridge.png',
+        'https://lernia-s3.s3.eu-north-1.amazonaws.com/cambridge.png',
         20800,
         1209
     ),
