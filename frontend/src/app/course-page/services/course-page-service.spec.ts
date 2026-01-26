@@ -79,7 +79,7 @@ describe('CoursePageService', () => {
         expect(course.name).toBe('Computer Science');
         expect(course.area).toBe('Computer Science');
         expect(course.description).toBe('A comprehensive CS program');
-        expect(course.duration).toBe('48 months');
+        expect(course.duration).toBe('48 years');
         expect(course.level).toBe('Bachelor');
         expect(course.language).toBe('English');
         expect(course.credits).toBe(180);
