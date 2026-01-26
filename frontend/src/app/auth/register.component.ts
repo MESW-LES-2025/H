@@ -90,4 +90,8 @@ export class RegisterComponent {
     const doc: any = document;
     doc.startViewTransition ? doc.startViewTransition(() => nav()) : nav();
   }
+
+  registerWithGoogle(): void {
+    this.auth.loginWithGoogle();
+  }
 }
