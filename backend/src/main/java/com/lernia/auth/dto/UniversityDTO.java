@@ -16,6 +16,8 @@ public class UniversityDTO {
   private String address;
   private String logo;
   private LocationDTO location;
+  private Integer studentCount;
+  private Integer foundedYear;
   private List<CourseLightDTO> courses;
   private List<ScholarshipDTO> scholarships;
 }
