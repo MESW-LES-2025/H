@@ -25,5 +25,6 @@ public class CourseDTO {
     private String contactEmail;
     private UniversityDTOLight university;
     private List<AreaOfStudyDTO> areaOfStudy;
+    private List<String> topics;
 }
 

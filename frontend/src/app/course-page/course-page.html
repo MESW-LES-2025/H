@@ -105,7 +105,7 @@
 
               @if (course.topics && course.topics.length > 0) {
               <div class="topics-list">
-                @for (topic of course.topics; track topic) {
+                @for (topic of course.topics; track $index) {
                 <div class="topic-item d-flex gap-3 pb-3 mb-3 border-bottom">
                   <div class="flex-shrink-0">
                     <div class="topic-icon bg-light rounded d-flex align-items-center justify-content-center">

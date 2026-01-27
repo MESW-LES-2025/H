@@ -122,6 +122,15 @@
 
                 <div class="info-group mb-4">
                   <label class="text-muted small fw-semibold d-block mb-2"
+                    >FOUNDED YEAR</label
+                  >
+                  <p class="fw-bold mb-0">
+                    {{ university.foundedYear > 0 ? university.foundedYear : "N/A" }}
+                  </p>
+                </div>
+
+                <div class="info-group mb-4">
+                  <label class="text-muted small fw-semibold d-block mb-2"
                     >ADDRESS</label
                   >
                   <p class="fw-bold mb-0">{{ university.address }}</p>

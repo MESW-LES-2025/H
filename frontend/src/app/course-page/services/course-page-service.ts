@@ -41,6 +41,7 @@ interface CourseDTO {
   contactEmail: string;
   university: UniversityDTOLight;
   areasOfStudy: AreaOfStudyDTO[];
+  topics: string[];
 }
 
 @Injectable({
@@ -119,7 +120,7 @@ export class CoursePageService {
       name: dto.name,
       area: areas.length > 0 ? areas[0].name : 'General',
       description: dto.description || 'No description available',
-      duration: dto.duration ? `${dto.duration} months` : 'N/A',
+      duration: dto.duration ? `${dto.duration} years` : 'N/A',
       level: dto.courseType || 'General',
       language: dto.language || 'Not specified',
       credits: dto.credits || 0,
@@ -138,7 +139,7 @@ export class CoursePageService {
         } as any,
       },
 
-      topics: areas.map((a) => a.name),
+      topics: dto.topics || [],
 
       requirements: dto.minAdmissionGrade
         ? [`Minimum admission grade: ${dto.minAdmissionGrade}`]
