@@ -18,7 +18,6 @@ For detailed project documentation, please visit our **[Wiki](https://github.com
 - **[Domain Analysis](https://github.com/MESW-LES-2025/H/wiki/Domain-Analysis)** - Domain modeling and business logic
 - **[System Design](https://github.com/MESW-LES-2025/H/wiki/System-Design)** - System architecture and technical design decisions
 - **[User Interface Design](https://github.com/MESW-LES-2025/H/wiki/User-Interface-Design)** - UI/UX specifications and mockups
-- **[Team](https://github.com/MESW-LES-2025/H/wiki/Team)** - Project team members and roles
 
 ### Sprint Documentation
 - **[Iteration 1](https://github.com/MESW-LES-2025/H/wiki/Iteration-1)** - First sprint deliverables and outcomes
