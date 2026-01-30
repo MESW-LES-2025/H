@@ -4,6 +4,17 @@ Access the fully deployed and functional version of the Lernia platform here:
 
 👉 https://lernia.vercel.app
 
+
+## 👥 **Team**
+
+| Nome | GitHub | Contribuição |
+|---|---|---|
+| Ana Carolina Coutinho | https://github.com/acarolinacc | 20% |
+| Maria Vieira | https://github.com/mariajvieira | 20% |
+| Samuel Oliveira | https://github.com/samuoliveira13 | 20% |
+| Gessica Goulart | https://github.com/gessicagoulart | 20% |
+| Felipe Ferreira | https://github.com/fjacobf | 20% |
+
 ## Overview
 
 Lernia is a comprehensive web platform designed to help students explore universities, courses, and scholarships worldwide. The platform provides advanced search and filtering capabilities, user authentication, favorites management, and detailed information about educational institutions and academic programs.
